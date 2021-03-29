@@ -1,5 +1,4 @@
-/app/config/config.php
-/app/config/database.php
+app/config/*
 /vendor/
 /.idea/*
-/.htaccess
+.htaccess
