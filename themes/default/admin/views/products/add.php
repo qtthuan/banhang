@@ -239,9 +239,6 @@ if (!empty($variants)) {
                                     <button type="button" class="btn btn-info multiplex" id="5" style="height:37px; font-size: 18px;">
                                         <i class="fa"></i>5 Ri
                                     </button>
-                                    <button type="button" class="btn btn-info multiplex" id="6" style="height:37px; font-size: 18px;">
-                                        <i class="fa"></i>6 Ri
-                                    </button>
                                     <button type="button" class="btn btn-primary multiplex" id="10" style="height:37px; font-size: 18px;">
                                         <i class="fa"></i>10 Ri
                                     </button>
