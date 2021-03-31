@@ -815,6 +815,11 @@
                         </div>
                     <?php } ?>
                     <?php if ($Settings->product_discount && ($Owner || $Admin || $this->session->userdata('allow_discount'))) { ?>
+                    <div class="form-group">
+                        <input type="checkbox" class="checkbox" name="sizegroups" id="sizegroups"><label
+                            for="sizegroups"
+                            class="padding05"><?= lang('choose_size_group'); ?></label>
+                    </div>
                         <div class="form-group">
                             <label for="pdiscount" class="col-sm-4 control-label"><?=lang('product_discount')?></label>
                             <div class="col-sm-8">
