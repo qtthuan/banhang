@@ -815,11 +815,7 @@
                         </div>
                     <?php } ?>
                     <?php if ($Settings->product_discount && ($Owner || $Admin || $this->session->userdata('allow_discount'))) { ?>
-                    <div class="form-group">
-                        <input type="checkbox" class="checkbox" name="sizegroups" id="sizegroups"><label
-                            for="sizegroups"
-                            class="padding05"><?= lang('choose_size_group'); ?></label>
-                    </div>
+
                         <div class="form-group">
                             <label for="pdiscount" class="col-sm-4 control-label"><?=lang('product_discount')?></label>
                             <div class="col-sm-8">
@@ -827,6 +823,12 @@
                                 <span class="help-block"><?= lang('input_discount_help') ?></span>
                             </div>
                         </div>
+                    <div class="form-group">
+                        <label for="pdiscount1" class="col-sm-4 control-label"><?=lang('enter_discount')?></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control kb-pad" id="pdiscount1">
+                        </div>
+                    </div>
 
                     <?php } ?>
                     <div class="form-group">
@@ -2223,6 +2225,7 @@ var lang = {
 
         $('#prModal').on('shown.bs.modal', function() {
             $(this).find('#pdiscount').select().focus();
+
             $(this).keypress(function( e ) {
                 if ( e.which == 13 ) {
                     $('#editItem').click();

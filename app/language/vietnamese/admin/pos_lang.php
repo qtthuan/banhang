@@ -325,6 +325,7 @@ $lang['old_sale_loaded']                = "Tải hóa đơn cũ thành công";
 $lang['duplicate_sale']                 = "Copy hóa đơn";
 $lang['use_local_printers']             = "Sử dụng máy in cục bộ (POS Print Server)";
 $lang['input_discount_help']            = "Nhập giá giảm hoặc phần trăm(%) giảm giá";
+$lang['enter_discount']                 = "Giá giảm sau cùng";
 $lang['slogan']                         = "BÉ ĐẸP MỖI NGÀY";
 $lang['reciept_footer_notes']           = "Đổi hàng trong <strong>3 ngày</strong>, từ <strong>10:00 - 17:00</strong><br>- Phải có hóa đơn, không hoàn lại tiền<br>- Chỉ đổi sản phẩm giá cao hơn hoặc bằng<br>- Hàng còn nguyên tem, chưa qua sử dụng<br>- Hàng <strong>Giảm giá</strong> vui lòng <strong><u>không</u></strong> đổi trả";
 $lang['footer_thanks']                  = "Cảm ơn quý khách. Hẹn gặp lại!";

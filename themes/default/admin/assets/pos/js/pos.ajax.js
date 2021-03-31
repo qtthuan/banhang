@@ -625,6 +625,7 @@ $('#posdiscount').focus(function () {
         var unit_price = parseFloat($('#pprice').val());
         var item = positems[item_id];
         var ds = $('#pdiscount').val() ? $('#pdiscount').val() : '0';
+
         if (ds.indexOf("%") !== -1) {
             var pds = ds.split("%");
             if (!isNaN(pds[0])) {
@@ -632,6 +633,15 @@ $('#posdiscount').focus(function () {
             } else {
                 item_discount = parseFloat(ds);
             }
+            console.log('item discount: ' + item_discount);
+        } else if(ds.indexOf('#') !== -1) {
+            var pds1 = ds.split("#");
+            if (!isNaN(pds[0])) {
+                item_discount = parseFloat((unit_price) - parseFloat(pds1[0]));
+            } else {
+                item_discount = parseFloat(ds);
+            }
+            //item_discount = parseFloat(ds);
         } else {
             item_discount = parseFloat(ds);
         }
