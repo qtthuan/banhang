@@ -581,7 +581,8 @@ $('#posdiscount').focus(function () {
         $('#item_id').val(item_id);
         $('#pserial').val(row.children().children('.rserial').val());
         $('#pdiscount').val(discount);
-        $('#net_price').text(formatMoney(net_price));
+        $('#net_price').val(formatMoney(net_price));
+        $('#price_after_discount').val(net_price);
         $('#pro_tax').text(formatMoney(pr_tax_val));
         $('#prModal').appendTo("body").modal('show');
 
@@ -619,13 +620,25 @@ $('#posdiscount').focus(function () {
         $(this).find('#pdiscount').select().focus();
     });
 
-    $(document).on('change', '#pprice, #ptax, #pdiscount', function () {
+    $(document).on('blur', '#price_after_discount', function () {
+        var row = $('#' + $('#row_id').val());
+        var item_id = row.attr('data-item-id');
+        var unit_price = parseFloat($('#pprice').val());
+        var item = positems[item_id];
+        var price_after_discount = $('#price_after_discount').val() ? $('#price_after_discount').val() : '0';
+        if (parseFloat(price_after_discount) > 0) {
+            item_discount = parseFloat(price_after_discount);
+            ds = unit_price - item_discount;
+            $('#pdiscount').val(ds);
+        }
+    });
+
+    $(document).on('blur', '#pprice, #price_after_discount, #ptax, #pdiscount', function () {
         var row = $('#' + $('#row_id').val());
         var item_id = row.attr('data-item-id');
         var unit_price = parseFloat($('#pprice').val());
         var item = positems[item_id];
         var ds = $('#pdiscount').val() ? $('#pdiscount').val() : '0';
-
         if (ds.indexOf("%") !== -1) {
             var pds = ds.split("%");
             if (!isNaN(pds[0])) {
@@ -633,48 +646,14 @@ $('#posdiscount').focus(function () {
             } else {
                 item_discount = parseFloat(ds);
             }
-            console.log('item discount: ' + item_discount);
-        } else if(ds.indexOf('#') !== -1) {
-            var pds1 = ds.split("#");
-            if (!isNaN(pds[0])) {
-                item_discount = parseFloat((unit_price) - parseFloat(pds1[0]));
-            } else {
-                item_discount = parseFloat(ds);
-            }
-            //item_discount = parseFloat(ds);
         } else {
             item_discount = parseFloat(ds);
         }
+
         unit_price -= item_discount;
-        var pr_tax = $('#ptax').val(), item_tax_method = 0;
-        var pr_tax_val = 0, pr_tax_rate = 0;
-        if (pr_tax !== null && pr_tax != 0) {
 
-            $.each(tax_rates, function () {
-                if(this.id == pr_tax){
-                    if (this.type == 1) {
-
-                        if (item_tax_method == 0) {
-                            pr_tax_val = formatDecimal(((unit_price) * parseFloat(this.rate)) / (100 + parseFloat(this.rate)));
-                            pr_tax_rate = formatDecimal(this.rate) + '%';
-                            unit_price -= pr_tax_val;
-                        } else {
-                            pr_tax_val = formatDecimal(((unit_price) * parseFloat(this.rate)) / 100);
-                            pr_tax_rate = formatDecimal(this.rate) + '%';
-                        }
-
-                    } else if (this.type == 2) {
-
-                        pr_tax_val = parseFloat(this.rate);
-                        pr_tax_rate = this.rate;
-
-                    }
-                }
-            });
-        }
-
-        $('#net_price').text(formatMoney(unit_price));
-        $('#pro_tax').text(formatMoney(pr_tax_val));
+        $('#net_price').val(formatMoney(unit_price));
+        $('#price_after_discount').val(unit_price);
     });
 
     $(document).on('change', '#punit', function () {
@@ -903,7 +882,7 @@ $('#posdiscount').focus(function () {
                 return false;
             }
         }
-        $('#mnet_price').text('0.00');
+        $('#mnet_price').val('0.00');
         $('#mpro_tax').text('0.00');
         $('#mModal').appendTo("body").modal('show');
         return false;
@@ -999,7 +978,7 @@ $('#posdiscount').focus(function () {
             });
         }
 
-        $('#mnet_price').text(formatMoney(unit_price));
+        $('#mnet_price').val(formatMoney(unit_price));
         $('#mpro_tax').text(formatMoney(pr_tax_val));
     });
 

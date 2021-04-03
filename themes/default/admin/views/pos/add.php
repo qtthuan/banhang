@@ -822,14 +822,12 @@
                                 <input type="text" class="form-control kb-pad" id="pdiscount">
                                 <span class="help-block"><?= lang('input_discount_help') ?></span>
                             </div>
+                        </div><div class="form-group">
+                            <label for="price_after_discount" class="col-sm-4 control-label"><?=lang('price_after_discount')?></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control kb-pad" id="price_after_discount">
+                            </div>
                         </div>
-                    <div class="form-group">
-                        <label for="pdiscount1" class="col-sm-4 control-label"><?=lang('enter_discount')?></label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control kb-pad" id="pdiscount1">
-                        </div>
-                    </div>
-
                     <?php } ?>
                     <div class="form-group">
                         <label for="pprice" class="col-sm-4 control-label"><?=lang('unit_price')?></label>
@@ -856,12 +854,13 @@
                             <div id="poptions-div"></div>
                         </div>
                     </div>
-                    <table class="table table-bordered table-striped">
-                        <tr>
-                            <th style="width:25%;"><?=lang('net_unit_price');?></th>
-                            <th style="width:25%;"><span id="net_price"></span></th>
-                        </tr>
-                    </table>
+                    <div class="form-group">
+                        <label for="net_price" class="col-sm-4 control-label"><?=lang('price_after_discount')?></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control kb-pad" id="net_price" readonly="readonly" style="font-weight: bold">
+                        </div>
+                    </div>
+
                     <input type="hidden" id="punit_price" value=""/>
                     <input type="hidden" id="old_tax" value=""/>
                     <input type="hidden" id="old_qty" value=""/>
@@ -992,14 +991,13 @@
                             <input type="text" class="form-control kb-pad" id="mquantity" value="1">
                         </div>
                     </div>
-                    <table class="table table-bordered table-striped">
-                        <tr>
-                            <th style="width:25%;"><?=lang('net_unit_price');?></th>
-                            <th style="width:25%;"><span id="mnet_price"></span></th>
-                            <th style="width:25%;"><?=lang('product_tax');?></th>
-                            <th style="width:25%;"><span id="mpro_tax"></span></th>
-                        </tr>
-                    </table>
+                    <div class="form-group">
+                        <label for="mnet_price" class="col-sm-4 control-label"><?=lang('price_after_discount')?> </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control kb-pad" id="mnet_price" readonly="readonly" style="font-weight: bold">
+                        </div>
+                    </div>
+
                 </form>
             </div>
             <div class="modal-footer">
