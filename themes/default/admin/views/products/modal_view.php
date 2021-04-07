@@ -157,10 +157,12 @@
                             <?php } ?>
 
                             <?php if ((!$Supplier || !$Customer) && !empty($warehouses) && $product->type == 'standard') { ?>
-                            <h3 class="bold"><?= lang('warehouse_quantity') ?></h3>
+                            <h3 class="bold"><?= lang('warehouse_quantity') ?><a id="btn_original" class="btn tip" title="<?= lang('lbl_original_quantity') ?>" data-placement="bottom">
+                                <i class="fa fa-list"></i>
+                            </a></h3>
                             <div class="table-responsive">
                                 <table
-                                class="table table-bordered table-striped table-condensed dfTable two-columns">
+                                class="table table-bordered table-striped table-condensed dfTable three-columns">
                                 <thead>
                                     <tr>
                                         <th><?= lang('warehouse_name') ?></th>
@@ -170,7 +172,7 @@
                                 <tbody>
                                     <?php foreach ($warehouses as $warehouse) {
                                         if ($warehouse->quantity != 0) {
-                                            echo '<tr><td>' . $warehouse->name . ' (' . $warehouse->code . ')</td><td><strong>' . $this->sma->formatQuantity($warehouse->quantity) . '</strong>' . ($warehouse->rack ? ' (' . $warehouse->rack . ')' : '') . '</td></tr>';
+                                            echo '<tr><td title="' . $warehouse->name . '">' . $warehouse->code . '</td><td><strong>' . $this->sma->formatQuantity($warehouse->quantity) . '</strong>' . ($warehouse->rack ? ' (' . $warehouse->rack . ')' : '') . '</td></tr>';
                                         }
                                     } ?>
                                 </tbody>
@@ -216,13 +218,13 @@
                         <tbody>
                             <?php
                             foreach ($options as $option) {
-                                if ($option->wh_qty != 0) {
-                                    echo '<tr><td>' . $option->wh_name . '</td><td>' . $option->name . '</td><td class="text-center">' . $this->sma->formatQuantity($option->wh_qty) . '</td>';
+                                //if ($option->wh_qty != 0) {
+                                    echo '<tr><td>' . $option->wh_name . '</td><td>' . $option->name . '</td><td class="text-center">' . $this->sma->formatQuantity($option->wh_qty) .'<sup class="col_original" style="display: none; font-weight: bold; color: green; font-size: 14px;">' . $this->sma->formatQuantity($option->wh_original_qty) . '</sup></td>';
                                     if ($Owner || $Admin || $this->session->userdata('show_price') && (!$Customer || $this->session->userdata('show_cost'))) {
                                         echo '<td class="text-right">' . $this->sma->formatMoney($option->price) . '</td>';
                                     }
                                     echo '</tr>';
-                                }
+                                //}
 
                             }
                             ?>
@@ -288,6 +290,11 @@ $(document).ready(function() {
         var img_src = $(this).attr('href');
         $('#pr-image').attr('src', img_src);
         return false;
+    });
+
+    $("#btn_original").click(function(){
+        $(".col_original").slideToggle();
+        $(".wh_col_original").slideToggle();
     });
 });
 </script>

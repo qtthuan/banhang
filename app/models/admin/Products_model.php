@@ -94,7 +94,7 @@ class Products_model extends CI_Model
 
     public function getProductOptionsWithWH($pid)
     {
-        $this->db->select($this->db->dbprefix('product_variants') . '.*, ' . $this->db->dbprefix('warehouses') . '.name as wh_name, ' . $this->db->dbprefix('warehouses') . '.id as warehouse_id, ' . $this->db->dbprefix('warehouses_products_variants') . '.quantity as wh_qty')
+        $this->db->select($this->db->dbprefix('product_variants') . '.*, ' . $this->db->dbprefix('warehouses') . '.name as wh_name, ' . $this->db->dbprefix('warehouses') . '.id as warehouse_id, ' . $this->db->dbprefix('warehouses_products_variants') . '.quantity as wh_qty, ' . $this->db->dbprefix('warehouses_products_variants') . '.original_quantity as wh_original_qty')
             ->join('warehouses_products_variants', 'warehouses_products_variants.option_id=product_variants.id', 'left')
             ->join('warehouses', 'warehouses.id=warehouses_products_variants.warehouse_id', 'left')
             ->group_by(array('' . $this->db->dbprefix('product_variants') . '.id', '' . $this->db->dbprefix('warehouses_products_variants') . '.warehouse_id'))
@@ -217,7 +217,7 @@ class Products_model extends CI_Model
 
     public function getAllWarehousesWithPQ($product_id)
     {
-        $this->db->select('' . $this->db->dbprefix('warehouses') . '.*, ' . $this->db->dbprefix('warehouses_products') . '.quantity, ' . $this->db->dbprefix('warehouses_products') . '.rack')
+        $this->db->select('' . $this->db->dbprefix('warehouses') . '.*, ' . $this->db->dbprefix('warehouses_products') . '.quantity,' . $this->db->dbprefix('warehouses_products') . '.rack')
             ->join('warehouses_products', 'warehouses_products.warehouse_id=warehouses.id', 'left')
             ->where('warehouses_products.product_id', $product_id)
             ->group_by('warehouses.id');
@@ -347,7 +347,7 @@ class Products_model extends CI_Model
                         $option_id = $this->db->insert_id();
                     }
                     if ($pr_attr['quantity'] != 0) {
-                        $this->db->insert('warehouses_products_variants', array('option_id' => $option_id, 'product_id' => $product_id, 'warehouse_id' => $variant_warehouse_id, 'quantity' => $pr_attr['quantity']));
+                        $this->db->insert('warehouses_products_variants', array('option_id' => $option_id, 'product_id' => $product_id, 'warehouse_id' => $variant_warehouse_id, 'quantity' => $pr_attr['quantity'], 'original_quantity' => $pr_attr['quantity']));
 
                         $tax_rate_id = $tax_rate ? $tax_rate->id : NULL;
                         $tax = $tax_rate ? (($tax_rate->type == 1) ? $tax_rate->rate . "%" : $tax_rate->rate) : NULL;
@@ -551,7 +551,7 @@ class Products_model extends CI_Model
                     $option_id = $this->db->insert_id();
 
                     if ($pr_attr['quantity'] != 0) {
-                        $this->db->insert('warehouses_products_variants', array('option_id' => $option_id, 'product_id' => $id, 'warehouse_id' => $variant_warehouse_id, 'quantity' => $pr_attr['quantity']));
+                        $this->db->insert('warehouses_products_variants', array('option_id' => $option_id, 'product_id' => $id, 'warehouse_id' => $variant_warehouse_id, 'quantity' => $pr_attr['quantity'], 'original_quantity' => $pr_attr['quantity']));
 
                         $tax_rate_id = $tax_rate ? $tax_rate->id : NULL;
                         $tax = $tax_rate ? (($tax_rate->type == 1) ? $tax_rate->rate . "%" : $tax_rate->rate) : NULL;
