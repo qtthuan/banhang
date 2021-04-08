@@ -905,6 +905,7 @@ class Products extends MY_Controller
                                     'warehouse_id' => $_POST['attr_warehouse'][$r],
                                     'quantity' => $_POST['attr_quantity'][$r],
                                     'price' => $_POST['attr_price'][$r],
+                                    'option_name_extra' => $this->sma->getSizeNumber($_POST['attr_name'][$r]),
                                 );
                             }
                         }
