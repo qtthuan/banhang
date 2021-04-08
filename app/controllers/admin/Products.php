@@ -819,6 +819,7 @@ class Products extends MY_Controller
         if ($this->form_validation->run('products/add') == true) {
 
             $data = array('code' => $this->input->post('code'),
+                'code_extra' => $this->input->post('code_extra'),
                 'barcode_symbology' => $this->input->post('barcode_symbology'),
                 'name' => $this->input->post('name'),
                 'type' => $this->input->post('type'),
