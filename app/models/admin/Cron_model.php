@@ -65,9 +65,9 @@ class Cron_model extends CI_Model
         }
 
 
-//        if ($this->excuteUpdateOptionNameExtra()) {
-//            $m .= '<p>' . sprintf(lang('excute_update_option_name_extra'), $date) . '</p>';
-//        }
+        if ($this->excuteUpdateOptionNameExtra()) {
+            $m .= '<p>' . sprintf(lang('excute_update_option_name_extra'), $date) . '</p>';
+        }
 //        if ($this->excuteUpdateGrandTotalSaleExtra()) {
 //            $m .= '<p>' . sprintf('update grand total extra ok', $date) . '</p>';
 //        }
@@ -102,13 +102,16 @@ class Cron_model extends CI_Model
      * qtthuan
      */
     private function excuteUpdateOptionNameExtra() {
-        $variants = $this->getOptions();
+        $variants = $this->getOptionsWithEmptyExtra();
         $success = false;
+        $i = 0;
         foreach ($variants as $option) {
+            $i++;
             $option_name_extra = $this->sma->getSizeNumber($option->name);
             $data = array(
                 'option_name_extra' => $option_name_extra
             );
+            //echo $i . ') option_id:' . $option->id . ' - option_name_extra: ' . $option_name_extra . '<br />';
             if ($this->updateExtraOptions($option->id, $data)) {
                 $success = true;
             }
@@ -161,6 +164,22 @@ class Cron_model extends CI_Model
      */
     private function getOptions() {
         $q = $this->db->get_where('product_variants', array());
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return FALSE;
+    }
+
+    /**
+     * qtthuan
+     * Lay danh sach option voi option_name_extra = ''
+     * @return array
+     */
+    private function getOptionsWithEmptyExtra() {
+        $q = $this->db->get_where('product_variants', array('option_name_extra=' => NULL));
         if ($q->num_rows() > 0) {
             foreach (($q->result()) as $row) {
                 $data[] = $row;
