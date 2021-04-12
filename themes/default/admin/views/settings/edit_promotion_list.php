@@ -12,33 +12,37 @@
 
             <div class="form-group">
                 <label class="control-label" for="name"><?php echo $this->lang->line("promotion_list_name"); ?></label>
-
                 <div
                     class="controls"> <?php echo form_input('name', $promotion_list->name, 'class="form-control" id="name"'); ?> </div>
             </div>
             <div class="form-group">
                 <label class="control-label" for="description"><?php echo $this->lang->line("promotion_list_description"); ?></label>
-
                 <div class="controls">
                     <?= form_textarea('description', (isset($_POST['description']) ? $_POST['description'] : ($promotion_list ? $promotion_list->description : '')), 'class="form-control" id="description"'); ?>
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label" for="start_date"><?php echo $this->lang->line("promotion_list_start_date"); ?></label>
-
                 <div class="controls">
                     <?= form_input('start_date', set_value('start_date', $promotion_list->start_date ? $this->sma->hrsd($promotion_list->start_date) : ''), 'class="form-control tip date" id="start_date"'); ?>
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label" for="end_date"><?php echo $this->lang->line("promotion_list_end_date"); ?></label>
-
                 <div class="controls">
                     <?= form_input('end_date', set_value('end_date', $promotion_list->end_date ? $this->sma->hrsd($promotion_list->end_date) : ''), 'class="form-control tip date" id="end_date"'); ?>
                 </div>
             </div>
             <div class="form-group">
+                <label class="control-label" for="price"><?php echo $this->lang->line("promotion_list_price"); ?></label>
+                <div class="controls">
+                    <?php echo form_input('price', $promotion_list->price, 'class="form-control" id="price"'); ?><br />
+                    <input name="for_discount" type="checkbox" class="checkbox" id="for_discount" value="1" <?= empty($promotion_list->for_discount) ? '' : 'checked="checked"' ?>/>
+                    <label for="for_discount" class="padding05"><?= lang('promotion_list_for_discount') ?></label>
+                </div>
+            </div>
 
+            <div class="form-group">
                 <div class="controls">
                     <input name="active" type="checkbox" class="checkbox" id="active" value="1" <?= empty($promotion_list->active) ? '' : 'checked="checked"' ?>/>
                     <label for="active" class="padding05"><?= lang('promotion_list_active') ?></label>

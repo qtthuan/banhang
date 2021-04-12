@@ -12,7 +12,6 @@
 
             <div class="form-group">
                 <label for="name"><?php echo $this->lang->line("promotion_list_name"); ?></label>
-
                 <div class="controls"> <?php echo form_input('name', '', 'class="form-control" id="name"'); ?> </div>
             </div>
             <div class="form-group">
@@ -25,6 +24,7 @@
                     <?= form_input('start_date', set_value('start_date'), 'class="form-control tip date" id="start_date"'); ?>
                 </div>
             </div>
+
             <div class="form-group">
                 <label for="end_date"><?php echo $this->lang->line("promotion_list_end_date"); ?></label>
                 <div class="controls">
@@ -32,7 +32,14 @@
                 </div>
             </div>
             <div class="form-group">
-
+                <label for="price"><?php echo $this->lang->line("promotion_list_price"); ?></label>
+                <div class="controls">
+                    <?php echo form_input('price', '', 'class="form-control" id="price"'); ?><br />
+                    <input name="for_discount" type="checkbox" class="checkbox" id="for_discount" value="1" <?= isset($_POST['for_discount']) ? 'checked="checked"' : '' ?>/>
+                    <label for="for_discount"><?php echo $this->lang->line("promotion_list_for_discount"); ?></label>
+                </div>
+            </div>
+            <div class="form-group">
                 <div class="controls">
                     <input name="active" type="checkbox" class="checkbox" id="active" value="1" <?= isset($_POST['active']) ? 'checked="checked"' : '' ?>/>
                     <label for="active"><?php echo $this->lang->line("promotion_list_active"); ?></label>

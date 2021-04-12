@@ -483,10 +483,12 @@
                     $inv_date = date('Y-m-d', strtotime($inv->date));
 
                     if ($inv_date >= $promo->start_date && $inv_date <= $promo->end_date) {
-                        echo '<p style="border-top: 1px solid black;">';
-                        echo '<p class="text-center"><strong>'.$promo->name.'</strong>
-                            <p>'.$promo->description.'</p>';
-                        echo '</p>';
+                        if (($promo->for_discount == 1 && $inv->total >= $promo->price) || ($promo->for_discount == 0 && $inv->grand_total_extra >= $promo->price)) {
+                            echo '<p style="border-top: 1px solid black;">';
+                            echo '<p class="text-center"><strong>'.$promo->name.'</strong>
+                                <p>'.$promo->description.'</p>';
+                            echo '</p>';
+                        }
                     }
                 ?>
             </div>

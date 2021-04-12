@@ -2013,6 +2013,8 @@ class system_settings extends MY_Controller
                 'description' => $this->input->post('description'),
                 'start_date' => $this->input->post('start_date') ? $this->sma->fsd($this->input->post('start_date')) : NULL,
                 'end_date' => $this->input->post('end_date') ? $this->sma->fsd($this->input->post('end_date')) : NULL,
+                'price' => $this->sma->formatDecimal($this->input->post('price')),
+                'for_discount' => $this->input->post('for_discount'),
                 'active' => $this->input->post('active'),
             );
         } elseif ($this->input->post('add_promotion_list')) {
@@ -2043,6 +2045,8 @@ class system_settings extends MY_Controller
                 'description' => $this->input->post('description'),
                 'start_date' => $this->input->post('start_date') ? $this->sma->fsd($this->input->post('start_date')) : NULL,
                 'end_date' => $this->input->post('end_date') ? $this->sma->fsd($this->input->post('end_date')) : NULL,
+                'price' => $this->sma->formatDecimal($this->input->post('price')),
+                'for_discount' => $this->input->post('for_discount'),
                 'active' => $this->input->post('active'),
             );
         } elseif ($this->input->post('edit_promotion_list')) {
