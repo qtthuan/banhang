@@ -452,10 +452,10 @@ class Cron_model extends CI_Model
     }
 
     /**
-     * Kiem tra va xoa khach hang qua 1 nam khong phat sinh hoa don
+     * Kiem tra va xoa khach hang qua 2 nam khong phat sinh hoa don
      */
     public function deleteExpiredCustomers() {
-        $expired_days = 365; // Khách quá 1 năm sẽ bị xóa
+        $expired_days = 730; // Khách quá 2 năm sẽ bị xóa
         $query = "SELECT sales.customer_id AS id, sales.customer AS name";
         $query .= ", DATEDIFF(date_format(now(), '%Y-%m-%d'), date_format(MAX(sales.date), '%Y-%m-%d')) AS count_days";
         $query .= ", date_format(MAX(sales.date), '%d-%m-%Y') AS last_bill_date";
