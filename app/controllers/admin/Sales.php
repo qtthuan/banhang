@@ -1063,7 +1063,6 @@ class Sales extends MY_Controller
             $id = $this->input->get('id');
         }
         $sale = $this->sales_model->getInvoiceByID($id);
-        $this->sma->print_arrays($sale);
         if ($sale->return_id) {
             $this->session->set_flashdata('error', lang("sale_already_returned"));
             redirect($_SERVER["HTTP_REFERER"]);
