@@ -1063,7 +1063,7 @@ class Sales extends MY_Controller
             $id = $this->input->get('id');
         }
         $sale = $this->sales_model->getInvoiceByID($id);
-        //$this->sma->print_arrays($sale);
+        $this->sma->print_arrays($sale);
         if ($sale->return_id) {
             $this->session->set_flashdata('error', lang("sale_already_returned"));
             redirect($_SERVER["HTTP_REFERER"]);
@@ -1255,7 +1255,7 @@ class Sales extends MY_Controller
                 'customer' => $sale->customer,
                 'biller_id' => $sale->biller_id,
                 'biller' => $sale->biller,
-                'warehouse_id' => $sale->warfehouse_id,
+                'warehouse_id' => $sale->warehouse_id,
                 'note' => $note,
                 'total' => $total,
                 'product_discount' => $product_discount,

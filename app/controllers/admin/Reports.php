@@ -862,11 +862,13 @@ class Reports extends MY_Controller
         if ( ! $date) { $date = date('Y-m-d'); }
         $this->data['costing'] = $this->reports_model->getCosting($date, $warehouse_id);
         $this->data['discount'] = $this->reports_model->getOrderDiscount($date, $warehouse_id);
+        $this->data['sale_by_day'] = $this->reports_model->getSalesByDay($date, $warehouse_id);
         $this->data['expenses'] = $this->reports_model->getExpenses($date, $warehouse_id);
         $this->data['returns'] = $this->reports_model->getReturns($date, $warehouse_id);
         $this->data['warehouses'] = $this->site->getAllWarehouses();
         $this->data['swh'] = $warehouse_id;
         $this->data['date'] = $date;
+        //$this->sma->print_arrays($this->data['sale_by_day'], $date);
         if ($re) {
             echo $this->load->view($this->theme . 'reports/profit', $this->data, TRUE);
             exit();

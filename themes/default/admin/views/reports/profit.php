@@ -25,21 +25,21 @@
                 <tr>
                     <td style="border-bottom: 1px solid #EEE;"><h4><?= lang('products_sale'); ?>:</h4></td>
                     <td style="text-align:right; border-bottom: 1px solid #EEE;"><h4>
-                            <span><?= $this->sma->formatMoney($costing->sales); ?></span></h4>
+                            <span><?= $this->sma->formatMoney($sale_by_day->grand_total + $sale_by_day->return_amount); ?></span></h4>
                             <!-- <span><?= $this->sma->formatMoney($costing->sales).' ('.$this->sma->formatMoney($costing->net_sales).')'; ?></span></h4> -->
                     </td>
                 </tr>
                 <tr>
-                    <td style="border-bottom: 1px solid #DDD;"><h4><?= lang('order_discount'); ?>:</h4></td>
-                    <td style="text-align:right;border-bottom: 1px solid #DDD;"><h4>
-                            <span><?php $discount = $discount ? $discount->order_discount : 0; echo $this->sma->formatMoney($discount); ?></span>
-                        </h4></td>
-                </tr>
-                <tr>
                     <td style="border-bottom: 1px solid #EEE;"><h4><?= lang('products_cost'); ?>:</h4></td>
                     <td style="text-align:right; border-bottom: 1px solid #EEE;"><h4>
-                            <span><?= $this->sma->formatMoney($costing->cost); ?></span>
-                            <!-- <span><?= $this->sma->formatMoney($costing->cost).' ('.$this->sma->formatMoney($costing->net_cost).')'; ?></span> -->
+                        <span><?= $this->sma->formatMoney($costing->cost); ?></span>
+                        <!-- <span><?= $this->sma->formatMoney($costing->cost).' ('.$this->sma->formatMoney($costing->net_cost).')'; ?></span> -->
+                    </h4></td>
+                </tr>
+                <tr>
+                    <td style="border-bottom: 1px solid #DDD;"><h4><?= lang('order_discount'); ?>:</h4></td>
+                    <td style="text-align:right;border-bottom: 1px solid #DDD;"><h4>
+                            <span><?php $discount = $discount ? $sale_by_day->discount : 0; echo $this->sma->formatMoney($discount); ?></span>
                         </h4></td>
                 </tr>
                 <tr>
@@ -52,19 +52,10 @@
                     <td width="300px;" style="font-weight:bold;"><h4><strong><?= lang('profit'); ?></strong>:</h4>
                     </td>
                     <td style="text-align:right;"><h4>
-                            <span><strong><?= $this->sma->formatMoney($costing->sales - $costing->cost - $discount - $expense); ?></strong></span>
+                            <span><strong><?= $this->sma->formatMoney(($sale_by_day->grand_total + $sale_by_day->return_amount) - $costing->cost - $discount - $expense); ?></strong></span>
                             <!-- <span><strong><?= $this->sma->formatMoney($costing->sales - $costing->cost - $discount - $expense).' ('.$this->sma->formatMoney($costing->net_sales - $costing->net_cost - $discount - $expense).')'; ?></strong></span> -->
                         </h4></td>
                 </tr>
-                <?php if (isset($returns->total)) { ?>
-                <tr>
-                    <td width="300px;" style="font-weight:bold;"><h4><strong><?= lang('return_sales'); ?></strong>:</h4>
-                    </td>
-                    <td style="text-align:right;"><h4>
-                            <span><strong><?= $this->sma->formatMoney($returns->total); ?></strong></span>
-                        </h4></td>
-                </tr>
-                <?php } ?>
             </table>
             </div>
         </div>
