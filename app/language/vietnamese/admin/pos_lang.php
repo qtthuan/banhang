@@ -327,5 +327,6 @@ $lang['use_local_printers']             = "Sử dụng máy in cục bộ (POS P
 $lang['input_discount_help']            = "Nhập giá giảm hoặc phần trăm(%)";
 $lang['price_after_discount']           = "Giá sau giảm";
 $lang['slogan']                         = "BÉ ĐẸP MỖI NGÀY";
+$lang['promo_header']                   = "PHẦN BỐC THĂM";
 $lang['reciept_footer_notes']           = "Đổi hàng trong <strong>3 ngày</strong>, từ <strong>10:00 - 17:00</strong><br>- Phải có hóa đơn, không hoàn lại tiền<br>- Chỉ đổi sản phẩm giá cao hơn hoặc bằng<br>- Hàng còn nguyên tem, chưa qua sử dụng<br>- Hàng <strong>Giảm giá</strong> vui lòng <strong><u>không</u></strong> đổi trả";
 $lang['footer_thanks']                  = "Cảm ơn quý khách. Hẹn gặp lại!";

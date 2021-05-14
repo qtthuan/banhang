@@ -481,14 +481,23 @@
                 <?= $inv->staff_note ? '<p class="no-print" style="font-size: 13px; color: #006400;"><strong>' . lang('staff_note') . ':</strong> ' . $this->sma->decode_html($inv->staff_note) . '</p>' : ''; ?>
                 <?php
                     $inv_date = date('Y-m-d', strtotime($inv->date));
+                    $display_promo_cut = 0;
+                    $promo_bill_price = 0;
+                    if ($promo->for_discount == 1) {
+                        $promo_bill_price = $inv->grand_total;
+                    } else {
+                        $promo_bill_price = $inv->grand_total_extra;
+                    }
 
-                    if ($inv_date >= $promo->start_date && $inv_date <= $promo->end_date) {
-                        if (($promo->for_discount == 1 && $inv->total >= $promo->price) || ($promo->for_discount == 0 && $inv->grand_total_extra >= $promo->price)) {
-                            echo '<p style="border-top: 1px solid black;">';
-                            echo '<p class="text-center"><strong>'.$promo->name.'</strong>
-                                <p>'.$promo->description.'</p>';
-                            echo '</p>';
-                        }
+                    //echo '<h1>' . $promo_bill_price . '</h1>';
+                    if ($inv_date >= $promo->start_date && $inv_date <= $promo->end_date
+                        && $promo_bill_price >= $promo->price && $customer->id != 1) {
+
+                        $display_promo_cut = 1;
+                        echo '<p style="border-top: 1px solid black;">';
+                        echo '<p class="text-center"><strong>'.$promo->name.'</strong>
+                            <p>'.$promo->description.'</p>';
+                        echo '</p>';
                     }
                 ?>
             </div>
@@ -502,7 +511,29 @@
                     <div style="margin: 10px 0; font-size: 14px;"><?= $biller->invoice_footer ? '<p class="text-center">'.$this->sma->decode_html($biller->invoice_footer).'</p>' : ''; ?></div>
                 </p>
             </div>
-
+            <?php if ($display_promo_cut == 1 && $promo->promo_cut == 1 && $customer->id != 1) { ?>
+            <div style="clear:both;"></div>
+            <div style="padding: 0 10px 10px;">
+                <p style="border-top: 1px dotted black;">
+                <div class="text-center" style="padding-bottom: 7px; font-size: 14px;">
+                    <?=lang('promo_header')?><br />
+                <?= $this->sma->save_barcode($inv->reference_no, 'code128', 25, false); ?><br />
+                <strong><?=$inv->reference_no?></strong>
+                </div>
+                <div style="font-size: 12px;">
+                    <?=lang("customer") . ': ' . ($customer->company && $customer->company != '-' ? $customer->company : $customer->name)?>
+                    <br>
+                    <?=$customer->customer_group_percent != 0 ?  lang("customers_group_txt") . ': <strong>' . $customer->customer_group_name . '</strong><br>' : ''?>
+                    <?php if ($pos_settings->customer_details && $customer->id != 1) { ?>
+                        <?=lang("address") . ": " . $customer->address?> <br>
+                        <?=lang("tel") . ": " . $customer->phone?><br>
+                    <?php } ?>
+                    <?=lang("grand_total");?>: <strong><?=$this->sma->formatMoney($promo_bill_price);?></strong>
+                </div>
+                </p>
+                <p style="border-top: 1px dotted black;"></p>
+            </div>
+            <?php } ?>
             <div style="clear:both;"></div>
         </div>
 

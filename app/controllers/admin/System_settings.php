@@ -2016,6 +2016,7 @@ class system_settings extends MY_Controller
                 'price' => $this->sma->formatDecimal($this->input->post('price')),
                 'for_discount' => $this->input->post('for_discount'),
                 'active' => $this->input->post('active'),
+                'promo_cut' => $this->input->post('promo_cut'),
             );
         } elseif ($this->input->post('add_promotion_list')) {
             $this->session->set_flashdata('error', validation_errors());
@@ -2048,6 +2049,7 @@ class system_settings extends MY_Controller
                 'price' => $this->sma->formatDecimal($this->input->post('price')),
                 'for_discount' => $this->input->post('for_discount'),
                 'active' => $this->input->post('active'),
+                'promo_cut' => $this->input->post('promo_cut'),
             );
         } elseif ($this->input->post('edit_promotion_list')) {
             $this->session->set_flashdata('error', validation_errors());

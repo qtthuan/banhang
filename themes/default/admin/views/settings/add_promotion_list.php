@@ -45,6 +45,12 @@
                     <label for="active"><?php echo $this->lang->line("promotion_list_active"); ?></label>
                 </div>
             </div>
+            <div class="form-group">
+                <div class="controls">
+                    <input name="active" type="checkbox" class="checkbox" id="promo_cut" value="1" <?= isset($_POST['promo_cut']) ? 'checked="checked"' : '' ?>/>
+                    <label for="promo_cut"><?php echo $this->lang->line("promotion_list_promo_cut"); ?></label>
+                </div>
+            </div>
         </div>
         <div class="modal-footer">
             <?php echo form_submit('add_promotion_list', lang('add_promotion_list'), 'class="btn btn-primary"'); ?>

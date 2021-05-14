@@ -287,6 +287,7 @@ $lang['promotion_list_end_date']        = "Ngày kết thúc";
 $lang['promotion_list_active']          = "Hiển thị lên hóa đơn";
 $lang['promotion_list_active_yes']      = "<strong>Hoạt động</strong>";
 $lang['promotion_list_active_no']       = "<strong>Kết thúc</strong>";
+$lang['promotion_list_promo_cut']       = "Hiển thị phần bốc thăm rút gọn";
 $lang['promotion_list_added']           = "Thêm mới thành công";
 $lang['promotion_list_updated']         = "Cập nhật thành công";
 $lang['promotion_list_deleted']         = "Xóa thành công";

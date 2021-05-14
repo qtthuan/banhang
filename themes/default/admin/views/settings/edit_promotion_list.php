@@ -48,6 +48,13 @@
                     <label for="active" class="padding05"><?= lang('promotion_list_active') ?></label>
                 </div>
             </div>
+
+            <div class="form-group">
+                <div class="controls">
+                    <input name="promo_cut" type="checkbox" class="checkbox" id="promo_cut" value="1" <?= empty($promotion_list->promo_cut) ? '' : 'checked="checked"' ?>/>
+                    <label for="promo_cut" class="padding05"><?= lang('promotion_list_promo_cut') ?></label>
+                </div>
+            </div>
         </div>
         <div class="modal-footer">
             <?php echo form_submit('edit_promotion_list', lang('edit_promotion_list'), 'class="btn btn-primary"'); ?>
