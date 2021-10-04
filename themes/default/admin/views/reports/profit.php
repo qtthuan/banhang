@@ -52,7 +52,7 @@
                     <td width="300px;" style="font-weight:bold;"><h4><strong><?= lang('profit'); ?></strong>:</h4>
                     </td>
                     <td style="text-align:right;"><h4>
-                            <span><strong><?= $this->sma->formatMoney(($sale_by_day->grand_total + $sale_by_day->return_amount) - $costing->cost - $discount - $expense); ?></strong></span>
+                            X<span><strong><?= $this->sma->formatMoney(($sale_by_day->grand_total + $sale_by_day->return_amount) - $costing->cost - $discount - $expense); ?></strong></span>
                             <!-- <span><strong><?= $this->sma->formatMoney($costing->sales - $costing->cost - $discount - $expense).' ('.$this->sma->formatMoney($costing->net_sales - $costing->net_cost - $discount - $expense).')'; ?></strong></span> -->
                         </h4></td>
                 </tr>
