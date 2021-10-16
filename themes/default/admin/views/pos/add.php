@@ -212,6 +212,11 @@
                                             <i class="fa fa-eye" id="addIcon" style="font-size: 1.7em;"></i>
                                         </a>
                                     </div>
+                                    <div class="input-group-addon no-print" style="padding: 2px 15px; border-left: 0;">
+                                        <a href="#" id="print_info" class="external pos-tip" title="<?=lang('customers_info_print');?> (Ctrl + P)" data-toggle="modal" data-target="#myModal">
+                                            <i class="fa fa-print" id="addIcon" style="font-size: 1.7em;"></i>
+                                        </a>
+                                    </div>
                                 <?php if ($Owner || $Admin || $GP['customers-add']) { ?>
                                     <div class="input-group-addon no-print" style="padding: 2px 16px;">
                                         <a href="<?=admin_url('customers/add');?>" id="add-customer" class="external pos-tip" title="<?=lang('add_customer')?> (<?=$pos_settings->add_customer?>)" data-toggle="modal" data-target="#myModal">
@@ -1253,6 +1258,7 @@
 <div class="modal fade in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true"></div>
 <div class="modal fade in" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2"
+     aria-hidden="true"></div><div class="modal fade in" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel3"
      aria-hidden="true"></div>
 <div id="modal-loading" style="display: none;">
     <div class="blackbg"></div>
@@ -1307,6 +1313,11 @@ var lang = {
         $('#view-customer').click(function(){
             $('#myModal').modal({remote: site.base_url + 'customers/view/' + $("input[name=customer]").val()});
             $('#myModal').modal('show');
+        });
+
+        $('#print_info').click(function(){
+            $('#myModal3').modal({remote: site.base_url + 'customers/print_info/' + $("input[name=customer]").val()});
+            $('#myModal3').modal('show');
         });
         $('textarea').keydown(function (e) {
             if (e.which == 13) {

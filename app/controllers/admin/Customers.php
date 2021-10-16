@@ -66,6 +66,28 @@ class Customers extends MY_Controller
         $this->load->view($this->theme.'customers/view',$this->data);
     }
 
+    function print_info($id = NULL)
+    {
+        $this->sma->checkPermissions('index', true);
+        $this->data['error'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('error');
+
+        $this->data['customer'] = $this->companies_model->getCompanyByID($id);
+        $created_date = '';
+        if($this->data['customer']->created_date != '') {
+            $created_date = new DateTime($this->data['customer']->created_date);
+            $created_date = $created_date->format('d-m-Y');
+        }
+        $this->data['customer']->created_date = $created_date;
+        $this->data['customer']->each_spent = $this->Settings->each_spent;
+        //$maintain_points = round(($current_group->maintain_sales / $this->Settings->each_spent) * $this->Settings->ca_point, 1);
+        if ($this->companies_model->getLastBillDate($id)) {
+            $this->data['customer']->last_bill_date = $this->companies_model->getLastBillDate($id);
+        } else {
+            $this->data['customer']->last_bill_date = lang("customer_no_last_bill_date");
+        }
+        $this->load->view($this->theme.'customers/print_info',$this->data);
+    }
+
     function add()
     {
         $this->sma->checkPermissions(false, true);

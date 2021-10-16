@@ -27,6 +27,7 @@ $lang['customer_updated']               = "Cập nhật khách hàng thành côn
 $lang['customer_deleted']               = "Xóa khách hàng thành công";
 $lang['customers_deleted']              = "Xóa các khách hàng thành công";
 $lang['customers_info']                 = "Thông tin khách hàng";
+$lang['customers_info_print']           = "In thông tin";
 $lang['clear_bills']                    = "Chuyển tất cả hóa đơn về khách lẻ";
 $lang['import_by_csv']                  = "Thêm khách hàng bằng CSV";
 $lang['edit_profile']                   = "Sửa người dùng";
