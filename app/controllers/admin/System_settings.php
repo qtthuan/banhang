@@ -777,6 +777,7 @@ class system_settings extends MY_Controller
                 'reports-purchases' => $this->input->post('reports-purchases'),
                 'reports-customers' => $this->input->post('reports-customers'),
                 'reports-suppliers' => $this->input->post('reports-suppliers'),
+                'sales-print_staff_note' => $this->input->post('sales-print_staff_note'),
                 'sales-payments' => $this->input->post('sales-payments'),
                 'purchases-payments' => $this->input->post('purchases-payments'),
                 'purchases-expenses' => $this->input->post('purchases-expenses'),

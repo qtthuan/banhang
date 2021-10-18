@@ -212,11 +212,6 @@
                                             <i class="fa fa-eye" id="addIcon" style="font-size: 1.7em;"></i>
                                         </a>
                                     </div>
-                                    <div class="input-group-addon no-print" style="padding: 2px 15px; border-left: 0;">
-                                        <a href="#" id="print_info" class="external pos-tip" title="<?=lang('customers_info_print');?> (Ctrl + P)" data-toggle="modal" data-target="#myModal">
-                                            <i class="fa fa-print" id="addIcon" style="font-size: 1.7em;"></i>
-                                        </a>
-                                    </div>
                                 <?php if ($Owner || $Admin || $GP['customers-add']) { ?>
                                     <div class="input-group-addon no-print" style="padding: 2px 16px;">
                                         <a href="<?=admin_url('customers/add');?>" id="add-customer" class="external pos-tip" title="<?=lang('add_customer')?> (<?=$pos_settings->add_customer?>)" data-toggle="modal" data-target="#myModal">
@@ -572,10 +567,10 @@
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <?=form_textarea('sale_note', '', 'id="sale_note" class="form-control kb-text skip" style="height: 55px; color: #006400;" placeholder="' . lang('sale_note') . '" maxlength="250"');?>
+                                    <?=form_textarea('sale_note', '', 'id="sale_note" class="form-control kb-text skip" style="height: 125px; color: #006400;" placeholder="' . lang('sale_note') . '" maxlength="500"');?>
                                 </div>
                                 <div class="col-sm-6">
-                                    <?=form_textarea('staffnote', '', 'id="staffnote" class="form-control kb-text skip" style="height: 55px; color: #006400;" placeholder="' . lang('staff_note') . '" maxlength="250"');?>
+                                    <?=form_textarea('staffnote', '', 'id="staffnote" class="form-control kb-text skip" style="height: 125px; color: #006400;" placeholder="' . lang('staff_note') . '" maxlength="500"');?>
                                 </div>
                             </div>
                         </div>
@@ -827,12 +822,14 @@
                                 <input type="text" class="form-control kb-pad" id="pdiscount">
                                 <span class="help-block"><?= lang('input_discount_help') ?></span>
                             </div>
-                        </div><div class="form-group">
-                            <label for="price_after_discount" class="col-sm-4 control-label"><?=lang('price_after_discount')?></label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control kb-pad" id="price_after_discount">
-                            </div>
                         </div>
+                    <div class="form-group">
+                        <label for="pdiscount1" class="col-sm-4 control-label"><?=lang('enter_discount')?></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control kb-pad" id="pdiscount1">
+                        </div>
+                    </div>
+
                     <?php } ?>
                     <div class="form-group">
                         <label for="pprice" class="col-sm-4 control-label"><?=lang('unit_price')?></label>
@@ -859,13 +856,12 @@
                             <div id="poptions-div"></div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="net_price" class="col-sm-4 control-label"><?=lang('price_after_discount')?></label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control kb-pad" id="net_price" readonly="readonly" style="font-weight: bold">
-                        </div>
-                    </div>
-
+                    <table class="table table-bordered table-striped">
+                        <tr>
+                            <th style="width:25%;"><?=lang('net_unit_price');?></th>
+                            <th style="width:25%;"><span id="net_price"></span></th>
+                        </tr>
+                    </table>
                     <input type="hidden" id="punit_price" value=""/>
                     <input type="hidden" id="old_tax" value=""/>
                     <input type="hidden" id="old_qty" value=""/>
@@ -996,13 +992,14 @@
                             <input type="text" class="form-control kb-pad" id="mquantity" value="1">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="mnet_price" class="col-sm-4 control-label"><?=lang('price_after_discount')?> </label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control kb-pad" id="mnet_price" readonly="readonly" style="font-weight: bold">
-                        </div>
-                    </div>
-
+                    <table class="table table-bordered table-striped">
+                        <tr>
+                            <th style="width:25%;"><?=lang('net_unit_price');?></th>
+                            <th style="width:25%;"><span id="mnet_price"></span></th>
+                            <th style="width:25%;"><?=lang('product_tax');?></th>
+                            <th style="width:25%;"><span id="mpro_tax"></span></th>
+                        </tr>
+                    </table>
                 </form>
             </div>
             <div class="modal-footer">
@@ -1258,7 +1255,6 @@
 <div class="modal fade in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true"></div>
 <div class="modal fade in" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2"
-     aria-hidden="true"></div><div class="modal fade in" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel3"
      aria-hidden="true"></div>
 <div id="modal-loading" style="display: none;">
     <div class="blackbg"></div>
@@ -1313,11 +1309,6 @@ var lang = {
         $('#view-customer').click(function(){
             $('#myModal').modal({remote: site.base_url + 'customers/view/' + $("input[name=customer]").val()});
             $('#myModal').modal('show');
-        });
-
-        $('#print_info').click(function(){
-            $('#myModal3').modal({remote: site.base_url + 'customers/print_info/' + $("input[name=customer]").val()});
-            $('#myModal3').modal('show');
         });
         $('textarea').keydown(function (e) {
             if (e.which == 13) {

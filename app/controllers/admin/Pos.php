@@ -62,6 +62,7 @@ class Pos extends MY_Controller
         $payments_link = anchor('admin/sales/payments/$1', '<i class="fa fa-money"></i> ' . lang('view_payments'), 'data-toggle="modal" data-target="#myModal"');
         $add_payment_link = anchor('admin/pos/add_payment/$1', '<i class="fa fa-money"></i> ' . lang('add_payment'), 'data-toggle="modal" data-target="#myModal"');
         $packagink_link = anchor('admin/sales/packaging/$1', '<i class="fa fa-archive"></i> ' . lang('packaging'), 'data-toggle="modal" data-target="#myModal"');
+        $print_staff_note = anchor('admin/sales/print_staff_note/$1', '<i class="fa fa-truck"></i> ' . lang('print_staff_note'), 'data-toggle="modal" data-target="#myModal"');
         $add_delivery_link = anchor('admin/sales/add_delivery/$1', '<i class="fa fa-truck"></i> ' . lang('add_delivery'), 'data-toggle="modal" data-target="#myModal"');
         $email_link = anchor('admin/#', '<i class="fa fa-envelope"></i> ' . lang('email_sale'), 'class="email_receipt" data-id="$1" data-email-address="$2"');
         $edit_link = anchor('admin/sales/edit/$1', '<i class="fa fa-edit"></i> ' . lang('edit_sale'), 'class="sledit"');
@@ -76,8 +77,9 @@ class Pos extends MY_Controller
             <ul class="dropdown-menu pull-right" role="menu">
                 <li>' . $return_link . '</li>
                 <li>' . $edit_link . '</li>
-                <li>' . $add_delivery_link . '</li>
+                <li>' . $print_staff_note . '</li>
                 <li>' . $delete_link . '</li>
+                <li>' . $add_delivery_link . '</li>
                  <li>' . $add_payment_link . '</li>
                 <li>' . $payments_link . '</li>
             </ul>

@@ -204,6 +204,7 @@ $lang['delete_sale']                    = "Xóa hóa đơn";
 $lang['return_sale']                    = "Trả hàng";
 $lang['edit_sale']                      = "Sửa hóa đơn";
 $lang['email_sale']                     = "Gửi mail hóa đơn";
+$lang['print_staff_note']               = "In ghi chú NV";
 $lang['add_delivery']                   = "Giao hàng";
 $lang['add_payment']                    = "Thanh toán";
 $lang['view_payments']                  = "Xem thanh toán";
