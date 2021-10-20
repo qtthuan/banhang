@@ -816,17 +816,16 @@
                     <?php } ?>
                     <?php if ($Settings->product_discount && ($Owner || $Admin || $this->session->userdata('allow_discount'))) { ?>
 
-                        <div class="form-group">
-                            <label for="pdiscount" class="col-sm-4 control-label"><?=lang('product_discount')?></label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control kb-pad" id="pdiscount">
-                                <span class="help-block"><?= lang('input_discount_help') ?></span>
-                            </div>
-                        </div>
                     <div class="form-group">
-                        <label for="pdiscount1" class="col-sm-4 control-label"><?=lang('enter_discount')?></label>
+                        <label for="pdiscount" class="col-sm-4 control-label"><?=lang('product_discount')?></label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control kb-pad" id="pdiscount1">
+                            <input type="text" class="form-control kb-pad" id="pdiscount">
+                            <span class="help-block"><?= lang('input_discount_help') ?></span>
+                        </div>
+                    </div><div class="form-group">
+                        <label for="price_after_discount" class="col-sm-4 control-label"><?=lang('price_after_discount')?></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control kb-pad" id="price_after_discount">
                         </div>
                     </div>
 

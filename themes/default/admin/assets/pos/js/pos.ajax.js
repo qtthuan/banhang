@@ -652,7 +652,8 @@ $('#posdiscount').focus(function () {
 
         unit_price -= item_discount;
 
-        $('#net_price').val(formatMoney(unit_price));
+        $('#net_price').text(formatMoney(unit_price));
+        console.log(formatMoney(unit_price));
         $('#price_after_discount').val(unit_price);
     });
 
