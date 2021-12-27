@@ -85,7 +85,7 @@ class Cron_model extends CI_Model
         date('Y-m-d', strtotime('last day of december'));
         //$this->checkCustomersForUpgrade(); // Tự động nâng bậc theo tổng điểm nâng bậc   // 07/09/2019
         if ($date_now == date('Y-m-d', strtotime('last day of december'))) {
-            //$this->checkCustomersForUpgrade(); // Tự động nâng bậc theo tổng điểm nâng bậc   // 07/09/2019
+            $this->checkCustomersForUpgrade(); // Tự động nâng bậc theo tổng điểm nâng bậc   // 07/09/2019
         }
 
 
