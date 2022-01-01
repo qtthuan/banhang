@@ -84,9 +84,9 @@ class Cron_model extends CI_Model
         //$date_now = '2019-12-31';
         date('Y-m-d', strtotime('last day of december'));
         //$this->checkCustomersForUpgrade(); // Tự động nâng bậc theo tổng điểm nâng bậc   // 07/09/2019
-        //if ($date_now == date('Y-m-d', strtotime('last day of december'))) {
+        if ($date_now == date('Y-m-d', strtotime('last day of december'))) {
             $this->checkCustomersForUpgrade(); // Tự động nâng bậc theo tổng điểm nâng bậc   // 07/09/2019
-        //}
+        }
 
 
         if ($this->checkUpdate()) {
@@ -234,7 +234,7 @@ class Cron_model extends CI_Model
                 $current_points = $row->award_points;
                 $current_group = $this->site->getCustomerGroupByID($row->customer_group_id);
                 $next_group = $this->site->getCustomerGroupByLevel($current_group->level + 1);
-				$str_point_per_year = lang('points_per_year') . ' ' . $current_group->maintain_sales . ' ';
+				//$str_point_per_year = lang('points_per_year') . ' ' . $current_group->maintain_sales . ' ';
                 $customer_info .= '#' . date('d-m-Y');
 
                 // comments
@@ -247,7 +247,7 @@ class Cron_model extends CI_Model
 
                     //$remaining_points = $current_points - $next_group->points_required;
 
-                    $customer_info .= ': ' . $str_point_per_year . $task;
+                    $customer_info .= ': ' . $task;
                     $customer_info .= ', ' . $current_group->name;
                     $customer_info .= ' => ' . $next_group->name;
                     $customer_info .= ' | ' . lang('current_points') . ': ' . $current_points;
@@ -271,7 +271,7 @@ class Cron_model extends CI_Model
 
                         $task = lang('task_reset_customer');
 
-                        $customer_info .= ': ' . $str_point_per_year . $task;
+                        $customer_info .= ': ' . $task;
                         $customer_info .= ' | ' . lang('current_points') . ': ' . $current_points;
                         $customer_info .= ' | ' . lang('minus_points') . ': ' . $current_points;
                         $customer_info .= ' | ' . lang('remaining_points') . ': 0';
@@ -293,7 +293,7 @@ class Cron_model extends CI_Model
                             $task = lang('task_downgrade_customer');
 
                             $down_group = $this->site->getCustomerGroupByLevel($current_group->level - 1);
-                            $customer_info .= ': ' . $str_point_per_year . $task;
+                            $customer_info .= ': ' . $task;
                             $customer_info .= ', ' . $current_group->name;
                             $customer_info .= ' => ' . $down_group->name;
                             $customer_info .= ' | ' . lang('task_reset_customer');
@@ -319,7 +319,7 @@ class Cron_model extends CI_Model
                             $remaining_points = $current_points * (100-$current_group->reset_points_percent)/100;
                             $minus_points = $current_points * ($current_group->reset_points_percent/100);
 
-                            $customer_info .= ': ' . $str_point_per_year . $task;
+                            $customer_info .= ': ' . $task;
                             $customer_info .= ', ' . $current_group->name;
                             $customer_info .= ', ' . sprintf(lang('x_minus_points'), $current_group->reset_points_percent . '%');
                             $customer_info .= ' | ' . lang('current_points') . ': ' . $current_points;
