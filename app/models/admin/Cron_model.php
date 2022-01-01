@@ -234,7 +234,7 @@ class Cron_model extends CI_Model
                 $current_points = $row->award_points;
                 $current_group = $this->site->getCustomerGroupByID($row->customer_group_id);
                 $next_group = $this->site->getCustomerGroupByLevel($current_group->level + 1);
-				$str_point_per_year = $lang('points_per_year') . ' ' . $current_group->maintain_sales . ' ';
+				$str_point_per_year = lang('points_per_year') . ' ' . $current_group->maintain_sales . ' ';
                 $customer_info .= '#' . date('d-m-Y');
 
                 // comments
