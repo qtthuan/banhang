@@ -88,9 +88,7 @@
                     <?php
 
                     // comment or remove these extra info if you don't need
-                    if (!empty($biller->cf2) && $biller->cf2 != "-") {
-                        echo "<br>" . lang("bcf2") . ": " . $biller->cf2;
-                    }
+
                     if (!empty($biller->cf3) && $biller->cf3 != "-") {
                         echo "<br>" . lang("bcf3") . ": " . $biller->cf3;
                     }
@@ -504,11 +502,12 @@
             <div style="clear:both;"></div>
             <div style="padding: 0 10px 10px;">
                 <p style="border-top: 1px solid black;">
-                    <div class="text-center" style="padding-bottom: 7px; font-size: 14px; font-style: italic"><?=lang('slogan')?></div>
+                    <div class="text-center" style="padding-bottom: 7px; font-size: 14px; font-style: italic"><?= $biller->cf3 ? $this->sma->decode_html($biller->cf3) : ''; ?></div>
                     <div style="font-size: 12px;">
-                        <?=lang('reciept_footer_notes')?>
+                        <?= $biller->invoice_footer ? $this->sma->decode_html($biller->invoice_footer) : ''; ?>
                     </div>
-                    <div style="margin: 10px 0; font-size: 14px;"><?= $biller->invoice_footer ? '<p class="text-center">'.$this->sma->decode_html($biller->invoice_footer).'</p>' : ''; ?></div>
+
+                    <div style="margin: 10px 0; font-size: 14px;"><?= $biller->cf2 ? '<p class="text-center">'.$this->sma->decode_html($biller->cf2).'</p>' : ''; ?></div>
                 </p>
             </div>
             <?php if ($display_promo_cut == 1 && $promo->promo_cut == 1 && $customer->id != 1) { ?>

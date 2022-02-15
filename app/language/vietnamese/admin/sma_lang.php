@@ -26,8 +26,8 @@
 */
 
 $lang['bcf1']                           = "Số điện thoại bổ sung";
-$lang['bcf2']                           = "Biller Custom Field 2";
-$lang['bcf3']                           = "Biller Custom Field 3";
+$lang['bcf2']                           = "Lời cảm ơn";
+$lang['bcf3']                           = "Slogan";
 $lang['bcf4']                           = "Biller Custom Field 4";
 $lang['bcf5']                           = "Biller Custom Field 5";
 $lang['bcf6']                           = "Biller Custom Field 6";
