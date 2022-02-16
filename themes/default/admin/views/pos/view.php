@@ -148,9 +148,7 @@
                     if (!empty($customer->cf1) && $customer->cf1 != "-") {
                         echo "<br>" . lang("ccf1") . ": " . $customer->cf1;
                     }
-                    if (!empty($customer->cf2) && $customer->cf2 != "-") {
-                        echo "<br>" . lang("ccf2") . ": " . $customer->cf2;
-                    }
+                   
                     if (!empty($customer->cf3) && $customer->cf3 != "-") {
                         echo "<br>" . lang("ccf3") . ": " . $customer->cf3;
                     }
