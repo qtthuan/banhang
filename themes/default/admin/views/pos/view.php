@@ -89,9 +89,7 @@
 
                     // comment or remove these extra info if you don't need
 
-                    if (!empty($biller->cf3) && $biller->cf3 != "-") {
-                        echo "<br>" . lang("bcf3") . ": " . $biller->cf3;
-                    }
+                    
                     if (!empty($biller->cf4) && $biller->cf4 != "-") {
                         echo "<br>" . lang("bcf4") . ": " . $biller->cf4;
                     }
