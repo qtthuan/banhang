@@ -317,7 +317,7 @@
                             <th><?= lang("customer"); ?></th>
                             <th><?= lang("sale_status"); ?></th>
                             <th><?= lang("grand_total"); ?></th>
-                            <th><?= lang("paid"); ?></th>
+                            <th><?= lang("paid_col"); ?></th>
                             <th><?= lang("balance"); ?></th>
                             <th><?= lang("payment_status"); ?></th>
                             <th style="min-width:30px; width: 30px; text-align: center;"><i class="fa fa-chain"></i></th>

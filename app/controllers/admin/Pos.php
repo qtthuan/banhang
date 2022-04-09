@@ -62,7 +62,6 @@ class Pos extends MY_Controller
         $payments_link = anchor('admin/sales/payments/$1', '<i class="fa fa-money"></i> ' . lang('view_payments'), 'data-toggle="modal" data-target="#myModal"');
         $add_payment_link = anchor('admin/pos/add_payment/$1', '<i class="fa fa-money"></i> ' . lang('add_payment'), 'data-toggle="modal" data-target="#myModal"');
         $packagink_link = anchor('admin/sales/packaging/$1', '<i class="fa fa-archive"></i> ' . lang('packaging'), 'data-toggle="modal" data-target="#myModal"');
-        $print_staff_note = anchor('admin/sales/print_staff_note/$1', '<i class="fa fa-truck"></i> ' . lang('print_staff_note'), 'data-toggle="modal" data-target="#myModal"');
         $add_delivery_link = anchor('admin/sales/add_delivery/$1', '<i class="fa fa-truck"></i> ' . lang('add_delivery'), 'data-toggle="modal" data-target="#myModal"');
         $email_link = anchor('admin/#', '<i class="fa fa-envelope"></i> ' . lang('email_sale'), 'class="email_receipt" data-id="$1" data-email-address="$2"');
         $edit_link = anchor('admin/sales/edit/$1', '<i class="fa fa-edit"></i> ' . lang('edit_sale'), 'class="sledit"');
@@ -77,7 +76,6 @@ class Pos extends MY_Controller
             <ul class="dropdown-menu pull-right" role="menu">
                 <li>' . $return_link . '</li>
                 <li>' . $edit_link . '</li>
-                <li>' . $print_staff_note . '</li>
                 <li>' . $delete_link . '</li>
                 <li>' . $add_delivery_link . '</li>
                  <li>' . $add_payment_link . '</li>
@@ -88,14 +86,14 @@ class Pos extends MY_Controller
         $this->load->library('datatables');
         if ($warehouse_id) {
             $this->datatables
-                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(date, '%Y-%m-%d %T') as date, reference_no, biller, customer, (grand_total+COALESCE(rounding, 0)), paid, (grand_total-paid) as balance, sale_status, payment_status, companies.email as cemail")
+                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(date, '%Y-%m-%d %T') as date, reference_no, customer, delivery_method, (grand_total+COALESCE(rounding, 0)), paid, (grand_total-paid) as balance, sale_status, payment_status, companies.email as cemail")
                 ->from('sales')
                 ->join('companies', 'companies.id=sales.customer_id', 'left')
                 ->where('warehouse_id', $warehouse_id)
                 ->group_by('sales.id');
         } else {
             $this->datatables
-                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(date, '%Y-%m-%d %T') as date, reference_no, biller, customer, (grand_total+COALESCE(rounding, 0)), paid, (grand_total+rounding-paid) as balance, sale_status, payment_status, companies.email as cemail")
+                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(date, '%Y-%m-%d %T') as date, reference_no, customer, delivery_method, (grand_total+COALESCE(rounding, 0)), paid, (grand_total+rounding-paid) as balance, sale_status, payment_status, companies.email as cemail")
                 ->from('sales')
                 ->join('companies', 'companies.id=sales.customer_id', 'left')
                 ->group_by('sales.id');
@@ -138,6 +136,7 @@ class Pos extends MY_Controller
 
         if ($this->form_validation->run() == TRUE) {
 
+
             $date = date('Y-m-d H:i:s');
             $warehouse_id = $this->input->post('warehouse');
             $customer_id = $this->input->post('customer');
@@ -167,6 +166,7 @@ class Pos extends MY_Controller
             $digital = FALSE;
             $change_points = 0;
             $total_with_no_points = 0;
+            $delivery_method = $this->input->post('delivery_method');
             $i = isset($_POST['product_code']) ? sizeof($_POST['product_code']) : 0;
             for ($r = 0; $r < $i; $r++) {
                 $item_id = $_POST['product_id'][$r];
@@ -339,8 +339,14 @@ class Pos extends MY_Controller
                           'paid'              => $this->input->post('amount-paid') ? $this->input->post('amount-paid') : 0,
                           'created_by'        => $this->session->userdata('user_id'),
                           'hash'              => hash('sha256', microtime() . mt_rand()),
+                          'delivery_method'   => $_POST['delivery_method'] ? $_POST['delivery_method'] : 'Shop',
+                          'order_discount_percent_for_return_sale'   => $this->input->post('order_discount_percent_for_return_sale'),
             );
             //$this->sma->print_arrays($data);
+
+
+
+
             if (!$suspend) {
                 $p = isset($_POST['amount']) ? sizeof($_POST['amount']) : 0;
                 $paid = 0;

@@ -407,6 +407,7 @@
                                 <span id="hidesuspend"></span>
                                 <input type="hidden" name="pos_note" value="" id="pos_note">
                                 <input type="hidden" name="staff_note" value="" id="staff_note">
+                                <input type="hidden" name="delivery_method" value="Shop" id="delivery_method">
 
                                 <div id="payment-con">
                                     <?php for ($i = 1; $i <= 5; $i++) {?>
@@ -429,6 +430,7 @@
                                 <input name="order_tax" type="hidden" value="<?=$suspend_sale ? $suspend_sale->order_tax_id : ($old_sale ? $old_sale->order_tax_id : $Settings->default_tax_rate2);?>" id="postax2">
                                 <input name="discount" type="hidden" value="<?=$suspend_sale ? $suspend_sale->order_discount_id : ($old_sale ? $old_sale->order_discount_id : '');?>" id="posdiscount">
                                 <input name="shipping" type="hidden" value="<?=$suspend_sale ? $suspend_sale->shipping : ($old_sale ? $old_sale->shipping :  '0');?>" id="posshipping">
+                                <input id="order_discount_percent_for_return_sale" name="order_discount_percent_for_return_sale" type="hidden" value="0">
                                 <input name="return_amount" type="hidden" value="<?=$suspend_sale ? $suspend_sale->return_amount : ($old_sale ? $old_sale->return_amount :  '0');?>" id="posreturn">
                                 <input type="hidden" name="rpaidby" id="rpaidby" value="cash" style="display: none;"/>
                                 <input type="hidden" name="total_items" id="total_items" value="0" style="display: none;"/>
@@ -567,26 +569,20 @@
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <?=form_textarea('sale_note', '', 'id="sale_note" class="form-control kb-text skip" style="height: 125px; color: #006400;" placeholder="' . lang('sale_note') . '" maxlength="500"');?>
+                                    <?=form_textarea('sale_note', '', 'id="sale_note" class="form-control kb-text skip" style="height: 85px; color: #006400;" placeholder="' . lang('sale_note') . '" maxlength="500"');?>
                                 </div>
                                 <div class="col-sm-6">
-                                    <?=form_textarea('staffnote', '', 'id="staffnote" class="form-control kb-text skip" style="height: 125px; color: #006400;" placeholder="' . lang('staff_note') . '" maxlength="500"');?>
+                                    <?=form_textarea('staffnote', '', 'id="staffnote" class="form-control kb-text skip" style="height: 85px; color: #006400;" placeholder="' . lang('staff_note') . '" maxlength="500"');?>
                                 </div>
                             </div>
+
                         </div>
                         <div class="clearfir"></div>
+
                         <div id="payments">
                             <div class="well well-sm well_1">
                                 <div class="payment">
                                     <div class="row">
-                                        <div class="col-sm-3">
-                                            <div class="form-group">
-                                                <?=lang("total_paying", "amount_1");?>
-                                                <input name="amount[]" type="text" id="amount_1"
-                                                       class="pa form-control kb-pad1 amount" value="0"/>
-                                            </div>
-                                        </div>
-
                                         <div class="col-sm-3">
                                             <div class="form-group">
                                                 <?=lang("paying_by", "paid_by_1");?>
@@ -598,22 +594,20 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div  class="form-group pts_1" style="display: none;">
-                                            <div class="col-sm-3">
-                                                <div class="input-group">
-                                                    <?= lang("award_points", "award_points") ?>: <span id="award_points_1" style="color: red; font-weight: bold"></span>
-                                                    <input name="ca_points[]" type="text" id="ca_points_1"
-                                                           class="pa form-control kb-pad1 ca_points"/>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <div class="input-group">
-                                                    <button type="button" class="btn btn-warning btn-block change_points" id="change_points_1" style="height:35px; font-size: 18px; margin-top: 28px;">
-                                                        <i class="fa fa-money" style="margin-right: 5px;"></i><?=lang('change_points');?>
-                                                    </button>
-                                                </div>
+                                        <div class="col-sm-2">
+                                            <div class="form-group">
+                                                <?=lang("total_paying", "amount_1");?>
+                                                <input name="amount[]" type="text" id="amount_1"
+                                                       class="pa form-control kb-pad1 amount" value="0"/>
                                             </div>
                                         </div>
+                                        <div class="col-sm-3">
+                                            <?=lang("delivery_method", "delivery_method");?>
+                                            <select name="delivery" id="delivery" class="form-control delivery">
+                                                <?= $this->sma->delivery_method_opts(); ?>
+                                            </select>
+                                        </div>
+
                                     </div>
 
                                     <div class="row">
@@ -627,7 +621,24 @@
                                             </div>
 
                                             <div  class="form-group pts_1" style="display: none;">
-                                                <div id="details_pts_1"></div>
+                                                <div class="col-sm-2">
+                                                    <div class="input-group">
+                                                        <?= lang("award_points1", "award_points1") ?>: <span id="award_points_1" style="color: red; font-weight: bold"></span>
+                                                        <input name="ca_points[]" type="text" id="ca_points_1"
+                                                               class="pa form-control kb-pad1 ca_points"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <div class="input-group">
+                                                        <button type="button" class="btn btn-warning btn-block change_points" id="change_points_1" style="padding: 6px 0; height:35px; font-size: 18px; margin-top: 28px;">
+                                                            <i class="fa fa-money" style="margin-right: 5px;"></i><?=lang('change_points');?>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group pts_1" style="display: none;">
+                                                <div class="col-sm-3" id="details_pts_1"></div>
                                             </div>
 
                                             <div class="pcc_1" style="display:none;">
@@ -692,7 +703,9 @@
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -1347,6 +1360,9 @@ var lang = {
         if (localStorage.getItem('posnote')) {
             localStorage.removeItem('posnote');
         }
+        if (localStorage.getItem('pos_delivery')) {
+            localStorage.removeItem('pos_delivery');
+        }
         if (localStorage.getItem('poscustomer')) {
             localStorage.removeItem('poscustomer');
         }
@@ -1361,6 +1377,9 @@ var lang = {
         }
         if (localStorage.getItem('staffnote')) {
             localStorage.removeItem('staffnote');
+        }
+        if (localStorage.getItem('pos_delivery')) {
+            localStorage.removeItem('pos_delivery');
         }
         <?php $this->sma->unset_data('remove_posls');}
         ?>
@@ -1606,6 +1625,15 @@ var lang = {
             $('#submit-sale').text('<?=lang('submit1');?>').attr('disabled', false);
             if ($('#poscustomer').val() == '1') { // Neu khach le thi remove hinh thuc thanh toan diem tich luy
                 $("#paid_by_1 option[value='pts']").remove();
+            } else {
+                if ( $("#paid_by_1 option[value='pts']").length == 0 ){
+
+                    $('#paid_by_1').append($('<option>', {
+                        value: 'pts',
+                        text: '<?=lang('Pts');?>'
+                    }));
+                    $('#paid_by_1 option[value="pts"]').insertAfter('#paid_by_1 option[value="cash"]');
+                }
             }
         });
         $('#paymentModal').on('shown.bs.modal', function(e) {
@@ -1658,6 +1686,7 @@ var lang = {
             $('.quick-cash').find('.badge').remove();
             $('#' + pi).val('0').focus();
         });
+
 
         $(document).on('change', '.gift_card_no', function () {
             var cn = $(this).val() ? $(this).val() : '';
@@ -2139,6 +2168,7 @@ var lang = {
                     if (res == true) {
                         $('#pos_note').val(localStorage.getItem('posnote'));
                         $('#staff_note').val(localStorage.getItem('staffnote'));
+                        $('#delivery_method').val(localStorage.getItem('pos_delivery'));
                         $('#submit-sale').text('<?=lang('loading');?>').attr('disabled', true);
                         $('#pos-sale-form').submit();
                     }
@@ -2147,6 +2177,7 @@ var lang = {
             } else {
                 $('#pos_note').val(localStorage.getItem('posnote'));
                 $('#staff_note').val(localStorage.getItem('staffnote'));
+                $('#delivery_method').val(localStorage.getItem('pos_delivery'));
                 $(this).text('<?=lang('loading');?>').attr('disabled', true);
                 $('#pos-sale-form').submit();
             }

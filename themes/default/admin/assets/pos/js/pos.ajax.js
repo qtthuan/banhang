@@ -73,6 +73,15 @@ if (posnote = localStorage.getItem('posnote')) {
     $('#sale_note').val(posnote);
 }
 
+$(document).on('change', '.delivery', function () {
+    localStorage.setItem('pos_delivery', $(this).val());
+    $('#delivery').val($(this).val());
+});
+
+if (pos_delivery = localStorage.getItem('pos_delivery')) {
+    $('#delivery').val(pos_delivery);
+}
+
 $(document).on('blur', '#staffnote', function () {
     localStorage.setItem('staffnote', $(this).val());
     $('#staffnote').val($(this).val());
@@ -1027,6 +1036,7 @@ function loadItems() {
         total_extra = 0;
         total_with_no_points = 0;
         percent_detail = '';
+        order_discount_percent_for_return_sale = 0;
         count = 1;
         an = 1;
         product_tax = 0;
@@ -1284,6 +1294,10 @@ function loadItems() {
                 }
             } else {
                 order_discount = parseFloat(ds);
+                //$extra_percent = Number((parseFloat(ds) / parseFloat(total_extra - total_with_no_points)) * 100).toFixed(2);
+                order_discount_percent_for_return_sale = Number((parseFloat(ds) / parseFloat(total_extra - total_with_no_points)) * 100).toFixed(4);
+                console.log(order_discount_percent_for_return_sale);
+                //order_discount =  formatDecimal((parseFloat(((total_extra - total_with_no_points) * $extra_percent) / 100)), 4);
             }
             //total_discount += parseFloat(order_discount);
         }
@@ -1321,6 +1335,7 @@ function loadItems() {
         $('#tship').text(parseFloat(shipping) > 0 ? formatMoney(shipping) : '');
         $('#treturn').text(parseFloat(preturn) > 0 ? formatMoney(preturn) : '');
         $('#gtotal').text(formatMoney(gtotal));
+        $('#order_discount_percent_for_return_sale').val(parseFloat(order_discount_percent_for_return_sale));
         if (pos_settings.remote_printing != 1) {
 
             order_data.items = o_items;

@@ -11,7 +11,14 @@
         localStorage.setItem('renote', '<?= $this->sma->decode_html($inv->note); ?>');
         localStorage.setItem('reitems', JSON.stringify(<?= $inv_items; ?>));
         //console.log(JSON.stringify(<?= $inv_items; ?>));
-        localStorage.setItem('rediscount', '<?= $inv->order_discount_id ?>');
+            <?php if ($inv->order_discount_percent_for_return_sale > 0) { ?>
+            console.log(<?=$inv->order_discount_percent_for_return_sale?>);
+            localStorage.setItem('rediscount', '<?= $inv->order_discount_percent_for_return_sale ?>%');
+            <?php } else { ?>
+            console.log('order_discount_id');
+            localStorage.setItem('rediscount', '<?= $inv->order_discount_id ?>');
+            <?php } ?>
+        localStorage.setItem('original_discount', '<?= $inv->order_discount_id ?>');
         localStorage.setItem('retax2', '<?= $inv->order_tax_id ?>');
         localStorage.setItem('return_surcharge', '0');
         <?php } ?>
@@ -544,10 +551,7 @@
                                             <span class="totals_val pull-right" id="tdis">0.00</span>
                                         </td>
                                         <?php if ($Settings->tax2) { ?>
-                                        <td>
-                                            <?= lang('order_tax') ?>
-                                            <span class="totals_val pull-right" id="ttax2">0.00</span>
-                                        </td>
+
                                         <?php } ?>
                                         <td>
                                             <?= lang('return_amount') ?>

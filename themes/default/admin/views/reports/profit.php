@@ -25,7 +25,7 @@
                 <tr>
                     <td style="border-bottom: 1px solid #EEE;"><h4><?= lang('products_sale'); ?>:</h4></td>
                     <td style="text-align:right; border-bottom: 1px solid #EEE;"><h4>
-                            <span><?= $this->sma->formatMoney($sale_by_day->grand_total + $sale_by_day->return_amount); ?></span></h4>
+                            <span><?= $this->sma->formatMoney($sale_by_day->grand_total); ?></span></h4>
                             <!-- <span><?= $this->sma->formatMoney($costing->sales).' ('.$this->sma->formatMoney($costing->net_sales).')'; ?></span></h4> -->
                     </td>
                 </tr>

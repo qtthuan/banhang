@@ -913,6 +913,21 @@ function pay_status(x) {
         return '<div class="text-center"><span class="payment_status label label-default">'+x+'</span></div>';
     }
 }
+function delivery_method(x) {
+    if(x == null) {
+        return '';
+    } else if(x == 'Shop') {
+        return '<div class="text-center"><span class="payment_status label label-warning">'+x+'</span></div>';
+    } else if(x == 'Shipper') {
+        return '<div class="text-center"><span class="payment_status label label-success">'+x+'</span></div>';
+    } else if(x == 'GHTK') {
+        return '<div class="text-center"><span class="payment_status label label-info">'+x+'</span></div>';
+    } else if(x == 'VNPOST') {
+        return '<div class="text-center"><span class="payment_status label label-danger">'+x+'</span></div>';
+    } else {
+        return '<div class="text-center"><span class="payment_status label label-default">'+x+'</span></div>';
+    }
+}
 function formatSA (x) {
     x=x.toString();
     var afterPoint = '';

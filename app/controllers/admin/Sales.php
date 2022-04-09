@@ -1092,6 +1092,7 @@ class Sales extends MY_Controller
             $total_return_discount = 0;
             $num_of_new_items = 0;
             $total_with_no_points = 0;
+
             //$this->sma->print_arrays($_POST);
             $i = isset($_POST['product_code']) ? sizeof($_POST['product_code']) : 0;
             for ($r = 0; $r < $i; $r++) {
@@ -1138,6 +1139,7 @@ class Sales extends MY_Controller
                     } else {
                         $order_discount_id = null;
                     }
+                    //$order_discount = (0 - $this->site->calculateDiscount($this->input->post('order_discount'), ($total + $product_tax)));
 //                    if ($item_discount == 0) {
 //                        $num_of_new_items += $item_quantity;
 //                    }
@@ -1217,18 +1219,25 @@ class Sales extends MY_Controller
             }
 
             if ($sale->order_discount_id) {
-                $order_discount_id = $sale->order_discount_id;
+                if ($sale->order_discount_percent_for_return_sale > 0) {
+                    $order_discount_id = $sale->order_discount_percent_for_return_sale . $percentage;
+                } else {
+                    $order_discount_id = $sale->order_discount_id;
+                }
+
                 $opos = strpos($order_discount_id, $percentage);
                 if ($opos !== false) {
                     $ods = explode("%", $order_discount_id);
                     $order_discount = $this->sma->formatDecimal((((-$total_extra + $total_with_no_points + $product_tax) * (Float) ($ods[0])) / 100), 4);
                 } else {
                     $order_discount = $this->sma->formatDecimal($order_discount_id, 4);
+
                 }
             } else {
                 $order_discount_id = null;
             }
-            $total_discount = $order_discount + $sale->product_discount;
+            //$total_discount = $order_discount + $sale->product_discount;
+            $total_discount = $this->sma->formatDecimal(($order_discount + $product_discount), 4);
 
             if ($this->Settings->tax2) {
                 $order_tax_id = $this->input->post('order_tax');
@@ -1268,6 +1277,7 @@ class Sales extends MY_Controller
                 'surcharge' => $this->sma->formatDecimal($return_surcharge),
                 'grand_total' => (0-$this->input->post('amount-paid')),
                 'grand_total_extra' => $grand_total_extra,
+                'total_items' => $_POST['total_items'],
                 'created_by' => $this->session->userdata('user_id'),
                 'return_sale_ref' => $reference,
                 'sale_status' => 'returned',
@@ -1313,10 +1323,14 @@ class Sales extends MY_Controller
                 $data['attachment'] = $photo;
             }
 
-            //$this->sma->print_arrays($data, $products, $si_return, $payment);
+            $return_original_discount =  array(
+                'return_total_discount' => $sale->total_discount - $data['total_discount'],
+                'return_order_discount' => $sale->order_discount - $data['order_discount'],
+            );
+            //$this->sma->print_arrays($data, $return_original_discount);
         }
 
-        if ($this->form_validation->run() == true && $this->sales_model->addSale($data, $products, $payment, $si_return)) {
+        if ($this->form_validation->run() == true && $this->sales_model->addSale($data, $products, $payment, $si_return, $return_original_discount)) {
             $this->session->set_flashdata('message', lang("return_sale_added"));
             admin_redirect($sale->pos ? "pos/sales" : "sales");
         } else {

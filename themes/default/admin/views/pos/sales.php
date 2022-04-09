@@ -7,6 +7,7 @@
             "iDisplayLength": <?= $Settings->rows_per_page ?>,
             'bProcessing': true, 'bServerSide': true,
             'sAjaxSource': '<?= admin_url('pos/getSales'.($warehouse_id ? '/'.$warehouse_id : '')) ?>',
+
             'fnServerData': function (sSource, aoData, fnCallback) {
                 aoData.push({
                     "name": "<?= $this->security->get_csrf_token_name() ?>",
@@ -23,7 +24,7 @@
             "aoColumns": [{
                 "bSortable": false,
                 "mRender": checkbox
-            }, {"mRender": fld}, null, null, null, {"mRender": currencyFormat}, {"mRender": currencyFormat}, {"mRender": currencyFormat}, {"mRender": row_status}, {"mRender": pay_status}, {"bSortable": false}],
+            }, {"mRender": fld}, null, null, {"mRender": delivery_method}, {"mRender": currencyFormat}, {"mRender": currencyFormat}, {"mRender": currencyFormat}, {"mRender": row_status}, {"mRender": pay_status}, {"bSortable": false}],
             "fnFooterCallback": function (nRow, aaData, iStart, iEnd, aiDisplay) {
                 var gtotal = 0, paid = 0, balance = 0;
                 for (var i = 0; i < aaData.length; i++) {
@@ -39,10 +40,10 @@
         }).fnSetFilteringDelay().dtFilter([
             {column_number: 1, filter_default_label: "[năm-tháng-ngày]", filter_type: "text", data: []},
             {column_number: 2, filter_default_label: "[<?=lang('reference_no');?>]", filter_type: "text", data: []},
-            {column_number: 3, filter_default_label: "[<?=lang('biller');?>]", filter_type: "text", data: []},
-            {column_number: 4, filter_default_label: "[<?=lang('customer');?>]", filter_type: "text"},
-            {column_number: 8, filter_default_label: "[<?=lang('sale_status');?>]", filter_type: "text", data: []},
-            {column_number: 9, filter_default_label: "[<?=lang('payment_status');?>]", filter_type: "text", data: []},
+            {column_number: 3, filter_default_label: "[<?=lang('customer');?>]", filter_type: "text"},
+            {column_number: 4, filter_default_label: "[<?=lang('delivery_method');?>]", filter_type: "text"},
+            {column_number: 7, filter_default_label: "[<?=lang('sale_status');?>]", filter_type: "text", data: []},
+            {column_number: 8, filter_default_label: "[<?=lang('payment_status');?>]", filter_type: "text", data: []},
         ], "footer");
 
         $(document).on('click', '.duplicate_pos', function (e) {
@@ -60,6 +61,7 @@
                 window.location.href = link;
             }
         });
+
         $(document).on('click', '.email_receipt', function () {
             var sid = $(this).attr('data-id');
             var ea = $(this).attr('data-email-address');
@@ -70,10 +72,10 @@
                     url: "<?= admin_url('pos/email_receipt') ?>/" + sid,
                     data: { <?= $this->security->get_csrf_token_name(); ?>: "<?= $this->security->get_csrf_hash(); ?>", email: email, id: sid },
                     dataType: "json",
-                        success: function (data) {
+                        success: function(data) {
                         bootbox.alert(data.msg);
                     },
-                    error: function () {
+                    error: function() {
                         bootbox.alert('<?= lang('ajax_request_failed'); ?>');
                         return false;
                     }
@@ -135,10 +137,10 @@
                             </th>
                             <th><?= lang("date"); ?></th>
                             <th><?= lang("reference_no"); ?></th>
-                            <th><?= lang("biller"); ?></th>
                             <th><?= lang("customer"); ?></th>
+                            <th><?= lang("delivery_method"); ?></th>
                             <th><?= lang("grand_total"); ?></th>
-                            <th><?= lang("paid"); ?></th>
+                            <th><?= lang("paid_col"); ?></th>
                             <th><?= lang("balance"); ?></th>
                             <th><?= lang("sale_status"); ?></th>
                             <th><?= lang("payment_status"); ?></th>

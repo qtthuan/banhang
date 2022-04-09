@@ -367,7 +367,7 @@
                             <tr>
                                 <th style="border-top: none" colspan="2">&nbsp;</th>
                                 <th style="border-top: none" colspan="2"><div style="margin-left: 2px;"><?=lang("due_amount");?></div></th>
-                                <th style="border-top: none" class="text-right" colspan="2">
+                                <th style="border-top: none" class="text-right" colspan="2">cc
                                     <?=$this->sma->formatMoney(($return_sale ? (($inv->grand_total + $inv->rounding)+$return_sale->grand_total) : ($inv->grand_total + $inv->rounding)) - ($return_sale ? ($inv->paid+$return_sale->paid) : $inv->paid));?>
                                 </th>
                             </tr>

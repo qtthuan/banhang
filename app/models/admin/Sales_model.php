@@ -283,7 +283,7 @@ class Sales_model extends CI_Model
         return FALSE;
     }
 
-    public function addSale($data = array(), $items = array(), $payment = array(), $si_return = array())
+    public function addSale($data = array(), $items = array(), $payment = array(), $si_return = array(), $return_original_discount = array())
     {
         if (empty($si_return)) {
             $cost = $this->site->costing($items);
@@ -345,7 +345,16 @@ class Sales_model extends CI_Model
 
                     }
                 }
-                $this->db->update('sales', array('return_sale_ref' => $data['return_sale_ref'], 'surcharge' => $data['surcharge'],'return_sale_total' => $data['grand_total'], 'return_id' => $sale_id), array('id' => $data['sale_id']));
+
+                $this->db->update('sales', array(
+                        'total_discount' => $return_original_discount['return_total_discount'],
+                        'order_discount' => $return_original_discount['return_order_discount'],
+                        'return_sale_ref' => $data['return_sale_ref'],
+                        'surcharge' => $data['surcharge'],
+                        'return_sale_total' => $data['grand_total'],
+                        'return_id' => $sale_id),
+                        array('id' => $data['sale_id'])
+                );
             }
 
             if ($data['payment_status'] == 'partial' || $data['payment_status'] == 'paid' && !empty($payment)) {

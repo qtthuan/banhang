@@ -550,6 +550,21 @@ class Sma
         return $opts;
     }
 
+    public function delivery_method_opts($method = null, $empty_opt = false)
+    {
+        $opts = '';
+        if ($empty_opt) {
+            $opts .= '<option value="">'.lang('select').'</option>';
+        }
+        $opts .= '
+        <option value="Shop"'.($method && $method == 'Shop' ? ' selected="selected"' : '').'>Shop</option>
+        <option value="Shipper"'.($method && $method == 'Shipper' ? ' selected="selected"' : '').'>Shipper</option>
+        <option value="GHTK"'.($method && $method == 'GHTK' ? ' selected="selected"' : '').'>GHTK</option>
+        <option value="VNPOST"'.($method && $method == 'VNPOST' ? ' selected="selected"' : '').'>VNPOST</option>';
+
+        return $opts;
+    }
+
     public function send_json($data)
     {
         header('Content-Type: application/json');
