@@ -914,12 +914,15 @@ function pay_status(x) {
     }
 }
 function delivery_method(x) {
+    console.log(x);
     if(x == null) {
         return '';
-    } else if(x == 'Shop') {
+    } else if(x == 'SHOP') {
         return '<div class="text-center"><span class="payment_status label label-warning">'+x+'</span></div>';
-    } else if(x == 'Shipper') {
+    } else if(x == 'SHIPPER') {
         return '<div class="text-center"><span class="payment_status label label-success">'+x+'</span></div>';
+    } else if(x == 'CHỐT') {
+        return '<div class="text-center"><span class="payment_status label label-primary">'+x+'</span></div>';
     } else if(x == 'GHTK') {
         return '<div class="text-center"><span class="payment_status label label-info">'+x+'</span></div>';
     } else if(x == 'VNPOST') {

@@ -557,8 +557,9 @@ class Sma
             $opts .= '<option value="">'.lang('select').'</option>';
         }
         $opts .= '
-        <option value="Shop"'.($method && $method == 'Shop' ? ' selected="selected"' : '').'>Shop</option>
-        <option value="Shipper"'.($method && $method == 'Shipper' ? ' selected="selected"' : '').'>Shipper</option>
+        <option value="SHOP"'.($method && $method == 'SHOP' ? ' selected="selected"' : '').'>SHOP</option>
+        <option value="CHỐT"'.($method && $method == 'CHỐT' ? ' selected="selected"' : '').'>CHỐT</option>
+        <option value="SHIPPER"'.($method && $method == 'SHIPPER' ? ' selected="selected"' : '').'>SHIPPER</option>
         <option value="GHTK"'.($method && $method == 'GHTK' ? ' selected="selected"' : '').'>GHTK</option>
         <option value="VNPOST"'.($method && $method == 'VNPOST' ? ' selected="selected"' : '').'>VNPOST</option>';
 

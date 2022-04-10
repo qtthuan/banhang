@@ -339,7 +339,7 @@ class Pos extends MY_Controller
                           'paid'              => $this->input->post('amount-paid') ? $this->input->post('amount-paid') : 0,
                           'created_by'        => $this->session->userdata('user_id'),
                           'hash'              => hash('sha256', microtime() . mt_rand()),
-                          'delivery_method'   => $_POST['delivery_method'] ? $_POST['delivery_method'] : 'Shop',
+                          'delivery_method'   => $_POST['delivery_method'] ? $_POST['delivery_method'] : 'SHOP',
                           'order_discount_percent_for_return_sale'   => $this->input->post('order_discount_percent_for_return_sale'),
             );
             //$this->sma->print_arrays($data);
