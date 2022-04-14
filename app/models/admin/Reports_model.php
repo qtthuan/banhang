@@ -159,7 +159,7 @@ class Reports_model extends CI_Model
         if ($warehouse_id) {
             $myQuery .= " warehouse_id = {$warehouse_id} AND ";
         }
-        $myQuery .= "date_format(date, '%Y-%m-%e') = '" . $date . "'";
+        $myQuery .= "date_format(date, '%Y-%m-%e') = '" . $date . "' AND sale_status <> 'returned'";
         $q = $this->db->query($myQuery, false);
         if ($q->num_rows() > 0) {
             return $q->row();
