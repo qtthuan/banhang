@@ -348,7 +348,7 @@ class Sales_model extends CI_Model
 
                 $this->db->update('sales', array(
                         'total_discount' => $return_original_discount - $data['total_discount'],
-                        'order_discount' => $original_discount - $data['order_discount'],
+                        'order_discount' => $return_original_discount - $data['order_discount'],
                         'return_sale_ref' => $data['return_sale_ref'],
                     'surcharge' => $data['surcharge'],'return_sale_total' => $data['grand_total'], 'return_id' => $sale_id), array('id' => $data['sale_id']));
             }
