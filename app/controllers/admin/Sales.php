@@ -1277,7 +1277,7 @@ class Sales extends MY_Controller
                 'surcharge' => $this->sma->formatDecimal($return_surcharge),
                 'grand_total' => (0-$this->input->post('amount-paid')),
                 'grand_total_extra' => $grand_total_extra,
-                'total_items' => $_POST['total_items'],
+                'grand_total_extra' => $grand_total_extra,
                 'created_by' => $this->session->userdata('user_id'),
                 'return_sale_ref' => $reference,
                 'sale_status' => 'returned',
@@ -1324,10 +1324,10 @@ class Sales extends MY_Controller
             }
 
             $return_original_discount =  array(
-                'return_total_discount' => $sale->total_discount - $data['total_discount'],
-                'return_order_discount' => $sale->order_discount - $data['order_discount'],
+                'return_total_discount' => $sale->total_discount,
+                'return_order_discount' => $sale->order_discount,
             );
-            //$this->sma->print_arrays($data, $return_original_discount);
+            //$this->sma->print_arrays($data, $products, $payment, $si_return, $return_original_discount);
         }
 
         if ($this->form_validation->run() == true && $this->sales_model->addSale($data, $products, $payment, $si_return, $return_original_discount)) {
