@@ -706,7 +706,7 @@ class Pos_model extends CI_Model
             $this->db->where('created_by', $this->session->userdata('user_id'));
         }
         $this->db->limit($limit, $start);
-        $this->db->order_by("id", "asc");
+        $this->db->order_by("id", "desc");
         $query = $this->db->get("suspended_bills");
 
         if ($query->num_rows() > 0) {
