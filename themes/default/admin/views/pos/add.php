@@ -1360,9 +1360,6 @@ var lang = {
         if (localStorage.getItem('posnote')) {
             localStorage.removeItem('posnote');
         }
-        if (localStorage.getItem('pos_delivery')) {
-            localStorage.removeItem('pos_delivery');
-        }
         if (localStorage.getItem('poscustomer')) {
             localStorage.removeItem('poscustomer');
         }
