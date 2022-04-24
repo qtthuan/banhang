@@ -76,7 +76,7 @@ class Cron_model extends CI_Model
 //        }
         //$this->updateMemberJoiningDate();
 
-        //$this->clearSuspendedBills();
+        $this->clearSuspendedBills();
 
         $this->deleteExpiredCustomers();
 
