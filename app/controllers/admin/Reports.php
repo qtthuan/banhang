@@ -952,7 +952,7 @@ class Reports extends MY_Controller
 
         if (!empty($sales)) {
             foreach ($sales as $sale) {
-                $daily_sale[$sale->date] = "<table class='table table-bordered table-hover table-striped table-condensed data' style='margin:0;'><tr><td>" . lang("discount") . "</td><td>" . $this->sma->formatMoney($sale->discount) . "</td></tr><tr><td>" . lang("shipping") . "</td><td>" . $this->sma->formatMoney($sale->shipping) . "</td></tr><tr><td>" . lang("return_amount") . "</td><td>" . $this->sma->formatMoney($sale->return_amount) . "</td></tr><tr><td>" . lang("pay_by_points") . "</td><td>" . $this->sma->formatMoney($sale->change_points) . "</td></tr><tr><td>" . lang("total") . "</td><td>" . $this->sma->formatMoney($sale->total + $sale->return_amount) . "</td></tr></table>";
+                $daily_sale[$sale->date] = "<table class='table table-bordered table-hover table-striped table-condensed data' style='margin:0;'><tr><td>" . lang("discount") . "</td><td>" . $this->sma->formatMoney($sale->discount) . "</td></tr><tr><td>" . lang("shipping") . "</td><td>" . $this->sma->formatMoney($sale->shipping) . "</td></tr><tr><td>" . lang("return_amount") . "</td><td>" . $this->sma->formatMoney($sale->return_amount) . "</td></tr><tr><td>" . lang("pay_by_points") . "</td><td>" . $this->sma->formatMoney($sale->change_points) . "</td></tr><tr><td>" . lang("total") . "</td><td>" . $this->sma->formatMoney($sale->grand_total) . "</td></tr></table>";
             }
         } else {
             $daily_sale = array();

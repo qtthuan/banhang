@@ -801,6 +801,7 @@
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"><i
                             class="fa fa-2x">&times;</i></span><span class="sr-only"><?=lang('close');?></span></button>
                 <h4 class="modal-title" id="prModalLabel"></h4>
+
             </div>
             <div class="modal-body" id="pr_popover_content">
                 <form class="form-horizontal" role="form">
@@ -1291,7 +1292,8 @@ var lang = {
     total_payable: '<?=lang('total_payable');?>',
     rounding: '<?=lang('rounding');?>',
     footer_thanks: '<?=lang('footer_thanks');?>',
-    not_found_return_invoice: '<?=lang('not_found_return_invoice')?>'
+    not_found_return_invoice: '<?=lang('not_found_return_invoice')?>',
+    this_is_promotion_product: '<?=lang('this_is_promotion_product')?>'
 };
 </script>
 
@@ -1820,7 +1822,7 @@ var lang = {
                     },
                     success: function (data) {
                         $(this).removeClass('ui-autocomplete-loading');
-                        //console.log(JSON.stringify(data));
+                        console.log(JSON.stringify(data));
                         response(data);
                     }
                 });
@@ -1852,6 +1854,7 @@ var lang = {
                 event.preventDefault();
                 if (ui.item.id !== 0) {
                     var row = add_invoice_item(ui.item);
+                    //console.log(JSON.stringify(ui.item));
                     if (row)
                         $(this).val('');
                 } else {

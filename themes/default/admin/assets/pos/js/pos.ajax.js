@@ -497,6 +497,7 @@ $('#posdiscount').focus(function () {
         product_option = row.children().children('.roption').val(),
         unit_price = formatDecimal(row.children().children('.ruprice').val()),
         discount = row.children().children('.rdiscount').val();
+
         if(item.options !== false) {
             $.each(item.options, function () {
                 if(this.id == item.row.option && this.price != 0 && this.price != '' && this.price != null) {
@@ -504,9 +505,22 @@ $('#posdiscount').focus(function () {
                 }
             });
         }
+
         var real_unit_price = item.row.real_unit_price;
         var net_price = unit_price;
         $('#prModalLabel').text(item.row.code + ' - ' + item.row.name);
+
+        if (item.row.promotion) {
+            $('#pdiscount').attr('readonly', true);
+            $('#price_after_discount').attr('readonly', true);
+            $('#pprice').attr('readonly', true);
+            $('#prModalLabel').append('<br /><span style="color: green">' + lang.this_is_promotion_product + '</span>');
+        } else {
+            $('#pdiscount').attr('readonly', false);
+            $('#price_after_discount').attr('readonly', false);
+            $('#pprice').attr('readonly', false);
+        }
+
         if (site.settings.tax1) {
             $('#ptax').select2('val', item.row.tax_rate);
             $('#old_tax').val(item.row.tax_rate);
@@ -662,7 +676,7 @@ $('#posdiscount').focus(function () {
         unit_price -= item_discount;
 
         $('#net_price').text(formatMoney(unit_price));
-        console.log(formatMoney(unit_price));
+        //console.log(formatMoney(unit_price));
         $('#price_after_discount').val(unit_price);
     });
 
@@ -1097,7 +1111,7 @@ function loadItems() {
             var item_id = site.settings.item_addition == 1 ? item.item_id : item.id;
             positems[item_id] = item;
             item.order = item.order ? item.order : new Date().getTime();
-            var product_id = item.row.id, item_type = item.row.type, combo_items = item.combo_items, item_price = item.row.price, item_qty = item.row.qty, item_aqty = item.row.quantity, item_tax_method = item.row.tax_method, item_ds = item.row.discount, item_discount = 0, item_option = item.row.option, item_code = item.row.code, item_serial = item.row.serial, item_name = item.row.name.replace(/"/g, "&#034;").replace(/'/g, "&#039;");
+            var product_id = item.row.id, item_type = item.row.type, combo_items = item.combo_items, is_promo = item.row.promotion, item_original_price = item.row.original_price, start_date = item.row.start_date, end_date = item.row.end_date, item_price = item.row.price, item_qty = item.row.qty, item_aqty = item.row.quantity, item_tax_method = item.row.tax_method, item_ds = item.row.discount, item_discount = 0, item_option = item.row.option, item_code = item.row.code, item_serial = item.row.serial, item_name = item.row.name.replace(/"/g, "&#034;").replace(/'/g, "&#039;");
             var product_unit = item.row.unit, base_quantity = item.row.base_quantity;
             var unit_price = item.row.real_unit_price;
             var item_comment = item.row.comment ? item.row.comment : '';
@@ -1170,7 +1184,10 @@ function loadItems() {
                 }
             });
 
-            if (item.no_points == 1 && item_discount == 0) {
+            //console.log('is_promo: ' + is_promo + ' - date valid: ' + checkValidPromotionDate(start_date, end_date))
+
+            if ((is_promo && checkValidPromotionDate(start_date, end_date)) || (item.no_points == 1 && item_discount == 0)) {
+            //if (item.no_points == 1 && item_discount == 0) {
                 total_with_no_points += item_price * item_qty;
             }
 
@@ -1183,10 +1200,21 @@ function loadItems() {
             } else {
                 print_cate = false;
             }
-
             var row_no = setTimeout((new Date).getTime(), 500);
             var newTr = $('<tr id="row_' + row_no + '" class="row_' + item_id + discount_class + '" data-item-id="' + item_id + '"></tr>');
-            tr_html = '<td><input name="product_id[]" type="hidden" class="rid" value="' + product_id + '"><input name="product_type[]" type="hidden" class="rtype" value="' + item_type + '"><input name="product_code[]" type="hidden" class="rcode" value="' + item_code + '"><input name="product_name[]" type="hidden" class="rname" value="' + item_name + '"><input name="product_option[]" type="hidden" class="roption" value="' + item_option + '"><input name="product_comment[]" type="hidden" class="rcomment" value="' + item_comment + '"><span class="sname" id="name_' + row_no + '">' + item_code +' - '+ item_name +(sel_opt != '' ? ' ('+sel_opt+')' : '')+'</span><span class="lb"></span><i class="pull-right fa fa-edit fa-2x fa-bx tip pointer edit" id="' + row_no + '" data-item="' + item_id + '" title="Cập nhật Size/Giá" style="cursor:pointer;"></i></td>';
+            tr_html = '<td>' +
+                        '<input name="product_id[]" type="hidden" class="rid" value="' + product_id + '">' +
+                        '<input name="product_type[]" type="hidden" class="rtype" value="' + item_type + '">' +
+                        '<input name="product_code[]" type="hidden" class="rcode" value="' + item_code + '">' +
+                        '<input name="product_name[]" type="hidden" class="rname" value="' + item_name + '">' +
+                        '<input name="product_option[]" type="hidden" class="roption" value="' + item_option + '">' +
+                        '<input name="product_comment[]" type="hidden" class="rcomment" value="' + item_comment + '">' +
+                        '<input name="promo_original_price[]" type="hidden" class="roprice" value="' + item_original_price + '">' +
+                        '<input name="is_promo[]" type="hidden" class="is_promo" value="' + (is_promo && checkValidPromotionDate(start_date, end_date) ? is_promo : 0) + '">' +
+                        '<span class="sname" id="name_' + row_no + '">' + item_code +' - '+ item_name +(sel_opt != '' ? ' ('+sel_opt+')' : '')+'</span>' +
+                        '<span class="lb"></span>' +
+                        '<i class="pull-right fa fa-edit fa-2x fa-bx tip pointer edit" id="' + row_no + '" data-item="' + item_id + '" title="Cập nhật Size/Giá" style="cursor:pointer;"></i>' +
+                '</td>';
             tr_html += '<td class="text-right">';
             if (site.settings.product_serial == 1) {
                 tr_html += '<input class="form-control input-sm rserial" name="serial[]" type="hidden" id="serial_' + row_no + '" value="'+item_serial+'">';
@@ -1202,8 +1230,14 @@ function loadItems() {
                 var display_price = '<span style="font-weight: bold">' + formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val)) + '</span>(<span style="text-decoration: line-through">' + unit_price + '</span>)';
                 tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '"><input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '"><input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '"><input class="no_points" name="no_points[]" type="hidden" value="' + item.no_points + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + display_price + '</span></td>';
             } else {
-                //display_price = formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val));
-                tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '"><input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '"><input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '"><input class="no_points" name="no_points[]" type="hidden" value="' + item.no_points + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val)) + '</span></td>';
+
+                if (item_original_price > 0) {
+                    display_price = '<span style="font-weight: bold">' + formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val)) + '</span>';
+                    display_price += '(<span style="text-decoration: line-through">' + formatMoney(item_original_price) + '</span>)';
+                } else {
+                    display_price = formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val));
+                }
+                tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '"><input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '"><input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '"><input class="no_points" name="no_points[]" type="hidden" value="' + item.no_points + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + display_price + '</span></td>';
             }
 
             tr_html += '<td><input class="form-control input-sm kb-pad text-center rquantity" tabindex="'+((site.settings.set_focus == 1) ? an : (an+1))+'" name="quantity[]" type="text" value="' + formatQuantity2(item_qty) + '" data-id="' + row_no + '" data-item="' + item_id + '" id="quantity_' + row_no + '" onClick="this.select();"><input name="product_unit[]" type="hidden" class="runit" value="' + product_unit + '"><input name="product_base_quantity[]" type="hidden" class="rbase_quantity" value="' + base_quantity + '"></td>';
@@ -1294,10 +1328,8 @@ function loadItems() {
                 }
             } else {
                 order_discount = parseFloat(ds);
-                //$extra_percent = Number((parseFloat(ds) / parseFloat(total_extra - total_with_no_points)) * 100).toFixed(2);
                 order_discount_percent_for_return_sale = Number((parseFloat(ds) / parseFloat(total_extra - total_with_no_points)) * 100).toFixed(4);
-                console.log(order_discount_percent_for_return_sale);
-                //order_discount =  formatDecimal((parseFloat(((total_extra - total_with_no_points) * $extra_percent) / 100)), 4);
+                console.log('order_discount_percent_for_return_sale: ' + order_discount_percent_for_return_sale);
             }
             //total_discount += parseFloat(order_discount);
         }
@@ -1874,6 +1906,26 @@ var NUMBERTOSTRING=function(){var t=["không","một","hai","ba","bốn","năm",
 // qtthuan: hàm viết hoa kí tự đầu tiên trong chuỗi
 function upperFirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+// qtthuan: hàm so sánh ngày hiện tại có thuộc 2 ngày đã cho không
+function checkValidPromotionDate(date1, date2) {
+    if (!date1) {
+        return false;
+    }
+    D_1 = moment(date1).format('DD-MM-YYYY').split("-");
+    D_2 = moment(date2).format('DD-MM-YYYY').split("-");
+    D_3 = moment(new Date()).format('DD-MM-YYYY').split("-");
+
+    var d1 = new Date(D_1[2], parseInt(D_1[1]) - 1, D_1[0]);
+    var d2 = new Date(D_2[2], parseInt(D_2[1]) - 1, D_2[0]);
+    var d3 = new Date(D_3[2], parseInt(D_3[1]) - 1, D_3[0]);
+
+    if (d3 >= d1 && d3 <= d2) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 //$.ajaxSetup ({ cache: false, headers: { "cache-control": "no-cache" } });

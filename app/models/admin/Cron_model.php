@@ -68,6 +68,10 @@ class Cron_model extends CI_Model
         if ($this->excuteUpdateOptionNameExtra()) {
             $m .= '<p>' . sprintf(lang('excute_update_option_name_extra'), $date) . '</p>';
         }
+
+        if ($this->fixProductCostingOnEditInfo()) {
+            $m .= '<p>' . sprintf(lang('excute_fix_product_costing'), $date) . '</p>';
+        }
 //        if ($this->excuteUpdateGrandTotalSaleExtra()) {
 //            $m .= '<p>' . sprintf('update grand total extra ok', $date) . '</p>';
 //        }
@@ -448,6 +452,91 @@ class Cron_model extends CI_Model
 
             return TRUE;
         }
+        return FALSE;
+    }
+
+    /**
+     * @qtthuan
+     * Fix giá nhập không đồng bộ khi sửa giá nhập của sản phẩm
+     *  => Cập nhật trên 3 table: purchase_items, costing, warehouses_products
+     */
+    public function fixProductCostingOnEditInfo() {
+
+
+        $query1 = "SELECT DISTINCT pro.id, pro.name, pro.code, pro.cost, purchase.net_unit_cost, purchase.quantity, pro.created_date";
+        $query1 .= " FROM " . $this->db->dbprefix('products') . " AS pro LEFT JOIN";
+        $query1 .= " " . $this->db->dbprefix('purchase_items') . " AS purchase ON pro.id = purchase.product_id";
+        $query1 .= " WHERE pro.cost <> purchase.net_unit_cost";
+        $q1 = $this->db->query($query1);
+
+        if ($q1->num_rows() > 0) {
+            foreach (($q1->result()) as $row) {
+                $purchase_subtotal = $row->quantity*$row->cost;
+                $this->db->where('product_id', $row->id);
+                // Fix cost difference between products and purchase_items
+                if ($this->db->update('purchase_items',
+                    array(
+                        'net_unit_cost' => $row->cost,
+                        'unit_cost' => $row->cost,
+                        'real_unit_cost' => $row->cost,
+                        'subtotal' => $purchase_subtotal))) {
+                    $str_content =  'Pro_id: ' . $row->id . ' | Code: ' . $row->code . ' | Name: ' . $row->name;
+                    $str_content .= ' | Change cost from ' . $this->sma->formatMoney($row->net_unit_cost);
+                    $str_content .= ' to ' . $this->sma->formatMoney($row->cost);
+                    $data_tracking = array(
+                        'task' => lang('task_fix_cost_on_purchase_items'),
+                        'content' =>  $str_content,
+                        'tracking_date' => date('Y-m-d H:i:s'));
+
+                    $this->db->insert('cron_tracking', $data_tracking);
+                }
+
+                $query2 = "SELECT * FROM " . $this->db->dbprefix('costing') . " WHERE ";
+                $query2 .= " product_id = " . $row->id . " AND purchase_net_unit_cost <> " . $row->cost;
+                $q2 = $this->db->query($query2);
+                if ($q2->num_rows() > 0) {
+
+                // Fix cost difference between products and costing
+                    $this->db->where('product_id', $row->id);
+                    if ($this->db->update('costing',
+                        array(
+                            'purchase_net_unit_cost' => $row->cost,
+                            'purchase_unit_cost' => $row->cost))) {
+                        $str_content =  'Pro_id: ' . $row->id . ' | Code: ' . $row->code . ' | Name: ' . $row->name;
+                        $str_content .= ' | Change cost from ' . $this->sma->formatMoney($row->net_unit_cost);
+                        $str_content .= ' to ' . $this->sma->formatMoney($row->cost);
+                        $data_tracking = array(
+                            'task' => lang('task_fix_cost_on_costing'),
+                            'content' =>  $str_content,
+                            'tracking_date' => date('Y-m-d H:i:s'));
+
+                        $this->db->insert('cron_tracking', $data_tracking);
+                    }
+                }
+
+                $query3 = "SELECT * FROM " . $this->db->dbprefix('warehouses_products') . " WHERE ";
+                $query3 .= " product_id = " . $row->id . " AND avg_cost <> " . $row->cost;
+                $q3 = $this->db->query($query3);
+                if ($q3->num_rows() > 0) {
+
+                    // Fix cost difference between products and warehouses products
+                    $this->db->where('product_id', $row->id);
+                    if ($this->db->update('warehouses_products', array('avg_cost' => $row->cost))) {
+                        $str_content =  'Pro_id: ' . $row->id . ' | Code: ' . $row->code . ' | Name: ' . $row->name;
+                        $str_content .= ' | Change cost from ' . $this->sma->formatMoney($row->net_unit_cost);
+                        $str_content .= ' to ' . $this->sma->formatMoney($row->cost);
+                        $data_tracking = array(
+                            'task' => lang('task_fix_cost_on_warehouses_pro'),
+                            'content' =>  $str_content,
+                            'tracking_date' => date('Y-m-d H:i:s'));
+
+                        $this->db->insert('cron_tracking', $data_tracking);
+                    }
+                }
+            }
+            return TRUE;
+        }
+
         return FALSE;
     }
 

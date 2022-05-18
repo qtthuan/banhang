@@ -242,6 +242,7 @@ $lang['review_opened_registers']        = "Vui lòng xem bảng danh sách bên 
 $lang['suspended_sale_loaded']          = "Mở hóa đơn tạm thành công";
 $lang['incorrect_gift_card']            = "Mã phiếu mua hàng không hợp lệ hoặc đã hết hạn.";
 $lang['not_found_return_invoice']       = "Không tìm thấy hóa đơn trả hàng.";
+$lang['this_is_promotion_product']      = "Không thể thay đổi giá cho sản phẩm khuyến mãi!";
 $lang['gift_card_not_for_customer']     = "Mã phiếu mua hàng không thuộc về khách hàng này.";
 $lang['delete_sales']                   = "Xóa hóa đơn";
 $lang['click_to_add']                   = "Vui lòng chọn hóa đơn tạm để mở";

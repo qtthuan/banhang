@@ -275,8 +275,8 @@
             $.each(reitems, function () {
                 var item = this;
                 var item_id = site.settings.item_addition == 1 ? item.item_id : item.id;
-
-                var item_type = item.row.type, product_id = item.row.id, combo_items = item.combo_items, sale_item_id = item.row.sale_item_id, item_option = item.row.option, item_price = item.row.price, item_qty = item.row.qty, item_oqty = item.row.oqty, item_aqty = item.row.quantity, item_tax_method = item.row.tax_method, item_ds = item.row.discount, item_discount = 0, item_option = item.row.option, item_code = item.row.code, item_serial = item.row.serial, item_name = item.row.name.replace(/"/g, "&#034;").replace(/'/g, "&#039;");
+                console.log(JSON.stringify((item.row)));
+                var item_type = item.row.type, product_id = item.row.id, combo_items = item.combo_items, is_promo = item.row.is_promo, item_original_price = item.row.original_price, sale_item_id = item.row.sale_item_id, item_option = item.row.option, item_price = item.row.price, item_qty = item.row.qty, item_oqty = item.row.oqty, item_aqty = item.row.quantity, item_tax_method = item.row.tax_method, item_ds = item.row.discount, item_discount = 0, item_option = item.row.option, item_code = item.row.code, item_serial = item.row.serial, item_name = item.row.name.replace(/"/g, "&#034;").replace(/'/g, "&#039;");
                 var unit_price = item.row.unit_price;
                 var product_unit = item.row.unit, base_quantity = item.row.base_quantity;
                 if(product_unit != item.row.base_unit) {
@@ -333,26 +333,68 @@
                     }
                 });
 
-                if (item.no_points == 1 && item_discount == 0) {
-                    total_with_no_points += item_price * item_qty;
+                if (is_promo == 1 || (item.no_points == 1 && item_discount == 0) || item_discount > 0) {
+                    //total_with_no_points += item_price * item_qty;
+                    if (item_original_price > 0) {
+                        item_discount = item_original_price - item_price;
+                    }
                 }
+
+                console.log('total_with_no_points: ' + total_with_no_points);
 
                 //'+(item_option != 0 ? ' - '+item.option.name : '')+'
                 var row_no = (new Date).getTime();
                 var newTr = $('<tr id="row_' + row_no + '" class="row_' + item_id + '" data-item-id="' + item_id + '"></tr>');
-                tr_html = '<td><input name="sale_item_id[]" type="hidden" class="rsiid" value="' + sale_item_id + '"><input name="no_points[]" type="hidden" class="no_pts" value="' + item.no_points + '"><input name="product_id[]" type="hidden" class="rid" value="' + product_id + '"><input name="product_type[]" type="hidden" class="rtype" value="' + item_type + '"><input name="product_code[]" type="hidden" class="rcode" value="' + item_code + '"><input name="product_option[]" type="hidden" class="roption" value="' + item_option + '"><input name="product_name[]" type="hidden" class="rname" value="' + item_name + '"><span class="sname" id="name_' + row_no + '">' + item_name + ' (' + item_code + ')'+(sel_opt != '' ? ' ('+sel_opt+')' : '')+'</span></td>';
-                tr_html += '<td class="text-right"><input class="form-control input-sm text-right rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '"><input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '"><input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + formatMoney(item_price) + '</span></td>';
+
+                // Column Name
+                tr_html = '<td>' +
+                        '<input name="sale_item_id[]" type="hidden" class="rsiid" value="' + sale_item_id + '">' +
+                        '<input name="no_points[]" type="hidden" class="no_pts" value="' + item.no_points + '">' +
+                        '<input name="product_id[]" type="hidden" class="rid" value="' + product_id + '">' +
+                        '<input name="product_type[]" type="hidden" class="rtype" value="' + item_type + '">' +
+                        '<input name="product_code[]" type="hidden" class="rcode" value="' + item_code + '">' +
+                        '<input name="product_option[]" type="hidden" class="roption" value="' + item_option + '">' +
+                        '<input name="product_name[]" type="hidden" class="rname" value="' + item_name + '">' +
+                        '<input name="promo_original_price[]" type="hidden" class="roprice" value="' + (is_promo != 0 ? item_original_price: 0) + '">' +
+                        '<input name="is_promo[]" type="hidden" class="is_promo" value="' + is_promo + '">' +
+                        '<span class="sname" id="name_' + row_no + '">' + item_name + ' (' + item_code + ')'+(sel_opt != '' ? ' ('+sel_opt+')' : '')+'</span></td>';
+
+                // Column Price
+                if ((is_promo == 1 && item_original_price > 0) || item_discount > 0) {
+                    var display_price = '<span class="text-right sprice" id="sprice_' + row_no + '">' + formatMoney(item_price) + '</span>';
+                    display_price += '(<span style="text-decoration: line-through">' + formatMoney(item_original_price) + '</span>)';
+                } else {
+                    display_price = formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val));
+                }
+                tr_html += '<td class="text-right">' +
+                            '<input class="form-control input-sm text-right rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '">' +
+                            '<input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '">' +
+                            '<input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '">' + display_price +
+                        '</td>';
+
+                // Column Quantity
                 tr_html += '<td class="text-center"><span>' + formatDecimal(item_oqty) + '</span></td>';
+
+                // Column Return Quantity
                 tr_html += '<td><input class="form-control text-center rquantity" name="quantity[]" type="text" value="' + formatDecimal(item_qty) + '" data-id="' + row_no + '" data-item="' + item_id + '" id="quantity_' + row_no + '" onClick="this.select();"><input name="product_unit[]" type="hidden" class="runit" value="' + product_unit + '"><input name="product_base_quantity[]" type="hidden" class="rbase_quantity" value="' + base_quantity + '"></td>';
+
                 if (site.settings.product_serial == 1) {
                     tr_html += '<td class="text-right"><input class="form-control input-sm rserial" name="serial[]" type="text" id="serial_' + row_no + '" value="' + item_serial + '"></td>';
                 }
+
+                // Column Return Discount
                 if (site.settings.product_discount == 1) {
-                    tr_html += '<td class="text-right"><input class="form-control input-sm rdiscount" name="product_discount[]" type="hidden" id="discount_' + row_no + '" value="' + item_ds + '"><span class="text-right sdiscount text-danger" id="sdiscount_' + row_no + '">' + formatMoney(0 - (item_discount * item_qty)) + '</span></td>';
+                    tr_html += '<td class="text-right">' +
+                                '<input class="form-control input-sm rdiscount" name="product_discount[]" type="hidden" id="discount_' + row_no + '" value="' + item_ds + '">' +
+                                '<span class="text-right sdiscount text-danger" id="sdiscount_' + row_no + '">' + formatMoney(0 - (item_discount * item_qty)) + '</span>' +
+                            '</td>';
                 }
+
                 if (site.settings.tax1 == 1) {
                     tr_html += '<td class="text-right"><input class="form-control input-sm text-right rproduct_tax" name="product_tax[]" type="hidden" id="product_tax_' + row_no + '" value="' + pr_tax.id + '"><span class="text-right sproduct_tax" id="sproduct_tax_' + row_no + '">' + (pr_tax_rate ? '(' + pr_tax_rate + ')' : '') + ' ' + formatMoney(pr_tax_val * item_qty) + '</span></td>';
                 }
+
+                // Column Return SubTotal
                 tr_html += '<td class="text-right"><span class="text-right ssubtotal" id="subtotal_' + row_no + '">' + formatMoney(((parseFloat(item_price) + parseFloat(pr_tax_val)) * parseFloat(item_qty))) + '</span></td>';
                 tr_html += '<td class="text-center"><i class="fa fa-times tip pointer redel" id="' + row_no + '" title="Remove" style="cursor:pointer;"></i></td>';
                 newTr.html(tr_html);
@@ -360,11 +402,13 @@
                 total += parseFloat((item_price + parseFloat(pr_tax_val)) * parseFloat(item_qty));
                 if (item_discount == 0) {
                     total_extra += formatDecimal(((parseFloat(item_price) + parseFloat(pr_tax_val)) * parseFloat(item_qty)), 4);
+                    console.log('item_price: ' + item_price);
                 }
                 count += parseFloat(item_qty);
                 an++;
 
             });
+            console.log('total extra: ' + total_extra);
             // Order level discount calculations
             if (rediscount = localStorage.getItem('rediscount')) {
                 var ds = rediscount;
@@ -372,6 +416,7 @@
                     var pds = ds.split("%");
                     if (!isNaN(pds[0])) {
                         order_discount = parseFloat(((total_extra - total_with_no_points + product_tax) * parseFloat(pds[0])) / 100);
+                        console.log('xxx: ' + order_discount);
                     } else {
                         order_discount = parseFloat(ds);
                     }

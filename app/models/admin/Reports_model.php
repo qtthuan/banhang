@@ -135,8 +135,8 @@ class Reports_model extends CI_Model
 
     public function getDailySales($year, $month, $warehouse_id = NULL)
     {
-        $myQuery = "SELECT DATE_FORMAT( date,  '%e' ) AS date, SUM( COALESCE( product_tax, 0 ) ) AS tax1, SUM( COALESCE( order_tax, 0 ) ) AS tax2, SUM( COALESCE( grand_total, 0 ) ) AS total, SUM( COALESCE( total_discount, 0 ) ) AS discount, SUM( COALESCE( shipping, 0 ) ) AS shipping, SUM( COALESCE( return_amount, 0 ) ) AS return_amount, SUM( COALESCE( change_points, 0 ) ) AS change_points
-			FROM " . $this->db->dbprefix('sales') . " WHERE ";
+        $myQuery = "SELECT DATE_FORMAT( date,  '%e' ) AS date, SUM( COALESCE( product_tax, 0 ) ) AS tax1, SUM( COALESCE( order_tax, 0 ) ) AS tax2, SUM( COALESCE( grand_total, 0 ) ) AS grand_total, SUM( COALESCE( total_discount, 0 ) ) AS discount, SUM( COALESCE( shipping, 0 ) ) AS shipping, SUM( COALESCE( return_amount, 0 ) ) AS return_amount, SUM( COALESCE( change_points, 0 ) ) AS change_points
+			FROM " . $this->db->dbprefix('sales') . " WHERE sale_status <> 'returned' AND ";
         if ($warehouse_id) {
             $myQuery .= " warehouse_id = {$warehouse_id} AND ";
         }
@@ -154,12 +154,12 @@ class Reports_model extends CI_Model
 
     public function getSalesByDay($date, $warehouse_id = NULL)
     {
-        $myQuery = "SELECT SUM( COALESCE( grand_total, 0 ) ) AS grand_total, SUM( COALESCE( total, 0 ) ) AS total, SUM( COALESCE( total_discount, 0 ) ) AS discount, SUM( COALESCE( shipping, 0 ) ) AS shipping, SUM( COALESCE( return_amount, 0 ) ) AS return_amount
-			FROM " . $this->db->dbprefix('sales') . " WHERE ";
+        $myQuery = "SELECT SUM( COALESCE( total, 0 ) ) AS total, SUM( COALESCE( grand_total, 0 ) ) AS grand_total, SUM( COALESCE( total, 0 ) ) AS total, SUM( COALESCE( total_discount, 0 ) ) AS discount, SUM( COALESCE( shipping, 0 ) ) AS shipping, SUM( COALESCE( return_amount, 0 ) ) AS return_amount
+			FROM " . $this->db->dbprefix('sales') . " WHERE sale_status <> 'returned' AND ";
         if ($warehouse_id) {
             $myQuery .= " warehouse_id = {$warehouse_id} AND ";
         }
-        $myQuery .= "date_format(date, '%Y-%m-%e') = '" . $date . "' AND sale_status <> 'returned'";
+        $myQuery .= "date_format(date, '%Y-%m-%e') = '" . $date . "'";
         $q = $this->db->query($myQuery, false);
         if ($q->num_rows() > 0) {
             return $q->row();

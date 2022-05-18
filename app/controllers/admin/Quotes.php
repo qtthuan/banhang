@@ -889,7 +889,7 @@ class Quotes extends MY_Controller
                         }
                     }
                 }
-                if ($row->promotion) {
+                if ($this->sma->isPromo($row)) {
                     $row->price = $row->promo_price;
                 } elseif ($customer->price_group_id) {
                     if ($pr_group_price = $this->site->getProductGroupPrice($row->id, $customer->price_group_id)) {

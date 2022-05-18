@@ -914,7 +914,6 @@ function pay_status(x) {
     }
 }
 function delivery_method(x) {
-    console.log(x);
     if(x == null) {
         return '';
     } else if(x == 'SHOP') {

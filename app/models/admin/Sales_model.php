@@ -152,7 +152,7 @@ class Sales_model extends CI_Model
 
     public function getAllInvoiceItems($sale_id, $return_id = NULL)
     {
-        $this->db->select('sale_items.*, tax_rates.code as tax_code, tax_rates.name as tax_name, tax_rates.rate as tax_rate, products.image, products.details as details, product_variants.name as variant')
+        $this->db->select('sale_items.*, tax_rates.code as tax_code, tax_rates.name as tax_name, tax_rates.rate as tax_rate, products.image, products.details as details, products.price, product_variants.name as variant')
             ->join('products', 'products.id=sale_items.product_id', 'left')
             ->join('product_variants', 'product_variants.id=sale_items.option_id', 'left')
             ->join('tax_rates', 'tax_rates.id=sale_items.tax_rate_id', 'left')
@@ -283,7 +283,7 @@ class Sales_model extends CI_Model
         return FALSE;
     }
 
-    public function addSale($data = array(), $items = array(), $payment = array(), $si_return = array(), $return_original_discount = array())
+    public function addSale($data = array(), $items = array(), $payment = array(), $si_return = array(), $extra_data = array())
     {
         if (empty($si_return)) {
             $cost = $this->site->costing($items);
@@ -347,10 +347,10 @@ class Sales_model extends CI_Model
                 }
 
                 $this->db->update('sales', array(
-                        'total_discount' => $return_original_discount['return_total_discount'] - $data['total_discount'],
-                        'order_discount' => $return_original_discount['return_order_discount'] - $data['order_discount'],
+                        'total_discount' => $extra_data['return_total_discount'] - $data['total_discount'],
+                        'order_discount' => $extra_data['return_order_discount'] - $data['order_discount'],
                         'return_sale_ref' => $data['return_sale_ref'],
-                    'surcharge' => $data['surcharge'],'return_sale_total' => $data['grand_total'], 'return_id' => $sale_id), array('id' => $data['sale_id']));
+                    'surcharge' => $data['surcharge'], 'grand_total_extra' => $extra_data['tmp_grand_total_extra'],'return_sale_total' => $data['grand_total'], 'return_id' => $sale_id), array('id' => $data['sale_id']));
             }
 
             if ($data['payment_status'] == 'partial' || $data['payment_status'] == 'paid' && !empty($payment)) {

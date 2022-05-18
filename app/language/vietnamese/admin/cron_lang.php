@@ -42,5 +42,6 @@ $lang['received']                       = "Received";
 $lang['paid']                           = "Paid";
 $lang['taxes']                          = "Taxes";
 $lang['excute_update_option_name_extra']= "Excute Update Option Name Extra completed";
+$lang['excute_fix_product_costing']     = "Fix product costing completed";
 
 

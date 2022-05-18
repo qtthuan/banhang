@@ -179,7 +179,9 @@
                     $total_with_no_points = 0;
                     //$this->sma->print_arrays($inv, $rows);
                     //$this->sma->print_arrays($rows);
+
                     foreach ($rows as $row) {
+
                         if (strpos($row->product_name, 'ale') !== false || strpos($row->product_name, 'giảm') !== false) { // sản phẩm có chữ sale hoặc Sale
                             $is_saleoff++;
                         }
@@ -192,11 +194,16 @@
                         <td class="text-right"><?=$this->sma->formatQuantity($row->quantity)?></td>
                         <td class="text-right">
                             <?php
+
                                 echo $this->sma->formatMoney($row->unit_price);
-                                if ($row->item_discount > 0) {
+                                if ($row->item_discount != 0 || $row->is_promo == 1) {
                                     $is_saleoff++;
                                     $has_discount++;
-                                    echo '(<span style="text-decoration: line-through">' . $this->sma->formatMoney($row->real_unit_price + $row->added_price) . '</span>)';
+                                    if ($row->is_promo == 1) {
+                                        echo '(<span style="text-decoration: line-through">' . $this->sma->formatMoney($row->promo_original_price + $row->added_price) . '</span>)';
+                                    } elseif($row->item_discount != 0) {
+                                        echo '(<span style="text-decoration: line-through">' . $this->sma->formatMoney($row->real_unit_price + $row->added_price) . '</span>)';
+                                    }
                                 }
                                 if ($row->no_points == 1) {
                                     $is_saleoff++;
@@ -230,6 +237,15 @@
                                 <td class="text-right">
                                     <?php
                                         echo $this->sma->formatMoney($row->unit_price);
+                                    if ($row->item_discount != 0 || $row->is_promo == 1) {
+                                        $is_saleoff++;
+                                        $has_discount++;
+                                        if ($row->is_promo == 1) {
+                                            echo '(<span style="text-decoration: line-through">' . $this->sma->formatMoney($row->promo_original_price + $row->added_price) . '</span>)';
+                                        } elseif($row->item_discount != 0) {
+                                            echo '(<span style="text-decoration: line-through">' . $this->sma->formatMoney($row->real_unit_price + $row->added_price) . '</span>)';
+                                        }
+                                    }
                                     ?>
                                 </td>
                                 <td class="text-right"><?=$this->sma->formatMoney($row->subtotal)?></td>
@@ -248,7 +264,9 @@
                                 <span style="font-size: 13px"><?=lang("total_items");?>:&nbsp;<?=$inv->total_items;?></span>
                             </th>
                             <th colspan="2"><div style="margin-left: 2px;"><?=lang("total");?></div></th>
-                            <th class="text-right" colspan="2"><?=$this->sma->formatMoney($return_sale ? (($inv->total + $inv->product_tax)+($return_sale->total + $return_sale->product_tax)) : ($inv->total + $inv->product_tax));?></th>
+                            <th class="text-right" colspan="2">
+                                <?=$this->sma->formatMoney($return_sale ? (($inv->total + $inv->product_tax)+($return_sale->total + $return_sale->product_tax)) : ($inv->total + $inv->product_tax));?>
+                            </th>
                         </tr>
                         <?php
                         if ($inv->shipping != 0) {
@@ -367,7 +385,7 @@
                             <tr>
                                 <th style="border-top: none" colspan="2">&nbsp;</th>
                                 <th style="border-top: none" colspan="2"><div style="margin-left: 2px;"><?=lang("due_amount");?></div></th>
-                                <th style="border-top: none" class="text-right" colspan="2">cc
+                                <th style="border-top: none" class="text-right" colspan="2">
                                     <?=$this->sma->formatMoney(($return_sale ? (($inv->grand_total + $inv->rounding)+$return_sale->grand_total) : ($inv->grand_total + $inv->rounding)) - ($return_sale ? ($inv->paid+$return_sale->paid) : $inv->paid));?>
                                 </th>
                             </tr>

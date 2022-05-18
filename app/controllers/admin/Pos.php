@@ -184,6 +184,8 @@ class Pos extends MY_Controller
                 $item_unit = $_POST['product_unit'][$r];
                 $item_quantity = $_POST['product_base_quantity'][$r];
                 $no_points = $_POST['no_points'][$r];
+                $promo_original_price = $_POST['promo_original_price'][$r];
+                $is_promo = $_POST['is_promo'][$r];
 
                 if (isset($item_code) && isset($real_unit_price) && isset($unit_price) && isset($item_quantity)) {
                     $product_details = $item_type != 'manual' ? $this->pos_model->getProductByCode($item_code) : NULL;
@@ -251,9 +253,11 @@ class Pos extends MY_Controller
                         'serial_no'       => $item_serial,
                         'real_unit_price' => $real_unit_price,
                         'comment'         => $item_comment,
+                        'is_promo'        => $is_promo,
+                        'promo_original_price' => $promo_original_price,
                     );
 
-                    if ($no_points == 1 && $pr_item_discount == 0) {
+                    if (($no_points == 1 && $pr_item_discount == 0) || $is_promo == 1) {
                         $total_with_no_points += $this->sma->formatDecimal($item_net_price * $item_unit_quantity, 4);
                     }
 
@@ -343,7 +347,6 @@ class Pos extends MY_Controller
                           'order_discount_percent_for_return_sale'   => $this->input->post('order_discount_percent_for_return_sale'),
             );
             //$this->sma->print_arrays($data);
-
 
 
 
@@ -472,7 +475,7 @@ class Pos extends MY_Controller
             $this->data['oid'] = NULL;
             if ($duplicate_sale) {
                 if ($old_sale = $this->pos_model->getInvoiceByID($duplicate_sale)) {
-                    $this->sma->print_arrays($old_sale);
+                    //$this->sma->print_arrays($old_sale);
                     $inv_items = $this->pos_model->getSaleItems($duplicate_sale);
                     $this->data['oid'] = $duplicate_sale;
                     $this->data['old_sale'] = $old_sale;
@@ -524,7 +527,7 @@ class Pos extends MY_Controller
                         $row->code = $item->product_code;
                         $row->no_points = 1;
                         $row->name = $item->product_name;
-                        $row->type = $item->product_type;            
+                        $row->type = $item->product_type;
                         $row->quantity += $item->quantity;
                         $row->discount = $item->discount ? $item->discount : '0';
                         $row->price = $this->sma->formatDecimal($item->net_unit_price + $this->sma->formatDecimal($item->item_discount / $item->quantity));
@@ -564,7 +567,7 @@ class Pos extends MY_Controller
                         $units = $this->site->getUnitsByBUID($row->base_unit);
                         $tax_rate = $this->site->getTaxRateByID($row->tax_rate);
                         $ri = $this->Settings->item_addition ? $row->id : $c;
-                        
+
                         $pr[$ri] = array('id' => $c, 'item_id' => $row->id, 'no_points' => $no_points, 'label' => $row->name . " (" . $row->code . ")",
                                 'row' => $row, 'combo_items' => $combo_items, 'tax_rate' => $tax_rate, 'units' => $units, 'options' => $options);
                         $c++;
@@ -820,7 +823,7 @@ class Pos extends MY_Controller
                     }
                 }
             }
-            if ($row->promotion) {
+            if ($this->sma->isPromo($row)) {
                 $row->price = $row->promo_price;
             } elseif ($customer->price_group_id) {
                 if ($pr_group_price = $this->site->getProductGroupPrice($row->id, $customer->price_group_id)) {

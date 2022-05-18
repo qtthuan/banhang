@@ -1111,6 +1111,8 @@ class Sales extends MY_Controller
                 $item_unit = $_POST['product_unit'][$r];
                 $item_quantity = (0-$_POST['product_base_quantity'][$r]);
                 $no_points = $_POST['no_points'][$r];
+                $is_promo = $_POST['is_promo'][$r];
+                $promo_original_price = $_POST['promo_original_price'][$r];
 
                 if (isset($item_code) && isset($real_unit_price) && isset($unit_price) && isset($item_quantity)) {
                     $product_details = $item_type != 'manual' ? $this->sales_model->getProductByCode($item_code) : null;
@@ -1169,7 +1171,7 @@ class Sales extends MY_Controller
                     $subtotal = $this->sma->formatDecimal((($item_net_price * $item_unit_quantity) + $pr_item_tax), 4);
                     $unit = $item_unit ? $this->site->getUnitByID($item_unit) : FALSE;
 
-                    if ($no_points == 1 && $pr_item_discount == 0) {
+                    if (($is_promo == 1 && $promo_original_price > 0) || ($no_points == 1 && $pr_item_discount == 0)) {
                         $total_with_no_points += $this->sma->formatDecimal($item_net_price * $item_unit_quantity, 4);
                     }
 
@@ -1195,6 +1197,8 @@ class Sales extends MY_Controller
                         'serial_no' => $item_serial,
                         'real_unit_price' => $real_unit_price,
                         'sale_item_id' => $sale_item_id,
+                        'is_promo' => $is_promo,
+                        'promo_original_price' => $promo_original_price,
                     );
 
                     $si_return[] = array(
@@ -1277,7 +1281,6 @@ class Sales extends MY_Controller
                 'surcharge' => $this->sma->formatDecimal($return_surcharge),
                 'grand_total' => (0-$this->input->post('amount-paid')),
                 'grand_total_extra' => $grand_total_extra,
-                'grand_total_extra' => $grand_total_extra,
                 'created_by' => $this->session->userdata('user_id'),
                 'return_sale_ref' => $reference,
                 'sale_status' => 'returned',
@@ -1323,14 +1326,15 @@ class Sales extends MY_Controller
                 $data['attachment'] = $photo;
             }
 
-            $return_original_discount =  array(
+            $extra_data =  array(
                 'return_total_discount' => $sale->total_discount,
                 'return_order_discount' => $sale->order_discount,
+                'tmp_grand_total_extra' => $sale->grand_total_extra + $grand_total_extra,  // Cập nhật lại tổng bill gốc còn lại sau khi trả hàng
             );
-            //$this->sma->print_arrays($data, $products, $payment, $si_return, $return_original_discount);
+            //$this->sma->print_arrays($data, $products, $payment, $si_return, $extra_data);
         }
 
-        if ($this->form_validation->run() == true && $this->sales_model->addSale($data, $products, $payment, $si_return, $return_original_discount)) {
+        if ($this->form_validation->run() == true && $this->sales_model->addSale($data, $products, $payment, $si_return, $extra_data)) {
             $this->session->set_flashdata('message', lang("return_sale_added"));
             admin_redirect($sale->pos ? "pos/sales" : "sales");
         } else {
@@ -1387,6 +1391,8 @@ class Sales extends MY_Controller
                 $row->tax_rate = $item->tax_rate_id;
                 $row->serial = $item->serial_no;
                 $row->option = $item->option_id;
+                $row->original_price = $item->price;
+                $row->is_promo = $item->is_promo;
                 $options = $this->sales_model->getProductOptions($row->id, $item->warehouse_id, true);
                 $units = $this->site->getUnitsByBUID($row->base_unit);
                 $tax_rate = $this->site->getTaxRateByID($row->tax_rate);
@@ -2135,6 +2141,7 @@ class Sales extends MY_Controller
                 $row->qty = 1;
                 $row->discount = '0';
                 $row->serial = '';
+                $row->original_price = 0;
                 $options = $this->sales_model->getProductOptions($row->id, $warehouse_id);
                 if ($options) {
                     $opt = $option_id && $r == 0 ? $this->sales_model->getProductOptionByID($option_id) : $options[0];
@@ -2167,14 +2174,17 @@ class Sales extends MY_Controller
                         }
                     }
                 }
-                if ($row->promotion) {
+                if ($this->sma->isPromo($row)) {
+                    $row->original_price = $row->price;
                     $row->price = $row->promo_price;
                 } elseif ($customer->price_group_id) {
                     if ($pr_group_price = $this->site->getProductGroupPrice($row->id, $customer->price_group_id)) {
+                        $row->original_price = $row->price;
                         $row->price = $pr_group_price->price;
                     }
                 } elseif ($warehouse->price_group_id) {
                     if ($pr_group_price = $this->site->getProductGroupPrice($row->id, $warehouse->price_group_id)) {
+                        $row->original_price = $row->price;
                         $row->price = $pr_group_price->price;
                     }
                 }
