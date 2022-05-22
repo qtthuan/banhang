@@ -72,6 +72,10 @@ class Cron_model extends CI_Model
         if ($this->fixProductCostingOnEditInfo()) {
             $m .= '<p>' . sprintf(lang('excute_fix_product_costing'), $date) . '</p>';
         }
+
+        if ($this->AdjustBillDateOnCosting()) {
+            $m .= '<p>' . sprintf(lang('excute_adjust_bill_date_costing'), $date) . '</p>';
+        }
 //        if ($this->excuteUpdateGrandTotalSaleExtra()) {
 //            $m .= '<p>' . sprintf('update grand total extra ok', $date) . '</p>';
 //        }
@@ -450,6 +454,39 @@ class Cron_model extends CI_Model
                 }
             }
 
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+    /**
+     * @qtthuan
+     * Điều chỉnh ngày bị lệch giữa table sale và costing => Báo cáo chi phí lợi nhuận theo ngày chưa đúng
+     *
+     */
+    public function AdjustBillDateOnCosting() {
+
+        $query = "SELECT sales.id, sales.customer, sales.reference_no, sales.date as bill_date, cost.date as cost_date, cost.quantity, cost.purchase_net_unit_cost, cost.sale_net_unit_price, sales.sale_status";
+        $query .= " FROM " . $this->db->dbprefix('sales') . " AS sales LEFT JOIN";
+        $query .= " " . $this->db->dbprefix('costing') . " AS cost ON sales.id=cost.sale_id";
+        $query .= " WHERE date_format(sales.date, '%Y-%m-%e') <> date_format(cost.date, '%Y-%m-%e')";
+        $query .= " AND sales.sale_status <> 'returned'";
+        $q = $this->db->query($query);
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $this->db->where('sale_id', $row->id);
+                if ($this->db->update('costing', array('date' => $this->sma->fld(trim($row->bill_date))))) {
+                    $str_content =  'Sale_id: ' . $row->id . ' | No: ' . $row->reference_no . ' | Customer: ' . $row->customer;
+                    $str_content .= ' | Change costing date from ' . $row->cost_date;
+                    $str_content .= ' to ' . $this->sma->fld(trim($row->bill_date));
+                    $data_tracking = array(
+                        'task' => lang('task_adjust_bill_date_costing'),
+                        'content' =>  $str_content,
+                        'tracking_date' => date('Y-m-d H:i:s'));
+
+                    $this->db->insert('cron_tracking', $data_tracking);
+                }
+            }
             return TRUE;
         }
         return FALSE;
