@@ -462,6 +462,7 @@ class Cron_model extends CI_Model
      */
     public function fixProductCostingOnEditInfo() {
 
+        $isOk = 0;
 
         $query1 = "SELECT DISTINCT pro.id, pro.name, pro.code, pro.cost, purchase.net_unit_cost, purchase.quantity, pro.created_date";
         $query1 .= " FROM " . $this->db->dbprefix('products') . " AS pro LEFT JOIN";
@@ -490,54 +491,65 @@ class Cron_model extends CI_Model
 
                     $this->db->insert('cron_tracking', $data_tracking);
                 }
-
-                $query2 = "SELECT * FROM " . $this->db->dbprefix('costing') . " WHERE ";
-                $query2 .= " product_id = " . $row->id . " AND purchase_net_unit_cost <> " . $row->cost;
-                $q2 = $this->db->query($query2);
-                if ($q2->num_rows() > 0) {
-
-                // Fix cost difference between products and costing
-                    $this->db->where('product_id', $row->id);
-                    if ($this->db->update('costing',
-                        array(
-                            'purchase_net_unit_cost' => $row->cost,
-                            'purchase_unit_cost' => $row->cost))) {
-                        $str_content =  'Pro_id: ' . $row->id . ' | Code: ' . $row->code . ' | Name: ' . $row->name;
-                        $str_content .= ' | Change cost from ' . $this->sma->formatMoney($row->net_unit_cost);
-                        $str_content .= ' to ' . $this->sma->formatMoney($row->cost);
-                        $data_tracking = array(
-                            'task' => lang('task_fix_cost_on_costing'),
-                            'content' =>  $str_content,
-                            'tracking_date' => date('Y-m-d H:i:s'));
-
-                        $this->db->insert('cron_tracking', $data_tracking);
-                    }
-                }
-
-                $query3 = "SELECT * FROM " . $this->db->dbprefix('warehouses_products') . " WHERE ";
-                $query3 .= " product_id = " . $row->id . " AND avg_cost <> " . $row->cost;
-                $q3 = $this->db->query($query3);
-                if ($q3->num_rows() > 0) {
-
-                    // Fix cost difference between products and warehouses products
-                    $this->db->where('product_id', $row->id);
-                    if ($this->db->update('warehouses_products', array('avg_cost' => $row->cost))) {
-                        $str_content =  'Pro_id: ' . $row->id . ' | Code: ' . $row->code . ' | Name: ' . $row->name;
-                        $str_content .= ' | Change cost from ' . $this->sma->formatMoney($row->net_unit_cost);
-                        $str_content .= ' to ' . $this->sma->formatMoney($row->cost);
-                        $data_tracking = array(
-                            'task' => lang('task_fix_cost_on_warehouses_pro'),
-                            'content' =>  $str_content,
-                            'tracking_date' => date('Y-m-d H:i:s'));
-
-                        $this->db->insert('cron_tracking', $data_tracking);
-                    }
-                }
             }
-            return TRUE;
+            $isOk += 1;
         }
 
-        return FALSE;
+        $query2 = "SELECT DISTINCT pro.id, pro.name, pro.code, pro.cost, cost.purchase_net_unit_cost, pro.created_date ";
+        $query2 .= " FROM " . $this->db->dbprefix('products') . " AS pro JOIN " . $this->db->dbprefix('costing') . " AS cost ";
+        $query2 .= " ON pro.id = cost.product_id WHERE pro.cost <> cost.purchase_net_unit_cost";
+
+        $q2 = $this->db->query($query2);
+        if ($q2->num_rows() > 0) {
+            foreach (($q2->result()) as $row) {
+                // Fix cost difference between products and costing
+                $this->db->where('product_id', $row->id);
+                if ($this->db->update('costing',
+                    array(
+                        'purchase_net_unit_cost' => $row->cost,
+                        'purchase_unit_cost' => $row->cost))) {
+                    $str_content =  'Pro_id: ' . $row->id . ' | Code: ' . $row->code . ' | Name: ' . $row->name;
+                    $str_content .= ' | Change cost from ' . $this->sma->formatMoney($row->purchase_net_unit_cost);
+                    $str_content .= ' to ' . $this->sma->formatMoney($row->cost);
+                    $data_tracking = array(
+                        'task' => lang('task_fix_cost_on_costing'),
+                        'content' =>  $str_content,
+                        'tracking_date' => date('Y-m-d H:i:s'));
+
+                    $this->db->insert('cron_tracking', $data_tracking);
+                }
+            }
+            $isOk += 1;
+        }
+
+        $query3 = "SELECT pro.id, pro.name, pro.code, pro.cost, ware.avg_cost, pro.created_date ";
+        $query3 .= " FROM " . $this->db->dbprefix('products') . " AS pro JOIN " . $this->db->dbprefix('warehouses_products') . " AS ware ";
+        $query3 .= " ON pro.id = ware.product_id WHERE pro.cost <> ware.avg_cost";
+
+        $q3 = $this->db->query($query3);
+        if ($q3->num_rows() > 0) {
+            foreach (($q3->result()) as $row) {
+                // Fix cost difference between products and warehouses products
+                $this->db->where('product_id', $row->id);
+                if ($this->db->update('warehouses_products', array('avg_cost' => $row->cost))) {
+                    $str_content =  'Pro_id: ' . $row->id . ' | Code: ' . $row->code . ' | Name: ' . $row->name;
+                    $str_content .= ' | Change cost from ' . $this->sma->formatMoney($row->avg_cost);
+                    $str_content .= ' to ' . $this->sma->formatMoney($row->cost);
+                    $data_tracking = array(
+                        'task' => lang('task_fix_cost_on_warehouses_pro'),
+                        'content' =>  $str_content,
+                        'tracking_date' => date('Y-m-d H:i:s'));
+
+                    $this->db->insert('cron_tracking', $data_tracking);
+                }
+            }
+            $isOk += 1;
+        }
+        if ($isOk > 0) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
     /**
