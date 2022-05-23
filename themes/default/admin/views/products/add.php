@@ -91,6 +91,29 @@ if (!empty($variants)) {
                         <?= lang("product_price", "price") ?>
                         <?= form_input('price', (isset($_POST['price']) ? $_POST['price'] : ($product ? $this->sma->formatDecimal($product->price) : '')), 'class="form-control tip" id="price" required="required"') ?>
                     </div>
+                    <div class="form-group">
+                        <input type="checkbox" class="checkbox" value="1" name="promotion" id="promotion" <?= $this->input->post('promotion') ? 'checked="checked"' : ''; ?>>
+                        <label for="promotion" class="padding05">
+                            <?= lang('promotion'); ?>
+                        </label>
+                    </div>
+
+                    <div id="promo" style="display:none;">
+                        <div class="well well-sm">
+                            <div class="form-group">
+                                <?= lang('promo_price', 'promo_price'); ?>
+                                <?= form_input('promo_price', set_value('promo_price'), 'class="form-control tip" id="promo_price"'); ?>
+                            </div>
+                            <div class="form-group">
+                                <?= lang('start_date', 'start_date'); ?>
+                                -<?= form_input('start_date', set_value('start_date'), 'class="form-control tip date" id="start_date"'); ?>
+                            </div>
+                            <div class="form-group">
+                                <?= lang('end_date', 'end_date'); ?>
+                                <?= form_input('end_date', set_value('end_date'), 'class="form-control tip date" id="end_date"'); ?>
+                            </div>
+                        </div>
+                    </div>
                     <div class="form-group all">
                         <?= lang('slug', 'slug'); ?>
                         <?= form_input('slug', set_value('slug'), 'class="form-control tip" id="slug" required="required"'); ?>
@@ -131,30 +154,7 @@ if (!empty($variants)) {
                             ?>
                         </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <input type="checkbox" class="checkbox" value="1" name="promotion" id="promotion" <?= $this->input->post('promotion') ? 'checked="checked"' : ''; ?>>
-                        <label for="promotion" class="padding05">
-                            <?= lang('promotion'); ?>
-                        </label>
-                    </div>
 
-                    <div id="promo" style="display:none;">
-                        <div class="well well-sm">
-                            <div class="form-group">
-                                <?= lang('promo_price', 'promo_price'); ?>
-                                <?= form_input('promo_price', set_value('promo_price'), 'class="form-control tip" id="promo_price"'); ?>
-                            </div>
-                            <div class="form-group">
-                                <?= lang('start_date', 'start_date'); ?>
-                                -<?= form_input('start_date', set_value('start_date'), 'class="form-control tip date" id="start_date"'); ?>
-                            </div>
-                            <div class="form-group">
-                                <?= lang('end_date', 'end_date'); ?>
-                                <?= form_input('end_date', set_value('end_date'), 'class="form-control tip date" id="end_date"'); ?>
-                            </div>
-                        </div>
-                    </div>
                     <div class="form-group">
                         <input name="featured" type="checkbox" class="checkbox" id="featured" value="1" <?= isset($_POST['featured']) ? 'checked="checked"' : '' ?>/>
                         <label for="featured" class="padding05"><?= lang('featured') ?></label>
