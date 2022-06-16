@@ -493,6 +493,7 @@ $('#posdiscount').focus(function () {
         var row_id = row.attr('id');
         item_id = row.attr('data-item-id');
         item = positems[item_id];
+        console.log(JSON.stringify(item));
         var qty = row.children().children('.rquantity').val(),
         product_option = row.children().children('.roption').val(),
         unit_price = formatDecimal(row.children().children('.ruprice').val()),
@@ -508,9 +509,11 @@ $('#posdiscount').focus(function () {
 
         var real_unit_price = item.row.real_unit_price;
         var net_price = unit_price;
+        var start_date = item.row.start_date;
+        var end_date = item.row.end_date;
         $('#prModalLabel').text(item.row.code + ' - ' + item.row.name);
 
-        if (item.row.promotion) {
+        if (item.row.promotion && checkValidPromotionDate(start_date, end_date)) {
             $('#pdiscount').attr('readonly', true);
             $('#price_after_discount').attr('readonly', true);
             $('#pprice').attr('readonly', true);
