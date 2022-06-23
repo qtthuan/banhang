@@ -3,6 +3,7 @@
     var count = 1, an = 1;
     var type_opt = {'addition': '<?= lang('addition'); ?>', 'subtraction': '<?= lang('subtraction'); ?>'};
     $(document).ready(function () {
+        select_warehouse_id = 1;
         if (localStorage.getItem('remove_qals')) {
             if (localStorage.getItem('qaitems')) {
                 localStorage.removeItem('qaitems');
@@ -47,17 +48,35 @@
         $(document).on('change', '#qadate', function (e) {
             localStorage.setItem('qadate', $(this).val());
         });
+
         if (qadate = localStorage.getItem('qadate')) {
             $('#qadate').val(qadate);
         }
+
         <?php } ?>
-        
+
         $("#add_item").autocomplete({
-            source: '<?= admin_url('products/qa_suggestions'); ?>',
-            minLength: 1,
+            source: function (request, response) {
+                $.ajax({
+                    type: 'get',
+                    url: '<?=admin_url('products/qa_suggestions');?>',
+                    dataType: "json",
+                    data: {
+                        term: request.term,
+                        warehouse_id: $("#qawarehouse").val()
+                    },
+                    success: function (data) {
+                        $(this).removeClass('ui-autocomplete-loading');
+                        //console.log(JSON.stringify(data));
+                        response(data);
+                    }
+                });
+            },
+            minLength: 2,
             autoFocus: false,
             delay: 3000,
             response: function (event, ui) {
+                console.log($("#qawarehouse").val() + '##');
                 if ($(this).val().length >= 16 && ui.content[0].id == 0) {
                     bootbox.alert('<?= lang('no_match_found') ?>', function () {
                         $('#add_item').focus();

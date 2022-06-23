@@ -215,6 +215,14 @@ class Products_model extends CI_Model
         return FALSE;
     }
 
+    public function getWarehouseByProduct($product_id) {
+        $q = $this->db->get_where('warehouses_products', array('product_id' => $product_id), 1);
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }
+        return FALSE;
+    }
+
     public function getAllWarehousesWithPQ($product_id)
     {
         $this->db->select('' . $this->db->dbprefix('warehouses') . '.*, ' . $this->db->dbprefix('warehouses_products') . '.quantity,' . $this->db->dbprefix('warehouses_products') . '.rack')
@@ -397,11 +405,7 @@ class Products_model extends CI_Model
 
                     }
 
-                    foreach ($warehouses as $warehouse) {
-                        if (!$this->getWarehouseProductVariant($warehouse->id, $product_id, $option_id)) {
-                            $this->db->insert('warehouses_products_variants', array('option_id' => $option_id, 'product_id' => $product_id, 'warehouse_id' => $warehouse->id, 'quantity' => 0));
-                        }
-                    }
+
 
                     $this->site->syncVariantQty($option_id, $variant_warehouse_id);
                 }
@@ -478,10 +482,11 @@ class Products_model extends CI_Model
         return false;
     }
 
-    public function getQASuggestions($term, $limit = 5)
+    public function getQASuggestions($term, $warehouse_id, $limit = 5)
     {
-        $this->db->select('' . $this->db->dbprefix('products') . '.id, code, ' . $this->db->dbprefix('products') . '.name as name')
-            ->where("type != 'combo' AND "
+        $this->db->select($this->db->dbprefix('products') . '.id, code, ' . $this->db->dbprefix('products') . '.name as name')
+            ->join('warehouses_products', 'warehouses_products.product_id=products.id', 'left')
+            ->where("type != 'combo' AND warehouses_products.warehouse_id = " . $warehouse_id . " AND "
                 . "(" . $this->db->dbprefix('products') . ".name LIKE '%" . $term . "%' OR code LIKE '%" . $term . "%' OR
                 concat(" . $this->db->dbprefix('products') . ".name, ' (', code, ')') LIKE '%" . $term . "%')")
             ->limit($limit);

@@ -674,8 +674,9 @@ class Products extends MY_Controller
                 $photos = NULL;
             }
             $data['quantity'] = isset($wh_total_quantity) ? $wh_total_quantity : 0;
-            // $this->sma->print_arrays($data, $warehouse_qty, $product_attributes);
         }
+
+        //$this->sma->print_arrays($warehouse_qty, $product_attributes);
 
         if ($this->form_validation->run() == true && $this->products_model->addProduct($data, $items, $warehouse_qty, $product_attributes, $photos)) {
             $this->session->set_flashdata('message', lang("product_added"));
@@ -689,6 +690,7 @@ class Products extends MY_Controller
             $this->data['base_units'] = $this->site->getAllBaseUnits();
             $this->data['warehouses'] = $warehouses;
             $this->data['warehouses_products'] = $id ? $this->products_model->getAllWarehousesWithPQ($id) : NULL;
+            $this->data['warehouse_by_product_id'] = $id ? $this->products_model->getWarehouseByProduct($id) : NULL;
             $this->data['product'] = $id ? $this->products_model->getProductByID($id) : NULL;
             $this->data['variants'] = $this->products_model->getAllVariants();
             $this->data['combo_items'] = ($id && $this->data['product']->type == 'combo') ? $this->products_model->getProductComboItems($id) : NULL;
@@ -2188,6 +2190,7 @@ class Products extends MY_Controller
     public function qa_suggestions()
     {
         $term = $this->input->get('term', true);
+        $warehouse_id = $this->input->get('warehouse_id', true);
        
         if (strlen($term) < 1 || !$term) {
             die("<script type='text/javascript'>setTimeout(function(){ window.top.location.href = '" . admin_url('welcome') . "'; }, 10);</script>");
@@ -2199,7 +2202,7 @@ class Products extends MY_Controller
         $product_option = $this->products_model->getProductOptionsByOptionNameExtra($analyzed['option_id'], $sr);
         $option_id = $product_option->id;
 
-        $rows = $this->products_model->getQASuggestions($sr);
+        $rows = $this->products_model->getQASuggestions($sr, $warehouse_id, 20);
         if ($rows) {
             foreach ($rows as $row) {
                 $row->qty = 1;
@@ -2209,7 +2212,6 @@ class Products extends MY_Controller
 
                 $pr[] = array('id' => str_replace(".", "", microtime(true)), 'item_id' => $row->id, 'label' => $row->name . " (" . $row->code . ")",
                     'row' => $row, 'options' => $options);
-
             }
             $this->sma->send_json($pr);
         } else {

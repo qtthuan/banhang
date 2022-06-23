@@ -1804,6 +1804,8 @@ var lang = {
 
         $("#add_item").autocomplete({
             source: function (request, response) {
+
+
                 if (!$('#poscustomer').val()) {
                     $('#add_item').val('').removeClass('ui-autocomplete-loading');
                     bootbox.alert('<?=lang('select_above');?>');
@@ -1822,7 +1824,7 @@ var lang = {
                     },
                     success: function (data) {
                         $(this).removeClass('ui-autocomplete-loading');
-                        console.log(JSON.stringify(data));
+                        //console.log(JSON.stringify(data));
                         response(data);
                     }
                 });

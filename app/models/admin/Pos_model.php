@@ -1106,9 +1106,9 @@ class Pos_model extends CI_Model
             'order_discount_id' => $data['order_discount_id'],
             'shipping' => $data['shipping'],
             'return_amount' => $data['return_amount'],
-
             'created_by' => $this->session->userdata('user_id')
         );
+
 
         if ($did) {
 
@@ -1118,6 +1118,8 @@ class Pos_model extends CI_Model
                 foreach ($items as &$var) {
                     $var = array_merge($addOn, $var);
                 }
+                unset($var['is_promo']);
+                unset($var['promo_original_price']);
                 if ($this->db->insert_batch('suspended_items', $items)) {
                     return TRUE;
                 }
@@ -1132,6 +1134,9 @@ class Pos_model extends CI_Model
                 foreach ($items as &$var) {
                     $var = array_merge($addOn, $var);
                 }
+                unset($var['is_promo']);
+                unset($var['promo_original_price']);
+                //return $var;
                 if ($this->db->insert_batch('suspended_items', $items)) {
                     return TRUE;
                 }

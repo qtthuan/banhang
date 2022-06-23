@@ -31,10 +31,25 @@
         <?php } ?>
         
         $("#add_item").autocomplete({
-            source: '<?= admin_url('products/qa_suggestions'); ?>',
-            minLength: 5,
+            source: function (request, response) {
+                $.ajax({
+                    type: 'get',
+                    url: '<?=admin_url('products/qa_suggestions');?>',
+                    dataType: "json",
+                    data: {
+                        term: request.term,
+                        warehouse_id: $("#qawarehouse").val()
+                    },
+                    success: function (data) {
+                        $(this).removeClass('ui-autocomplete-loading');
+                        //console.log(JSON.stringify(data));
+                        response(data);
+                    }
+                });
+            },
+            minLength: 2,
             autoFocus: false,
-            delay: 250,
+            delay: 3000,
             response: function (event, ui) {
                 if ($(this).val().length >= 16 && ui.content[0].id == 0) {
                     bootbox.alert('<?= lang('no_match_found') ?>', function () {

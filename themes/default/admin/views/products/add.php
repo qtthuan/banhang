@@ -280,6 +280,21 @@ if (!empty($variants)) {
                             <strong><?= lang("warehouse_quantity") ?></strong><br>
                             <?php
                             if (!empty($warehouses)) {
+                            ?>
+                                <div class="form-group">
+                                    <?php
+                                    $ware[''] = "";
+                                    foreach ($warehouses as $warehouse) {
+                                        $ware[$warehouse->id] = $warehouse->name;
+                                        ?>
+                                        <input type="hidden" id="select_wh_<?=$warehouse->id?>" name="select_wh_<?=$warehouse->id?>" value="<?=$warehouse->id?>" />
+                                        <?php
+                                    }
+                                    echo form_dropdown('drop_select_wh', $ware, (isset($_POST['drop_select_wh']) ? $_POST['drop_select_wh'] : ($product ? $warehouse->id : 1)), 'class="form-control select" id="drop_select_wh" placeholder="' . lang("select_warehouse") . '" required="required" style="width:100%"')
+                                    ?>
+                                </div>
+                            <?php
+
                                 if ($product) {
                                     echo '<div class="row"><div class="col-md-12"><div class="well"><div id="show_wh_edit">';
                                     if (!empty($warehouses_products)) {
@@ -291,9 +306,9 @@ if (!empty($variants)) {
                                     }
                                     foreach ($warehouses as $warehouse) {
                                         //$whs[$warehouse->id] = $warehouse->name;
-                                        echo '<div class="col-md-6 col-sm-6 col-xs-6" style="padding-bottom:5px;">' . $warehouse->name . '<br><div class="form-group">' . form_hidden('wh_' . $warehouse->id, $warehouse->id) . form_input('wh_qty_' . $warehouse->id, (isset($_POST['wh_qty_' . $warehouse->id]) ? $_POST['wh_qty_' . $warehouse->id] : (isset($warehouse->quantity) ? $warehouse->quantity : '')), 'class="form-control wh" id="wh_qty_' . $warehouse->id . '" placeholder="' . lang('quantity') . '"') . '</div>';
+                                        echo '<div class="col-md-6 col-sm-6 col-xs-6 box_wh" style="padding-bottom:5px; display: none;" id="box_wh_' . $warehouse->id . '">' . $warehouse->name . '<br><div class="form-group">' . form_hidden('wh_' . $warehouse->id, $warehouse->id) . form_input('wh_qty_' . $warehouse->id, (isset($_POST['wh_qty_' . $warehouse->id]) ? $_POST['wh_qty_' . $warehouse->id] : (isset($warehouse->quantity) ? $warehouse->quantity : '')), 'class="form-control wh" id="wh_qty_' . $warehouse->id . '" placeholder="' . lang('quantity') . '"') . '</div>';
                                         if ($Settings->racks) {
-                                            echo '<div class="form-group">' . form_input('rack_' . $warehouse->id, (isset($_POST['rack_' . $warehouse->id]) ? $_POST['rack_' . $warehouse->id] : (isset($warehouse->rack) ? $warehouse->rack : '')), 'class="form-control wh" id="rack_' . $warehouse->id . '" placeholder="' . lang('rack') . '"') . '</div>';
+                                            echo '<div class="form-group" id="rack_wh_' . $warehouse->id . '" style="display:none;">' . form_input('rack_' . $warehouse->id, (isset($_POST['rack_' . $warehouse->id]) ? $_POST['rack_' . $warehouse->id] : (isset($warehouse->rack) ? $warehouse->rack : '')), 'class="form-control wh rack_wh" id="rack_' . $warehouse->id . '" placeholder="' . lang('rack') . '"') . '</div>';
                                         }
                                         echo '</div>';
                                     }
@@ -302,9 +317,9 @@ if (!empty($variants)) {
                                     echo '<div class="row"><div class="col-md-12"><div class="well">';
                                     foreach ($warehouses as $warehouse) {
                                         //$whs[$warehouse->id] = $warehouse->name;
-                                        echo '<div class="col-md-6 col-sm-6 col-xs-6" style="padding-bottom:5px;">' . $warehouse->name . '<br><div class="form-group">' . form_hidden('wh_' . $warehouse->id, $warehouse->id) . form_input('wh_qty_' . $warehouse->id, (isset($_POST['wh_qty_' . $warehouse->id]) ? $_POST['wh_qty_' . $warehouse->id] : ''), 'class="form-control" id="wh_qty_' . $warehouse->id . '" placeholder="' . lang('quantity') . '"') . '</div>';
+                                        echo '<div class="col-md-6 col-sm-6 col-xs-6 box_wh" style="padding-bottom:5px; display: none;" id="box_wh_' . $warehouse->id . '">' . $warehouse->name . '<br><div class="form-group">' . form_hidden('wh_' . $warehouse->id, $warehouse->id) . form_input('wh_qty_' . $warehouse->id, (isset($_POST['wh_qty_' . $warehouse->id]) ? $_POST['wh_qty_' . $warehouse->id] : ''), 'class="form-control" id="wh_qty_' . $warehouse->id . '" placeholder="' . lang('quantity') . '"') . '</div>';
                                         if ($Settings->racks) {
-                                            echo '<div class="form-group">' . form_input('rack_' . $warehouse->id, (isset($_POST['rack_' . $warehouse->id]) ? $_POST['rack_' . $warehouse->id] : ''), 'class="form-control" id="rack_' . $warehouse->id . '" placeholder="' . lang('rack') . '"') . '</div>';
+                                            echo '<div class="form-group" id="rack_wh_' . $warehouse->id . '" style="display:none;">' . form_input('rack_' . $warehouse->id, (isset($_POST['rack_' . $warehouse->id]) ? $_POST['rack_' . $warehouse->id] : ''), 'class="form-control rack_wh" id="rack_' . $warehouse->id . '" placeholder="' . lang('rack') . '"') . '</div>';
                                         }
                                         echo '</div>';
                                     }
@@ -541,6 +556,16 @@ if (!empty($variants)) {
             var v = $(this).val();
             if (v) {
                 $('#code').val(($('#category_code' + v).val()));
+            }
+
+        });
+        $('#drop_select_wh').change(function () {
+            var v = $(this).val();
+            if (v) {
+                $(".box_wh").hide();
+                $(".rack_wh").hide
+                $("#box_wh_" + v).show();
+                $("#rack_wh_" + v).show();
             }
 
         });
@@ -812,7 +837,14 @@ if (!empty($variants)) {
                 if (attrs[i] !== '') {
                     <?php if( ! empty($warehouses)) {
                         foreach ($warehouses as $warehouse) {
-                            echo '$(\'#attrTable\').show().append(\'<tr class="attr"><td><input type="hidden" name="attr_name[]" value="\' + attrs[i] + \'"><span>\' + attrs[i] + \'</span></td><td class="code text-center"><input type="hidden" name="attr_warehouse[]" value="'.$warehouse->id.'"><span>'.$warehouse->name.'</span></td><td class="quantity text-center"><input type="hidden" name="attr_quantity[]" value="1"><span>1</span></td><td class="price text-right"><input type="hidden" name="attr_price[]" value="0"><span>0</span></span></td><td class="text-center"><i class="fa fa-times delAttr"></i></td></tr>\');';
+                    ?>
+                            if($("#drop_select_wh").val() == <?=$warehouse->id;?>) {
+                    <?php
+
+                                echo '$(\'#attrTable\').show().append(\'<tr class="attr"><td><input type="hidden" name="attr_name[]" value="\' + attrs[i] + \'"><span>\' + attrs[i] + \'</span></td><td class="code text-center"><input type="hidden" name="attr_warehouse[]" value="'.$warehouse->id.'"><span>'.$warehouse->name.'</span></td><td class="quantity text-center"><input type="hidden" name="attr_quantity[]" value="1"><span>1</span></td><td class="price text-right"><input type="hidden" name="attr_price[]" value="0"><span>0</span></span></td><td class="text-center"><i class="fa fa-times delAttr"></i></td></tr>\');';
+                    ?>
+                            }
+                    <?php
                         }
                     } else { ?>
                         $('#attrTable').show().append('<tr class="attr"><td><input type="hidden" name="attr_name[]" value="' + attrs[i] + '"><span>' + attrs[i] + '</span></td><td class="code text-center"><input type="hidden" name="attr_warehouse[]" value=""><span></span></td><td class="quantity text-center"><input type="hidden" name="attr_quantity[]" value="0"><span></span></td><td class="price text-right"><input type="hidden" name="attr_price[]" value="0"><span>0</span></span></td><td class="text-center"><i class="fa fa-times delAttr"></i></td></tr>');
@@ -824,11 +856,14 @@ if (!empty($variants)) {
             <?php
                 if( ! empty($warehouses)) {
                     foreach ($warehouses as $warehouse) {
+
             ?>
-                        if (!isNaN(parseInt($('#wh_qty_' + <?=$warehouse->id?>).val()))) {
-                            current_qty = parseInt($('#wh_qty_' + <?=$warehouse->id?>).val());
+                        if($("#drop_select_wh").val() == <?=$warehouse->id;?>) {
+                            if (!isNaN(parseInt($('#wh_qty_' + <?=$warehouse->id?>).val()))) {
+                                current_qty = parseInt($('#wh_qty_' + <?=$warehouse->id?>).val());
+                            }
+                            $('#wh_qty_' + <?=$warehouse->id?>).val(current_qty + rows);
                         }
-                        $('#wh_qty_' + <?=$warehouse->id?>).val(current_qty + rows);
             <?php
                     }
                 }
@@ -844,11 +879,12 @@ if (!empty($variants)) {
                 if( ! empty($warehouses)) {
                     foreach ($warehouses as $warehouse) {
             ?>
-                        var wh_qty_rows = $('#wh_qty_' + <?=$warehouse->id?>).val();
-                        if (!isNaN(wh_qty_rows)) {
-                            $('#wh_qty_' + <?=$warehouse->id?>).val(wh_qty_rows - parseInt($(this).closest('tr').children('td:eq(2)').text()));
+                        if($("#drop_select_wh").val() == <?=$warehouse->id;?>) {
+                            var wh_qty_rows = $('#wh_qty_' + <?=$warehouse->id?>).val();
+                            if (!isNaN(wh_qty_rows)) {
+                                $('#wh_qty_' + <?=$warehouse->id?>).val(wh_qty_rows - parseInt($(this).closest('tr').children('td:eq(2)').text()));
+                            }
                         }
-
             <?php
                     }
                 }
@@ -1058,6 +1094,11 @@ if (!empty($variants)) {
 
             }
         });
+        <?php if (!empty($product)) { ?>
+        $('#drop_select_wh').val(<?=$warehouse_by_product_id->warehouse_id?>);
+        <?php } ?>
+        $("#box_wh_"+ $('#drop_select_wh').val()).show()
+        $("#rack_wh_"+ $('#drop_select_wh').val()).show()
     });
 </script>
 

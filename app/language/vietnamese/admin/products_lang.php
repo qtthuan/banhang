@@ -56,6 +56,7 @@ $lang['service']                            = "Dịch vụ";
 $lang['you_scan_your_barcode_too']          = "Bạn có thể quét máy quét mã vạch của bạn";
 $lang['supplier_price']                     = "Giá nhà cung cấp";
 $lang['warehouse_quantity']                 = "Số lượng trong kho";
+$lang['select_warehouse']                   = "Chọn kho hàng";
 $lang['cost']                               = "Giá nhập";
 $lang['price']                              = "Giá";
 $lang['created_date']                       = "Ngày tạo";

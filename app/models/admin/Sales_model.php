@@ -17,7 +17,8 @@ class Sales_model extends CI_Model
             ->join('categories', 'categories.id=products.category_id', 'left')
             ->group_by('products.id');
         if ($this->Settings->overselling) {
-            $this->db->where("({$this->db->dbprefix('products')}.name LIKE '%" . $term . "%' OR {$this->db->dbprefix('products')}.code = '" . $term . "')");
+            $this->db->where(" FWP.warehouse_id='" . $warehouse_id . "' AND "
+                . "({$this->db->dbprefix('products')}.name LIKE '%" . $term . "%' OR {$this->db->dbprefix('products')}.code = '" . $term . "')");
         } else {
             $this->db->where("(products.track_quantity = 0 OR FWP.quantity > 0) AND FWP.warehouse_id = '" . $warehouse_id . "' AND "
                 . "({$this->db->dbprefix('products')}.name LIKE '%" . $term . "%' OR {$this->db->dbprefix('products')}.code = '" . $term . "')");
