@@ -1117,9 +1117,10 @@ class Pos_model extends CI_Model
                 end($addOn);
                 foreach ($items as &$var) {
                     $var = array_merge($addOn, $var);
+                    unset($var['is_promo']);
+                    unset($var['promo_original_price']);
                 }
-                unset($var['is_promo']);
-                unset($var['promo_original_price']);
+
                 if ($this->db->insert_batch('suspended_items', $items)) {
                     return TRUE;
                 }
@@ -1133,9 +1134,9 @@ class Pos_model extends CI_Model
                 end($addOn);
                 foreach ($items as &$var) {
                     $var = array_merge($addOn, $var);
+                    unset($var['is_promo']);
+                    unset($var['promo_original_price']);
                 }
-                unset($var['is_promo']);
-                unset($var['promo_original_price']);
                 //return $var;
                 if ($this->db->insert_batch('suspended_items', $items)) {
                     return TRUE;
