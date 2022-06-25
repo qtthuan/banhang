@@ -70,22 +70,26 @@ class Products extends MY_Controller
 			<li><a href="' . admin_url('products/edit/$1') . '"><i class="fa fa-edit"></i> ' . lang('edit_product') . '</a></li>';
         if ($warehouse_id) {
             $action .= '<li><a href="' . admin_url('products/set_rack/$1/' . $warehouse_id) . '" data-toggle="modal" data-target="#myModal"><i class="fa fa-bars"></i> '
-                . lang('set_rack') . '</a></li>';
+                            . lang('set_rack') . '</a></li>';
         }
         $action .= '<li><a href="' . admin_url() . 'assets/uploads/$2" data-type="image" data-toggle="lightbox"><i class="fa fa-file-photo-o"></i> '
             . lang('view_image') . '</a></li>
 			<li>' . $single_barcode . '</li>
 			<li class="divider"></li>
 			<li>' . $delete_link . '</li>
+            <li><a href="' . admin_url('products/warehouse_transfer/$1/' . $warehouse_id) . '" data-toggle="modal" data-target="#myModal"><i class="fa fa-bars"></i> '
+            . lang('set_rack') . '</a></li>
 			</ul>
 		</div></div>';
         $this->load->library('datatables');
         if ($warehouse_id) {
             $this->datatables
-            ->select($this->db->dbprefix('products') . ".id as productid, {$this->db->dbprefix('products')}.image as image, {$this->db->dbprefix('products')}.code as code, {$this->db->dbprefix('products')}.name as name, {$this->db->dbprefix('categories')}.name as cname, cost as cost, price as price, COALESCE(wp.quantity, 0) as quantity, {$this->db->dbprefix('units')}.code as unit, wp.rack as rack", FALSE)
-            ->from('products');
+            ->select($this->db->dbprefix('products') . ".id as productid, {$this->db->dbprefix('products')}.image as image, {$this->db->dbprefix('products')}.code as code, {$this->db->dbprefix('products')}.name as name, {$this->db->dbprefix('categories')}.name as cname, {$this->db->dbprefix('companies')}.company as supplier, cost as cost, price as price, COALESCE(wp.quantity, 0) as quantity, wp.rack as rack", FALSE)
+            ->from('products')
+            ->join('companies', 'products.supplier1=companies.id', 'left');
             if ($this->Settings->display_all_products) {
-                $this->datatables->join("( SELECT product_id, quantity, rack from {$this->db->dbprefix('warehouses_products')} WHERE warehouse_id = {$warehouse_id}) wp", 'products.id=wp.product_id', 'left');
+                $this->datatables->join('warehouses_products wp', "wp.product_id=products.id AND wp.warehouse_id={$warehouse_id}", 'left');
+                //$this->datatables->join("( SELECT product_id, quantity, rack from {$this->db->dbprefix('warehouses_products')} WHERE warehouse_id = {$warehouse_id}) wp", 'products.id=wp.product_id', 'left');
             } else {
                 $this->datatables->join('warehouses_products wp', 'products.id=wp.product_id', 'left')
                 ->where('wp.warehouse_id', $warehouse_id)

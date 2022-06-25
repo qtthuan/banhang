@@ -87,13 +87,13 @@
                                         <tr>
                                             <td colspan="2" style="background-color:#FFF;"></td>
                                         </tr>
-<!--                                        <tr>-->
-<!--                                            <td style="width:30%;">--><?//= lang("barcode_qrcode"); ?><!--</td>-->
-<!--                                            <td style="width:70%;">-->
-<!--                                                --><?//= $this->sma->save_barcode($product->code, $product->barcode_symbology, 66, false); ?>
-<!--                                                --><?//= $this->sma->qrcode('link', urlencode(admin_url('products/view/' . $product->id)), 2); ?>
-<!--                                            </td>-->
-<!--                                        </tr>-->
+                                        <tr>
+                                            <td style="width:30%;"><?= lang("barcode_qrcode"); ?></td>
+                                            <td style="width:70%;">
+                                                <?= $this->sma->save_barcode($product->code, $product->barcode_symbology, 66, false); ?>
+                                                <?= $this->sma->qrcode('link', urlencode(admin_url('products/view/' . $product->id)), 2); ?>
+                                            </td>
+                                        </tr>
                                         <tr>
                                             <td><?= lang("type"); ?></td>
                                             <td><?php echo lang($product->type); ?></td>
