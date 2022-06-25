@@ -10,14 +10,14 @@ class Sales_model extends CI_Model
 
     public function getProductNames($term, $warehouse_id, $limit = 5)
     {
-        $wp = "( SELECT product_id, warehouse_id, quantity as quantity from {$this->db->dbprefix('warehouses_products')} ) FWP";
+        $wp = "( SELECT product_id, warehouse_id, quantity as quantity from {$this->db->dbprefix('warehouses_products')}) FWP";
 
         $this->db->select('products.*, FWP.quantity as quantity, categories.id as category_id, categories.name as category_name', FALSE)
             ->join($wp, 'FWP.product_id=products.id', 'left')
             ->join('categories', 'categories.id=products.category_id', 'left')
             ->group_by('products.id');
         if ($this->Settings->overselling) {
-            $this->db->where(" FWP.warehouse_id='" . $warehouse_id . "' AND "
+            $this->db->where(" FWP.warehouse_id='" . $warehouse_id . "' AND FWP.quantity > 0 AND "
                 . "({$this->db->dbprefix('products')}.name LIKE '%" . $term . "%' OR {$this->db->dbprefix('products')}.code = '" . $term . "')");
         } else {
             $this->db->where("(products.track_quantity = 0 OR FWP.quantity > 0) AND FWP.warehouse_id = '" . $warehouse_id . "' AND "

@@ -51,7 +51,7 @@
             },
             minLength: 1,
             autoFocus: false,
-            delay: 250,
+            delay: 3000,
             response: function (event, ui) {
                 if ($(this).val().length >= 16 && ui.content[0].id == 0) {
                     //audio_error.play();
