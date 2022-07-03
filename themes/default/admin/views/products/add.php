@@ -564,6 +564,7 @@ if (!empty($variants)) {
             if (v) {
                 $(".box_wh").hide();
                 $(".rack_wh").hide
+                $(".wh").val(0);
                 $("#box_wh_" + v).show();
                 $("#rack_wh_" + v).show();
             }
