@@ -214,7 +214,7 @@ class Reports_model extends CI_Model
     public function getMonthlySales($year, $warehouse_id = NULL)
     {
         $myQuery = "SELECT DATE_FORMAT( date,  '%c' ) AS date, SUM( COALESCE( product_tax, 0 ) ) AS tax1, SUM( COALESCE( order_tax, 0 ) ) AS tax2, SUM( COALESCE( grand_total, 0 ) ) AS total, SUM( COALESCE( total_discount, 0 ) ) AS discount, SUM( COALESCE( shipping, 0 ) ) AS shipping
-			FROM " . $this->db->dbprefix('sales') . " WHERE ";
+			FROM " . $this->db->dbprefix('sales') . " WHERE sale_status <> 'returned' AND ";
         if ($warehouse_id) {
             $myQuery .= " warehouse_id = {$warehouse_id} AND ";
         }
