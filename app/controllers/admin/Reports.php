@@ -870,7 +870,7 @@ class Reports extends MY_Controller
         $this->data['warehouses'] = $this->site->getAllWarehouses();
         $this->data['swh'] = $warehouse_id;
         $this->data['date'] = $date;
-        //$this->sma->print_arrays($this->data['bn_sales_by_day'], $date);
+
         $bn_costing_amount = 0;
         if (!empty($bn_sales_by_day)) {
             foreach ($bn_sales_by_day as $sale) {

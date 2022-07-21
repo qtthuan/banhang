@@ -182,7 +182,7 @@ class Reports_model extends CI_Model
         $myQuery .= " ON sales.id = items.sale_id ";
         $myQuery .= "WHERE sale_status <> 'returned' AND items.product_code LIKE '%BN%' AND ";
         if ($warehouse_id) {
-            $myQuery .= " warehouse_id = {$warehouse_id} AND ";
+            $myQuery .= " sales.warehouse_id = {$warehouse_id} AND ";
         }
         $myQuery .= "date_format(date, '%Y-%m-%e') = '" . $date . "'";
         $q = $this->db->query($myQuery, false);

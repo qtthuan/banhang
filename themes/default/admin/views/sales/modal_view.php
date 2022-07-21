@@ -88,7 +88,7 @@
                     <?php
                     echo $biller->address . "<br>" . $biller->city . " " . $biller->postal_code . " " . $biller->state . "<br>" . $biller->country;
 
-                    
+
                     ?>
                 </div>
 
