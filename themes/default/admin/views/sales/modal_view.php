@@ -88,32 +88,7 @@
                     <?php
                     echo $biller->address . "<br>" . $biller->city . " " . $biller->postal_code . " " . $biller->state . "<br>" . $biller->country;
 
-                    echo "<p>";
-
-                    if ($biller->vat_no != "-" && $biller->vat_no != "") {
-                        echo "<br>" . lang("vat_no") . ": " . $biller->vat_no;
-                    }
-                    if ($biller->cf1 != "-" && $biller->cf1 != "") {
-                        echo "<br>" . lang("bcf1") . ": " . $biller->cf1;
-                    }
-                    if ($biller->cf2 != "-" && $biller->cf2 != "") {
-                        echo "<br>" . lang("bcf2") . ": " . $biller->cf2;
-                    }
-                    if ($biller->cf3 != "-" && $biller->cf3 != "") {
-                        echo "<br>" . lang("bcf3") . ": " . $biller->cf3;
-                    }
-                    if ($biller->cf4 != "-" && $biller->cf4 != "") {
-                        echo "<br>" . lang("bcf4") . ": " . $biller->cf4;
-                    }
-                    if ($biller->cf5 != "-" && $biller->cf5 != "") {
-                        echo "<br>" . lang("bcf5") . ": " . $biller->cf5;
-                    }
-                    if ($biller->cf6 != "-" && $biller->cf6 != "") {
-                        echo "<br>" . lang("bcf6") . ": " . $biller->cf6;
-                    }
-
-                    echo "</p>";
-                    echo lang("tel") . ": " . $biller->phone . "<br>" . lang("email") . ": " . $biller->email;
+                    
                     ?>
                 </div>
 
