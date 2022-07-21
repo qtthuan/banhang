@@ -860,15 +860,28 @@ class Reports extends MY_Controller
             $this->sma->md();
         }
         if ( ! $date) { $date = date('Y-m-d'); }
+        $bn_sales_by_day = $this->reports_model->getBNSalesByDay($date, $warehouse_id);
         $this->data['costing'] = $this->reports_model->getCosting($date, $warehouse_id);
         $this->data['discount'] = $this->reports_model->getOrderDiscount($date, $warehouse_id);
         $this->data['sale_by_day'] = $this->reports_model->getSalesByDay($date, $warehouse_id);
+        $this->data['bn_sales_by_day'] = $bn_sales_by_day;
         $this->data['expenses'] = $this->reports_model->getExpenses($date, $warehouse_id);
         $this->data['returns'] = $this->reports_model->getReturns($date, $warehouse_id);
         $this->data['warehouses'] = $this->site->getAllWarehouses();
         $this->data['swh'] = $warehouse_id;
         $this->data['date'] = $date;
-        //$this->sma->print_arrays($this->data['sale_by_day'], $date);
+        //$this->sma->print_arrays($this->data['bn_sales_by_day'], $date);
+        $bn_costing_amount = 0;
+        if (!empty($bn_sales_by_day)) {
+            foreach ($bn_sales_by_day as $sale) {
+                $items = $this->reports_model->getAllBNItems($sale->id);
+                foreach ($items as $item) {
+                    $bn_costing_amount += ($this->sma->formatDecimal($item->real_unit_price) - 40000) * $item->quantity;
+                }
+            }
+        }
+        $this->data['bn_costing_amount'] = $bn_costing_amount;
+
         if ($re) {
             echo $this->load->view($this->theme . 'reports/profit', $this->data, TRUE);
             exit();

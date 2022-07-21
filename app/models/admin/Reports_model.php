@@ -167,6 +167,50 @@ class Reports_model extends CI_Model
         return FALSE;
     }
 
+    /**
+     * @qtthuan
+     * Tìm SP nhập tay BN khi bán hàng
+     * @param $date
+     * @param null $warehouse_id
+     * @return bool
+     */
+    public function getBNSalesByDay($date, $warehouse_id = NULL)
+    {
+        $myQuery = "SELECT sales.id, sales.date, sales.reference_no, sales.customer
+			FROM " . $this->db->dbprefix('sales') . " AS sales ";
+        $myQuery .= "LEFT JOIN " . $this->db->dbprefix('sale_items') . " AS items ";
+        $myQuery .= " ON sales.id = items.sale_id ";
+        $myQuery .= "WHERE sale_status <> 'returned' AND items.product_code LIKE '%BN%' AND ";
+        if ($warehouse_id) {
+            $myQuery .= " warehouse_id = {$warehouse_id} AND ";
+        }
+        $myQuery .= "date_format(date, '%Y-%m-%e') = '" . $date . "'";
+        $q = $this->db->query($myQuery, false);
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return FALSE;
+    }
+
+    public function getAllBNItems($sale_id)
+    {
+        $this->db->select('sale_items.*');
+        $this->db->like('product_code', 'BN');
+        $this->db->where('sale_id', $sale_id);
+
+        $q = $this->db->get('sale_items');
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return FALSE;
+    }
+
     public function getMonthlySales($year, $warehouse_id = NULL)
     {
         $myQuery = "SELECT DATE_FORMAT( date,  '%c' ) AS date, SUM( COALESCE( product_tax, 0 ) ) AS tax1, SUM( COALESCE( order_tax, 0 ) ) AS tax2, SUM( COALESCE( grand_total, 0 ) ) AS total, SUM( COALESCE( total_discount, 0 ) ) AS discount, SUM( COALESCE( shipping, 0 ) ) AS shipping

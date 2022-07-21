@@ -471,6 +471,7 @@ $lang['expiry_alerts']                      = "Cảnh báo hạn sử dụng";
 $lang['quantity_alerts']                    = "Số lượng cảnh báo";
 $lang['products_sale']                      = "Tổng số bán hàng";
 $lang['products_cost']                      = "Chi phí sản phẩm";
+$lang['products_cost_bn']                   = "Chi phí sản phẩm nhập tay (BN)";
 $lang['day_profit']                         = "Lợi nhuận/Chi phí theo ngày";
 $lang['get_day_profit']                     = "Bạn có thể click vào ngày để xem lợi nhuận/chi phí của ngày hôm nay.";
 $lang['please_select_these_before_adding_product'] = "Vui lòng chọn các mục này trước khi thêm sản phẩm bất kỳ";

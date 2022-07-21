@@ -2238,6 +2238,7 @@ var lang = {
         });
         $('#mModal').on('shown.bs.modal', function() {
             $(this).find('#mcode').val('BN');
+            $(this).find('#mcode').prop('readonly', true);
             $(this).find('#mname').select().focus();
             $(this).find('#mquantity').val('1');
             $(this).keypress(function( e ) {

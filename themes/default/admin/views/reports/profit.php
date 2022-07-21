@@ -13,6 +13,7 @@
             <!-- <p><?= lang('unit_and_net_tip'); ?></p> -->
             <div class="form-group">
                 <?php
+                $str_guide = 'A-B-C';
                 $opts[] = lang('all_warehouses');
                 foreach ($warehouses as $warehouse) {
                     $opts[$warehouse->id] = $warehouse->name.' ('.$warehouse->code.')';
@@ -33,15 +34,39 @@
                     <td style="border-bottom: 1px solid #EEE;"><h4><?= lang('products_cost'); ?> (<strong>B</strong>):</h4></td>
                     <td style="text-align:right; border-bottom: 1px solid #EEE;"><h4>
                         <span><?= $this->sma->formatMoney($costing->cost); ?></span>
-                        <!-- <span><?= $this->sma->formatMoney($costing->cost).' ('.$this->sma->formatMoney($costing->net_cost).')'; ?></span> -->
                     </h4></td>
                 </tr>
+
                 <tr>
                     <td style="border-bottom: 1px solid #DDD;"><h4><?= lang('shipping'); ?> (<strong>C</strong>):</h4></td>
                     <td style="text-align:right;border-bottom: 1px solid #DDD;"><h4>
                             <span><?php echo $this->sma->formatMoney($sale_by_day->shipping); ?></span>
                         </h4></td>
                 </tr>
+                <?php
+                    if (!empty($bn_sales_by_day)) {
+                        $str_guide .= '-D'
+                ?>
+                <tr>
+                    <td>
+                        <h4><?= lang('products_cost_bn'); ?> (<strong>D</strong>):</h4>
+                    </td>
+                    <td style="text-align:right;"><h4>
+                        <span><?= $this->sma->formatMoney($bn_costing_amount); ?></span>
+                    </h4></td>
+                </tr>
+
+                <tr>
+                    <td style="border-bottom: 1px solid #EEE;" colspan="2">
+
+                        <?php
+                        foreach($bn_sales_by_day as $sale) {
+                            echo '&#9734; <a data-target="#myModal2" data-toggle="modal" href="'.admin_url('sales/modal_view/'.$sale->id).'">'.$sale->reference_no.'</a> ';
+                        }
+                        ?>
+                    </td>
+                </tr>
+                <?php } ?>
                 <tr>
                     <td style="border-bottom: 1px solid #DDD;"><h4><?= lang('expenses'); ?>:</h4></td>
                     <td style="text-align:right;border-bottom: 1px solid #DDD;"><h4>
@@ -49,12 +74,15 @@
                         </h4></td>
                 </tr>
                 <tr>
-                    <td width="300px;" style="font-weight:bold;"><h4><strong><?= lang('profit'); ?></strong> <span style="color:red"> (<strong>A-B-C</strong>)</span>:</h4>
+                    <td width="300px;" style="font-weight:bold;"><h4><strong><?= lang('profit'); ?></strong> <span style="color:red"> (<strong><?=$str_guide?></strong>)</span>:</h4>
                     </td>
-                    <td style="text-align:right;"><h4>
-                            <span><strong><?= $this->sma->formatMoney(($sale_by_day->grand_total - $sale_by_day->shipping) - $costing->cost - $expense); ?></strong></span>
-                            <!-- <span><strong><?= $this->sma->formatMoney($costing->sales - $costing->cost - $discount - $expense).' ('.$this->sma->formatMoney($costing->net_sales - $costing->net_cost - $discount - $expense).')'; ?></strong></span> -->
-                        </h4></td>
+                    <td style="text-align:right;">
+                        <h4>
+                            <span><strong>
+                                <?= $this->sma->formatMoney(($sale_by_day->grand_total - $sale_by_day->shipping) - $costing->cost - $bn_costing_amount - $expense); ?>
+                            </strong></span>
+                        </h4>
+                    </td>
                 </tr>
             </table>
             </div>
