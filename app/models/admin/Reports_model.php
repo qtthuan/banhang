@@ -230,6 +230,26 @@ class Reports_model extends CI_Model
         return FALSE;
     }
 
+    public function getSalesByMonth($warehouse_id = NULL, $year = NULL, $month = NULL)
+    {
+        $this->db->select('SUM( COALESCE( product_tax, 0 ) ) AS tax1, SUM( COALESCE( order_tax, 0 ) ) AS tax2, SUM( COALESCE( grand_total, 0 ) ) AS total, SUM( COALESCE( total_discount, 0 ) ) AS discount, SUM( COALESCE( shipping, 0 ) ) AS shipping', FALSE);
+        $this->load->helper('date');
+        $last_day = days_in_month($month, $year);
+        $this->db->where('sale_status <>', 'returned');
+        $this->db->where('sales.date >=', $year.'-'.$month.'-01 00:00:00');
+        $this->db->where('sales.date <=', $year.'-'.$month.'-'.$last_day.' 23:59:59');
+
+        if ($warehouse_id) {
+            $this->db->where('warehouse_id', $warehouse_id);
+        }
+
+        $q = $this->db->get('sales');
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }
+        return FALSE;
+    }
+
     public function getStaffDailySales($user_id, $year, $month, $warehouse_id = NULL)
     {
         $myQuery = "SELECT DATE_FORMAT( date,  '%e' ) AS date, SUM( COALESCE( product_tax, 0 ) ) AS tax1, SUM( COALESCE( order_tax, 0 ) ) AS tax2, SUM( COALESCE( grand_total, 0 ) ) AS total, SUM( COALESCE( total_discount, 0 ) ) AS discount, SUM( COALESCE( shipping, 0 ) ) AS shipping
@@ -472,6 +492,8 @@ class Reports_model extends CI_Model
             $this->db->where('costing.date >=', $year.'-'.$month.'-01 00:00:00');
             $this->db->where('costing.date <=', $year.'-'.$month.'-'.$last_day.' 23:59:59');
         }
+
+        $this->db->where('costing.quantity >', 0);
 
         if ($warehouse_id) {
             $this->db->join('sales', 'sales.id=costing.sale_id')

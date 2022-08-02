@@ -896,6 +896,7 @@ class Reports extends MY_Controller
         }
         
         $this->data['costing'] = $this->reports_model->getCosting(NULL, $warehouse_id, $year, $month);
+        $this->data['sales_by_month'] = $this->reports_model->getSalesByMonth($warehouse_id, $year, $month);
         $this->data['discount'] = $this->reports_model->getOrderDiscount(NULL, $warehouse_id, $year, $month);
         $this->data['expenses'] = $this->reports_model->getExpenses(NULL, $warehouse_id, $year, $month);
         $this->data['returns'] = $this->reports_model->getReturns(NULL, $warehouse_id, $year, $month);
@@ -904,6 +905,7 @@ class Reports extends MY_Controller
         $this->data['year'] = $year;
         $this->data['month'] = $month;
         $this->data['date'] = date('F Y', strtotime($year.'-'.$month.'-'.'01'));
+        //$this->sma->print_arrays($this->data['sales_by_month']);
         if ($re) {
             echo $this->load->view($this->theme . 'reports/monthly_profit', $this->data, TRUE);
             exit();

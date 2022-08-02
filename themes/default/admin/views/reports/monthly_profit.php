@@ -26,8 +26,7 @@
                 <tr>
                     <td style="border-bottom: 1px solid #EEE;"><h4><?= lang('products_sale'); ?>:</h4></td>
                     <td style="text-align:right; border-bottom: 1px solid #EEE;">
-                            <h4><span><?= $this->sma->formatMoney($costing->sales); ?></span></h4>
-                            <!-- <h4><span><?= $this->sma->formatMoney($costing->sales).' ('.$this->sma->formatMoney($costing->net_sales).')'; ?></span></h4>-->
+                            <h4><span><?= $this->sma->formatMoney($sales_by_month->total); ?></span></h4>
                     </td>
                 </tr>
                 <tr>
