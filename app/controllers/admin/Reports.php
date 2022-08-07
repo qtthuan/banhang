@@ -148,7 +148,7 @@ class Reports extends MY_Controller
 
             if ($warehouse_id) {
                 $this->db
-                    ->select('products.image as image, products.code, products.name, warehouses_products.quantity, alert_quantity')
+                    ->select('products.image as image, products.code, products.name, warehouses_products.quantity, alert_quantity, products.id as id')
                     ->from('products')->join('warehouses_products', 'warehouses_products.product_id=products.id', 'left')
                     ->where('alert_quantity > warehouses_products.quantity', NULL)
                     ->where('warehouse_id', $warehouse_id)
@@ -156,7 +156,7 @@ class Reports extends MY_Controller
                     ->order_by('products.code desc');
             } else {
                 $this->db
-                    ->select('image, code, name, quantity, alert_quantity')
+                    ->select('image, code, name, quantity, alert_quantity, id')
                     ->from('products')
                     ->where('alert_quantity > quantity', NULL)
                     ->where('track_quantity', 1)
@@ -192,7 +192,8 @@ class Reports extends MY_Controller
                 }
 
                 $this->excel->getActiveSheet()->getColumnDimension('A')->setWidth(35);
-                $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth(35);
+                $this->excel->getAct+
+                     qưertiveSheet()->getColumnDimension('B')->setWidth(35);
                 $this->excel->getActiveSheet()->getColumnDimension('C')->setWidth(25);
                 $this->excel->getActiveSheet()->getColumnDimension('D')->setWidth(25);
                 $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
@@ -209,11 +210,10 @@ class Reports extends MY_Controller
             $this->load->library('datatables');
             if ($warehouse_id) {
                 $this->datatables
-                    ->select('image, code, name, wp.quantity, alert_quantity')
+                    ->select('image, code, name, wp.quantity, alert_quantity, products.id')
                     ->from('products')
                     ->join("( SELECT * from {$this->db->dbprefix('warehouses_products')} WHERE warehouse_id = {$warehouse_id}) wp", 'products.id=wp.product_id', 'left')
-                    ->where('alert_quantity > wp.quantity', NULL)
-                    ->or_where('wp.quantity', NULL)
+                    ->where('alert_quantity > products.quantity', NULL)
                     ->where('track_quantity', 1)
                     ->group_by('products.id');
 
@@ -229,7 +229,7 @@ class Reports extends MY_Controller
 //                    ->order_by('code desc');
             } else {
                 $this->datatables
-                    ->select('image, code, name, quantity, alert_quantity')
+                    ->select('image, code, name, quantity, alert_quantity, id')
                     ->from('products')
                     ->where('alert_quantity > quantity', NULL)
                     ->where('track_quantity', 1);

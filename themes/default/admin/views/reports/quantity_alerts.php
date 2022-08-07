@@ -2,7 +2,7 @@
 <script>
     $(document).ready(function () {
         oTable = $('#PQData').dataTable({
-            "aaSorting": [[1, "desc"]],
+            "aaSorting": [[2, "desc"]],
             "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "<?= lang('all') ?>"]],
             "iDisplayLength": <?= $Settings->rows_per_page ?>,
             'bProcessing': true, 'bServerSide': true,
@@ -14,10 +14,18 @@
                 });
                 $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
             },
+            'fnRowCallback': function (nRow, aData, iDisplayIndex) {
+                var oSettings = oTable.fnSettings();
+                //console.log(JSON.stringify(aData));
+                nRow.id = aData[5];
+                nRow.className = "product_link";
+                //if(aData[7] > aData[9]){ nRow.className = "product_link warning"; } else { nRow.className = "product_link"; }
+                return nRow;
+            },
             "aoColumns": [{
                 "bSortable": false,
                 "mRender": img_hl
-            }, null, null, {"mRender": formatQuantity}, {"mRender": formatQuantity}],
+            }, null, null, {"mRender": formatQuantity}, {"mRender": formatQuantity}]
         }).fnSetFilteringDelay().dtFilter([
             {column_number: 1, filter_default_label: "[<?=lang('product_code');?>]", filter_type: "text", data: []},
             {column_number: 2, filter_default_label: "[<?=lang('product_name');?>]", filter_type: "text", data: []},
