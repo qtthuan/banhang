@@ -872,6 +872,7 @@ class Reports extends MY_Controller
         $this->data['date'] = $date;
 
         $bn_costing_amount = 0;
+        //$this->sma->print_arrays($bn_sales_by_day);
         if (!empty($bn_sales_by_day)) {
             foreach ($bn_sales_by_day as $sale) {
                 $items = $this->reports_model->getAllBNItems($sale->id);

@@ -176,7 +176,7 @@ class Reports_model extends CI_Model
      */
     public function getBNSalesByDay($date, $warehouse_id = NULL)
     {
-        $myQuery = "SELECT sales.id, sales.date, sales.reference_no, sales.customer
+        $myQuery = "SELECT DISTINCT sales.id, sales.reference_no, sales.customer
 			FROM " . $this->db->dbprefix('sales') . " AS sales ";
         $myQuery .= "LEFT JOIN " . $this->db->dbprefix('sale_items') . " AS items ";
         $myQuery .= " ON sales.id = items.sale_id ";
