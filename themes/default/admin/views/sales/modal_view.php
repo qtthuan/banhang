@@ -44,9 +44,8 @@
             <div class="row" style="margin-bottom:15px;">
 
                 <div class="col-xs-6">
-                    <?php echo $this->lang->line("to"); ?>:<br/>
-                    <h2 style="margin-top:10px;"><?= $customer->company ? $customer->company : $customer->name; ?></h2>
-                    <?= $customer->company ? "" : "Attn: " . $customer->name ?>
+                    <h2 style="margin-top:10px;"><?= $customer->name; ?></h2>
+
 
                     <?php
                     echo $customer->address;
@@ -81,7 +80,6 @@
                 </div>
 
                 <div class="col-xs-6">
-                    <?php echo $this->lang->line("from"); ?>:
                     <h2 style="margin-top:10px;"><?= $biller->company != '-' ? $biller->company : $biller->name; ?></h2>
                     <?= $biller->company ? "" : "Attn: " . $biller->name ?>
 

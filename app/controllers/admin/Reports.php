@@ -877,7 +877,11 @@ class Reports extends MY_Controller
             foreach ($bn_sales_by_day as $sale) {
                 $items = $this->reports_model->getAllBNItems($sale->id);
                 foreach ($items as $item) {
-                    $bn_costing_amount += ($this->sma->formatDecimal($item->real_unit_price) - 40000) * $item->quantity;
+                    if ($item->real_unit_price <= 100000) {
+                        $bn_costing_amount += ($this->sma->formatDecimal($item->real_unit_price) * 60/100) * $item->quantity;
+                    } else {
+                        $bn_costing_amount += ($this->sma->formatDecimal($item->real_unit_price) - 40000) * $item->quantity;
+                    }
                 }
             }
         }
