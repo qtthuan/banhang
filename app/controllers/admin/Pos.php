@@ -24,6 +24,21 @@ class Pos extends MY_Controller
         $this->session->set_userdata('last_activity', now());
         $this->lang->admin_load('pos', $this->Settings->user_language);
         $this->load->library('form_validation');
+
+        $this->data['pb'] = array(
+            'cash' => lang('cash'),
+            'CC' => lang('CC'),
+            'vnpay' => lang('vnpay'),
+            'pos' => lang('pos_txt'),
+            'Cheque' => lang('Cheque'),
+            'paypal_pro' => lang('paypal_pro'),
+            'stripe' => lang('stripe'),
+            'gift_card' => lang('gift_card'),
+            'deposit' => lang('deposit'),
+            'authorize' => lang('authorize'),
+            'pts' => lang('pts'),
+        );
+
     }
 
     public function sales($warehouse_id = NULL)
@@ -86,16 +101,18 @@ class Pos extends MY_Controller
         $this->load->library('datatables');
         if ($warehouse_id) {
             $this->datatables
-                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(date, '%Y-%m-%d %T') as date, reference_no, customer, delivery_method, (grand_total+COALESCE(rounding, 0)), paid, (grand_total-paid) as balance, sale_status, payment_status, companies.email as cemail")
+                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no, customer, delivery_method, (grand_total+COALESCE(rounding, 0)), paid, paid_by, sale_status, payment_status, companies.email as cemail")
                 ->from('sales')
                 ->join('companies', 'companies.id=sales.customer_id', 'left')
+                ->join('payments', 'payments.sale_id=sales.id')
                 ->where('warehouse_id', $warehouse_id)
                 ->group_by('sales.id');
         } else {
             $this->datatables
-                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(date, '%Y-%m-%d %T') as date, reference_no, customer, delivery_method, (grand_total+COALESCE(rounding, 0)), paid, (grand_total+rounding-paid) as balance, sale_status, payment_status, companies.email as cemail")
+                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no as reference_no, customer, delivery_method, (grand_total+COALESCE(rounding, 0)), paid, paid_by, sale_status, payment_status, companies.email as cemail")
                 ->from('sales')
                 ->join('companies', 'companies.id=sales.customer_id', 'left')
+                ->join('payments', 'payments.sale_id=sales.id')
                 ->group_by('sales.id');
         }
         $this->datatables->where('pos', 1);

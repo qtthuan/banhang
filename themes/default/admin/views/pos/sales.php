@@ -1,5 +1,11 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <script>
+
+    var pb = <?= json_encode($pb); ?>;
+    function paid_by(x) {
+        return (x != null) ? (pb[x] ? pb[x] : x) : x;
+    }
+
     $(document).ready(function () {
         oTable = $('#POSData').dataTable({
             "aaSorting": [[1, "desc"], [2, "desc"]],
@@ -24,13 +30,12 @@
             "aoColumns": [{
                 "bSortable": false,
                 "mRender": checkbox
-            }, {"mRender": fld}, null, null, {"mRender": delivery_method}, {"mRender": currencyFormat}, {"mRender": currencyFormat}, {"mRender": currencyFormat}, {"mRender": row_status}, {"mRender": pay_status}, {"bSortable": false}],
+            }, {"mRender": fld}, null, null, {"mRender": delivery_method}, {"mRender": currencyFormat}, {"mRender": currencyFormat}, {"mRender": paid_by}, {"mRender": row_status}, {"mRender": pay_status}, {"bSortable": false}],
             "fnFooterCallback": function (nRow, aaData, iStart, iEnd, aiDisplay) {
-                var gtotal = 0, paid = 0, balance = 0;
+                var gtotal = 0, paid = 0;
                 for (var i = 0; i < aaData.length; i++) {
                     gtotal += parseFloat(aaData[aiDisplay[i]][5]);
                     paid += parseFloat(aaData[aiDisplay[i]][6]);
-                    balance += parseFloat(aaData[aiDisplay[i]][7]);
                 }
                 var nCells = nRow.getElementsByTagName('th');
                 //nCells[5].innerHTML = currencyFormat(parseFloat(gtotal));
@@ -141,7 +146,7 @@
                             <th><?= lang("delivery_method"); ?></th>
                             <th><?= lang("grand_total"); ?></th>
                             <th><?= lang("paid_col"); ?></th>
-                            <th><?= lang("balance"); ?></th>
+                            <th><?= lang("paid_by"); ?></th>
                             <th><?= lang("sale_status"); ?></th>
                             <th><?= lang("payment_status"); ?></th>
                             <th style="width:80px; text-align:center;"><?= lang("actions"); ?></th>
@@ -163,7 +168,7 @@
                             <th></th>
                             <th><?= lang("grand_total"); ?></th>
                             <th><?= lang("paid"); ?></th>
-                            <th><?= lang("balance"); ?></th>
+                            <th><?= lang("paid_by"); ?></th>
                             <th class="defaul-color"></th>
                             <th class="defaul-color"></th>
                             <th style="width:80px; text-align:center;"><?= lang("actions"); ?></th>

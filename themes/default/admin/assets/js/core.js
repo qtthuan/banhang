@@ -930,6 +930,7 @@ function delivery_method(x) {
         return '<div class="text-center"><span class="payment_status label label-default">'+x+'</span></div>';
     }
 }
+
 function formatSA (x) {
     x=x.toString();
     var afterPoint = '';
