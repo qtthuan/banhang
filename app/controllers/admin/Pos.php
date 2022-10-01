@@ -457,7 +457,7 @@ class Pos extends MY_Controller
                 $payment = array();
             }
 
-            //$this->sma->print_arrays($_POST, $payment);
+            //$this->sma->print_arrays($data, $payment);
         }
 
         if ($this->form_validation->run() == TRUE && !empty($products) && !empty($data)) {
