@@ -371,14 +371,16 @@ class Pos extends MY_Controller
                 $p = isset($_POST['amount']) ? sizeof($_POST['amount']) : 0;
                 $paid = 0;
                 for ($r = 0; $r < $p; $r++) {
-                    if (isset($_POST['amount'][$r]) && !empty($_POST['amount'][$r]) && isset($_POST['paid_by'][$r]) && !empty($_POST['paid_by'][$r])) {
+                    //$this->sma->print_arrays($_POST);
+                    if (isset($_POST['amount'][$r]) && isset($_POST['paid_by'][$r]) && !empty($_POST['paid_by'][$r])) {
                         $amount = $this->sma->formatDecimal($_POST['balance_amount'][$r] > 0 ? $_POST['amount'][$r] - $_POST['balance_amount'][$r] : $_POST['amount'][$r]);
                         if ($_POST['paid_by'][$r] == 'deposit') {
                             if ( ! $this->site->check_customer_deposit($customer_id, $amount)) {
                                 $this->session->set_flashdata('error', lang("amount_greater_than_deposit"));
                                 redirect($_SERVER["HTTP_REFERER"]);
                             }
-                        } 
+                        }
+                        //$this->sma->print_arrays($_POST['paid_by'][$r]);
                         if ($_POST['paid_by'][$r] == 'gift_card') {
                             $gc = $this->site->getGiftCardByNO($_POST['paying_gift_card_no'][$r]);
                             $amount_paying = $_POST['amount'][$r] >= $gc->balance ? $gc->balance : $_POST['amount'][$r];
@@ -424,6 +426,7 @@ class Pos extends MY_Controller
                                 'pos_balance'  => $_POST['balance_amount'][$r],
                             );
                         } else {
+                            //$this->sma->print_arrays($_POST['paid_by'][$r]);
                             $payment[] = array(
                                 'date'         => $date,
                                 // 'reference_no' => $this->site->getReference('pay'),
@@ -446,6 +449,7 @@ class Pos extends MY_Controller
                         }
  
                     }
+
                 }
             }
             $data['change_points'] = $change_points;
@@ -457,10 +461,11 @@ class Pos extends MY_Controller
                 $payment = array();
             }
 
-            //$this->sma->print_arrays($data, $payment);
         }
 
+
         if ($this->form_validation->run() == TRUE && !empty($products) && !empty($data)) {
+            //$this->sma->print_arrays($data, $payment);
             if ($suspend) {
 //                $var = $this->pos_model->suspendSale($data, $products, $did);
 //                $this->sma->print_arrays($var);
@@ -470,7 +475,6 @@ class Pos extends MY_Controller
                     admin_redirect("pos");
                 }
             } else {
-                //$this->sma->print_arrays($data, $products, $payment, $did);
                 if ($sale = $this->pos_model->addSale($data, $products, $payment, $did)) {
                     $this->session->set_userdata('remove_posls', 1);
                     $msg = $this->lang->line("sale_added");
