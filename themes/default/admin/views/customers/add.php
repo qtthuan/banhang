@@ -103,5 +103,8 @@
         $(document).on("focus", '#address', function () {
             $(this).select();
         });
+        $('#name').keyup(function(){
+            $(this).val($(this).val().toUpperCase());
+        });
     });
 </script>
