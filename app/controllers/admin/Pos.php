@@ -101,18 +101,16 @@ class Pos extends MY_Controller
         $this->load->library('datatables');
         if ($warehouse_id) {
             $this->datatables
-                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no, customer, delivery_method, (grand_total+COALESCE(rounding, 0)), paid, paid_by, sale_status, payment_status, companies.email as cemail")
+                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no, customer, delivery_method, (grand_total+COALESCE(rounding, 0)), paid, sale_status, payment_status, companies.email as cemail")
                 ->from('sales')
                 ->join('companies', 'companies.id=sales.customer_id', 'left')
-                ->join('payments', 'payments.sale_id=sales.id')
                 ->where('warehouse_id', $warehouse_id)
                 ->group_by('sales.id');
         } else {
             $this->datatables
-                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no as reference_no, customer, delivery_method, (grand_total+COALESCE(rounding, 0)), paid, paid_by, sale_status, payment_status, companies.email as cemail")
+                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no as reference_no, customer, delivery_method, (grand_total+COALESCE(rounding, 0)), paid, sale_status, payment_status, companies.email as cemail")
                 ->from('sales')
-                ->join('companies', 'companies.id=sales.customer_id', 'left')
-                ->join('payments', 'payments.sale_id=sales.id')
+                ->join('companies', 'companies.id=sales.customer_id', 'left')                
                 ->group_by('sales.id');
         }
         $this->datatables->where('pos', 1);
