@@ -17,6 +17,7 @@
             'fnRowCallback': function (nRow, aData, iDisplayIndex) {
                 nRow.id = aData[0];
                 nRow.className = "customer_details_link";
+                $('td:eq(4)', nRow).html('<b>' + formatMoney(aData[4]*<?=$Settings->each_spent?>) + '</b>');
                 return nRow;
             },
             "aoColumns": [{
@@ -24,11 +25,11 @@
                 "mRender": checkbox
             }, null, null, null, null, null, {"bSortable": false}]
         }).dtFilter([
-            {column_number: 1, filter_default_label: "[<?=lang('customer_no');?>]", filter_type: "text", data: []},
-            {column_number: 2, filter_default_label: "[<?=lang('name');?>]", filter_type: "text", data: []},
-            {column_number: 3, filter_default_label: "[<?=lang('phone');?>]", filter_type: "text", data: []},
-            {column_number: 4, filter_default_label: "[<?=lang('customer_group');?>]", filter_type: "text", data: []},
-            {column_number: 5, filter_default_label: "[<?=lang('award_points');?>]", filter_type: "text", data: []},
+            {column_number: 1, filter_default_label: "[<?=lang('name');?>]", filter_type: "text", data: []},
+            {column_number: 2, filter_default_label: "[<?=lang('phone');?>]", filter_type: "text", data: []},
+            {column_number: 3, filter_default_label: "[<?=lang('award_points');?>]", filter_type: "text", data: []},
+            {column_number: 4, filter_default_label: "[<?=lang('points_per_year');?>]", filter_type: "text", data: []},
+            {column_number: 5, filter_default_label: "[<?=lang('customer_group');?>]", filter_type: "text", data: []},
         ], "footer");
         $('#myModal').on('hidden.bs.modal', function () {
             cTable.fnDraw( false );
@@ -92,11 +93,11 @@
                             <th style="min-width:30px; width: 30px; text-align: center;">
                                 <input class="checkbox checkth" type="checkbox" name="check"/>
                             </th>
-                            <th><?= lang("customer_no"); ?></th>
                             <th><?= lang("cname"); ?></th>
                             <th><?= lang("phone"); ?></th>
-                            <th><?= lang("customer_group"); ?></th>
                             <th><?= lang("award_points"); ?></th>
+                            <th><?= lang("points_per_year"); ?></th>
+                            <th><?= lang("customer_group"); ?></th>
                             <th style="min-width:135px !important;"><?= lang("actions"); ?></th>
                         </tr>
                         </thead>

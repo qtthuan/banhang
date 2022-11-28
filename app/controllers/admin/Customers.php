@@ -35,8 +35,10 @@ class Customers extends MY_Controller
     {
         $this->sma->checkPermissions('index');
         $this->load->library('datatables');
+        $this->session->set_userdata('each_spent', $this->Settings->each_spent);
+        $spent = 1000;
         $this->datatables
-            ->select("id, customer_no, name, phone, customer_group_name, award_points")
+            ->select("id, name, phone, award_points, points_per_year, customer_group_name")
             ->from("companies")
             ->where('group_name', 'customer')
             ->add_column("Actions", "<div class=\"text-center\"><a href='#' class='tip po' title='<b>" . lang("clear_bills") . "</b>' data-content=\"<p>" . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('customers/clear_bills/$1') . "'>" . lang('i_m_sure') . "</a> <button class='btn po-close'>" . lang('no') . "</button>\"  rel='popover'><i class=\"fa fa-align-justify\"></i></a>&nbsp;&nbsp;<a class=\"tip\" title='" . lang("edit_customer") . "' href='" . admin_url('customers/edit/$1') . "' data-toggle='modal' data-target='#myModal'><i class=\"fa fa-edit\"></i></a> <a href='#' class='tip po' title='<b>" . lang("delete_customer") . "</b>' data-content=\"<p>" . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('customers/delete/$1') . "'>" . lang('i_m_sure') . "</a> <button class='btn po-close'>" . lang('no') . "</button>\"  rel='popover'><i class=\"fa fa-trash-o\"></i></a></div>", "id");
