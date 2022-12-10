@@ -960,7 +960,9 @@ if (!empty($variants)) {
 
             $.each(warehouses, function () {
                 if (!isNaN(parseInt($('#wh_qty_' + this.id).val()))) {
-                    $('#wh_qty_' + this.id).val(new_wh_quantity);
+                    if($('#wh_qty_' + this.id).is(':visible')) {
+                        $('#wh_qty_' + this.id).val(new_wh_quantity);
+                    }
                 }
             });
         });
