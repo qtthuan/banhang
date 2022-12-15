@@ -621,7 +621,7 @@
                                             </div>
 
                                             <div  class="form-group pts_1" style="display: none;">
-                                                <div class="col-sm-2">
+                                                <div class="col-sm-3">
                                                     <div class="input-group">
                                                         <?= lang("award_points1", "award_points1") ?>: <span id="award_points_1" style="color: red; font-weight: bold"></span>
                                                         <input name="ca_points[]" type="text" id="ca_points_1"
@@ -2099,7 +2099,7 @@ var lang = {
                                 $('#award_points_' + pa_no).html(data.ca_points);
                                 if (grand_total/1000 <= data.ca_points) {
                                     $('#ca_points_' + pa_no).val(grand_total/1000);
-                                    //console.log(data.ca_points + ' xxx');
+                                    console.log(data.ca_points + ' xxx');
                                 } else {
                                     $('#ca_points_' + pa_no).val(data.ca_points);
                                     //console.log(data.ca_points + ' yyy');
