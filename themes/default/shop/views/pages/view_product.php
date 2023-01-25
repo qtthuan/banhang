@@ -255,7 +255,7 @@
                                 </div>
                             </div>
 
-                            <?php include 'share.php'; ?>
+                            <?php //include 'share.php'; ?>
                         </div>
                     </div>
                 </div>
