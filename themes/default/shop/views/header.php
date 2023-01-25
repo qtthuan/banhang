@@ -141,7 +141,7 @@
                                 <div class="<?= (!$shop_settings->hide_price) ? 'col-sm-8 col-md-6 col-md-offset-3' : 'col-md-6 col-md-offset-6'; ?> search-box">
                                     <?= shop_form_open('products', 'id="product-search-form"'); ?>
                                     <div class="input-group">
-                                        <input name="query" type="text" class="form-control" id="product-search" aria-label="Search..." placeholder="Search...">
+                                        <input name="query" type="text" class="form-control" id="product-search" aria-label="Search..." placeholder="">
                                         <div class="input-group-btn">
                                             <button type="submit" class="btn btn-default btn-search"><i class="fa fa-search"></i></button>
                                         </div>
@@ -197,12 +197,7 @@
                     <div class="collapse navbar-collapse" id="navbar-ex1-collapse">
                         <ul class="nav navbar-nav">
                             <li class="<?= $m == 'main' && $v == 'index' ? 'active' : ''; ?>"><a href="<?= base_url(); ?>"><?= lang('home'); ?></a></li>
-                            <?php if ($isPromo) {
-                                    ?>
-                            <li class="<?= $m == 'shop' && $v == 'products' && $this->input->get('promo') == 'yes' ? 'active' : ''; ?>"><a href="<?= shop_url('products?promo=yes'); ?>"><?= lang('promotions'); ?></a></li>
-                            <?php
-                                } ?>
-                            <li class="<?= $m == 'shop' && $v == 'products' && $this->input->get('promo') != 'yes' ? 'active' : ''; ?>"><a href="<?= shop_url('products'); ?>"><?= lang('products'); ?></a></li>
+                            
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                     <?= lang('categories'); ?> <span class="caret"></span>
@@ -226,73 +221,9 @@
                                     ?>
                                 </ul>
                             </li>
-                            <li class="dropdown<?= (count($brands) > 20) ? ' mega-menu' : ''; ?>">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                    <?= lang('brands'); ?> <span class="caret"></span>
-                                </a>
-                                <?php
-                                if (count($brands) <= 10) {
+                            <?php if ($isPromo) {
                                     ?>
-                                    <ul class="dropdown-menu">
-                                        <?php
-                                        foreach ($brands as $brand) {
-                                            echo '<li><a href="' . site_url('brand/' . $brand->slug) . '" class="line-height-lg">' . $brand->name . '</a></li>';
-                                        } ?>
-                                    </ul>
-                                    <?php
-                                } elseif (count($brands) <= 20) {
-                                    ?>
-                                    <div class="dropdown-menu dropdown-menu-2x">
-                                        <div class="dropdown-menu-content">
-                                            <?php
-                                            $brands_chunks = array_chunk($brands, 10);
-                                    foreach ($brands_chunks as $brands) {
-                                        ?>
-                                                <div class="col-xs-6 padding-x-no line-height-md">
-                                                    <ul class="nav">
-                                                        <?php
-                                                        foreach ($brands as $brand) {
-                                                            echo '<li><a href="' . site_url('brand/' . $brand->slug) . '" class="line-height-lg">' . $brand->name . '</a></li>';
-                                                        } ?>
-                                                    </ul>
-                                                </div>
-                                                <?php
-                                    } ?>
-                                        </div>
-                                    </div>
-                                    <?php
-                                } elseif (count($brands) > 20) {
-                                    ?>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <div class="mega-menu-content">
-                                                <div class="row">
-                                                    <?php
-                                                    $brands_chunks = array_chunk($brands, ceil(count($brands) / 4));
-                                    foreach ($brands_chunks as $brands) {
-                                        ?>
-                                                        <div class="col-sm-3">
-                                                            <ul class="list-unstyled">
-                                                                <?php
-                                                                foreach ($brands as $brand) {
-                                                                    echo '<li><a href="' . site_url('brand/' . $brand->slug) . '" class="line-height-lg">' . $brand->name . '</a></li>';
-                                                                } ?>
-                                                            </ul>
-                                                        </div>
-                                                        <?php
-                                    } ?>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <?php
-                                }
-                                ?>
-                            </li>
-                            <?php if (!$shop_settings->hide_price) {
-                                    ?>
-                            <li class="<?= $m == 'cart_ajax' && $v == 'index' ? 'active' : ''; ?>"><a href="<?= site_url('cart'); ?>"><?= lang('shopping_cart'); ?></a></li>
-                            <li class="<?= $m == 'cart_ajax' && $v == 'checout' ? 'active' : ''; ?>"><a href="<?= site_url('cart/checkout'); ?>"><?= lang('checkout'); ?></a></li>
+                            <li class="<?= $m == 'shop' && $v == 'products' && $this->input->get('promo') == 'yes' ? 'active' : ''; ?>"><a href="<?= shop_url('products?promo=yes'); ?>"><?= lang('promo'); ?></a></li>
                             <?php
                                 } ?>
                         </ul>

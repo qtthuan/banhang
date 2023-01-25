@@ -65,6 +65,7 @@ $lang['reminder']                      = 'Rất tiếc bạn à!';
 $lang['featured_products']             = 'Sản phẩm nổi bật';
 $lang['promo']                         = 'Khuyến mãi';
 $lang['add_to_cart']                   = 'Thêm vào giỏ';
+$lang['view_item']                     = 'Xem sản phẩm';
 $lang['filters']                       = 'Bộ lọc';
 $lang['availability']                  = 'Kho hàng';
 $lang['in_stock']                      = 'Còn hàng';

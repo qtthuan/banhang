@@ -15,57 +15,7 @@
 } ?>
 
 <section class="footer">
-    <div class="container padding-bottom-md">
-        <div class="row">
-            <div class="col-md-6 col-sm-12">
-                <div class="title-footer"><span><?= lang('about_us'); ?></span></div>
-                <p>
-                    <?= $shop_settings->description; ?> <a href="<?= site_url('page/' . $shop_settings->about_link); ?>"><?= lang('read_more'); ?></a>
-                </p>
-                <p>
-                    <i class="fa fa-phone"></i> <span class="margin-left-md"><?= $shop_settings->phone; ?></span>
-                    <i class="fa fa-envelope margin-left-xl"></i> <span class="margin-left-md"><?= $shop_settings->email; ?></span>
-                </p>
-                <ul class="list-inline">
-                    <li><a href="<?= site_url('page/' . $shop_settings->privacy_link); ?>"><?= lang('privacy_policy'); ?></a></li>
-                    <li><a href="<?= site_url('page/' . $shop_settings->terms_link); ?>"><?= lang('terms_conditions'); ?></a></li>
-                    <li><a href="<?= site_url('page/' . $shop_settings->contact_link); ?>"><?= lang('contact_us'); ?></a></li>
-                </ul>
-            </div>
-
-            <div class="clearfix visible-sm-block"></div>
-            <div class="col-md-3 col-sm-6">
-                <div class="title-footer"><span><?= lang('payment_methods'); ?></span></div>
-                <p><?= $shop_settings->payment_text; ?></p>
-                <img class="img-responsive" src="<?= $assets; ?>/images/payment-methods.png" alt="Payment Methods">
-            </div>
-
-            <div class="col-md-3 col-sm-6">
-                <div class="title-footer"><span><?= lang('follow_us'); ?></span></div>
-                <p><?= $shop_settings->follow_text; ?></p>
-                <ul class="follow-us">
-                    <?php if (!empty($shop_settings->facebook)) {
-        ?>
-                    <li><a target="_blank" href="<?= $shop_settings->facebook; ?>"><i class="fa fa-facebook"></i></a></li>
-                    <?php
-    } if (!empty($shop_settings->twitter)) {
-        ?>
-                    <li><a target="_blank" href="<?= $shop_settings->twitter; ?>"><i class="fa fa-twitter"></i></a></li>
-                    <?php
-    } if (!empty($shop_settings->google_plus)) {
-        ?>
-                    <li><a target="_blank" href="<?= $shop_settings->google_plus; ?>"><i class="fa fa-google-plus"></i></a></li>
-                    <?php
-    } if (!empty($shop_settings->instagram)) {
-        ?>
-                    <li><a target="_blank" href="<?= $shop_settings->instagram; ?>"><i class="fa fa-instagram"></i></a></li>
-                    <?php
-    } ?>
-                </ul>
-            </div>
-
-        </div>
-    </div>
+    
     <div class="footer-bottom">
         <div class="container">
             <div class="copyright line-height-lg">

@@ -43,8 +43,8 @@
                             <?php if ($isPromo) {
                                         ?>
                             <div class="margin-bottom-xl">
-                                <h5 class="title text-bold"><span><?= lang('promotions'); ?></span></h5>
-                                <div class="checkbox"><label><input type="checkbox" id="promotions"<?= $this->input->get('promo') == 'yes' ? ' checked' : ''; ?>><span> <?= lang('promotions'); ?></span></label></div>
+                                <h5 class="title text-bold"><span><?= lang('promo'); ?></span></h5>
+                                <div class="checkbox"><label><input type="checkbox" id="promotions"<?= $this->input->get('promo') == 'yes' ? ' checked' : ''; ?>><span> <?= lang('promo'); ?></span></label></div>
                             </div>
                             <?php
                                     } ?>
@@ -128,7 +128,9 @@
                                                         <?php if (!$shop_settings->hide_price) {
                                                             ?>
                                                         <div class="image_overlay"></div>
-                                                        <div class="btn btn-sm add-to-cart" data-id="<?= $fp->id; ?>"><i class="fa fa-shopping-cart"></i> <?= lang('add_to_cart'); ?></div>
+                                                        <div class="btn btn-sm add-to-cart"><i class="fa fa-server"></i> 
+                                                        <a href="<?= site_url('product/' . $fp->slug); ?>"><?= lang('view_item'); ?></a>
+                                                        </div>
                                                         <?php
                                                         } ?>
                                                         <div class="stats-container">
