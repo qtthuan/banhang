@@ -380,7 +380,7 @@
                                     <span class="text"> <?= lang('sales'); ?>
                                     </span> <span class="chevron closed"></span>
                                 </a>
-                                <ul>
+                                <ul>                                
                                     <?php if (POS) { ?>
                                         <li id="pos_sales">
                                             <a class="submenu" href="<?= admin_url('pos/sales'); ?>">
@@ -389,6 +389,13 @@
                                             </a>
                                         </li>
                                     <?php } ?>
+
+                                    <li id="sales_index">
+                                        <a class="submenu" href="<?= admin_url('sales'); ?>">
+                                            <i class="fa fa-heart"></i>
+                                            <span class="text"> <?= lang('list_sales'); ?></span>
+                                        </a>
+                                    </li>
 
                                     <li id="sales_deliveries">
                                         <a class="submenu" href="<?= admin_url('sales/deliveries'); ?>">

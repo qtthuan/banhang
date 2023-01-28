@@ -38,7 +38,7 @@
                                         <?php if (!$shop_settings->hide_price) {
                                             ?>
                                         <div class="image_overlay"></div>
-                                        <div class="btn btn-sm add-to-cart" data-id="<?= $fp->id; ?>"><i class="fa fa-shopping-cart"></i> <?= lang('add_to_cart'); ?></div>
+                                        <div class="btn btn-sm"><i class="fa fa-server"></i> <a href="<?= site_url('product/' . $fp->slug); ?>"><?= lang('view_item'); ?></a></div>
                                         <?php
                                         } ?>
                                         <div class="stats-container">

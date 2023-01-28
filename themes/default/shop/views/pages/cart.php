@@ -68,7 +68,7 @@
                         </div>
                     </div>
                 </div>
-                <code class="text-muted">* <?= lang('shipping_rate_info'); ?></code>
+                <!--<code class="text-muted">* <?= lang('shipping_rate_info'); ?></code>-->
             </div>
         </div>
     </div>

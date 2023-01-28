@@ -63,7 +63,9 @@
                                             <?php
                                             if ($variants) {
                                                 foreach ($variants as $variant) {
-                                                    $opts[$variant->id] = $variant->name . ($variant->price > 0 ? ' (+' . $this->sma->convertMoney($variant->price, true, false) . ')' : ($variant->price == 0 ? '' : ' (+' . $this->sma->convertMoney($variant->price, true, false) . ')'));
+                                                    if ($variant->quantity != 0) {
+                                                        $opts[$variant->id] = $variant->name . ($variant->price > 0 ? ' (+' . $this->sma->convertMoney($variant->price, true, false) . ')' : ($variant->price == 0 ? '' : ' (+' . $this->sma->convertMoney($variant->price, true, false) . ')'));
+                                                    }
                                                 }
                                                 echo form_dropdown('option', $opts, '', 'class="form-control selectpicker mobile-device" required="required"');
                                             } ?>
@@ -80,7 +82,7 @@
 
                                         <div class="form-group">
                                             <div class="btn-group" role="group" aria-label="...">
-                                                <button class="btn btn-info btn-lg add-to-wishlist" data-id="<?= $product->id; ?>"><i class="fa fa-heart-o"></i></button>
+                                                <!--<button class="btn btn-info btn-lg add-to-wishlist" data-id="<?= $product->id; ?>"><i class="fa fa-heart-o"></i></button>-->
                                                 <button type="submit" class="btn btn-theme btn-lg"><i class="fa fa-shopping-cart padding-right-md"></i> <?= lang('add_to_cart'); ?></button>
                                             </div>
                                         </div>
@@ -114,14 +116,14 @@
                                                         <td><?= lang('code'); ?></td>
                                                         <td><?= $product->code; ?></td>
                                                     </tr>
-                                                    <tr>
+                                                    <!--<tr>
                                                         <td><?= lang('type'); ?></td>
                                                         <td><?= lang($product->type); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td><?= lang('brand'); ?></td>
                                                         <td><?= $brand ? '<a href="' . site_url('brand/' . $brand->slug) . '" class="line-height-lg">' . $brand->name . '</a>' : ''; ?></td>
-                                                    </tr>
+                                                    </tr>-->
                                                     <tr>
                                                         <td><?= lang('category'); ?></td>
                                                         <td><?= '<a href="' . site_url('category/' . $category->slug) . '" class="line-height-lg">' . $category->name . '</a>'; ?></td>
@@ -165,7 +167,7 @@
 
                                                     <tr>
                                                         <td><?= lang('unit'); ?></td>
-                                                        <td><?= $unit ? $unit->name . ' (' . $unit->code . ')' : ''; ?></td>
+                                                        <td><?= $unit ? $unit->name : ''; ?></td>
                                                     </tr>
                                                     <?php if (!empty($warehouse) && $product->type == 'standard') {
                                                         ?>
@@ -297,7 +299,7 @@
                                 <?php if (!$shop_settings->hide_price) {
                                     ?>
                                 <div class="image_overlay"></div>
-                                <div class="btn add-to-cart" data-id="<?= $fp->id; ?>"><i class="fa fa-shopping-cart"></i> <?= lang('add_to_cart'); ?></div>
+                                <div class="btn"><i class="fa fa-server"></i> <a href="<?= site_url('product/' . $fp->slug); ?>"><?= lang('view_item'); ?></a></div>
                                 <?php
                                 } ?>
                                 <div class="stats-container">
