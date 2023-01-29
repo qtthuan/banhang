@@ -380,6 +380,17 @@ if (!empty($variants)) {
                         </div>
                     </div>
 
+                    <div class="form-group all">
+                        <?= lang('brand', 'brand') ?>
+                        <?php
+                        $br[''] = '';
+                        foreach ($brands as $brand) {
+                            $br[$brand->id] = $brand->name;
+                        }
+                        echo form_dropdown('brand', $br, (isset($_POST['brand']) ? $_POST['brand'] : ($product ? $product->brand : '')), 'class="form-control select" id="brand" placeholder="' . lang('select') . ' ' . lang('brand') . '" style="width:100%"')
+                        ?>
+                    </div>
+
                     <div class="form-group standard">
                         <div class="form-group">
                             <?= lang("supplier", "supplier") ?>

@@ -119,11 +119,11 @@
                                                     <!--<tr>
                                                         <td><?= lang('type'); ?></td>
                                                         <td><?= lang($product->type); ?></td>
-                                                    </tr>
+                                                    </tr>-->
                                                     <tr>
                                                         <td><?= lang('brand'); ?></td>
                                                         <td><?= $brand ? '<a href="' . site_url('brand/' . $brand->slug) . '" class="line-height-lg">' . $brand->name . '</a>' : ''; ?></td>
-                                                    </tr>-->
+                                                    </tr>
                                                     <tr>
                                                         <td><?= lang('category'); ?></td>
                                                         <td><?= '<a href="' . site_url('category/' . $category->slug) . '" class="line-height-lg">' . $category->name . '</a>'; ?></td>

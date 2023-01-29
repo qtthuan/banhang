@@ -136,17 +136,7 @@ if (!empty($variants)) {
                         ?>
 
                     </div>
-                    <div class="form-group all" style="display:none;">
-                        <?= lang("brand", "brand") ?>
-                        <?php
-                        $br[''] = "";
-                        foreach ($brands as $brand) {
-                            $br[$brand->id] = $brand->name;
-                        }
-                        echo form_dropdown('brand', $br, (isset($_POST['brand']) ? $_POST['brand'] : ($product ? $product->brand : '')), 'class="form-control select" id="brand" placeholder="' . lang("select") . " " . lang("brand") . '" style="width:100%"')
-                        ?>
-                    </div>
-
+                    
                     <div class="form-group all" style="display: none;">
                         <?= lang("subcategory", "subcategory") ?>
                         <div class="controls" id="subcat_data"> <?php
@@ -328,6 +318,19 @@ if (!empty($variants)) {
                             }
                             ?>
                         </div>
+                        <div class="clearfix"></div>
+
+                        <div class="form-group all">
+                            <?= lang("brand", "brand") ?>
+                            <?php
+                            $br[''] = "";
+                            foreach ($brands as $brand) {
+                                $br[$brand->id] = $brand->name;
+                            }
+                            echo form_dropdown('brand', $br, (isset($_POST['brand']) ? $_POST['brand'] : ($product ? $product->brand : '')), 'class="form-control select" id="brand" placeholder="' . lang("select") . " " . lang("brand") . '" style="width:100%"')
+                            ?>
+                        </div>
+
                         <div class="clearfix"></div>
 
                         <div class="form-group standard">

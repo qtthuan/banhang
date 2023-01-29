@@ -15,11 +15,54 @@
 } ?>
 
 <section class="footer">
-    
+<div class="container padding-bottom-md">
+        <div class="row">
+            
+            
+            
+            <div class="col-md-3 col-sm-6">
+                <div class="title-footer"><span><?= lang('about_us'); ?></span></div>
+                <p>
+                    <a href="<?= site_url('page/' . $shop_settings->about_link); ?>"><?= $shop_settings->description; ?></a>
+                </p>
+                <p>
+                    <a href="<?= site_url('page/' . $shop_settings->privacy_link); ?>"><?= lang('privacy_policy'); ?></a>
+                </p>
+                <p>
+                    <a href="<?= site_url('page/' . $shop_settings->terms_link); ?>"><?= lang('terms_conditions'); ?></a>
+                </p>
+                <p>
+                    <a href="<?= site_url('page/' . $shop_settings->contact_link); ?>"><?= lang('contact_us'); ?></a>
+                </p>
+                
+                <!--<ul class="list-inline">
+                    <li><a href="<?= site_url('page/' . $shop_settings->privacy_link); ?>"><?= lang('privacy_policy'); ?></a></li>
+                    <li><a href="<?= site_url('page/' . $shop_settings->terms_link); ?>"><?= lang('terms_conditions'); ?></a></li>
+                    <li><a href="<?= site_url('page/' . $shop_settings->contact_link); ?>"><?= lang('contact_us'); ?></a></li>
+                </ul>-->
+            </div>
+            <div class="clearfix visible-sm-block"></div>
+            <div class="col-md-6 col-sm-12">
+                <div class="title-footer"><span><?= lang('follow_us'); ?></span></div>
+                <div class="fb-page" data-href="https://www.facebook.com/banikidsct" data-width="380" data-hide-cover="false" data-show-facepile="false">
+                <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fbanikidsct&tabs=timeline&width=500&height=100&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId" width="500" height="130" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+                </div>
+
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+            <div class="title-footer"><span><?= lang('company_name'); ?></span></div>
+            <p><?= lang('company_fullname'); ?></p>
+            <p><?= lang('company_taxno'); ?></p>
+            <!--<img class="img-responsive" width="70%" src="<?= $assets; ?>/images/bct.png" alt="">-->  
+            </div>
+
+        </div>
+    </div>
     <div class="footer-bottom">
         <div class="container">
             <div class="copyright line-height-lg">
-                &copy; <?= date('Y'); ?> <?= $shop_settings->shop_name; ?>. <?= lang('all_rights_reserved'); ?>
+                &copy; <?= date('Y'); ?> <?= $shop_settings->shop_name; ?> <?= lang('all_rights_reserved'); ?>
             </div>
             <ul class="list-inline pull-right line-height-md">
                 <li class="padding-x-no text-size-lg">
