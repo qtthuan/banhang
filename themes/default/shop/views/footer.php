@@ -157,6 +157,7 @@
     lang.send_email_title = '<?= lang('send_email_title'); ?>';
     lang.message_sent = '<?= lang('message_sent'); ?>';
     lang.add_to_cart = '<?= lang('add_to_cart'); ?>';
+    lang.view_item = '<?= lang('view_item'); ?>';
     lang.out_of_stock = '<?= lang('out_of_stock'); ?>';
     lang.x_product = '<?= lang('x_product'); ?>';
 </script>

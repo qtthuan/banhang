@@ -2964,7 +2964,7 @@ class system_settings extends MY_Controller
     function add_brand()
     {
 
-        $this->form_validation->set_rules('name', lang("brand_name"), 'trim|required|is_unique[brands.name]|alpha_numeric_spaces');
+        $this->form_validation->set_rules('name', lang("brand_name"), 'trim|required|is_unique[brands.name]');
         $this->form_validation->set_rules('slug', lang("slug"), 'trim|required|is_unique[brands.slug]|alpha_dash');
 
         if ($this->form_validation->run() == true) {
@@ -3028,7 +3028,7 @@ class system_settings extends MY_Controller
     function edit_brand($id = NULL)
     {
 
-        $this->form_validation->set_rules('name', lang("brand_name"), 'trim|required|alpha_numeric_spaces');
+        $this->form_validation->set_rules('name', lang("brand_name"), 'trim|required');
         $brand_details = $this->site->getBrandByID($id);
         if ($this->input->post('name') != $brand_details->name) {
             $this->form_validation->set_rules('name', lang("brand_name"), 'required|is_unique[brands.name]');
