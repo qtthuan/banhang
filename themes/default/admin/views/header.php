@@ -919,12 +919,7 @@
                                     <span class="text"> <?= lang('sales'); ?>
                                     </span> <span class="chevron closed"></span>
                                 </a>
-                                <ul>
-<!--                                    <li id="sales_index">-->
-<!--                                        <a class="submenu" href="--><?//= admin_url('sales'); ?><!--">-->
-<!--                                            <i class="fa fa-heart"></i><span class="text"> --><?//= lang('list_sales'); ?><!--</span>-->
-<!--                                        </a>-->
-<!--                                    </li>-->
+                                <ul>                                    
                                     <?php if (POS && $GP['pos-index']) { ?>
                                     <li id="pos_sales">
                                         <a class="submenu" href="<?= admin_url('pos/sales'); ?>">
@@ -932,6 +927,11 @@
                                         </a>
                                     </li>
                                     <?php } ?>
+                                    <li id="sales_index">
+                                       <a class="submenu" href="<?= admin_url('sales'); ?>">
+                                           <i class="fa fa-heart"></i><span class="text"><?= lang('list_sales'); ?></span>
+                                      </a>
+                                    </li>
                                     <?php if ($GP['sales-add']) { ?>
 <!--                                    <li id="sales_add">-->
 <!--                                        <a class="submenu" href="--><?//= admin_url('sales/add'); ?><!--">-->

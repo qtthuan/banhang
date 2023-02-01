@@ -203,9 +203,9 @@
                                         <option value="price-asc"><?= lang('price_asc'); ?></option>
                                         <option value="price-desc"><?= lang('price_desc'); ?></option>
                                         <option value="id-desc"><?= lang('id_desc'); ?></option>
-                                        <option value="id-asc"><?= lang('id_asc'); ?></option>
+                                        <!--<option value="id-asc"><?= lang('id_asc'); ?></option>-->
                                         <option value="views-desc"><?= lang('views_desc'); ?></option>
-                                        <option value="views-asc"><?= lang('views_asc'); ?></option>
+                                        <!--<option value="views-asc"><?= lang('views_asc'); ?></option>-->
                                     </select>
                                 </div>
                             </div>
