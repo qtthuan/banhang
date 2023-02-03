@@ -238,6 +238,13 @@ class Products extends MY_Controller
                 $suppliers = substr($suppliers, 0, strlen($suppliers) - 2);
 
                 $price = $product->price;
+                $text_brand = '';
+                $name_brand = '';
+                if ($product->brand) {
+                    $brand = $this->products_model->getBrandById($product->brand);
+                    $text_brand = $brand->code;
+                    $name_brand = $brand->name;
+                }
                 if ($this->input->post('check_promo')) {
                     if ($product->promotion) {
                         $price_before_promo = $price;
@@ -272,6 +279,8 @@ class Products extends MY_Controller
                                 'quantity' => $quantity,
                                 'text_code' => $text_code,
                                 'text_suppliers' => $suppliers,
+                                'text_brand'  => $text_brand,
+                                'name_brand'  => $name_brand,
                                 );
                         }
                     }

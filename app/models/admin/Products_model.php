@@ -1010,6 +1010,15 @@ class Products_model extends CI_Model
         return FALSE;
     }
 
+    public function getBrandById($id)
+    {
+        $q = $this->db->get_where('brands', array('id' => $id), 1);
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }
+        return FALSE;
+    }
+
     public function getStockCountProducts($warehouse_id, $type, $categories = NULL, $brands = NULL)
     {
         $this->db->select("{$this->db->dbprefix('products')}.id as id, {$this->db->dbprefix('products')}.code as code, {$this->db->dbprefix('products')}.name as name, {$this->db->dbprefix('warehouses_products')}.quantity as quantity")

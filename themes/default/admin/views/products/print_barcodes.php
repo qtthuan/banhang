@@ -173,11 +173,15 @@
                                         if ($item['text_suppliers']) {
                                             echo '<span class="text_suppliers"> - ' . $item['text_suppliers'] . '</span>';
                                         }
+                                        if ($item['text_brand']) {
+                                            echo '<span class="text_brand" title="'.$item['name_brand'].'">-' . $item['text_brand'] . '</span>';
+                                        }
+                                        if ($item[''])
                                         echo '<br />';
 
                                         if($item['price']) {
 
-                                            echo '<span class="barcode_price">'.lang('price').': ';
+                                            echo '<span class="barcode_price">';
                                             if($item['currencies']) {
                                                 foreach ($currencies as $currency) {
                                                     echo $currency->code . ': ' . $this->sma->formatMoney($item['price'] * $currency->rate).', ';
