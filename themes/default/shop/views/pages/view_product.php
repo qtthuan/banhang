@@ -71,14 +71,14 @@
                                             } ?>
                                         </div>
 
-                                        <div class="form-group">
+                                        <!--<div class="form-group">
                                             <div class="input-group">
                                                 <span class="input-group-addon pointer btn-minus"><span class="fa fa-minus"></span></span>
                                                 <input type="text" name="quantity" class="form-control text-center quantity-input" value="1" required="required">
                                                 <span class="input-group-addon pointer btn-plus"><span class="fa fa-plus"></span></span>
                                             </div>
-                                        </div>
-                                        <!-- <input type="hidden" name="quantity" class="form-control text-center" value="1"> -->
+                                        </div>-->
+                                        <input type="hidden" name="quantity" class="form-control text-center" value="1">
 
                                         <div class="form-group">
                                             <div class="btn-group" role="group" aria-label="...">
