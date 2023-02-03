@@ -173,9 +173,9 @@
                                         if ($item['text_suppliers']) {
                                             echo '<span class="text_suppliers"> - ' . $item['text_suppliers'] . '</span>';
                                         }
-                                        if ($item['text_brand']) {
+                                        //if ($item['text_brand']) {
                                             echo '<span class="text_brand" title="'.$item['name_brand'].'">-' . $item['text_brand'] . '</span>';
-                                        }
+                                        //}
                                         if ($item[''])
                                         echo '<br />';
 
