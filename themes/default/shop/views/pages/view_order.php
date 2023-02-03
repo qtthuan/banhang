@@ -83,13 +83,16 @@
                                 <div class="row" style="margin-bottom:15px;">
 
                                     <div class="col-xs-6">
-                                        <?php echo $this->lang->line('billing'); ?>:<br/>
-                                        <h2 style="margin-top:10px;"><?= $customer->company && $customer->company != '-' ? $customer->company : $customer->name; ?></h2>
+                                        <h4><strong><?php echo $this->lang->line('billing_info'); ?>:</strong></h4>
+                                        <span style="margin-top:10px;"><?= $customer->company && $customer->company != '-' ? $customer->company : $this->lang->line('customer_name'). ': '.$customer->name; ?></span><br />
                                         <?= $customer->company ? '' : 'Attn: ' . $customer->name ?>
 
                                         <?php
-                                        echo $customer->address . '<br>' . $customer->city . ' ' . $customer->postal_code . ' ' . $customer->state . '<br>' . $customer->country;
-
+                                        echo $this->lang->line('address') . ': ' . $customer->address;
+                                        echo lang('tel') . ': ' . $customer->phone;
+                                        if ($customer->email != '') {
+                                            echo '<br>' . lang('email') . ': ' . $customer->email;
+                                        }
                                         echo '<p>';
 
                                         if ($customer->vat_no != '-' && $customer->vat_no != '') {
@@ -115,13 +118,13 @@
                                         }
 
                                         echo '</p>';
-                                        echo lang('tel') . ': ' . $customer->phone . '<br>' . lang('email') . ': ' . $customer->email;
+                                        
                                         ?>
                                     </div>
                                     <?php if ($address) {
                                             ?>
                                     <div class="col-xs-6">
-                                        <?php echo $this->lang->line('shipping'); ?>:
+                                    <h4><strong><?php echo $this->lang->line('shipping_info'); ?>:</strong></h4>
                                         <h2 style="margin-top:10px;"><?= $customer->company && $customer->company != '-' ? $customer->company : $customer->name; ?></h2>
                                         <?= $customer->company ? '' : 'Attn: ' . $customer->name ?>
                                         <p>

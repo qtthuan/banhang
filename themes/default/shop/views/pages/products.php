@@ -53,11 +53,11 @@
                             <div class="margin-bottom-xl">
                                 <h5 class="title text-bold"><span><?= lang('price_range'); ?></span></h5>
                                 <div class="row">
-                                    <div class="col-xs-6">
-                                        <input type="text" name="min-price" id="min-price" value="" placeholder="Min" class="form-control"></input>
+                                    <div class="col-xs-6 padding-right-xs">
+                                        <input type="text" name="min-price" id="min-price" value="" placeholder="<?= lang('min'); ?>" class="form-control"></input>
                                     </div>
-                                    <div class="col-xs-6">
-                                        <input type="text" name="max-price" id="max-price" value="" placeholder="Max" class="form-control"></input>
+                                    <div class="col-xs-6 padding-right-xs">
+                                        <input type="text" name="max-price" id="max-price" value="" placeholder="<?= lang('max'); ?>" class="form-control"></input>
                                     </div>
                                 </div>
                             </div>
@@ -97,7 +97,7 @@
                             ?>
                             <h4 class="margin-top-md title text-bold">
                                 <span><?= lang('featured'); ?></span>
-                                <div class="pull-right">
+                                <div class="pull-right margin-top-xs">
                                     <div class="controls pull-right hidden-xs">
                                         <a class="left fa fa-chevron-left btn btn-xs btn-default" href="#carousel-example"
                                         data-slide="prev"></a>

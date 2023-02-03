@@ -23,14 +23,17 @@ class Shop_model extends CI_Model
         // $this->sma->print_arrays($cost);
 
         if (is_array($customer) && !empty($customer)) {
+            
             $this->db->insert('companies', $customer);
             $data['customer_id'] = $this->db->insert_id();
+            //$this->sma->print_arrays($customer, $data);
         }
 
         if (is_array($address) && !empty($address)) {
             $address['company_id'] = $data['customer_id'];
             $this->db->insert('addresses', $address);
             $data['address_id'] = $this->db->insert_id();
+            //$this->sma->print_arrays($address, $this->db->insert_id());
         }
 
         $this->db->trans_start();
@@ -157,6 +160,15 @@ class Shop_model extends CI_Model
     public function getCompanyByEmail($email)
     {
         $q = $this->db->get_where('companies', ['email' => $email], 1);
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }
+        return false;
+    }
+
+    public function getCompanyByPhone($phone)
+    {
+        $q = $this->db->get_where('companies', ['phone' => $phone], 1);
         if ($q->num_rows() > 0) {
             return $q->row();
         }

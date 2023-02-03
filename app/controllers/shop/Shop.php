@@ -159,15 +159,15 @@ class Shop extends MY_Shop_Controller
         $this->form_validation->set_rules('payment_method', lang('payment_method'), 'required');
         if ($guest_checkout) {
             $this->form_validation->set_rules('name', lang('name'), 'trim|required');
-            $this->form_validation->set_rules('email', lang('email'), 'trim|required|valid_email');
+            //$this->form_validation->set_rules('email', lang('email'), 'trim|required|valid_email');
             $this->form_validation->set_rules('phone', lang('phone'), 'trim|required');
             $this->form_validation->set_rules('billing_line1', lang('billing_address') . ' ' . lang('line1'), 'trim|required');
-            $this->form_validation->set_rules('billing_city', lang('billing_address') . ' ' . lang('city'), 'trim|required');
-            $this->form_validation->set_rules('billing_country', lang('billing_address') . ' ' . lang('country'), 'trim|required');
+            //$this->form_validation->set_rules('billing_city', lang('billing_address') . ' ' . lang('city'), 'trim|required');
+            //$this->form_validation->set_rules('billing_country', lang('billing_address') . ' ' . lang('country'), 'trim|required');
             $this->form_validation->set_rules('shipping_line1', lang('shipping_address') . ' ' . lang('line1'), 'trim|required');
-            $this->form_validation->set_rules('shipping_city', lang('shipping_address') . ' ' . lang('city'), 'trim|required');
-            $this->form_validation->set_rules('shipping_country', lang('shipping_address') . ' ' . lang('country'), 'trim|required');
-            $this->form_validation->set_rules('shipping_phone', lang('shipping_address') . ' ' . lang('phone'), 'trim|required');
+            //$this->form_validation->set_rules('shipping_city', lang('shipping_address') . ' ' . lang('city'), 'trim|required');
+            //$this->form_validation->set_rules('shipping_country', lang('shipping_address') . ' ' . lang('country'), 'trim|required');
+            $this->form_validation->set_rules('shipping_phone', lang('shipping_address') . ' ' . lang('shipping_address'), 'trim|required');
         }
         if ($guest_checkout && $this->Settings->indian_gst) {
             $this->form_validation->set_rules('billing_state', lang('billing_address') . ' ' . lang('state'), 'trim|required');
@@ -179,24 +179,25 @@ class Shop extends MY_Shop_Controller
                 $new_customer = false;
                 if ($guest_checkout) {
                     $address = [
-                        'phone'       => $this->input->post('shipping_phone'),
-                        'line1'       => $this->input->post('shipping_line1'),
-                        'line2'       => $this->input->post('shipping_line2'),
-                        'city'        => $this->input->post('shipping_city'),
-                        'state'       => $this->input->post('shipping_state'),
-                        'postal_code' => $this->input->post('shipping_postal_code'),
-                        'country'     => $this->input->post('shipping_country'),
+                        'shipping_name' => $this->input->post('shipping_name'),
+                        'phone'         => $this->input->post('shipping_phone'),
+                        'line1'         => $this->input->post('shipping_line1'),
+                        //'line2'         => $this->input->post('shipping_line2'),
+                        //'city'          => $this->input->post('shipping_city'),
+                        //'state'         => $this->input->post('shipping_state'),
+                        //'postal_code'   => $this->input->post('shipping_postal_code'),
+                        //'country'       => $this->input->post('shipping_country'),
                     ];
                 }
                 if ($this->input->post('address') != 'new') {
                     $customer = $this->site->getCompanyByID($this->session->userdata('company_id'));
                 } else {
-                    if (!($customer = $this->shop_model->getCompanyByEmail($this->input->post('email')))) {
+                    if (!($customer = $this->shop_model->getCompanyByPhone($this->input->post('phone')))) {
                         $customer                      = new stdClass();
                         $customer->name                = $this->input->post('name');
                         $customer->company             = $this->input->post('company');
                         $customer->phone               = $this->input->post('phone');
-                        $customer->email               = $this->input->post('email');
+                        //$customer->email               = $this->input->post('email');
                         $customer->address             = $this->input->post('billing_line1') . '<br>' . $this->input->post('billing_line2');
                         $customer->city                = $this->input->post('billing_city');
                         $customer->state               = $this->input->post('billing_state');
@@ -208,6 +209,8 @@ class Shop extends MY_Shop_Controller
                         $customer->customer_group_name = (!empty($customer_group)) ? $customer_group->name : null;
                         $customer->price_group_id      = (!empty($price_group)) ? $price_group->id : null;
                         $customer->price_group_name    = (!empty($price_group)) ? $price_group->name : null;
+                        $customer->group_name          = 'customer';
+                        $customer->created_date        = date('Y-m-d H:i:s');
                         $new_customer                  = true;
                     }
                 }
@@ -333,7 +336,7 @@ class Shop extends MY_Shop_Controller
                 if ($new_customer) {
                     $customer = (array) $customer;
                 }
-                // $this->sma->print_arrays($data, $products, $customer, $address);
+                //$this->sma->print_arrays($data, $products, $customer, $address, $new_customer);
 
                 if ($sale_id = $this->shop_model->addSale($data, $products, $customer, $address)) {
                     $this->order_received($sale_id);

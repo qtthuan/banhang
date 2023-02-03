@@ -4,7 +4,7 @@
         ?>
         <h4 class="margin-top-md title text-bold">
             <span><?= lang('featured'); ?></span>
-            <div class="pull-right">
+            <div class="pull-right margin-top-xs">
                 <div class="controls pull-right hidden-xs">
                     <a class="left fa fa-chevron-left btn btn-xs btn-default" href="#carousel-example"
                     data-slide="prev"></a>

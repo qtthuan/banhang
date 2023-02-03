@@ -9,7 +9,7 @@
                         <div class="panel panel-default margin-top-lg">
                             <div class="panel-heading text-bold">
                                 <i class="fa fa-shopping-cart margin-right-sm"></i> <?= lang('shopping_cart'); ?>
-                                [ <?= lang('items'); ?>: <span id="total-items"></span> ]
+                                [ <span id="total-items"> </span> <?= lang('items'); ?> ]
                                 <a href="<?= shop_url('products'); ?>" class="pull-right hidden-xs">
                                     <i class="fa fa-share"></i>
                                     <?= lang('continue_shopping'); ?>
@@ -17,7 +17,7 @@
                             </div>
                             <div class="panel-body" style="padding:0;">
                                 <div class="cart-empty-msg <?=($this->cart->total_items() > 1) ? 'hide' : '';?>">
-                                    <?= '<h4 class="text-bold">' . lang('empty_cart') . '</h4>'; ?>
+                                    <?= '<h4 class="text-bold">' . lang('empty_cart1') . '</h4>'; ?>
                                 </div>
                                 <div class="cart-contents">
                                     <div class="table-responsive">
@@ -41,7 +41,7 @@
                             <div class="cart-contents">
                                 <div id="cart-helper" class="panel panel-footer margin-bottom-no">
                                     <a href="<?= site_url('cart/destroy'); ?>" id="empty-cart" class="btn btn-danger btn-sm">
-                                        <?= lang('empty_cart'); ?>
+                                        <?= lang('empty_cart1'); ?>
                                     </a>
                                     <a href="<?= shop_url('products'); ?>" class="btn btn-primary btn-sm pull-right">
                                         <i class="fa fa-share"></i>
