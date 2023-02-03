@@ -88,7 +88,7 @@
                                         <?= $customer->company ? '' : 'Attn: ' . $customer->name ?>
 
                                         <?php
-                                        echo $this->lang->line('address') . ': ' . $customer->address;
+                                        echo $this->lang->line('address') . ': ' . $customer->address . '<br />';
                                         echo lang('phone') . ': ' . $customer->phone;
                                         if ($customer->email != '') {
                                             echo '<br>' . lang('email') . ': ' . $customer->email;
