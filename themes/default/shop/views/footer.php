@@ -141,6 +141,7 @@
     lang.total_unique_items = '<?= lang('total_unique_items'); ?>';
     lang.tax = '<?= lang('tax'); ?>';
     lang.shipping = '<?= lang('shipping'); ?>';
+    lang.shipping_rate_info = '<?= lang('shipping_rate_info'); ?>';
     lang.total_w_o_tax = '<?= lang('total_w_o_tax'); ?>';
     lang.product_tax = '<?= lang('product_tax'); ?>';
     lang.order_tax = '<?= lang('order_tax'); ?>';

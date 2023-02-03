@@ -138,6 +138,7 @@ $lang['product_price']                 = 'Giá';
 $lang['contact_person']                = 'Người liên hệ';
 $lang['email_address']                 = 'Email';
 $lang['error_occured']                 = 'Có lỗi xảy ra, vui lòng thử lại sau.';
+$lang['payment_under_review']          = 'Cảm ơn bạn đã thanh toán, vui lòng chờ hệ thống xác nhận thanh toán của quí khách';
 $lang['add_address']                   = 'Thêm địa chỉ';
 $lang['add_new_address']               = 'Thêm địa chỉ mới';
 $lang['full_name']                     = 'Họ tên';
