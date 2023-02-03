@@ -171,10 +171,10 @@
                                         echo '<span class="barcode_image">'.$item['barcode'].'</span>';
                                         echo '<span class="text_code">'.$item['text_code'].'</span>';
                                         if ($item['text_suppliers']) {
-                                            echo '<span class="text_suppliers"> - ' . $item['text_suppliers'] . '</span>';
+                                            echo '<span class="text_suppliers"> -' . $item['text_suppliers'] . '</span>';
                                         }
                                         //if ($item['text_brand']) {
-                                            echo '<span class="text_suppliers" title="'.$item['name_brand'].'"> - ' . $item['text_brand'] . '</span>';
+                                            echo '<span class="text_suppliers" title="'.$item['name_brand'].'">-' . $item['text_brand'] . '</span>';
                                         //}
                                         if ($item[''])
                                         echo '<br />';
