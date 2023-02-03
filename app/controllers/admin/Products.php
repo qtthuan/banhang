@@ -298,6 +298,8 @@ class Products extends MY_Controller
                         'quantity' => $quantity,
                         'text_code' => $product->code,
                         'text_suppliers' => $suppliers,
+                        'text_brand'  => $text_brand,
+                        'name_brand'  => $name_brand,
                         );
                 }
 
