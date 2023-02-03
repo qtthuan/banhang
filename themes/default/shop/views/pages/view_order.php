@@ -84,12 +84,12 @@
 
                                     <div class="col-xs-6">
                                         <h4><strong><?php echo $this->lang->line('billing_info'); ?>:</strong></h4>
-                                        <span style="margin-top:10px;"><?= $customer->company && $customer->company != '-' ? $customer->company : $this->lang->line('customer_name'). ': '.$customer->name; ?></span><br />
+                                        <h4 style="margin-top:10px;"><span><?= $customer->company && $customer->company != '-' ? $customer->company : $customer->name; ?></span></h4>
                                         <?= $customer->company ? '' : 'Attn: ' . $customer->name ?>
 
                                         <?php
                                         echo $this->lang->line('address') . ': ' . $customer->address;
-                                        echo lang('tel') . ': ' . $customer->phone;
+                                        echo lang('phone') . ': ' . $customer->phone;
                                         if ($customer->email != '') {
                                             echo '<br>' . lang('email') . ': ' . $customer->email;
                                         }
@@ -125,13 +125,13 @@
                                             ?>
                                     <div class="col-xs-6">
                                     <h4><strong><?php echo $this->lang->line('shipping_info'); ?>:</strong></h4>
-                                        <h2 style="margin-top:10px;"><?= $customer->company && $customer->company != '-' ? $customer->company : $customer->name; ?></h2>
+                                        <h4 style="margin-top:10px;"><?= $customer->company && $customer->company != '-' ? $customer->company : $address->shipping_name; ?></h4>
                                         <?= $customer->company ? '' : 'Attn: ' . $customer->name ?>
                                         <p>
                                             <?= $address->line1; ?><br>
-                                            <?= $address->line2; ?><br>
+                                            <!--<?= $address->line2; ?><br>
                                             <?= $address->city; ?> <?= $address->state; ?><br>
-                                            <?= $address->postal_code; ?> <?= $address->country; ?><br>
+                                            <?= $address->postal_code; ?> <?= $address->country; ?><br>-->
                                             <?= lang('phone') . ': ' . $address->phone; ?>
                                         </p>
                                     </div>
@@ -313,7 +313,7 @@
                                                 </td>
                                                 <td style="text-align:right; padding-right:10px; font-weight:bold;"><?= $this->sma->formatMoney($return_sale ? ($inv->grand_total + $return_sale->grand_total) : $inv->grand_total); ?></td>
                                             </tr>
-                                            <tr>
+                                            <!--<tr>
                                                 <td colspan="<?= $col; ?>"
                                                     style="text-align:right; font-weight:bold;"><?= lang('paid'); ?>
                                                     (<?= $default_currency->code; ?>)
@@ -326,7 +326,7 @@
                                                     (<?= $default_currency->code; ?>)
                                                 </td>
                                                 <td style="text-align:right; font-weight:bold;"><?= $this->sma->formatMoney(($return_sale ? ($inv->grand_total + $return_sale->grand_total) : $inv->grand_total) - ($return_sale ? ($inv->paid + $return_sale->paid) : $inv->paid)); ?></td>
-                                            </tr>
+                                            </tr>-->
 
                                         </tfoot>
                                     </table>
@@ -371,7 +371,7 @@
                                         echo form_close();
                                         echo '</div><hr class="divider or">';
                                     }
-                                    $btn_code = '<div id="payment_buttons" class="text-center margin010">';
+                                    /*$btn_code = '<div id="payment_buttons" class="text-center margin010">';
                                     if ($paypal->active == '1' && $inv->grand_total != '0.00') {
                                         $btn_code .= '<a href="' . site_url('pay/paypal/' . $inv->id) . '"><img src="' . base_url('assets/images/btn-paypal.png') . '" alt="Pay by PayPal"></a> ';
                                     }
@@ -379,7 +379,7 @@
                                         $btn_code .= ' <a href="' . site_url('pay/skrill/' . $inv->id) . '"><img src="' . base_url('assets/images/btn-skrill.png') . '" alt="Pay by Skrill"></a>';
                                     }
                                     $btn_code .= '<div class="clearfix"></div></div>';
-                                    echo $btn_code;
+                                    echo $btn_code;*/
                                     echo '</div>';
                                 }
                                 if ($inv->payment_status != 'paid' && $inv->attachment) {
