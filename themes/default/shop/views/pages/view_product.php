@@ -63,7 +63,7 @@
                                             <?php
                                             if ($variants) {
                                                 foreach ($variants as $variant) {
-                                                    if ($variant->quantity != 0) {
+                                                    if ($variant->quantity > 0) {
                                                         $opts[$variant->id] = $variant->name . ($variant->price > 0 ? ' (+' . $this->sma->convertMoney($variant->price, true, false) . ')' : ($variant->price == 0 ? '' : ' (+' . $this->sma->convertMoney($variant->price, true, false) . ')'));
                                                     }
                                                 }

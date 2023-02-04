@@ -1752,7 +1752,11 @@ legend.scheduler-border {
 #PRData th { width: 8% !important; }
 #POData td:nth-child(6), #POData td:nth-child(7), #POData tfoot th:nth-child(6), #POData tfoot th:nth-child(7), #POData td:nth-child(5), #POData td:nth-child(8), #POData tfoot th:nth-child(5), #POData tfoot th:nth-child(8) { width: 11%; }
 #PRData { width: 100% !important; }
-#PRData th:nth-child(4) { width: 15% !important; }
+#PRData th:nth-child(4) { width: 9% !important; }
+#PRData th:nth-child(4) { width: 24% !important; }
+#PRData th:nth-child(5) { width: 11% !important; }
+#PRData th:nth-child(6) { width: 11% !important; }
+#PRData th:nth-child(9) { width: 6% !important; }
 #PRData th:nth-child(10) { width: 7% !important; }
 
 #TOData td:nth-child(6), #TOData td:nth-child(7), #TOData td:nth-child(8), #TOData tfoot th:nth-child(6), #TOData tfoot th:nth-child(7), #TOData tfoot th:nth-child(8) { text-align: right; width: 10%; }

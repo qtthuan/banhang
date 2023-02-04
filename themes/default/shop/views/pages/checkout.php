@@ -279,18 +279,16 @@
                                                     <h5><strong><?= lang('payment_methods'); ?></strong></h5>
                                                     <hr>
                                                     <div class="checkbox bg">
-                                                        
+                                                        <label style="display: inline-block; width: auto;" class="active">
+                                                            <input type="radio" name="payment_method" value="cod" id="cod" required="required" checked>
+                                                            <span>
+                                                                <i class="fa fa-money margin-right-md"></i> <?= lang('cod') ?>
+                                                            </span>
+                                                        </label>
                                                         <label style="display: inline-block; width: auto;">
                                                             <input type="radio" name="payment_method" value="bank" id="bank" required="required">
                                                             <span>
                                                                 <i class="fa fa-bank margin-right-md"></i> <?= lang('bank_in') ?>
-                                                            </span>
-                                                        </label>
-
-                                                        <label style="display: inline-block; width: auto;">
-                                                            <input type="radio" name="payment_method" value="cod" id="cod" required="required">
-                                                            <span>
-                                                                <i class="fa fa-money margin-right-md"></i> <?= lang('cod') ?>
                                                             </span>
                                                         </label>
                                                     </div>

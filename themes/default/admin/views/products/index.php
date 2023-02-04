@@ -44,7 +44,7 @@
         }).fnSetFilteringDelay().dtFilter([
             {column_number: 2, filter_default_label: "[<?=lang('code');?>]", filter_type: "text", data: []},
             {column_number: 3, filter_default_label: "[<?=lang('name');?>]", filter_type: "text", data: []},
-            {column_number: 4, filter_default_label: "[<?=lang('category');?>]", filter_type: "text", data: []},
+            {column_number: 4, filter_default_label: "[<?=lang('brand');?>]", filter_type: "text", data: []},
             {column_number: 5, filter_default_label: "[<?=lang('supplier');?>]", filter_type: "text", data: []},
             <?php $col = 5;
             if($Owner || $Admin) {
@@ -153,7 +153,7 @@
                             <th style="min-width:40px; width: 40px; text-align: center;"><?php echo $this->lang->line("image"); ?></th>
                             <th><?= lang("code") ?></th>
                             <th><?= lang("name") ?></th>
-                            <th><?= lang("category") ?></th>
+                            <th><?= lang("brand") ?></th>
                             <th><?= lang("supplier") ?></th>
                             <?php
                             if ($Owner || $Admin) {
