@@ -89,7 +89,8 @@ class Cron_model extends CI_Model
 
         $this->deleteExpiredCustomers();
 
-        $this->deleteProductTemp();
+        // Xóa sản phẩm ko có nơi sản xuất theo nhóm hàng
+        //$this->deleteProductTemp(4);
 
         $date_now = date('Y-m-d');
         //$date_now = '2019-12-31';
@@ -593,9 +594,9 @@ class Cron_model extends CI_Model
     }
 
     /** */
-    public function deleteProductTemp() {
+    public function deleteProductTemp($category_id) {
 
-        $category_id = 4;
+        //$category_id = 4;
         $query = "SELECT products.id AS id, products.name AS name";        
         $query .= " FROM ". $this->db->dbprefix('products') . " AS products";
         $query .= " WHERE category_id = ".$category_id." AND (brand=0 OR brand=NULL)";
