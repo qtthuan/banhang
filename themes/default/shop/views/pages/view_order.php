@@ -258,8 +258,7 @@
                                                 ?>
                                             <tr>
                                                 <td colspan="<?= $tcol; ?>"
-                                                    style="text-align:right; padding-right:10px;"><?= lang('total'); ?>
-                                                    (<?= $default_currency->code; ?>)
+                                                    style="text-align:right; padding-right:10px;"><?= lang('total_w_o_tax'); ?>
                                                 </td>
                                                 <?php
                                                 if ($Settings->tax1 && $inv->product_tax > 0) {
@@ -303,13 +302,12 @@
                                             }
                                             ?>
                                             <?php if ($inv->shipping != 0) {
-                                                echo '<tr><td colspan="' . $col . '" style="text-align:right; padding-right:10px;;">' . lang('shipping') . ' (' . $default_currency->code . ')</td><td style="text-align:right; padding-right:10px;">' . $this->sma->formatMoney($inv->shipping) . '</td></tr>';
+                                                echo '<tr><td colspan="' . $col . '" style="text-align:right; padding-right:10px;;">' . lang('shipping') . ' (' . lang('shipping_rate_info') . ')</td><td style="text-align:right; padding-right:10px;">' . $this->sma->formatMoney($inv->shipping) . '</td></tr>';
                                             }
                                             ?>
                                             <tr>
                                                 <td colspan="<?= $col; ?>"
-                                                    style="text-align:right; font-weight:bold;"><?= lang('total_amount'); ?>
-                                                    (<?= $default_currency->code; ?>)
+                                                    style="text-align:right; font-weight:bold;"><?= lang('grand_total'); ?>
                                                 </td>
                                                 <td style="text-align:right; padding-right:10px; font-weight:bold;"><?= $this->sma->formatMoney($return_sale ? ($inv->grand_total + $return_sale->grand_total) : $inv->grand_total); ?></td>
                                             </tr>

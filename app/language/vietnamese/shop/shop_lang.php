@@ -140,6 +140,7 @@ $lang['email_address']                 = 'Email';
 $lang['error_occured']                 = 'Có lỗi xảy ra, vui lòng thử lại sau.';
 $lang['payment_under_review']          = 'Cảm ơn bạn! Shop sẽ kiểm tra đơn hàng và liên lạc bạn trong vài giờ tới. Vui lòng nghe máy khi có số <strong>079 331 9699</strong> gọi xác nhận đơn hàng';
 $lang['file_submitted']                = 'Gửi tập tin thành công';
+$lang['upload']                        = 'Tải lên';
 $lang['add_address']                   = 'Thêm địa chỉ';
 $lang['add_new_address']               = 'Thêm địa chỉ mới';
 $lang['full_name']                     = 'Họ tên';
