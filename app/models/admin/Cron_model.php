@@ -8,6 +8,7 @@ class Cron_model extends CI_Model
         parent::__construct();
         $this->lang->admin_load('cron', $this->Settings->language);
         $this->load->admin_model('companies_model');
+        $this->load->admin_model('products_model');
     }
 
     public function run_cron()
@@ -87,6 +88,8 @@ class Cron_model extends CI_Model
         $this->clearSuspendedBills();
 
         $this->deleteExpiredCustomers();
+
+        $this->deleteProductTemp();
 
         $date_now = date('Y-m-d');
         //$date_now = '2019-12-31';
@@ -587,6 +590,25 @@ class Cron_model extends CI_Model
         } else {
             return FALSE;
         }
+    }
+
+    /** */
+    public function deleteProductTemp() {
+
+        $category_id = 4;
+        $query = "SELECT products.id AS id, products.name AS name";        
+        $query .= " FROM ". $this->db->dbprefix('products') . " AS products";
+        $query .= " WHERE category_id = ".$category_id." AND (brand=0 OR brand=NULL)";
+        // /exit($query);
+
+        $q = $this->db->query($query);
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $this->products_model->deleteProduct($row->id);
+            }
+            return TRUE;
+        }
+        RETURN FALSE;
     }
 
     /**
