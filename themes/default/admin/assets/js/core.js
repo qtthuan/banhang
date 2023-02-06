@@ -1167,6 +1167,7 @@ function ItemnTotals() {
 function getSlug(title, type) {
     var slug_url = site.base_url+'welcome/slug';
     $.get(slug_url, {title: title, type: type}, function (slug) {
+        slug = slug.replace('Ấ', 'a');
         $('#slug').val(slug).change();
     });
 }
