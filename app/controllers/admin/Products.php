@@ -586,11 +586,12 @@ class Products extends MY_Controller
                 }
                 $photo = $this->upload->file_name;
                 $data['image'] = $photo;
+                $config['quality'] = 40;
                 $this->load->library('image_lib');
                 $config['image_library'] = 'gd2';
                 $config['source_image'] = $this->upload_path . $photo;
                 $config['new_image'] = $this->thumbs_path . $photo;
-                $config['maintain_ratio'] = TRUE;
+                $config['maintain_ratio'] = TRUE;                
                 $config['width'] = $this->Settings->twidth;
                 $config['height'] = $this->Settings->theight;
                 $this->image_lib->clear();

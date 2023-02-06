@@ -145,9 +145,26 @@ if (!empty($variants)) {
                         </div>
                     </div>
                     <div class="form-group all">
+                        <?= lang("product_image", "product_image") ?>
+                        <input id="product_image" type="file" data-browse-label="<?= lang('browse'); ?>" name="product_image" data-show-upload="false"
+                               data-show-preview="false" accept="image/*" class="form-control file">
+                    </div>
+
+                    <div class="form-group all">
+                        <?= lang("product_gallery_images", "images") ?>
+                        <input id="images" type="file" data-browse-label="<?= lang('browse'); ?>" name="userfile[]" multiple="true" data-show-upload="false"
+                               data-show-preview="false" class="form-control file" accept="image/*">
+                    </div>
+                    <div id="img-details"></div>
+                    <div class="form-group">
+                        <input name="featured" type="checkbox" class="checkbox" id="featured" value="1" <?= empty($product->featured) ? '' : 'checked="checked"' ?>/>
+                        <label for="featured" class="padding05"><?= lang('featured') ?></label>
+                    </div>
+                    <div class="form-group all">
                         <?= lang('slug', 'slug'); ?>
                         <?= form_input('slug', set_value('slug', ($product ? $product->slug : '')), 'class="form-control tip" id="slug" required="required"'); ?>
                     </div>
+                    
                     <div class="form-group standard">
                         <?= lang('product_unit', 'unit'); ?>
                         <?php
@@ -159,6 +176,16 @@ if (!empty($variants)) {
                         <?= form_dropdown('unit', $pu, set_value('unit', $product->unit), 'class="form-control tip" required="required" id="unit" style="width:100%;"'); ?>
                     </div>
 
+                    <div class="form-group standard">
+                        <?= lang("alert_quantity", "alert_quantity") ?>
+                        <div
+                            class="input-group"> <?= form_input('alert_quantity', (isset($_POST['alert_quantity']) ? $_POST['alert_quantity'] : ($product ? $this->sma->formatDecimal($product->alert_quantity) : '')), 'class="form-control tip" id="alert_quantity"') ?>
+                            <span class="input-group-addon">
+                            <input type="checkbox" name="track_quantity" id="inlineCheckbox1"
+                                value="1" <?= ($product ? (!empty($product->track_quantity) ? 'checked="checked"' : '') : 'checked="checked"') ?>>
+                        </span>
+                        </div>
+                    </div>
                     <div class="form-group all">
                         <?= lang("barcode_symbology", "barcode_symbology") ?>
                         <?php
@@ -186,33 +213,6 @@ if (!empty($variants)) {
                             ?>
                         </div>
                     <?php } ?>
-                    <div class="form-group standard">
-                        <?= lang("alert_quantity", "alert_quantity") ?>
-                        <div
-                            class="input-group"> <?= form_input('alert_quantity', (isset($_POST['alert_quantity']) ? $_POST['alert_quantity'] : ($product ? $this->sma->formatDecimal($product->alert_quantity) : '')), 'class="form-control tip" id="alert_quantity"') ?>
-                            <span class="input-group-addon">
-                            <input type="checkbox" name="track_quantity" id="inlineCheckbox1"
-                                   value="1" <?= ($product ? (!empty($product->track_quantity) ? 'checked="checked"' : '') : 'checked="checked"') ?>>
-                        </span>
-                        </div>
-                    </div>
-
-                    <div class="form-group all">
-                        <?= lang("product_image", "product_image") ?>
-                        <input id="product_image" type="file" data-browse-label="<?= lang('browse'); ?>" name="product_image" data-show-upload="false"
-                               data-show-preview="false" accept="image/*" class="form-control file">
-                    </div>
-
-                    <div class="form-group all">
-                        <?= lang("product_gallery_images", "images") ?>
-                        <input id="images" type="file" data-browse-label="<?= lang('browse'); ?>" name="userfile[]" multiple="true" data-show-upload="false"
-                               data-show-preview="false" class="form-control file" accept="image/*">
-                    </div>
-                    <div id="img-details"></div>
-                    <div class="form-group">
-                        <input name="featured" type="checkbox" class="checkbox" id="featured" value="1" <?= empty($product->featured) ? '' : 'checked="checked"' ?>/>
-                        <label for="featured" class="padding05"><?= lang('featured') ?></label>
-                    </div>
                 </div>
                 <div class="col-md-6 col-md-offset-1">
                     <div class="standard">
