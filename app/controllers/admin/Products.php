@@ -611,11 +611,11 @@ class Products extends MY_Controller
                     $this->image_lib->clear();
                     $this->image_lib->initialize($config);
 
-                   if ($this->image_lib->orig_width > 1000) {                        
-                        $config['width'] = $this->image_lib->orig_width-100;
+                    if ($this->image_lib->orig_width > $this->Settings->iwidth) {                        
+                        $config['width'] = $this->image_lib->orig_width-300;
                     }
-                    if ($this->image_lib->orig_height > 1000) {
-                        $config['width'] = $this->image_lib->orig_height-100;
+                    if ($this->image_lib->orig_height > $this->Settings->iheight) {
+                        $config['width'] = $this->image_lib->orig_height-300;
                     }
                    
                     $this->image_lib->clear();
@@ -1060,11 +1060,11 @@ class Products extends MY_Controller
                     $this->image_lib->clear();
                     $this->image_lib->initialize($config);
 
-                   if ($this->image_lib->orig_width > 1000) {                        
-                        $config['width'] = $this->image_lib->orig_width-100;
+                   if ($this->image_lib->orig_width > $this->Settings->iwidth) {                        
+                        $config['width'] = $this->image_lib->orig_width-300;
                     }
-                    if ($this->image_lib->orig_height > 1000) {
-                        $config['width'] = $this->image_lib->orig_height-100;
+                    if ($this->image_lib->orig_height > $this->Settings->iheight) {
+                        $config['width'] = $this->image_lib->orig_height-300;
                     }
                    
                     $this->image_lib->clear();
