@@ -600,9 +600,7 @@ class Products extends MY_Controller
                     $percert_reduce_size = round(100*($file_size_reset/$original_file_size));
 
                     if ($percert_reduce_size < 40) {
-                        $percert_reduce_size += 10;                        
-                    } else {
-                        $percert_reduce_size -= 15;                        
+                        $percert_reduce_size += 25;                        
                     }
                     $config['new_image'] = $this->upload_path . $photo;
                     $config['maintain_ratio'] = TRUE;
@@ -611,11 +609,11 @@ class Products extends MY_Controller
                     $this->image_lib->clear();
                     $this->image_lib->initialize($config);
 
-                    if ($this->image_lib->orig_width > $this->Settings->iwidth) {                        
-                        $config['width'] = $this->image_lib->orig_width-300;
+                   if ($this->image_lib->orig_width > 800) {                        
+                        $config['width'] = 800;
                     }
-                    if ($this->image_lib->orig_height > $this->Settings->iheight) {
-                        $config['width'] = $this->image_lib->orig_height-300;
+                    if ($this->image_lib->orig_height > 800) {
+                        $config['width'] = 800;
                     }
                    
                     $this->image_lib->clear();
@@ -1049,9 +1047,7 @@ class Products extends MY_Controller
                     $percert_reduce_size = round(100*($file_size_reset/$original_file_size));
 
                     if ($percert_reduce_size < 40) {
-                        $percert_reduce_size += 10;                        
-                    } else {
-                        $percert_reduce_size -= 15;                        
+                        $percert_reduce_size += 25;                        
                     }
                     $config['new_image'] = $this->upload_path . $photo;
                     $config['maintain_ratio'] = TRUE;
@@ -1060,11 +1056,11 @@ class Products extends MY_Controller
                     $this->image_lib->clear();
                     $this->image_lib->initialize($config);
 
-                   if ($this->image_lib->orig_width > $this->Settings->iwidth) {                        
-                        $config['width'] = $this->image_lib->orig_width-300;
+                   if ($this->image_lib->orig_width > 800) {                        
+                        $config['width'] = 800;
                     }
-                    if ($this->image_lib->orig_height > $this->Settings->iheight) {
-                        $config['width'] = $this->image_lib->orig_height-300;
+                    if ($this->image_lib->orig_height > 800) {
+                        $config['width'] = 800;
                     }
                    
                     $this->image_lib->clear();
