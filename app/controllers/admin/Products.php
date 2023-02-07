@@ -577,7 +577,7 @@ class Products extends MY_Controller
                 $config['max_height'] = $this->Settings->iheight;
                 $config['overwrite'] = FALSE;
                 $config['max_filename'] = 25;
-                $config['encrypt_name'] = TRUE;
+                $config['encrypt_name'] = TRUE;                
                 $this->upload->initialize($config);
                 if (!$this->upload->do_upload('product_image')) {
                     $error = $this->upload->display_errors();
@@ -585,11 +585,46 @@ class Products extends MY_Controller
                     admin_redirect("products/add");
                 }
                 $photo = $this->upload->file_name;
-                $data['image'] = $photo;
-                $config['quality'] = 40;
+                $data['image'] = $photo;                
                 $this->load->library('image_lib');
+
+                
                 $config['image_library'] = 'gd2';
                 $config['source_image'] = $this->upload_path . $photo;
+
+
+                $file_size_reset = 160;
+                $original_file_size = round($this->upload->file_size);
+                
+                if ( $original_file_size > $file_size_reset) {
+                    $percert_reduce_size = round(100*($file_size_reset/$original_file_size));
+
+                    if ($percert_reduce_size < 40) {
+                        $percert_reduce_size += 10;                        
+                    } else {
+                        $percert_reduce_size -= 15;                        
+                    }
+                    $config['new_image'] = $this->upload_path . $photo;
+                    $config['maintain_ratio'] = TRUE;
+
+                    $config['quality'] = $percert_reduce_size.'%';                    
+                    $this->image_lib->clear();
+                    $this->image_lib->initialize($config);
+
+                   if ($this->image_lib->orig_width > 1000) {                        
+                        $config['width'] = $this->image_lib->orig_width-100;
+                    }
+                    if ($this->image_lib->orig_height > 1000) {
+                        $config['width'] = $this->image_lib->orig_height-100;
+                    }
+                   
+                    $this->image_lib->clear();
+                    $this->image_lib->initialize($config);
+                    if (!$this->image_lib->resize()) {
+                        echo $this->image_lib->display_errors();
+                    }
+                }
+
                 $config['new_image'] = $this->thumbs_path . $photo;
                 $config['maintain_ratio'] = TRUE;                
                 $config['width'] = $this->Settings->twidth;
@@ -599,6 +634,8 @@ class Products extends MY_Controller
                 if (!$this->image_lib->resize()) {
                     echo $this->image_lib->display_errors();
                 }
+                
+                
                 if ($this->Settings->watermark) {
                     $this->image_lib->clear();
                     $wm['source_image'] = $this->upload_path . $photo;
@@ -1003,6 +1040,40 @@ class Products extends MY_Controller
                 $this->load->library('image_lib');
                 $config['image_library'] = 'gd2';
                 $config['source_image'] = $this->upload_path . $photo;
+
+
+                $file_size_reset = 160;
+                $original_file_size = round($this->upload->file_size);
+                
+                if ( $original_file_size > $file_size_reset) {
+                    $percert_reduce_size = round(100*($file_size_reset/$original_file_size));
+
+                    if ($percert_reduce_size < 40) {
+                        $percert_reduce_size += 10;                        
+                    } else {
+                        $percert_reduce_size -= 15;                        
+                    }
+                    $config['new_image'] = $this->upload_path . $photo;
+                    $config['maintain_ratio'] = TRUE;
+
+                    $config['quality'] = $percert_reduce_size.'%';                    
+                    $this->image_lib->clear();
+                    $this->image_lib->initialize($config);
+
+                   if ($this->image_lib->orig_width > 1000) {                        
+                        $config['width'] = $this->image_lib->orig_width-100;
+                    }
+                    if ($this->image_lib->orig_height > 1000) {
+                        $config['width'] = $this->image_lib->orig_height-100;
+                    }
+                   
+                    $this->image_lib->clear();
+                    $this->image_lib->initialize($config);
+                    if (!$this->image_lib->resize()) {
+                        echo $this->image_lib->display_errors();
+                    }
+                }
+
                 $config['new_image'] = $this->thumbs_path . $photo;
                 $config['maintain_ratio'] = TRUE;
                 $config['width'] = $this->Settings->twidth;
