@@ -66,7 +66,7 @@
                                         <?php } else { ?>
                                             <div class="form-group">                                     
                                                 <a href="#" data-toggle="modal" data-target="#lightbox" class="pull-left" style="text-decoration: none; font-size: 16px; margin-bottom: 10px;">
-                                                    <?= lang('size_instruction'); ?>
+                                                <i class="fa fa-reorder"></i> <?= lang('size_instruction'); ?>
                                                     <img src="<?= base_url() ?>assets/uploads/bangsize_vn.jpg" style="display: none" class="img-responsive img-thumbnail"> 
                                                 </a>
                                             </div>
