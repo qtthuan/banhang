@@ -85,12 +85,12 @@
                             <label for="product_name" class="padding05"><?= lang('product_name'); ?></label>
                             <input name="price" type="checkbox" id="price" value="1" checked="checked" style="display:inline-block;" />
                             <label for="price" class="padding05"><?= lang('price'); ?></label>
-                            <input name="currencies" type="checkbox" id="currencies" value="1" style="display:inline-block;" />
+                            <!--<input name="currencies" type="checkbox" id="currencies" value="1" style="display:inline-block;" />
                             <label for="currencies" class="padding05"><?= lang('currencies'); ?></label>
                             <input name="unit" type="checkbox" id="unit" value="1" style="display:inline-block;" />
                             <label for="unit" class="padding05"><?= lang('unit'); ?></label>
                             <input name="category" type="checkbox" id="category" value="1" style="display:inline-block;" />
-                            <label for="category" class="padding05"><?= lang('category'); ?></label>
+                            <label for="category" class="padding05"><?= lang('category'); ?></label>-->
                             <input name="variants" type="checkbox" id="variants" value="1" style="display:inline-block;" />
                             <label for="variants" class="padding05"><?= lang('variants'); ?></label>
                             <input name="product_image" type="checkbox" id="product_image" value="1" style="display:inline-block;" />
@@ -190,7 +190,7 @@
                                                 echo $item['price'];
                                             }
                                             if ($item['promo']) {
-                                                echo 'Gốc: ' . $item['price_before_promo'];
+                                                echo '<span style="font-size: 12px; text-decoration: line-through;"> ' . $item['price_before_promo'] . '</span>';
                                             }
                                             echo '</span> ';
                                         }
