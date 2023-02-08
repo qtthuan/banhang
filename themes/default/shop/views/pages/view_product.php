@@ -54,12 +54,26 @@
                                             <div class="clearfix"></div>
                                         </div>
 
-                                        <div class="form-group">                                        
-                                            <a href="#" data-toggle="modal" data-target="#lightbox" class="pull-left" style="text-decoration: none; font-size: 16px; margin-bottom: 10px;">
-                                                <i class="fa fa-reorder"></i> <?= lang('size_instruction'); ?>
-                                                <img src="<?= base_url() ?>assets/uploads/bangsize.jpg" style="display: none" class="img-responsive img-thumbnail"> 
-                                            </a>
-                                        </div>
+                                    <?php
+                                    if ($brand->id > 0) { // Phụ Kiện Không Hiển Thị Bảng Size
+                                        if ($brand->id == 6) { // Hàng Quảng Châu ?>
+                                            <div class="form-group">                                        
+                                                <a href="#" data-toggle="modal" data-target="#lightbox" class="pull-left" style="text-decoration: none; font-size: 16px; margin-bottom: 10px;">
+                                                    <i class="fa fa-reorder"></i> <?= lang('size_instruction'); ?>
+                                                    <img src="<?= base_url() ?>assets/uploads/bangsize_qc.jpg" style="display: none" class="img-responsive img-thumbnail"> 
+                                                </a>
+                                            </div>
+                                        <?php } else { ?>
+                                            <div class="form-group">                                     
+                                                <a href="#" data-toggle="modal" data-target="#lightbox" class="pull-left" style="text-decoration: none; font-size: 16px; margin-bottom: 10px;">
+                                                    <?= lang('size_instruction'); ?>
+                                                    <img src="<?= base_url() ?>assets/uploads/bangsize_vn.jpg" style="display: none" class="img-responsive img-thumbnail"> 
+                                                </a>
+                                            </div>
+                                <?php
+                                        }
+                                    } 
+                                ?>
 
                                         <?php if (!$shop_settings->hide_price) {
                                                         ?>
