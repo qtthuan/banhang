@@ -23,7 +23,7 @@ if ($message) {
         <div class="form-group">
             <?php if (!$shop_settings->private) {
     ?>
-                <a href="<?= site_url('login#register'); ?>" class="pull-right text-blue"><?= lang('register'); ?></a>
+                <!--<a href="<?= site_url('login#register'); ?>" class="pull-right text-blue"><?= lang('register'); ?></a>-->
             <?php
 } ?>
             <?php $u = mt_rand(); ?>

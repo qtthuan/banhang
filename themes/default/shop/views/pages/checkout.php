@@ -22,7 +22,7 @@
                                 if (!$this->loggedIn) {
                                     ?>
                                     <ul class="nav nav-tabs" role="tablist">
-                                        <li role="presentation"><a href="#user" aria-controls="user" role="tab" data-toggle="tab"><?= lang('returning_user'); ?></a></li>
+                                        <!--<li role="presentation"><a href="#user" aria-controls="user" role="tab" data-toggle="tab"><?= lang('returning_user'); ?></a></li>-->
                                         <li role="presentation" class="active"><a href="#guest" aria-controls="guest" role="tab" data-toggle="tab"><?= lang('guest_checkout'); ?></a></li>
                                     </ul>
                                     <?php
@@ -295,7 +295,7 @@
                                                 </div>
 
                                             </div>
-                                            <?= form_submit('guest_order', lang('submit'), 'class="btn btn-lg btn-primary"'); ?>
+                                            <?= form_submit('guest_order', lang('submit'), 'class="btn btn-lg btn-info"'); ?>
                                             <?= form_close(); ?>
                                         </div>
                                     </div>

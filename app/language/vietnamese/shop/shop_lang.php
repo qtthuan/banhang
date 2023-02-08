@@ -307,3 +307,4 @@ $lang['views_asc']                         = 'Most popular last';
 $lang['i_accept']                          = 'Tôi đồng ý';
 $lang['start_date']                        = 'Ngày bắt đầu';
 $lang['end_date']                          = 'Ngày kết thúc';
+$lang['size_instruction']                  = "Bảng size tham khảo";

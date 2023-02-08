@@ -42,29 +42,29 @@
                                 }
                                 ?>
                                 <?= $loggedIn && $Staff ? '<li class="hidden-xs"><a href="' . admin_url() . '"><i class="fa fa-dashboard"></i> ' . lang('admin_area') . '</a></li>' : ''; ?>
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                    <img src="<?= base_url('assets/images/' . $Settings->user_language . '.png'); ?>" alt="">
-                                    <span class="hidden-xs">&nbsp;&nbsp;<?= ucwords($Settings->user_language); ?></span>
-                                 </a>
-                                 <ul class="dropdown-menu dropdown-menu-right">
-                                    <?php $scanned_lang_dir = array_map(function ($path) {
-                                    return basename($path);
-                                }, glob(APPPATH . 'language/*', GLOB_ONLYDIR));
-                                    foreach ($scanned_lang_dir as $entry) {
-                                        if (file_exists(APPPATH . 'language' . DIRECTORY_SEPARATOR . $entry . DIRECTORY_SEPARATOR . 'shop' . DIRECTORY_SEPARATOR . 'shop_lang.php')) {
-                                            ?>
-                                    <li>
-                                        <a href="<?= site_url('main/language/' . $entry); ?>">
-                                            <img src="<?= base_url('assets/images/' . $entry . '.png'); ?>" class="language-img">
-                                            &nbsp;&nbsp;<?= ucwords($entry); ?>
-                                        </a>
-                                    </li>
-                                    <?php
-                                        }
-                                    } ?>
-                                </ul>
-                            </li>
+                                <!--<li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                        <img src="<?= base_url('assets/images/' . $Settings->user_language . '.png'); ?>" alt="">
+                                        <span class="hidden-xs">&nbsp;&nbsp;<?= ucwords($Settings->user_language); ?></span>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <?php $scanned_lang_dir = array_map(function ($path) {
+                                        return basename($path);
+                                    }, glob(APPPATH . 'language/*', GLOB_ONLYDIR));
+                                        foreach ($scanned_lang_dir as $entry) {
+                                            if (file_exists(APPPATH . 'language' . DIRECTORY_SEPARATOR . $entry . DIRECTORY_SEPARATOR . 'shop' . DIRECTORY_SEPARATOR . 'shop_lang.php')) {
+                                                ?>
+                                        <li>
+                                            <a href="<?= site_url('main/language/' . $entry); ?>">
+                                                <img src="<?= base_url('assets/images/' . $entry . '.png'); ?>" class="language-img">
+                                                &nbsp;&nbsp;<?= ucwords($entry); ?>
+                                            </a>
+                                        </li>
+                                        <?php
+                                            }
+                                        } ?>
+                                    </ul>
+                                </li>
                             <?php if (!$shop_settings->hide_price && !empty($currencies)) {
                                         ?>
                             <li class="dropdown">
@@ -77,7 +77,7 @@
                                         echo '<li><a href="' . site_url('main/currency/' . $currency->code) . '">' . $currency->symbol . ' ' . $currency->code . '</a></li>';
                                     } ?>
                                 </ul>
-                            </li>
+                            </li>-->
                             <?php
                                     } ?>
                                 <?php

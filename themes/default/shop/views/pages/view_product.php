@@ -54,6 +54,13 @@
                                             <div class="clearfix"></div>
                                         </div>
 
+                                        <div class="form-group">                                        
+                                            <a href="#" data-toggle="modal" data-target="#lightbox" class="pull-left" style="text-decoration: none; font-size: 16px; margin-bottom: 10px;">
+                                                <i class="fa fa-reorder"></i> <?= lang('size_instruction'); ?>
+                                                <img src="<?= base_url() ?>assets/uploads/bangsize.jpg" style="display: none" class="img-responsive img-thumbnail"> 
+                                            </a>
+                                        </div>
+
                                         <?php if (!$shop_settings->hide_price) {
                                                         ?>
                                         <?php if (($product->type != 'standard' || $warehouse->quantity > 0) || $Settings->overselling) {
@@ -70,7 +77,7 @@
                                                 echo form_dropdown('option', $opts, '', 'class="form-control selectpicker mobile-device" required="required"');
                                             } ?>
                                         </div>
-
+                                        
                                         <!--<div class="form-group">
                                             <div class="input-group">
                                                 <span class="input-group-addon pointer btn-minus"><span class="fa fa-minus"></span></span>
