@@ -1096,8 +1096,10 @@ class Products extends MY_Controller
                     $this->image_lib->watermark();
                 }
                 $this->image_lib->clear();
-                unlink($this->upload_path . $product->image);
-                unlink($this->thumbs_path . $product->image);
+                if ($product->image != 'no_image.png') {
+                    unlink($this->upload_path . $product->image);
+                    unlink($this->thumbs_path . $product->image);
+                }
                 $config = NULL;
             }
 
