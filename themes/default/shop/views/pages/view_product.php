@@ -55,7 +55,7 @@
                                         </div>
 
                                     <?php
-                                    if ($brand->id > 0) { // Phụ Kiện Không Hiển Thị Bảng Size
+                                    if ($category->id != 9) { // Phụ Kiện Không Hiển Thị Bảng Size
                                         if ($brand->id == 6) { // Hàng Quảng Châu ?>
                                             <div class="form-group">                                        
                                                 <a href="#" data-toggle="modal" data-target="#lightbox" class="pull-left" style="text-decoration: none; font-size: 16px; margin-bottom: 10px;">
