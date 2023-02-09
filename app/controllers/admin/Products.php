@@ -240,6 +240,7 @@ class Products extends MY_Controller
                 $price = $product->price;
                 $text_brand = '';
                 $name_brand = '';
+                $price_before_promo = 0;
                 if ($product->brand) {
                     $brand = $this->products_model->getBrandById($product->brand);
                     $text_brand = $brand->code;
