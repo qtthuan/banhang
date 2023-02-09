@@ -158,6 +158,7 @@ $lang['orientation']                        = "Hướng in";
 $lang['portrait']                           = "Dọc";
 $lang['landscape']                          = "Ngang";
 $lang['promotion']                          = "Khuyến mãi";
+$lang['promotion1']                         = "Giá KM";
 $lang['set_promotion']                      = "Khuyến mãi";
 $lang['promo_price']                        = "Giá khuyến mãi";
 $lang['start_date']                         = "Ngày bắt đầu";

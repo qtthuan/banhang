@@ -39,7 +39,7 @@
 
 
             "aoColumns": [
-                {"bSortable": true, "mRender": checkbox}, {"bSortable": false,"mRender": img_hl}, null, null, null, {"bSortable": false}, <?php if($Owner || $Admin) { echo '{"mRender": currencyFormat}, {"mRender": currencyFormat},'; } else { if($this->session->userdata('show_cost')) { echo '{"mRender": currencyFormat},';  } if($this->session->userdata('show_price')) { echo '{"mRender": currencyFormat},';  } } ?> {"mRender": formatQuantity}, <?php if(!$warehouse_id || !$Settings->racks) { echo '{"bVisible": false},'; } else { echo '{"bSortable": true},'; } ?>  {"bSortable": false}
+                {"bSortable": true, "mRender": checkbox}, {"bSortable": false,"mRender": img_hl}, null, null, null, null, <?php if($Owner || $Admin) { echo '{"mRender": currencyFormat}, {"mRender": currencyFormat},'; } else { if($this->session->userdata('show_cost')) { echo '{"mRender": currencyFormat},';  } if($this->session->userdata('show_price')) { echo '{"mRender": currencyFormat},';  } } ?> {"mRender": currencyFormat}, {"mRender": formatQuantity}, <?php if(!$warehouse_id || !$Settings->racks) { echo '{"bVisible": false},'; } else { echo '{"bSortable": true},'; } ?>  {"bSortable": false}
             ]
         }).fnSetFilteringDelay().dtFilter([
             {column_number: 2, filter_default_label: "[<?=lang('code');?>]", filter_type: "text", data: []},
@@ -56,6 +56,7 @@
                 if($this->session->userdata('show_price')) { $col++; echo '{column_number : '.$col.', filter_default_label: "['.lang('price').']", filter_type: "text, data: []" },'; }
             }
             ?>
+            {column_number: <?php $col++; echo $col; ?>, filter_default_label: "[<?=lang('promotion1');?>]", filter_type: "text", data: []},
             {column_number: <?php $col++; echo $col; ?>, filter_default_label: "[<?=lang('quantity');?>]", filter_type: "text", data: []},
             <?php $col++; if($warehouse_id && $Settings->racks) { echo '{column_number : '. $col.', filter_default_label: "['.lang('rack').']", filter_type: "text", data: [] },'; } ?>
         ], "footer");
@@ -167,6 +168,7 @@
                                     echo '<th>' . lang("price") . '</th>';
                                 }
                             }
+                            echo '<th>' . lang("promotion1") . '</th>';
                             ?>
                             <th><?= lang("quantity") ?></th>
                             <th><?= lang("rack") ?></th>

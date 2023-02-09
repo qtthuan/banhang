@@ -84,7 +84,7 @@ class Products extends MY_Controller
         $this->load->library('datatables');
         if ($warehouse_id) {
             $this->datatables
-            ->select($this->db->dbprefix('products') . ".id as productid, {$this->db->dbprefix('products')}.image as image, {$this->db->dbprefix('products')}.code as code, {$this->db->dbprefix('products')}.name as name, {$this->db->dbprefix('brands')}.name as cname, {$this->db->dbprefix('companies')}.company as supplier, cost as cost, price as price, COALESCE(wp.quantity, 0) as quantity, wp.rack as rack", FALSE)
+            ->select($this->db->dbprefix('products') . ".id as productid, {$this->db->dbprefix('products')}.image as image, {$this->db->dbprefix('products')}.code as code, {$this->db->dbprefix('products')}.name as name, {$this->db->dbprefix('brands')}.name as cname, {$this->db->dbprefix('companies')}.company as supplier, cost as cost, price as price, promo_price, COALESCE(wp.quantity, 0) as quantity, wp.rack as rack", FALSE)
             ->from('products')
             ->join('companies', 'products.supplier1=companies.id', 'left');
             if ($this->Settings->display_all_products) {
@@ -101,7 +101,7 @@ class Products extends MY_Controller
             // ->group_by("products.id");
         } else {
             $this->datatables
-                ->select($this->db->dbprefix('products') . ".id as productid, {$this->db->dbprefix('products')}.image as image, {$this->db->dbprefix('products')}.code as code, {$this->db->dbprefix('products')}.name as name, {$this->db->dbprefix('brands')}.name as cname, {$this->db->dbprefix('companies')}.company as supplier, cost as cost, price as price, COALESCE(quantity, 0) as quantity, '' as rack", FALSE)
+                ->select($this->db->dbprefix('products') . ".id as productid, {$this->db->dbprefix('products')}.image as image, {$this->db->dbprefix('products')}.code as code, {$this->db->dbprefix('products')}.name as name, {$this->db->dbprefix('brands')}.name as cname, {$this->db->dbprefix('companies')}.company as supplier, cost as cost, price as price, promo_price, COALESCE(quantity, 0) as quantity, '' as rack", FALSE)
                 ->from('products')
                 ->join('categories', 'products.category_id=categories.id', 'left')
                 ->join('units', 'products.unit=units.id', 'left')
