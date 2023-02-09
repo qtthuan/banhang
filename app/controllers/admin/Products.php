@@ -246,9 +246,11 @@ class Products extends MY_Controller
                     $name_brand = $brand->name;
                 }
                 if ($this->input->post('check_promo')) {
+                    
                     if ($product->promotion) {
                         $price_before_promo = $price;
                         $price = $product->promo_price;
+                        //exit('--' . $price);
                     }
                 }
                 //$product->price = $this->input->post('check_promo') ? ($product->promotion ? $product->promo_price : $product->price) : $product->price;
@@ -284,13 +286,17 @@ class Products extends MY_Controller
                                 );
                         }
                     }
+                    
                 } else {
+                    
                     $barcodes[] = array(
                         'site' => $this->input->post('site_name') ? $this->Settings->site_name : FALSE,
                         'name' => $this->input->post('product_name') ? $product->name : FALSE,
                         'image' => $this->input->post('product_image') ? $product->image : FALSE,
                         'barcode' => $this->product_barcode($product->code, $product->barcode_symbology, $bci_size),
-                        'price' => $this->input->post('price') ?  $this->sma->formatMoney($product->price) : FALSE,
+                        'price_before_promo' => $this->input->post('price') ?  $this->sma->formatMoney($price_before_promo) : FALSE,
+                        'promo' => $this->input->post('check_promo'),
+                        'price' => $this->input->post('check_promo') ? $this->sma->formatMoney($price) : FALSE,
                         'unit' => $this->input->post('unit') ? $product->unit : FALSE,
                         'category' => $this->input->post('category') ? $product->category : FALSE,
                         'currencies' => $this->input->post('currencies'),
@@ -304,6 +310,7 @@ class Products extends MY_Controller
                 }
 
             }
+            //$this->sma->print_arrays($barcodes);
             $this->data['barcodes'] = $barcodes;
             $this->data['currencies'] = $currencies;
             $this->data['style'] = $style;
@@ -1422,7 +1429,13 @@ class Products extends MY_Controller
             $id = $this->input->get('id');
         }
 
+        $product = $this->products_model->getProductByID($id);
+        $product_image = $product->image;
         if ($this->products_model->deleteProduct($id)) {
+            if ($product_image != 'no_image.png') {
+                unlink($this->upload_path . $product->image);
+                unlink($this->thumbs_path . $product->image);
+            }
             if($this->input->is_ajax_request()) {
                 $this->sma->send_json(array('error' => 0, 'msg' => lang("product_deleted")));
             }
