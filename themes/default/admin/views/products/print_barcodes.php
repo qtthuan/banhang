@@ -95,7 +95,7 @@
                             <label for="variants" class="padding05"><?= lang('variants'); ?></label>
                             <input name="product_image" type="checkbox" id="product_image" value="1" style="display:inline-block;" />
                             <label for="product_image" class="padding05"><?= lang('product_image'); ?></label>
-                            <input name="check_promo" type="checkbox" id="check_promo" value="1" style="display:inline-block;" />
+                            <input name="check_promo" type="checkbox" id="check_promo" value="1" checked="checked" style="display:inline-block;" />
                             <label for="check_promo" class="padding05"><?= lang('check_promo'); ?></label>
                         </div>
 
