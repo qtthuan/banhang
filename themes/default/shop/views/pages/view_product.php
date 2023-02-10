@@ -61,14 +61,14 @@
                                         if ($brand->id == 6) { // Hàng Quảng Châu ?>
                                             <div class="form-group">                                        
                                                 <a href="#" data-toggle="modal" data-target="#lightbox" class="pull-left" style="text-decoration: none; font-size: 16px; margin-bottom: 10px;">
-                                                    <i class="fa fa-reorder"></i> <?= lang('size_instruction'); ?>
+                                                    <i class="fa fa-table"></i> <?= lang('size_instruction'); ?>
                                                     <img src="<?= base_url() ?>assets/uploads/bangsize_qc.jpg" style="display: none" class="img-responsive img-thumbnail"> 
                                                 </a>
                                             </div>
                                         <?php } else { ?>
                                             <div class="form-group">                                     
                                                 <a href="#" data-toggle="modal" data-target="#lightbox" class="pull-left" style="text-decoration: none; font-size: 16px; margin-bottom: 10px;">
-                                                <i class="fa fa-reorder"></i> <?= lang('size_instruction'); ?>
+                                                <i class="fa fa-table"></i> <?= lang('size_instruction'); ?>
                                                     <img src="<?= base_url() ?>assets/uploads/bangsize_vn.jpg" style="display: none" class="img-responsive img-thumbnail"> 
                                                 </a>
                                             </div>
@@ -124,20 +124,20 @@
                                             <table class="table table-bordered table-striped dfTable table-right-left">
                                                 <tbody>
                                                     <!--<tr>
-                                                        <td width="50%"><?= lang('name'); ?></td>
-                                                        <td width="50%"><?= $product->name; ?></td>
+                                                        <td width="30%"><?= lang('name'); ?></td>
+                                                        <td width="70%"><?= $product->name; ?></td>
                                                     </tr>-->
                                                     <?php if (!empty($product->second_name)) {
                                                         ?>
                                                     <tr>
-                                                        <td width="50%"><?= lang('secondary_name'); ?></td>
-                                                        <td width="50%"><?= $product->second_name; ?></td>
+                                                        <td width="30%"><?= lang('secondary_name'); ?></td>
+                                                        <td width="70%"><?= $product->second_name; ?></td>
                                                     </tr>
                                                     <?php
                                                     } ?>
                                                     <tr>
-                                                        <td><?= lang('code'); ?></td>
-                                                        <td><?= $product->code; ?></td>
+                                                        <td width="30%"><?= lang('code'); ?></td>
+                                                        <td width="70%"><?= $product->code; ?></td>
                                                     </tr>
                                                     <!--<tr>
                                                         <td><?= lang('type'); ?></td>
@@ -196,7 +196,7 @@
                                                         ?>
                                                     <tr>
                                                         <td><?= lang('in_stock'); ?></td>
-                                                        <td><?= $this->sma->formatQuantity($warehouse->quantity); ?></td>
+                                                        <td><?= $this->sma->formatQuantity($warehouse->quantity); ?><?= lang('in_stock_desc'); ?></td>
                                                     </tr>
                                                     <?php
                                                     } ?>
@@ -272,12 +272,13 @@
                                                     } ?>
                                     </div>
                                 </div>
+                                <?= $product->product_details ? '<div class="col-sm-7"><div class="panel panel-warning"><div class="panel-heading">' . $product->product_details . '</div></div></div>' : ''; ?>
                                 <div class="clearfix"></div>
 
                                 <div class="col-xs-12">
 
                                     <?= $product->details ? '<div class="panel panel-info"><div class="panel-heading">' . lang('product_details_for_invoice') . '</div><div class="panel-body">' . $product->details . '</div></div>' : ''; ?>
-                                    <?= $product->product_details ? '<div class="panel panel-default"><div class="panel-heading">' . lang('product_details') . '</div><div class="panel-body">' . $product->product_details . '</div></div>' : ''; ?>
+                                    
 
                                 </div>
                             </div>

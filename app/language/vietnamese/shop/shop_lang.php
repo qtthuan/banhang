@@ -69,6 +69,7 @@ $lang['view_item']                     = 'Xem sản phẩm';
 $lang['filters']                       = 'Bộ lọc';
 $lang['availability']                  = 'Kho hàng';
 $lang['in_stock']                      = 'Còn hàng';
+$lang['in_stock_desc']                 = '';
 $lang['price_range']                   = 'Khoảng giá';
 $lang['min']                           = 'Từ';
 $lang['max']                           = 'Đến';
