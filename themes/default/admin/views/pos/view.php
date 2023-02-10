@@ -366,8 +366,12 @@
                         }
 
                         ?>
+                        
+                        <?php if ($payments) {
+                            $str_border_bottom_style = 'style="border-bottom: dotted 1px black;"';
+                        } ?>
 
-                        <tr style="border-bottom: dotted 1px black;">
+                        <tr <?=$str_border_bottom_style?>>
                             <th colspan="2">&nbsp;</th>
                             <th colspan="2"><div style="margin-left: 2px;"><?=lang("total");?></div></th>
                             <th class="text-right" colspan="2">
