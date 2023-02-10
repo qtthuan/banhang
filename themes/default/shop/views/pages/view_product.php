@@ -89,7 +89,6 @@
                                             if ($variants) {
                                                 foreach ($variants as $variant) {
                                                     if ($variant->quantity > 0) {
-                                                        //$xx = $this->sma->convertMoney(isset($product->special_price) ? $product->special_price : $product->price);
                                                         $str_variant = $variant->name . ($variant->price > 0 ? ' (' . $this->sma->convertMoney($product_price + $variant->price, true, false) . ')' : ($variant->price == 0 ? '' : $this->sma->convertMoney($product_price + $variant->price, true, false)));
                                                         $opts[$variant->id] = $str_variant;
                                                     }
