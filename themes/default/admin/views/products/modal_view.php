@@ -82,7 +82,7 @@
                                     <tr>
                                         <td><?= lang("brand"); ?></td>
                                         <td>
-                                            echo '<span class="padding05">'. $brand->name . '</span>';
+                                            <span class="padding05"><?= $brand->name; ?></span>
                                         </td>
                                     </tr>
 
