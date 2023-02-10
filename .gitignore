@@ -4,4 +4,6 @@ vendor/
 /app/config/database.php
 /.vscode
 /assets/uploads/*
+/assets/uploads/avatars/*
+/assets/uploads/csv/*
 /files/*
