@@ -85,16 +85,24 @@
                                                             ?>
                                         <?= form_open('cart/add/' . $product->id, 'class="validate"'); ?>
                                         <div class="form-group">
-                                            <?php
+
+
+                                        <?php
                                             if ($variants) {
                                                 foreach ($variants as $variant) {
                                                     if ($variant->quantity > 0) {
-                                                        $str_variant = $variant->name . ($variant->price > 0 ? ' (' . $this->sma->convertMoney($product_price + $variant->price, true, false) . ')' : ($variant->price == 0 ? '' : $this->sma->convertMoney($product_price + $variant->price, true, false)));
+                                                        if ($product->promotion) {
+                                                            $product_price = $product->promo_price;
+                                                        }
+                                                        //$product_price =
+                                                        //$str_variant = $variant->name . ($variant->price > 0 ? ' (' . $this->sma->convertMoney($product_price + $variant->price, true, false) . ')' : ($variant->price == 0 ? '' : $this->sma->convertMoney($product_price + $variant->price, true, false)));
+                                                        $str_variant = $variant->name . ' (' . $this->sma->convertMoney($product_price + $variant->price, true, false) . ')';
                                                         $opts[$variant->id] = $str_variant;
                                                     }
                                                 }
                                                 echo form_dropdown('option', $opts, '', 'class="form-control selectpicker mobile-device" required="required"');
-                                            } ?>
+                                            } 
+                                        ?>
                                         </div>
                                         
                                         <!--<div class="form-group">
