@@ -9,8 +9,8 @@
 
                         <div class="panel panel-default margin-top-lg">
                             <div class="panel-heading text-bold">
-                                <i class="fa fa-list-alt margin-right-sm"></i> <?= $product->name . ' (' . $product->code . ')'; ?>
-                                <a href="<?= shop_url('products'); ?>" class="pull-right"><i class="fa fa-share"></i> <?= lang('products'); ?></a>
+                                <i class="fa fa-list-alt margin-right-sm"></i> <?= $product->name; ?>
+                                <!--<a href="<?= shop_url('products'); ?>" class="pull-right"><i class="fa fa-share"></i> <?= lang('products'); ?></a>-->
                             </div>
                             <div class="panel-body mprint">
 
@@ -123,10 +123,10 @@
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-striped dfTable table-right-left">
                                                 <tbody>
-                                                    <tr>
+                                                    <!--<tr>
                                                         <td width="50%"><?= lang('name'); ?></td>
                                                         <td width="50%"><?= $product->name; ?></td>
-                                                    </tr>
+                                                    </tr>-->
                                                     <?php if (!empty($product->second_name)) {
                                                         ?>
                                                     <tr>
@@ -188,10 +188,10 @@
                                                     <?php
                                                     } ?>
 
-                                                    <tr>
+                                                    <!--<tr>
                                                         <td><?= lang('unit'); ?></td>
                                                         <td><?= $unit ? $unit->name : ''; ?></td>
-                                                    </tr>
+                                                    </tr>-->
                                                     <?php if (!empty($warehouse) && $product->type == 'standard') {
                                                         ?>
                                                     <tr>
@@ -206,7 +206,9 @@
                                                     <tr>
                                                         <td><?= lang('product_variants'); ?></td>
                                                         <td><?php foreach ($variants as $variant) {
-                                                            echo '<span class="label label-primary">' . $variant->name . '</span> ';
+                                                            if ($variant->quantity > 0) {
+                                                                echo '<span class="label label-primary">' . $variant->name . '</span> ';
+                                                            }
                                                         } ?></td>
                                                     </tr>
                                                     <?php
@@ -215,10 +217,10 @@
                                                     <?php if (!empty($options)) {
                                                         foreach ($options as $option) {
                                                             if ($option->wh_qty != 0) {
-                                                                echo '<tr><td colspan="2" class="bg-primary">' . $option->name . '</td></tr>';
+                                                                /*echo '<tr><td colspan="2" class="bg-primary">' . $option->name . '</td></tr>';
                                                                 echo '<td>' . lang('in_stock') . ': ' . $this->sma->formatQuantity($option->wh_qty) . '</td>';
                                                                 echo '<td>' . lang('price') . ': ' . $this->sma->convertMoney(($product->special_price ? $product->special_price : $product->price) + $option->price) . '</td>';
-                                                                echo '</tr>';
+                                                                echo '</tr>';*/
                                                             }
                                                         }
                                                     } ?>

@@ -79,6 +79,12 @@
                                         } ?>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td><?= lang("brand"); ?></td>
+                                        <td>
+                                            echo '<span class="padding05">'. $brand->name . '</span>';
+                                        </td>
+                                    </tr>
 
                                 <a href="<?= $customer->fb_link; ?>" target="_blank">
                                     <span style="color: green; font-size: 14px;"><?= $customer->fb_link; ?></span>
