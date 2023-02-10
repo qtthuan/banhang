@@ -188,10 +188,10 @@
                                                     <?php
                                                     } ?>
 
-                                                    <!--<tr>
+                                                    <tr>
                                                         <td><?= lang('unit'); ?></td>
                                                         <td><?= $unit ? $unit->name : ''; ?></td>
-                                                    </tr>-->
+                                                    </tr>
                                                     <?php if (!empty($warehouse) && $product->type == 'standard') {
                                                         ?>
                                                     <tr>
@@ -272,11 +272,10 @@
                                                     } ?>
                                     </div>
                                 </div>
-                                <?= $product->product_details ? '<div class="col-sm-7"><div class="panel panel-warning"><div class="panel-heading">' . $product->product_details . '</div></div></div>' : ''; ?>
                                 <div class="clearfix"></div>
 
                                 <div class="col-xs-12">
-
+                                    <?= $product->product_details ? '<div class="panel panel-warning"><div class="panel-heading">' . $product->product_details . '</div></div>' : ''; ?>
                                     <?= $product->details ? '<div class="panel panel-info"><div class="panel-heading">' . lang('product_details_for_invoice') . '</div><div class="panel-body">' . $product->details . '</div></div>' : ''; ?>
                                     
 
