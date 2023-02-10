@@ -13,8 +13,10 @@
                                 <!--<a href="<?= shop_url('products'); ?>" class="pull-right"><i class="fa fa-share"></i> <?= lang('products'); ?></a>-->
                             </div>
                             <div class="panel-body mprint">
-
-                                <div class="row">
+                            <?php 
+                                $product_price = isset($product->special_price) ? $product->special_price : $product->price;
+                            ?>
+                                <div class="row">                                
                                     <div class="col-sm-5">
 
                                         <div class="photo-slider">
@@ -87,7 +89,9 @@
                                             if ($variants) {
                                                 foreach ($variants as $variant) {
                                                     if ($variant->quantity > 0) {
-                                                        $opts[$variant->id] = $variant->name . ($variant->price > 0 ? ' (+' . $this->sma->convertMoney($variant->price, true, false) . ')' : ($variant->price == 0 ? '' : ' (+' . $this->sma->convertMoney($variant->price, true, false) . ')'));
+                                                        //$xx = $this->sma->convertMoney(isset($product->special_price) ? $product->special_price : $product->price);
+                                                        $str_variant = $variant->name . ($variant->price > 0 ? ' (' . $this->sma->convertMoney($product_price + $variant->price, true, false) . ')' : ($variant->price == 0 ? '' : $this->sma->convertMoney($product_price + $variant->price, true, false)));
+                                                        $opts[$variant->id] = $str_variant;
                                                     }
                                                 }
                                                 echo form_dropdown('option', $opts, '', 'class="form-control selectpicker mobile-device" required="required"');
@@ -123,10 +127,10 @@
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-striped dfTable table-right-left">
                                                 <tbody>
-                                                    <!--<tr>
+                                                    <tr>
                                                         <td width="30%"><?= lang('name'); ?></td>
                                                         <td width="70%"><?= $product->name; ?></td>
-                                                    </tr>-->
+                                                    </tr>
                                                     <?php if (!empty($product->second_name)) {
                                                         ?>
                                                     <tr>
@@ -164,7 +168,7 @@
                                                         ?>
                                                     <tr>
                                                         <td><?= lang('price'); ?></td>
-                                                        <td><?= $this->sma->convertMoney(isset($product->special_price) ? $product->special_price : $product->price); ?></td>
+                                                        <td><?= $this->sma->convertMoney($product_price); ?></td>
                                                     </tr>
                                                     <?php
                                                     } ?>
@@ -188,7 +192,7 @@
                                                     <?php
                                                     } ?>
 
-                                                    <tr>
+                                                    <!--<tr>
                                                         <td><?= lang('unit'); ?></td>
                                                         <td><?= $unit ? $unit->name : ''; ?></td>
                                                     </tr>
@@ -199,7 +203,7 @@
                                                         <td><?= $this->sma->formatQuantity($warehouse->quantity); ?><?= lang('in_stock_desc'); ?></td>
                                                     </tr>
                                                     <?php
-                                                    } ?>
+                                                    } ?>-->
 
                                                     <?php if ($variants) {
                                                         ?>
