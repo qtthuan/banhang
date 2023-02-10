@@ -520,6 +520,17 @@ class Shop extends MY_Shop_Controller
             $this->data['combo_items'] = $this->shop_model->getProductComboItems($product->id);
         }
         $this->shop_model->updateProductViews($product->id, $product->views);
+
+        $today = date('Y-m-d');
+        $today=date('Y-m-d', strtotime($today));
+        $startDate = date('Y-m-d', strtotime($product->start_date));
+        $endDate = date('Y-m-d', strtotime($product->end_date));
+        if (($today >= $startDate) && ($today <= $endDate)){
+            $product->promo_expired = 0;
+        } else {
+            $product->promo_expired = 1;
+        }
+
         $this->data['product']        = $product;
         $this->data['other_products'] = $this->shop_model->getOtherProducts($product->id, $product->category_id, $product->brand);
         $this->data['unit']           = $this->site->getUnitByID($product->unit);

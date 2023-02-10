@@ -15,6 +15,16 @@
                             <div class="panel-body mprint">
                             <?php 
                                 $product_price = isset($product->special_price) ? $product->special_price : $product->price;
+                                $product_price_before_promo = 0;
+                                $row_promotion = '';
+
+                                if ($product->promotion && !$product->promo_expired) {
+                                    $product_price_before_promo = $product_price;
+                                    $product_price = $product->promo_price;
+                                    $row_promotion = '<tr><td>' . lang('promotion') . '</td><td><strong>' . $this->sma->convertMoney($product->promo_price) . '</strong><br>' . ($product->start_date && $product->start_date != '0000-00-00' ? lang('start_date') . ': <strong>' . $this->sma->hrsd($product->start_date) . '</strong><br>' : '') . ($product->end_date && $product->end_date != '0000-00-00' ? lang('end_date') . ': <strong>' . $this->sma->hrsd($product->end_date) . '</strong>' : '') . '</td></tr>';
+                                }
+                                
+                                
                             ?>
                                 <div class="row">                                
                                     <div class="col-sm-5">
@@ -91,12 +101,16 @@
                                             if ($variants) {
                                                 foreach ($variants as $variant) {
                                                     if ($variant->quantity > 0) {
-                                                        if ($product->promotion) {
-                                                            $product_price = $product->promo_price;
-                                                        }
+                                                       
                                                         //$product_price =
                                                         //$str_variant = $variant->name . ($variant->price > 0 ? ' (' . $this->sma->convertMoney($product_price + $variant->price, true, false) . ')' : ($variant->price == 0 ? '' : $this->sma->convertMoney($product_price + $variant->price, true, false)));
-                                                        $str_variant = $variant->name . ' (' . $this->sma->convertMoney($product_price + $variant->price, true, false) . ')';
+                                                        if ($product->promotion && !$product->promo_expired) {
+                                                            $str_variant = $variant->name . ' (' . $this->sma->convertMoney($product_price_before_promo + $variant->price) . ' &#8594;' . $this->sma->convertMoney($product_price + $variant->price, true, false) . ')';
+                                                            //$str_variant .= '<span style="text-decoration: line-through"> ' .  . '<span></del>)';
+                                                        } else {
+                                                            $str_variant = $variant->name . ' (' . $this->sma->convertMoney($product_price + $variant->price, true, false) . ')';
+                                                        }
+                                                        
                                                         $opts[$variant->id] = $str_variant;
                                                     }
                                                 }
@@ -175,15 +189,21 @@
                                                         ?>
                                                     <tr>
                                                         <td><?= lang('price'); ?></td>
-                                                        <td><?= $this->sma->convertMoney($product_price); ?></td>
+                                                        <td>
+                                                        <?php
+                                                        if ($product->promotion && !$product->promo_expired) {
+                                                            echo $this->sma->convertMoney(isset($product->special_price) && !empty($product->special_price) ? $product->special_price : $product_price_before_promo);
+                                                        } else {
+                                                            echo $this->sma->convertMoney(isset($product->special_price) && !empty($product->special_price) ? $product->special_price : $product_price);
+                                                        }
+                                                        ?>
+                                                        </td>
                                                     </tr>
                                                     <?php
                                                     } ?>
 
-                                                    <?php
-                                                    if ($product->promotion) {
-                                                        echo '<tr><td>' . lang('promotion') . '</td><td><strong>' . $this->sma->convertMoney($product->promo_price) . '</strong><br>' . ($product->start_date && $product->start_date != '0000-00-00' ? lang('start_date') . ': <strong>' . $this->sma->hrsd($product->start_date) . '</strong><br>' : '') . ($product->end_date && $product->end_date != '0000-00-00' ? lang('end_date') . ': <strong>' . $this->sma->hrsd($product->end_date) . '</strong>' : '') . '</td></tr>';
-                                                    }
+                                                    <?php                                                    
+                                                        echo $row_promotion;
                                                     ?>
 
                                                     <?php if ($product->tax_rate) {
