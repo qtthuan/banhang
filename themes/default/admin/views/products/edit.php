@@ -284,6 +284,22 @@ if (!empty($variants)) {
                             </div>
 
                             <div id="attr-con" <?= $this->input->post('attributes') ? '' : 'style="display:none;"'; ?>>
+                                <div class="form-group all">
+                                    <div class="form-group">
+                                        <input type="checkbox" class="checkbox" name="sizegroups" id="sizegroups"><label
+                                                for="sizegroups"
+                                                class="padding05"><?= lang('choose_size_group'); ?></label>
+                                    </div>
+                                    <div id="sizegroup-con" style="display: none">
+                                        <?php
+                                        $size[''] = "";
+                                        foreach ($size_groups as $size_group) {
+                                            $size[$size_group->description] = $size_group->name;
+                                        }
+                                        echo form_dropdown('size_group', $size, (isset($_POST['size_group']) ? $_POST['size_group'] : ''), 'class="form-control select" id="size_group" placeholder="' . lang("select") . " " . lang("size_group") . '" required="required" style="width:100%"')
+                                        ?>
+                                    </div>
+                                </div>
                                 <div class="form-group" id="ui" style="margin-bottom: 0;">
                                     <div class="input-group">
                                         <?php
@@ -297,7 +313,30 @@ if (!empty($variants)) {
                                     <div style="clear:both;"></div>
                                 </div>
                                 <div class="table-responsive">
-                                
+                                <div id="multipleSizes" style="<?= $this->input->post('attributes') || $product_options ? '' : 'display:none;'; ?>">
+                                    <button type="button" class="btn btn-success multiplex" id="0" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>0 Ri
+                                    </button>
+                                    <button type="button" class="btn btn-danger multiplex" id="1" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>1 Ri
+                                    </button>
+                                    <button type="button" class="btn btn-primary multiplex" id="2" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>2 Ri
+                                    </button>
+                                    <button type="button" class="btn btn-warning multiplex" id="3" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>3 Ri
+                                    </button>
+                                    <button type="button" class="btn btn-success multiplex" id="4" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>4 Ri
+                                    </button>
+                                    <button type="button" class="btn btn-info multiplex" id="5" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>5 Ri
+                                    </button>
+                                    <button type="button" class="btn btn-primary multiplex" id="10" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>10 Ri
+                                    </button>
+                                    
+                                </div>
                                     <table id="attrTable" class="table table-bordered table-condensed table-striped" style="margin-bottom: 0; margin-top: 10px;">
                                         <thead>
                                             <tr class="active">
@@ -471,6 +510,20 @@ if (!empty($variants)) {
         });
         $('.attributes').on('ifUnchecked', function (event) {
             $('#options_' + $(this).attr('id')).slideUp();
+        });
+
+        $('#sizegroups').on('ifChecked', function (event) {
+            $('#sizegroup-con').slideDown();
+            $(".select-tags").slideUp();
+            $("#attributesInput").slideDown();
+            $('#attributesInput').val('');
+        });
+
+        $('#sizegroups').on('ifUnchecked', function (event) {
+            $('#sizegroup-con').slideUp();
+            $(".select-tags").slideDown();
+            $("#attributesInput").slideUp();
+            $('#attributesInput').val('');
         });
 
         $('#category').change(function () {
@@ -764,6 +817,31 @@ if (!empty($variants)) {
 
             $('#aModal').modal('hide');
         });
+
+        $(".multiplex").click(function() {
+            var multi = parseInt($(this).attr('id')); // $(this) refers to button that was clicked
+            var new_wh_quantity = 0;
+
+            $('#attrTable tbody tr').each(function() {
+                var self = $(this);
+                previous_qty = parseInt(self.children().eq(2).find('input').val());
+                if (multi == 1) {
+                    new_quantity = 1;
+                } else {
+                    new_quantity = multi;
+                }
+                new_wh_quantity += new_quantity;
+                self.children().eq(2).html('<input type="hidden" name="attr_quantity[]" value="' + new_quantity + '"><span>' + new_quantity + '</span>');
+            });
+
+            $.each(warehouses, function () {
+                if (!isNaN(parseInt($('#wh_qty_' + this.id).val()))) {
+                    if($('#wh_qty_' + this.id).is(':visible')) {
+                        $('#wh_qty_' + this.id).val(new_wh_quantity);
+                    }
+                }
+            });
+        });
     });
 
     <?php if ($product) { ?>
@@ -931,6 +1009,21 @@ if (!empty($variants)) {
         });
         $('#digital_file').removeAttr('required');
         $('form[data-toggle="validator"]').bootstrapValidator('removeField', 'digital_file');
+    });
+
+    $(document).ready(function() {
+        $('#size_group').change(function(e) {
+            var v = $(this).val();
+            if (v) {
+                $('#attributesInput').val(v);
+
+            }
+        });
+        <?php if (!empty($product)) { ?>
+        //$('#drop_select_wh').val(<?=$warehouse_by_product_id->warehouse_id?>);
+        <?php } ?>
+        $("#box_wh_"+ $('#drop_select_wh').val()).show()
+        $("#rack_wh_"+ $('#drop_select_wh').val()).show()
     });
 </script>
 
