@@ -1007,6 +1007,7 @@ function loadItems() {
 
     if (localStorage.getItem('slitems')) {
         total = 0;
+        total_with_no_points = 0;
         count = 1;
         an = 1;
         product_tax = 0;
@@ -1023,7 +1024,7 @@ function loadItems() {
             var item = this;
             var item_id = site.settings.item_addition == 1 ? item.item_id : item.id;
             item.order = item.order ? item.order : new Date().getTime();
-            var product_id = item.row.id, item_type = item.row.type, combo_items = item.combo_items, item_price = item.row.price, item_qty = item.row.qty, item_aqty = item.row.quantity, item_tax_method = item.row.tax_method, item_ds = item.row.discount, item_discount = 0, item_option = item.row.option, item_code = item.row.code, item_serial = item.row.serial, item_name = item.row.name.replace(/"/g, "&#034;").replace(/'/g, "&#039;");
+            var product_id = item.row.id, item_type = item.row.type, combo_items = item.combo_items, is_promo = item.row.promotion, item_original_price = item.row.original_price, start_date = item.row.start_date, end_date = item.row.end_date, item_price = item.row.price, item_qty = item.row.qty, item_aqty = item.row.quantity, item_tax_method = item.row.tax_method, item_ds = item.row.discount, item_discount = 0, item_option = item.row.option, item_code = item.row.code, item_serial = item.row.serial, item_name = item.row.name.replace(/"/g, "&#034;").replace(/'/g, "&#039;");
             var product_unit = item.row.unit, base_quantity = item.row.base_quantity;
             var unit_price = item.row.real_unit_price;
             if(item.units && item.row.fup != 1 && product_unit != item.row.base_unit) {
@@ -1089,11 +1090,30 @@ function loadItems() {
                     sel_opt = this.name;
                 }
             });
+
+            if ((is_promo && checkValidPromotionDate(start_date, end_date)) || (item.no_points == 1 && item_discount == 0)) {
+                total_with_no_points += item_price * item_qty;
+            }
+
             var row_no = (new Date).getTime();
             var newTr = $('<tr id="row_' + row_no + '" class="row_' + item_id + '" data-item-id="' + item_id + '"></tr>');
             tr_html = '<td><input name="product_id[]" type="hidden" class="rid" value="' + product_id + '"><input name="product_type[]" type="hidden" class="rtype" value="' + item_type + '"><input name="product_code[]" type="hidden" class="rcode" value="' + item_code + '"><input name="product_name[]" type="hidden" class="rname" value="' + item_name + '"><input name="product_option[]" type="hidden" class="roption" value="' + item_option + '"><span class="sname" id="name_' + row_no + '">' + item_code +' - '+ item_name +(sel_opt != '' ? ' ('+sel_opt+')' : '')+'</span> <i class="pull-right fa fa-edit tip pointer edit" id="' + row_no + '" data-item="' + item_id + '" title="Edit" style="cursor:pointer;"></i></td>';
             if (site.settings.product_serial == 1) {
                 tr_html += '<td class="text-right"><input class="form-control input-sm rserial" name="serial[]" type="text" id="serial_' + row_no + '" value="'+item_serial+'"></td>';
+            }
+
+            if (item_discount > 0) {
+                //var display_price = '<span style="font-weight: bold">' + formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val)) + '</span>(<span style="text-decoration: line-through">' + unit_price + '</span>)';
+                //tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '"><input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '"><input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '"><input class="no_points" name="no_points[]" type="hidden" value="' + item.no_points + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + display_price + '</span></td>';
+            } else {
+
+                if (item_original_price > 0) {
+                    //display_price = '<span style="font-weight: bold">' + formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val)) + '</span>';
+                    //display_price += '(<span style="text-decoration: line-through">' + formatMoney(item_original_price) + '</span>)';
+                } else {
+                    //display_price = formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val));
+                }
+                tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '"><input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '"><input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '"><input class="no_points" name="no_points[]" type="hidden" value="' + item.no_points + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + display_price + '</span></td>';
             }
             tr_html += '<td class="text-right"><input class="form-control input-sm text-right rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '"><input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '"><input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + unit_price + '</span></td>';
             tr_html += '<td><input class="form-control text-center rquantity" tabindex="'+((site.settings.set_focus == 1) ? an : (an+1))+'" name="quantity[]" type="text" value="' + formatQuantity2(item_qty) + '" data-id="' + row_no + '" data-item="' + item_id + '" id="quantity_' + row_no + '" onClick="this.select();"><input name="product_unit[]" type="hidden" class="runit" value="' + product_unit + '"><input name="product_base_quantity[]" type="hidden" class="rbase_quantity" value="' + base_quantity + '"></td>';
@@ -1204,6 +1224,26 @@ function loadItems() {
             $('#slwarehouse').select2("readonly", true);
         }
         set_page_focus();
+    }
+}
+
+// qtthuan: hàm so sánh ngày hiện tại có thuộc 2 ngày đã cho không
+function checkValidPromotionDate(date1, date2) {
+    if (!date1) {
+        return false;
+    }
+    D_1 = moment(date1).format('DD-MM-YYYY').split("-");
+    D_2 = moment(date2).format('DD-MM-YYYY').split("-");
+    D_3 = moment(new Date()).format('DD-MM-YYYY').split("-");
+
+    var d1 = new Date(D_1[2], parseInt(D_1[1]) - 1, D_1[0]);
+    var d2 = new Date(D_2[2], parseInt(D_2[1]) - 1, D_2[0]);
+    var d3 = new Date(D_3[2], parseInt(D_3[1]) - 1, D_3[0]);
+
+    if (d3 >= d1 && d3 <= d2) {
+        return true;
+    } else {
+        return false;
     }
 }
 
