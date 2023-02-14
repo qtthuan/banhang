@@ -75,14 +75,14 @@ class Sales extends MY_Controller
         . lang('actions') . ' <span class="caret"></span></button>
         <ul class="dropdown-menu pull-right" role="menu">
             <li>' . $return_link . '</li>
+            <li>' . $edit_link . '</li>
             <li>' . $delete_link . '</li>
+            <li>' . $add_payment_link . '</li>
+            <li>' . $payments_link . '</li>
             <li>' . $detail_link . '</li>
             <li>' . $duplicate_link . '</li>
-            <li>' . $payments_link . '</li>
-            <li>' . $add_payment_link . '</li>
             <li>' . $packagink_link . '</li>
             <li>' . $add_delivery_link . '</li>
-            <li>' . $edit_link . '</li>
             <li>' . $pdf_link . '</li>
             <li>' . $email_link . '</li>
         </ul>
@@ -798,6 +798,8 @@ class Sales extends MY_Controller
                 $item_discount = isset($_POST['product_discount'][$r]) ? $_POST['product_discount'][$r] : null;
                 $item_unit = $_POST['product_unit'][$r];
                 $item_quantity = $_POST['product_base_quantity'][$r];
+                $item_is_promo = $_POST['is_promo'][$r];
+                $item_promo_original_price = $_POST['promo_original_price'][$r];
 
                 if (isset($item_code) && isset($real_unit_price) && isset($unit_price) && isset($item_quantity)) {
                     $product_details = $item_type != 'manual' ? $this->sales_model->getProductByCode($item_code) : null;
@@ -861,6 +863,8 @@ class Sales extends MY_Controller
                         'subtotal' => $this->sma->formatDecimal($subtotal),
                         'serial_no' => $item_serial,
                         'real_unit_price' => $real_unit_price,
+                        'is_promo' => $item_is_promo,
+                        'promo_original_price' => $item_promo_original_price,
                     );
 
                     $total += $this->sma->formatDecimal(($item_net_price * $item_unit_quantity), 4);
@@ -952,7 +956,7 @@ class Sales extends MY_Controller
                 $data['attachment'] = $photo;
         }
 
-            // $this->sma->print_arrays($data, $products);
+            //$this->sma->print_arrays($data, $products);
         }
 
         if ($this->form_validation->run() == true && $this->sales_model->updateSale($id, $data, $products)) {
@@ -1005,6 +1009,7 @@ class Sales extends MY_Controller
                 $row->tax_rate = $item->tax_rate_id;
                 $row->serial = $item->serial_no;
                 $row->option = $item->option_id;
+                $row->promo_original_price = $item->promo_original_price;
                 $options = $this->sales_model->getProductOptions($row->id, $item->warehouse_id);
                 //$this->sma->print_arrays($options);
                 if ($options) {

@@ -234,7 +234,7 @@
                         <thead>
 
                         <tr>
-                            <th><?= lang("no"); ?></th>
+                            <th><?= lang("stt"); ?></th>
                             <th><?= lang("description"); ?> (<?= lang("code"); ?>)</th>
                             <th><?= lang("quantity"); ?></th>
                             <?php

@@ -249,6 +249,7 @@ $lang['login']                              = "Đăng nhập";
 $lang['submit']                             = "Hoàn thành";
 $lang['submit1']                            = "Thanh Toán";
 $lang['no']                                 = "Không";
+$lang['stt']                                = "STT";
 $lang['yes']                                = "Có";
 $lang['disable']                            = "Tắt";
 $lang['enable']                             = "Mở";

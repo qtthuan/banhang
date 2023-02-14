@@ -283,7 +283,7 @@ class Pos extends MY_Controller
                 }
             } // END For Loop
 
-            //$this->sma->print_arrays($products);
+            //$this->sma->print_arrays($data, $products);
             if (empty($products)) {
                 $this->form_validation->set_rules('product', lang("order_items"), 'required');
             } elseif ($this->pos_settings->item_order == 1) {

@@ -221,22 +221,35 @@ class Shop extends MY_Shop_Controller
                 $gst_data    = [];
                 $total_cgst  = $total_sgst  = $total_igst  = 0;
                 foreach ($this->cart->contents() as $item) {
+                    //$this->sma->print_arrays($item);
                     $item_option = null;
                     if ($product_details = $this->shop_model->getProductForCart($item['product_id'])) {
-                        $price = $this->sma->setCustomerGroupPrice(($product_details->special_price ? $product_details->special_price : $product_details->price), $this->customer_group);
-                        $price = $this->sma->isPromo($product_details) ? $product_details->promo_price : $price;
+                        $promo_original_price = 0;
+                        
+                        $price  = $this->sma->setCustomerGroupPrice(($product_details->special_price ? $product_details->special_price : $product_details->price), $this->customer_group);
+                        //echo '## ' . $price . '**' . '<br />';   // promo_original_price
+
+                        if ($this->sma->isPromo($product_details)) {
+                            $promo_original_price = $price;
+                            $price = $product_details->promo_price;
+                            //$real
+                        }
+                        $real_unit_price = $price;
+                        //$price = $this->sma->isPromo($product_details) ? $product_details->promo_price : $price;
+                        //echo '---' . $price . ' / ' . $this->sma->isPromo($product_details) . '<br />'; // real_unit_price
                         if ($item['option']) {
                             if ($product_variant = $this->shop_model->getProductVariantByID($item['option'])) {
                                 $item_option = $product_variant->id;
                                 $price       = $product_variant->price + $price;
+                                echo 'xz <br />';
                             }
                         }
-
+                        
                         $item_net_price = $unit_price = $price;
                         $item_quantity  = $item_unit_quantity  = $item['qty'];
                         $pr_item_tax    = $item_tax    = 0;
                         $tax            = '';
-
+                        echo $price . ' - ' . $unit_price . '/<br />';
                         if (!empty($product_details->tax_rate)) {
                             $tax_details = $this->site->getTaxRateByID($product_details->tax_rate);
                             $ctax        = $this->site->calculateTax($product_details, $tax_details, $unit_price);
@@ -278,7 +291,9 @@ class Shop extends MY_Shop_Controller
                             'item_discount'     => 0,
                             'subtotal'          => $this->sma->formatDecimal($subtotal),
                             'serial_no'         => null,
-                            'real_unit_price'   => $price,
+                            'real_unit_price'   => $real_unit_price,
+                            'is_promo'        => $this->sma->isPromo($product_details),
+                            'promo_original_price' => $promo_original_price,
                         ];
 
                         $products[] = ($product + $gst_data);
@@ -336,7 +351,7 @@ class Shop extends MY_Shop_Controller
                 if ($new_customer) {
                     $customer = (array) $customer;
                 }
-                //$this->sma->print_arrays($data, $products, $customer, $address, $new_customer);
+               //$this->sma->print_arrays($data, $products, $customer, $address, $new_customer);
 
                 if ($sale_id = $this->shop_model->addSale($data, $products, $customer, $address)) {
                     $this->order_received($sale_id);

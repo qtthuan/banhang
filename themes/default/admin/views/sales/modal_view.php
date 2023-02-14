@@ -98,7 +98,7 @@
                     <thead>
 
                     <tr>
-                        <th><?= lang("no"); ?></th>
+                        <th><?= lang("stt"); ?></th>
                         <th><?= lang("description"); ?></th>
                         <th><?= lang("quantity"); ?></th>
                         <th><?= lang("unit_price"); ?></th>
@@ -129,7 +129,21 @@
                                 <?= $row->serial_no ? '<br>' . $row->serial_no : ''; ?>
                             </td>
                             <td style="width: 80px; text-align:center; vertical-align:middle;"><?= $this->sma->formatQuantity($row->unit_quantity).' '.$row->product_unit_code; ?></td>
-                            <td style="text-align:right; width:100px;"><?= $this->sma->formatMoney($row->real_unit_price); ?></td>
+                            <td style="text-align:right; width:100px;">
+                                
+                                <?php
+
+                                    echo $this->sma->formatMoney($row->unit_price);
+                                    if ($row->item_discount != 0 || $row->is_promo == 1) {                                     
+                                        if ($row->is_promo == 1) {
+                                            echo '(<span style="text-decoration: line-through">' . $this->sma->formatMoney($row->promo_original_price + $row->added_price) . '</span>)';
+                                        } elseif($row->item_discount != 0) {
+                                            echo '(<span style="text-decoration: line-through">' . $this->sma->formatMoney($row->real_unit_price + $row->added_price) . '</span>)';
+                                        }
+                                    }
+                                    
+                                ?>
+                            </td>
                             <?php
                             if ($Settings->tax1 && $inv->product_tax > 0) {
                                 echo '<td style="width: 100px; text-align:right; vertical-align:middle;">' . ($row->item_tax != 0 && $row->tax_code ? '<small>('.$row->tax_code.')</small>' : '') . ' ' . $this->sma->formatMoney($row->item_tax) . '</td>';
