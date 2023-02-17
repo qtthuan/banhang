@@ -493,7 +493,7 @@ $('#posdiscount').focus(function () {
         var row_id = row.attr('id');
         item_id = row.attr('data-item-id');
         item = positems[item_id];
-        console.log(JSON.stringify(item));
+        //console.log(JSON.stringify(item));
         var qty = row.children().children('.rquantity').val(),
         product_option = row.children().children('.roption').val(),
         unit_price = formatDecimal(row.children().children('.ruprice').val()),
@@ -1110,17 +1110,17 @@ function loadItems() {
         var category = 0, print_cate = false;
         // var itn = parseInt(Object.keys(sortedItems).length);
         $.each(sortedItems, function () {
-            var item = this;
+            var item = this;            
             var item_id = site.settings.item_addition == 1 ? item.item_id : item.id;
             positems[item_id] = item;
             item.order = item.order ? item.order : new Date().getTime();
-            var product_id = item.row.id, item_type = item.row.type, combo_items = item.combo_items, is_promo = item.row.promotion, item_original_price = item.row.original_price, start_date = item.row.start_date, end_date = item.row.end_date, item_price = item.row.price, item_qty = item.row.qty, item_aqty = item.row.quantity, item_tax_method = item.row.tax_method, item_ds = item.row.discount, item_discount = 0, item_option = item.row.option, item_code = item.row.code, item_serial = item.row.serial, item_name = item.row.name.replace(/"/g, "&#034;").replace(/'/g, "&#039;");
+            var product_id = item.row.id, item_image = item.row.image, item_type = item.row.type, combo_items = item.combo_items, is_promo = item.row.promotion, item_original_price = item.row.original_price, start_date = item.row.start_date, end_date = item.row.end_date, item_price = item.row.price, item_qty = item.row.qty, item_aqty = item.row.quantity, item_tax_method = item.row.tax_method, item_ds = item.row.discount, item_discount = 0, item_option = item.row.option, item_code = item.row.code, item_serial = item.row.serial, item_name = item.row.name.replace(/"/g, "&#034;").replace(/'/g, "&#039;");
             var product_unit = item.row.unit, base_quantity = item.row.base_quantity;
             var unit_price = item.row.real_unit_price;
             var item_comment = item.row.comment ? item.row.comment : '';
             var item_ordered = item.row.ordered ? item.row.ordered : 0;
             var discount_class = '';
-
+            
             if(item.units && item.row.fup != 1 && product_unit != item.row.base_unit) {
                 $.each(item.units, function() {
                     if (this.id == product_unit) {
@@ -1214,10 +1214,12 @@ function loadItems() {
                         '<input name="product_comment[]" type="hidden" class="rcomment" value="' + item_comment + '">' +
                         '<input name="promo_original_price[]" type="hidden" class="roprice" value="' + item_original_price + '">' +
                         '<input name="is_promo[]" type="hidden" class="is_promo" value="' + (is_promo && checkValidPromotionDate(start_date, end_date) ? is_promo : 0) + '">' +
-                        '<span class="sname" id="name_' + row_no + '">' + item_code +' - '+ item_name +(sel_opt != '' ? ' ('+sel_opt+')' : '')+'</span>' +
+                        '<span class="sname" id="name_' + row_no + '"><img src="' + site.url + '/assets/uploads/' + item_image + '" width="40">' + item_code +' - '+ item_name +(sel_opt != '' ? ' ('+sel_opt+')' : '')+'</span>' +
                         '<span class="lb"></span>' +
                         '<i class="pull-right fa fa-edit fa-2x fa-bx tip pointer edit" id="' + row_no + '" data-item="' + item_id + '" title="Cập nhật Size/Giá" style="cursor:pointer;"></i>' +
                 '</td>';
+
+               
             tr_html += '<td class="text-right">';
             if (site.settings.product_serial == 1) {
                 tr_html += '<input class="form-control input-sm rserial" name="serial[]" type="hidden" id="serial_' + row_no + '" value="'+item_serial+'">';
@@ -1262,11 +1264,13 @@ function loadItems() {
             if (item_type == 'standard' && item.options !== false) {
                 $.each(item.options, function () {
                     if(this.id == item_option && base_quantity > this.quantity) {
-                        $('#row_' + row_no).addClass('danger');
+                        bootbox.alert(lang.update_product_quantity)
+                        $('#row_' + row_no).find('.posdel').click();
                     }
                 });
             } else if(item_type == 'standard' && base_quantity > item_aqty) {
-                $('#row_' + row_no).addClass('danger');
+                bootbox.alert(lang.update_product_quantity)
+                $('#row_' + row_no).find('.posdel').click();
             } else if (item_type == 'combo') {
                 if(combo_items === false) {
                     $('#row_' + row_no).addClass('danger');
@@ -1332,7 +1336,7 @@ function loadItems() {
             } else {
                 order_discount = parseFloat(ds);
                 order_discount_percent_for_return_sale = Number((parseFloat(ds) / parseFloat(total_extra - total_with_no_points)) * 100).toFixed(4);
-                console.log('order_discount_percent_for_return_sale: ' + order_discount_percent_for_return_sale);
+                //console.log('order_discount_percent_for_return_sale: ' + order_discount_percent_for_return_sale);
             }
             //total_discount += parseFloat(order_discount);
         }
@@ -1359,7 +1363,6 @@ function loadItems() {
         // Totals calculations after item addition
         var gtotal = parseFloat(((total + invoice_tax) - order_discount - preturn) + parseFloat(shipping));
 
-        $('#total').text(formatMoney(total));
         $('#titems').text((an - 1) + ' (' + formatQty(parseFloat(count) - 1) + ')');
         $('#total_items').val((parseFloat(count) - 1));
         $('#tds').text('('+formatMoney(product_discount)+') '+formatMoney(order_discount));

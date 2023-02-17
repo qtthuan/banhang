@@ -434,6 +434,7 @@
                                 <input name="return_amount" type="hidden" value="<?=$suspend_sale ? $suspend_sale->return_amount : ($old_sale ? $old_sale->return_amount :  '0');?>" id="posreturn">
                                 <input type="hidden" name="rpaidby" id="rpaidby" value="cash" style="display: none;"/>
                                 <input type="hidden" name="total_items" id="total_items" value="0" style="display: none;"/>
+                                <input type="hidden" name="has_out_of_stock_products" id="has_out_of_stock_products" value="0" style="display: none;"/>
                                 <input type="submit" id="submit_sale" value="Submit Sale" style="display: none;"/>
                             </div>
                         </div>
@@ -1293,7 +1294,8 @@ var lang = {
     rounding: '<?=lang('rounding');?>',
     footer_thanks: '<?=lang('footer_thanks');?>',
     not_found_return_invoice: '<?=lang('not_found_return_invoice')?>',
-    this_is_promotion_product: '<?=lang('this_is_promotion_product')?>'
+    this_is_promotion_product: '<?=lang('this_is_promotion_product')?>',
+    update_product_quantity: '<?=lang('update_product_quantity')?>'
 };
 </script>
 
@@ -1598,6 +1600,12 @@ var lang = {
             suspend.appendTo("#hidesuspend");
             <?php }
             ?>
+           
+            if ($('#has_out_of_stock_products').val() == 1) {
+                bootbox.alert('<?=lang('update_product_quantity');?>');
+                return false;
+            }
+              
             var twt = formatDecimal((total + invoice_tax) - order_discount - preturn + shipping);
             if (count == 1) {
                 bootbox.alert('<?=lang('x_total');?>');
@@ -2099,7 +2107,7 @@ var lang = {
                                 $('#award_points_' + pa_no).html(data.ca_points);
                                 if (grand_total/1000 <= data.ca_points) {
                                     $('#ca_points_' + pa_no).val(grand_total/1000);
-                                    console.log(data.ca_points + ' xxx');
+                                    //console.log(data.ca_points + ' xxx');
                                 } else {
                                     $('#ca_points_' + pa_no).val(data.ca_points);
                                     //console.log(data.ca_points + ' yyy');
