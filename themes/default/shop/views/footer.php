@@ -29,10 +29,10 @@
                     <a href="<?= site_url('page/' . $shop_settings->terms_link); ?>"><?= lang('return_guide'); ?></a>
                 </p>
                 <p>
-                    <a href="<?= site_url('page/' . $shop_settings->privacy_link); ?>"><?= lang('payment_guide'); ?></a>
+                    <a href="<?= site_url('page/' . $shop_settings->payment_link); ?>"><?= lang('payment_guide'); ?></a>
                 </p>
                 <p>
-                    <a href="<?= site_url('page/' . $shop_settings->privacy_link); ?>"><?= lang('delivery_guide'); ?></a>
+                    <a href="<?= site_url('page/' . $shop_settings->delivery_link); ?>"><?= lang('delivery_guide'); ?></a>
                 </p>
                 <p>
                     <a href="<?= site_url('page/' . $shop_settings->contact_link); ?>"><?= lang('contact_us'); ?></a>
