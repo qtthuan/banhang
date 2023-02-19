@@ -44,6 +44,7 @@ $lang['terms_link']           = 'Trang chính sách đổi trả';
 $lang['payment_link']         = 'Trang hướng dẫn thanh toán';
 $lang['delivery_link']        = 'Trang phương thức vận chuyển';
 $lang['contact_link']         = 'Trang Liên hệ';
+$lang['shop_address']         = 'Địa chỉ shop';
 $lang['cookie_link']          = 'Cookie Page';
 $lang['cookie_message']       = 'Cookie Message';
 $lang['payment_text']         = 'Hình thức thanh toán';

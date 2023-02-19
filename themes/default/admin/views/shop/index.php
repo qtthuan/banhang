@@ -29,10 +29,7 @@
                             <?= lang('shop_name', 'shop_name'); ?>
                             <?= form_input('shop_name', set_value('shop_name', $shop_settings->shop_name), 'class="form-control tip" id="shop_name" required="required"'); ?>
                         </div>
-                        <div class="form-group">
-                            <?= lang('shop_address', 'shop_address'); ?>
-                            <?= form_input('shop_address', set_value('shop_address', $shop_settings->shop_address), 'class="form-control tip" id="shop_address" required="required"'); ?>
-                        </div>
+                        
                         <div class="form-group">
                             <?= lang('description', 'description'); ?>
                             <?= form_input('description', set_value('description', $shop_settings->description), 'class="form-control tip" id="description" required="required"'); ?>
@@ -70,6 +67,10 @@
                     </div>
 
                     <div class="col-md-6">
+                    <div class="form-group">
+                            <?= lang('shop_address', 'shop_address'); ?>
+                            <?= form_input('shop_address', set_value('shop_address', $shop_settings->shop_address), 'class="form-control tip" id="shop_address" required="required"'); ?>
+                        </div>
                         <div class="form-group">
                             <?= lang('phone', 'phone'); ?>
                             <?= form_input('phone', set_value('phone', $shop_settings->phone), 'class="form-control tip" id="phone" required="required"'); ?>
@@ -113,11 +114,7 @@
                             <?= lang('payment_text', 'payment_text'); ?>
                             <?= form_input('payment_text', set_value('payment_text', $shop_settings->payment_text), 'class="form-control tip" id="payment_text" required="required"'); ?>
                         </div>
-                        <div class="form-group">
-                            <?= lang('private_shop', 'private'); ?>
-                            <?php $yn = [0 => lang('no'), 1 => lang('yes')]; ?>
-                            <?= form_dropdown('private', $yn, set_value('private', $shop_settings->private), 'class="form-control tip" id="private" required="required"'); ?>
-                        </div>
+                        
 
                     </div>
                     <div class="col-md-6">
@@ -161,7 +158,11 @@
                             <?php $yn = [0 => lang('no'), 1 => lang('yes')]; ?>
                             <?= form_dropdown('hide_price', $yn, set_value('hide_price', $shop_settings->hide_price), 'class="form-control tip" id="hide_price" required="required"'); ?>
                         </div>
-
+                        <div class="form-group">
+                            <?= lang('private_shop', 'private'); ?>
+                            <?php $yn = [0 => lang('no'), 1 => lang('yes')]; ?>
+                            <?= form_dropdown('private', $yn, set_value('private', $shop_settings->private), 'class="form-control tip" id="private" required="required"'); ?>
+                        </div>
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
