@@ -26,10 +26,13 @@
                     <a href="<?= site_url('page/' . $shop_settings->about_link); ?>"><?= $shop_settings->description; ?></a>
                 </p>
                 <p>
-                    <a href="<?= site_url('page/' . $shop_settings->privacy_link); ?>"><?= lang('privacy_policy'); ?></a>
+                    <a href="<?= site_url('page/' . $shop_settings->terms_link); ?>"><?= lang('return_guide'); ?></a>
                 </p>
                 <p>
-                    <a href="<?= site_url('page/' . $shop_settings->terms_link); ?>"><?= lang('terms_conditions'); ?></a>
+                    <a href="<?= site_url('page/' . $shop_settings->privacy_link); ?>"><?= lang('payment_guide'); ?></a>
+                </p>
+                <p>
+                    <a href="<?= site_url('page/' . $shop_settings->privacy_link); ?>"><?= lang('delivery_guide'); ?></a>
                 </p>
                 <p>
                     <a href="<?= site_url('page/' . $shop_settings->contact_link); ?>"><?= lang('contact_us'); ?></a>
