@@ -30,6 +30,10 @@
                             <?= form_input('shop_name', set_value('shop_name', $shop_settings->shop_name), 'class="form-control tip" id="shop_name" required="required"'); ?>
                         </div>
                         <div class="form-group">
+                            <?= lang('shop_address', 'shop_address'); ?>
+                            <?= form_input('shop_address', set_value('shop_address', $shop_settings->shop_address), 'class="form-control tip" id="shop_address" required="required"'); ?>
+                        </div>
+                        <div class="form-group">
                             <?= lang('description', 'description'); ?>
                             <?= form_input('description', set_value('description', $shop_settings->description), 'class="form-control tip" id="description" required="required"'); ?>
                         </div>

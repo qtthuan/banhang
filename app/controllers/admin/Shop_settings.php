@@ -123,6 +123,7 @@ class Shop_settings extends MY_Controller
 
         if ($this->form_validation->run() == true) {
             $data = ['shop_name'       => DEMO ? 'SMA Shop' : $this->input->post('shop_name'),
+                'shop_address'         => $this->input->post('shop_address'),
                 'description'          => DEMO ? 'Stock Manager Advance - SMA Shop - Demo Ecommerce Shop that would help you to sell your products from your site. Locked on demo.' : $this->input->post('description'),
                 'products_description' => DEMO ? 'This is products page description and is locked on demo.' : $this->input->post('products_description'),
                 'warehouse'            => $this->input->post('warehouse'),
