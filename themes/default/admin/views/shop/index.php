@@ -94,8 +94,12 @@
                             <?= form_dropdown('terms_link', $pgs, set_value('terms_link', $shop_settings->terms_link), 'class="form-control tip" id="terms_link"  required="required"'); ?>
                         </div>
                         <div class="form-group">
-                            <?= lang('privacy_link', 'privacy_link'); ?>
-                            <?= form_dropdown('privacy_link', $pgs, set_value('privacy_link', $shop_settings->privacy_link), 'class="form-control tip" id="privacy_link"  required="required"'); ?>
+                            <?= lang('payment_link', 'payment_link'); ?>
+                            <?= form_dropdown('payment_link', $pgs, set_value('payment_link', $shop_settings->payment_link), 'class="form-control tip" id="payment_link"  required="required"'); ?>
+                        </div>
+                        <div class="form-group">
+                            <?= lang('delivery_link', 'delivery_link'); ?>
+                            <?= form_dropdown('delivery_link', $pgs, set_value('delivery_link', $shop_settings->delivery_link), 'class="form-control tip" id="delivery_link"  required="required"'); ?>
                         </div>
                         <div class="form-group">
                             <?= lang('contact_link', 'contact_link'); ?>
