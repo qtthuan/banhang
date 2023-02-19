@@ -27,7 +27,7 @@ class Shop_settings extends MY_Controller
 
     public function add_page()
     {
-        $this->form_validation->set_rules('name', lang('name'), 'required|max_length[15]');
+        $this->form_validation->set_rules('name', lang('name'), 'required|max_length[30]');
         $this->form_validation->set_rules('title', lang('title'), 'required|max_length[60]');
         $this->form_validation->set_rules('description', lang('description'), 'required');
         $this->form_validation->set_rules('body', lang('body'), 'required');
