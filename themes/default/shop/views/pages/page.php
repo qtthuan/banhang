@@ -19,7 +19,7 @@
                                 ?>
                             </div>
                             <div id="cart-helper" class="panel panel-footer margin-bottom-no">
-                                <?= lang('updated_at') . ': ' . $this->sma->hrld($page->updated_at); ?>
+                                <?= lang('updated_at') . ': ' . $this->sma->hrsd($page->updated_at); ?>
                             </div>
                         </div>
                     </div>
