@@ -5,7 +5,7 @@
 
             <div class="row">
                 <div class="col-xs-5">
-                    <img id="pr-image" src="<?= base_url() ?>assets/uploads/<?= $product->image ?>"
+                    <img id="pr-image" style="max-width: 250px;" src="<?= base_url() ?>assets/uploads/<?= $product->image ?>"
                     alt="<?= $product->name ?>" class="img-responsive img-thumbnail"/>
 
                     <div id="multiimages" class="padding10">
