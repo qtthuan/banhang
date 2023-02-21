@@ -241,7 +241,7 @@
                                                     <?php
                                                     } ?>-->
 
-                                                    <?php if ($variants) {
+                                                    <?php if ($variants && $is_in_stock) {
                                                         ?>
                                                     <tr>
                                                         <td><?= lang('product_variants'); ?></td>
@@ -255,7 +255,7 @@
                                                             } 
                                                         } 
                                                         if ($i == 0) {
-                                                            echo '<span class="label label-warning">Hết hàng</span> ';
+                                                            echo '<span class="label label-warning">' . lang('out_of_stock') . '</span> ';
                                                         }
                                                         ?>
                                                         </td>
