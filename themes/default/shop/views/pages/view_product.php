@@ -118,7 +118,9 @@
                                                 if ($is_in_stock) {
                                                     echo form_dropdown('option', $opts, '', 'class="form-control selectpicker mobile-device" required="required"');
                                                 } 
-                                            } 
+                                            } else {
+                                                echo 'xxxx: ' . $warehouse->quantity;
+                                            }
                                         ?>
                                         </div>
                                         
