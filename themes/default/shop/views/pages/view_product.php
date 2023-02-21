@@ -98,10 +98,11 @@
 
 
                                         <?php
+                                            $is_in_stock = false;
                                             if ($variants) {
                                                 foreach ($variants as $variant) {
                                                     if ($variant->quantity > 0) {
-                                                       
+                                                       $is_in_stock = true;
                                                         //$product_price =
                                                         //$str_variant = $variant->name . ($variant->price > 0 ? ' (' . $this->sma->convertMoney($product_price + $variant->price, true, false) . ')' : ($variant->price == 0 ? '' : $this->sma->convertMoney($product_price + $variant->price, true, false)));
                                                         if ($product->promotion && !$product->promo_expired) {
@@ -114,7 +115,9 @@
                                                         $opts[$variant->id] = $str_variant;
                                                     }
                                                 }
-                                                echo form_dropdown('option', $opts, '', 'class="form-control selectpicker mobile-device" required="required"');
+                                                if ($is_in_stock) {
+                                                    echo form_dropdown('option', $opts, '', 'class="form-control selectpicker mobile-device" required="required"');
+                                                } 
                                             } 
                                         ?>
                                         </div>
@@ -131,7 +134,11 @@
                                         <div class="form-group">
                                             <div class="btn-group" role="group" aria-label="...">
                                                 <!--<button class="btn btn-info btn-lg add-to-wishlist" data-id="<?= $product->id; ?>"><i class="fa fa-heart-o"></i></button>-->
+                                            <?php if ($is_in_stock) { ?>
                                                 <button type="submit" class="btn btn-theme btn-lg"><i class="fa fa-shopping-cart padding-right-md"></i> <?= lang('add_to_cart'); ?></button>
+                                            <?php } else { ?>
+                                                <button type="button" class="btn btn-warning btn-block btn-lg"></i> <?= lang('out_of_stock'); ?></button>
+                                            <?php } ?>
                                             </div>
                                         </div>
                                         <?= form_close(); ?>
@@ -236,11 +243,20 @@
                                                         ?>
                                                     <tr>
                                                         <td><?= lang('product_variants'); ?></td>
-                                                        <td><?php foreach ($variants as $variant) {
+                                                        <td>
+                                                    <?php
+                                                        $i = 0; 
+                                                        foreach ($variants as $variant) {
                                                             if ($variant->quantity > 0) {
+                                                                $i++;
                                                                 echo '<span class="label label-primary">' . $variant->name . '</span> ';
-                                                            }
-                                                        } ?></td>
+                                                            } 
+                                                        } 
+                                                        if ($i == 0) {
+                                                            echo '<span class="label label-warning">Hết hàng</span> ';
+                                                        }
+                                                        ?>
+                                                        </td>
                                                     </tr>
                                                     <?php
                                                     } ?>
