@@ -213,7 +213,7 @@ if (!empty($variants)) {
                                 ?>
                                     <div class="input-group-addon" style="padding: 2px 5px;">
                                         <a href="#" id="addAttributes">
-                                            <i class="fa fa-2x fa-plus-circle" id="addIcon"></i>
+                                            <i class="fa fa-4x fa-plus-circle" id="addIcon"></i>
                                         </a>
                                     </div>
                                 </div>
@@ -545,7 +545,7 @@ if (!empty($variants)) {
             $('#sizegroup-con').slideUp();
             $(".select-tags").slideDown();
             $("#attributesInput").slideUp();
-            $('#attributesInput').val('');
+            $('#attributesInput').val('');            
         });
 
         $('#oldproduct').on('ifChecked', function (event) {
@@ -837,7 +837,7 @@ if (!empty($variants)) {
             e.preventDefault();
             var attrs_val = $('#attributesInput').val(), attrs;
             var added_price = $('#added_price').val();
-            if (! is_numeric(added_price)) {
+            if (added_price && ! is_numeric(added_price)) {
                 bootbox.alert('<?= lang('is_not_numeric') ?>');
                 return false;
             }
@@ -861,6 +861,7 @@ if (!empty($variants)) {
                         $('#attrTable').show().append('<tr class="attr"><td><input type="hidden" name="attr_name[]" value="' + attrs[i] + '"><span>' + attrs[i] + '</span></td><td class="code text-center"><input type="hidden" name="attr_warehouse[]" value=""><span></span></td><td class="quantity text-center"><input type="hidden" name="attr_quantity[]" value="0"><span></span></td><td class="price text-right"><input type="hidden" name="attr_price[]" value="0"><span>0</span></span></td><td class="text-center"><i class="fa fa-times delAttr"></i></td></tr>');
                     <?php } ?>
                     $("#multipleSizes").show();
+                    $('#added_price').val('');
                     rows++;
                 }
             }
