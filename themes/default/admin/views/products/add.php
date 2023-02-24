@@ -207,7 +207,10 @@ if (!empty($variants)) {
                             </div>
                             <div class="form-group" id="ui" style="margin-bottom: 0;">
                                 <div class="input-group">
-                                    <?php echo form_input('attributesInput', '', 'class="form-control select-tags" id="attributesInput" placeholder="' . $this->lang->line("enter_attributes") . '"'); ?>
+                                <?php 
+                                    echo form_input('attributesInput', '', 'class="form-control select-tags" id="attributesInput" placeholder="' . $this->lang->line("enter_attributes") . '"'); 
+                                    echo form_input('added_price', '', 'class="form-control wh" id="added_price" placeholder="' . lang('price_addition') . '"')
+                                ?>
                                     <div class="input-group-addon" style="padding: 2px 5px;">
                                         <a href="#" id="addAttributes">
                                             <i class="fa fa-2x fa-plus-circle" id="addIcon"></i>
