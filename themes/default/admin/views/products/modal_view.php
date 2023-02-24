@@ -4,7 +4,7 @@
         <div class="modal-body">
 
             <div class="row">
-                <div class="col-xs-5">
+                <div class="col-xs-4">
                     <img id="pr-image" src="<?= base_url() ?>assets/uploads/<?= $product->image ?>"
                     alt="<?= $product->name ?>" class="img-responsive img-thumbnail"/>
 
@@ -23,7 +23,7 @@
                         <div class="clearfix"></div>
                     </div>
                 </div>
-                <div class="col-xs-7">
+                <div class="col-xs-8">
                     <div class="table-responsive">
                         <table class="table table-borderless table-striped dfTable table-right-left">
                             <tbody>
