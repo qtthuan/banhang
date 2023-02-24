@@ -836,6 +836,11 @@ if (!empty($variants)) {
         $('#addAttributes').click(function (e) {
             e.preventDefault();
             var attrs_val = $('#attributesInput').val(), attrs;
+            var added_price = $('#added_price').val();
+            if (! is_numeric(added_price)) {
+                bootbox.alert('<?= lang('is_not_numeric') ?>');
+                return false;
+            }
             attrs = attrs_val.split(',');
             var rows = 0;
             var current_qty = 0;
@@ -847,7 +852,7 @@ if (!empty($variants)) {
                             if($("#drop_select_wh").val() == <?=$warehouse->id;?>) {
                     <?php
 
-                                echo '$(\'#attrTable\').show().append(\'<tr class="attr"><td><input type="hidden" name="attr_name[]" value="\' + attrs[i] + \'"><span>\' + attrs[i] + \'</span></td><td class="code text-center"><input type="hidden" name="attr_warehouse[]" value="'.$warehouse->id.'"><span>'.$warehouse->name.'</span></td><td class="quantity text-center"><input type="hidden" name="attr_quantity[]" value="1"><span>1</span></td><td class="price text-right"><input type="hidden" name="attr_price[]" value="0"><span>0</span></span></td><td class="text-center"><i class="fa fa-times delAttr"></i></td></tr>\');';
+                                echo '$(\'#attrTable\').show().append(\'<tr class="attr"><td><input type="hidden" name="attr_name[]" value="\' + attrs[i] + \'"><span>\' + attrs[i] + \'</span></td><td class="code text-center"><input type="hidden" name="attr_warehouse[]" value="'.$warehouse->id.'"><span>'.$warehouse->name.'</span></td><td class="quantity text-center"><input type="hidden" name="attr_quantity[]" value="1"><span>1</span></td><td class="price text-right"><input type="hidden" name="attr_price[]" value="\' + added_price + \'"><span> \' + currencyFormat(added_price) + \'</span></span></td><td class="text-center"><i class="fa fa-times delAttr"></i></td></tr>\');';
                     ?>
                             }
                     <?php
