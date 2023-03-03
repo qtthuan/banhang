@@ -2103,6 +2103,119 @@ class system_settings extends MY_Controller
         }
     }
 
+    function product_description_list()
+    {
+
+        $this->data['error'] = validation_errors() ? validation_errors() : $this->session->flashdata('error');
+
+        $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('system_settings'), 'page' => lang('system_settings')), array('link' => '#', 'page' => lang('product_description_list')));
+        $meta = array('page_title' => lang('product_description_list'), 'bc' => $bc);
+        $this->page_construct('settings/product_description_list', $meta, $this->data);
+    }
+
+    function getProductDescriptionList()
+    {
+
+        $this->load->library('datatables');
+        $this->datatables
+            ->select("id, name, description")
+            ->from("product_description_list")
+            ->add_column("Actions", "<div class=\"text-center\"><a href='" . admin_url('system_settings/edit_product_description/$1') . "' class='tip' title='" . lang("edit_product_description") . "' data-toggle='modal' data-target='#myModal'><i class=\"fa fa-edit\"></i></a> <a href='#' class='tip po' title='<b>" . lang("delete_product_description") . "</b>' data-content=\"<p>" . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('system_settings/delete_product_description/$1') . "'>" . lang('i_m_sure') . "</a> <button class='btn po-close'>" . lang('no') . "</button>\"  rel='popover'><i class=\"fa fa-trash-o\"></i></a></div>", "id");
+
+        echo $this->datatables->generate();
+    }
+
+
+
+    function add_product_description()
+    {
+
+        $this->form_validation->set_rules('name', lang("product_description_name"), 'trim');
+
+        if ($this->form_validation->run() == true) {
+            $data = array(
+                'name' => $this->input->post('name'),
+                'description' => $this->input->post('description'),
+            );
+        } elseif ($this->input->post('add_product_description')) {
+            $this->session->set_flashdata('error', validation_errors());
+            admin_redirect("system_settings/product_description_list");
+        }
+        
+        if ($this->form_validation->run() == true && $this->settings_model->addProductDescription($data)) {
+            $this->session->set_flashdata('message', lang("product_description_added"));
+            admin_redirect("system_settings/product_description_list");
+        } else {
+            $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
+
+            $this->data['modal_js'] = $this->site->modal_js();
+            $this->load->view($this->theme . 'settings/add_product_description', $this->data);
+        }
+    }
+
+    function edit_product_description($id = NULL)
+    {
+
+        $this->form_validation->set_rules('name', lang("product_description_name"), 'trim');
+
+        if ($this->form_validation->run() == true) {
+
+            $data = array(
+                'name' => $this->input->post('name'),
+                'description' => $this->input->post('description'),
+            );
+        } elseif ($this->input->post('edit_product_description')) {
+            $this->session->set_flashdata('error', validation_errors());
+            admin_redirect("system_settings/product_description_list");
+        }
+
+        if ($this->form_validation->run() == true && $this->settings_model->updateProductDescription($id, $data)) {
+            $this->session->set_flashdata('message', lang("product_description_updated"));
+            admin_redirect("system_settings/product_description_list");
+        } else {
+            $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
+
+            $this->data['product_description_list'] = $this->settings_model->getProductDescriptionByID($id);
+
+            $this->data['id'] = $id;
+            $this->data['modal_js'] = $this->site->modal_js();
+            $this->load->view($this->theme . 'settings/edit_product_description', $this->data);
+        }
+    }
+
+    function delete_product_description($id = NULL)
+    {
+        if ($this->settings_model->deleteProductDescription($id)) {
+            $this->sma->send_json(array('error' => 0, 'msg' => lang("product_description_deleted")));
+        }
+    }
+
+    function product_description_actions()
+    {
+
+        $this->form_validation->set_rules('form_action', lang("form_action"), 'required');
+
+        if ($this->form_validation->run() == true) {
+
+            if (!empty($_POST['val'])) {
+                if ($this->input->post('form_action') == 'delete') {
+                    foreach ($_POST['val'] as $id) {
+                        $this->settings_model->deleteProductDescription($id);
+                    }
+                    $this->session->set_flashdata('message', lang("product_description_deleted"));
+                    redirect($_SERVER["HTTP_REFERER"]);
+                }
+
+            } else {
+                $this->session->set_flashdata('error', lang("no_product_description_selected"));
+                redirect($_SERVER["HTTP_REFERER"]);
+            }
+        } else {
+            $this->session->set_flashdata('error', validation_errors());
+            redirect($_SERVER["HTTP_REFERER"]);
+        }
+    }
+
     function expense_categories()
     {
 

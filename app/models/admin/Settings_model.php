@@ -587,6 +587,39 @@ class Settings_model extends CI_Model
         return FALSE;
     }
 
+    public function addProductDescription($data)
+    {
+        if ($this->db->insert("product_description_list", $data)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function updateProductDescription($id, $data = array())
+    {
+        if ($this->db->update("product_description_list", $data, array('id' => $id))) {
+            return true;
+        }
+        return false;
+    }
+
+    public function deleteProductDescription($id)
+    {
+        if ($this->db->delete("product_description_list", array('id' => $id))) {
+            return true;
+        }
+        return FALSE;
+    }
+
+    public function getProductDescriptionByID($id)
+    {
+        $q = $this->db->get_where("product_description_list", array('id' => $id), 1);
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }
+        return FALSE;
+    }
+
     public function getExpenseCategoryByID($id)
     {
         $q = $this->db->get_where("expense_categories", array('id' => $id), 1);

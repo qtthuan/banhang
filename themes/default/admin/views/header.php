@@ -592,12 +592,7 @@
                                         <i class="fa fa-cog"></i><span class="text"> <?= lang('settings'); ?> </span>
                                         <span class="chevron closed"></span>
                                     </a>
-                                    <ul>
-                                        <li id="system_settings_promotion_list">
-                                            <a href="<?= admin_url('system_settings/promotion_list') ?>">
-                                                <i class="fa fa-money"></i><span class="text"> <?= lang('promotion_list'); ?></span>
-                                            </a>
-                                        </li>
+                                    <ul>                                        
                                         <li id="system_settings_index">
                                             <a href="<?= admin_url('system_settings') ?>">
                                                 <i class="fa fa-cogs"></i><span class="text"> <?= lang('system_settings'); ?></span>
@@ -609,9 +604,9 @@
                                                     <i class="fa fa-th-large"></i><span class="text"> <?= lang('pos_settings'); ?></span>
                                                 </a>
                                             </li>
-                                            <li id="system_settings_customer_groups">
-                                                <a href="<?= admin_url('system_settings/customer_groups') ?>">
-                                                    <i class="fa fa-chain"></i><span class="text"> <?= lang('customer_groups'); ?></span>
+                                            <li id="system_settings_product_description_list">
+                                                <a href="<?= admin_url('system_settings/product_description_list') ?>">
+                                                    <i class="fa fa-money"></i><span class="text"> <?= lang('product_description_list'); ?></span>
                                                 </a>
                                             </li>
                                             <li id="system_settings_categories">
@@ -624,6 +619,17 @@
                                                     <i class="fa fa-tags"></i><span class="text"> <?= lang('size_group'); ?></span>
                                                 </a>
                                             </li>
+                                            <li id="system_settings_promotion_list">
+                                                <a href="<?= admin_url('system_settings/promotion_list') ?>">
+                                                    <i class="fa fa-money"></i><span class="text"> <?= lang('promotion_list'); ?></span>
+                                                </a>
+                                            </li>
+                                            <li id="system_settings_customer_groups">
+                                                <a href="<?= admin_url('system_settings/customer_groups') ?>">
+                                                    <i class="fa fa-chain"></i><span class="text"> <?= lang('customer_groups'); ?></span>
+                                                </a>
+                                            </li>
+                                            
                                             <li id="system_settings_user_groups">
                                                 <a href="<?= admin_url('system_settings/user_groups') ?>">
                                                     <i class="fa fa-key"></i><span class="text"> <?= lang('group_permissions'); ?></span>

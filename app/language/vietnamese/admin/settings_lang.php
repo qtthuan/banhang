@@ -295,6 +295,16 @@ $lang['add_promotion_list']             = "Thêm mới chương trình KM";
 $lang['edit_promotion_list']            = "Cập nhật chương trình KM";
 $lang['delete_promotion_list']          = "Xóa chương trình KM";
 $lang['no_promotion_list_selected']     = "Chưa chọn chương trình khuyến mãi";
+$lang['product_description_list']       = "Mô tả sản phẩm";
+$lang['product_description_name']  = "Tên mô tả";
+$lang['product_description_details'] = "Nội dung mô tả";
+$lang['product_description_added']           = "Thêm mới thành công";
+$lang['product_description_updated']         = "Cập nhật thành công";
+$lang['product_description_deleted']         = "Xóa thành công";
+$lang['add_product_description']             = "Thêm mới mô tả";
+$lang['edit_product_description']            = "Cập nhật mô tả";
+$lang['delete_product_description']          = "Xóa mô tả";
+$lang['no_product_description_selected']     = "Chưa chọn mô tả";
 
 $lang['customer_award_points']          = 'Điểm thưởng khách hàng';
 $lang['staff_award_points']             = 'Điểm thưởng nhân viên';

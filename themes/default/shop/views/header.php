@@ -206,7 +206,9 @@
                                     <?php
                                     foreach ($categories as $pc) {
                                         echo '<li class="' . ($pc->subcategories ? 'dropdown dropdown-submenu' : '') . '">';
-                                        echo '<a ' . ($pc->subcategories ? 'class="dropdown-toggle" data-toggle="dropdown"' : '') . ' href="' . site_url('category/' . $pc->slug) . '">' . $pc->name . '</a>';
+                                        if ($pc->id != 38) { // Không hiển thị nhóm Nước ép-Sinh tố
+                                            echo '<a ' . ($pc->subcategories ? 'class="dropdown-toggle" data-toggle="dropdown"' : '') . ' href="' . site_url('category/' . $pc->slug) . '">' . $pc->name . '</a>';
+                                        }
                                         if ($pc->subcategories) {
                                             echo '<ul class="dropdown-menu">';
                                             foreach ($pc->subcategories as $sc) {

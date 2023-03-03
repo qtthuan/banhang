@@ -573,3 +573,4 @@ $lang['send_sms']                           = "Gửi tin nhắn SMS";
 $lang['sms_log']                            = "SMS Log";
 $lang['header_pos_txt']                     = "Bán hàng";
 $lang['error_404_message']                  = "<h4>404 Not Found!</h4><p>Không tìm thấy trang</p>";
+$lang['product_description_list'] = "Mô tả sản phẩm";
