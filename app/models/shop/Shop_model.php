@@ -412,6 +412,7 @@ class Shop_model extends CI_Model
         ->from('products')
         ->join('warehouses_products', 'products.id=warehouses_products.product_id', 'left')
         ->where('warehouses_products.warehouse_id', $this->shop_settings->warehouse)
+        ->where('products.category_id <>', 38)
         ->group_by('products.id');
 
         $sp = $this->getSpecialPrice();
