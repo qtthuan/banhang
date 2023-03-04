@@ -98,6 +98,16 @@
                             <input name="check_promo" type="checkbox" id="check_promo" value="1" checked="checked" style="display:inline-block;" />
                             <label for="check_promo" class="padding05"><?= lang('check_promo'); ?></label>
                         </div>
+                        <div class="form-group" style="margin-left: 35px">
+                            <input name="product_barcode" type="checkbox" id="product_barcode" value="1" checked="checked" style="display:inline-block;" />
+                            <label for="product_barcode" class="padding05"><?= lang('product_barcode'); ?></label>
+                            <input name="product_code" type="checkbox" id="product_code" value="1" checked="checked" style="display:inline-block;" />
+                            <label for="product_code" class="padding05"><?= lang('product_code'); ?></label>
+                            <input name="product_supplier" type="checkbox" id="product_supplier" value="1" checked="checked" style="display:inline-block;" />
+                            <label for="product_supplier" class="padding05"><?= lang('suppliers'); ?></label>
+                            <input name="product_brand" type="checkbox" id="product_brand" value="1" checked="checked" style="display:inline-block;" />
+                            <label for="product_brand" class="padding05"><?= lang('brand'); ?></label>
+                        </div>
 
                     <div class="form-group">
                         <?php echo form_submit('print', lang("update"), 'class="btn btn-primary"'); ?>
@@ -123,6 +133,9 @@
                                 foreach ($barcodes as $item) {
                                     for ($r = 1; $r <= $item['quantity']; $r++) {
                                         $total_items++;
+                                        if($item['increase_size']) {
+                                            $increase_size = "increase_size";
+                                        }
                                         echo '<div class="item style'.$style.'" '.
                                         ($style == 50 && $this->input->post('cf_width') && $this->input->post('cf_height') ?
                                             'style="width:'.$this->input->post('cf_width').'in;height:'.$this->input->post('cf_height').'in;border:0;"' : '')
@@ -152,7 +165,7 @@
                                             echo '<span class="barcode_site">'.$item['site'].'</span>';
                                         }
                                         if($item['name']) {
-                                            echo '<span class="barcode_name">'.$item['name'].'</span>';
+                                            echo '<span class="barcode_name '.$increase_size.'">'.$item['name'].'</span>';
                                         }
 
                                         if($item['unit']) {
@@ -168,7 +181,9 @@
                                             }
                                             echo '</span> ';
                                         }
-                                        echo '<span class="barcode_image">'.$item['barcode'].'</span>';
+                                        if($item['barcode']) {
+                                            echo '<span class="barcode_image">'.$item['barcode'].'</span>';
+                                        }
                                         echo '<span class="text_code">'.$item['text_code'].'</span>';
                                         if ($item['text_suppliers'] &&  $item['text_suppliers'] != "") {
                                             echo '<span class="text_suppliers"> -' . $item['text_suppliers'] . '</span>';
@@ -181,7 +196,7 @@
 
                                         if($item['price']) {
 
-                                            echo '<span class="barcode_price">';
+                                            echo '<span class="barcode_price '.$increase_size.'">';
                                             if($item['currencies']) {
                                                 foreach ($currencies as $currency) {
                                                     echo $currency->code . ': ' . $this->sma->formatMoney($item['price'] * $currency->rate).', ';
@@ -467,6 +482,58 @@
                 $('#variants').iCheck('uncheck');
         }
 
+        $(document).on('ifChecked', '#product_barcode', function(event) {
+            localStorage.setItem('bcproduct_barcode', 1);
+        });
+        $(document).on('ifUnchecked', '#product_barcode', function(event) {
+            localStorage.setItem('bcproduct_barcode', 0);
+        });
+        if (product_barcode = localStorage.getItem('bcproduct_barcode')) {
+            if (product_barcode == 1)
+                $('#product_barcode').iCheck('check');
+            else
+                $('#product_barcode').iCheck('uncheck');
+        }
+
+        $(document).on('ifChecked', '#product_code', function(event) {
+            localStorage.setItem('bcproduct_code', 1);
+        });
+        $(document).on('ifUnchecked', '#product_code', function(event) {
+            localStorage.setItem('bcproduct_code', 0);
+        });
+        if (product_code = localStorage.getItem('bcproduct_code')) {
+            if (product_code == 1)
+                $('#product_code').iCheck('check');
+            else
+                $('#product_code').iCheck('uncheck');
+        }
+
+        $(document).on('ifChecked', '#product_supplier', function(event) {
+            localStorage.setItem('bcproduct_supplier', 1);
+        });
+        $(document).on('ifUnchecked', '#product_supplier', function(event) {
+            localStorage.setItem('bcproduct_supplier', 0);
+        });
+        if (product_supplier = localStorage.getItem('bcproduct_supplier')) {
+            if (product_supplier == 1)
+                $('#product_supplier').iCheck('check');
+            else
+                $('#product_supplier').iCheck('uncheck');
+        }
+
+        $(document).on('ifChecked', '#product_brand', function(event) {
+            localStorage.setItem('bcproduct_brand', 1);
+        });
+        $(document).on('ifUnchecked', '#product_brand', function(event) {
+            localStorage.setItem('bcproduct_brand', 0);
+        });
+        if (product_brand = localStorage.getItem('bcproduct_brand')) {
+            if (product_brand == 1)
+                $('#product_brand').iCheck('check');
+            else
+                $('#product_brand').iCheck('uncheck');
+        }
+
         $(document).on('ifChecked', '.checkbox', function(event) {
             var item_id = $(this).attr('data-item-id');
             var vt_id = $(this).attr('id');
@@ -499,6 +566,18 @@
                     }
                     if (localStorage.getItem('bcsite_name')) {
                         localStorage.removeItem('bcsite_name');
+                    }
+                    if (localStorage.getItem('bcproduct_barcode')) {
+                        localStorage.removeItem('bcproduct_barcode');
+                    }
+                    if (localStorage.getItem('bcproduct_code')) {
+                        localStorage.removeItem('bcproduct_code');
+                    }
+                    if (localStorage.getItem('bcproduct_supplier')) {
+                        localStorage.removeItem('bcproduct_supplier');
+                    }
+                    if (localStorage.getItem('bcproduct_brand')) {
+                        localStorage.removeItem('bcproduct_brand');
                     }
                     if (localStorage.getItem('bcproduct_name')) {
                         localStorage.removeItem('bcproduct_name');

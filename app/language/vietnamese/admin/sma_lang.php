@@ -424,6 +424,7 @@ $lang['clear']                              = "Xóa";
 $lang['edit_order_discount']                = "Sửa chiết khấu hóa đơn";
 $lang['product_variant']                    = "Thuộc tính";
 $lang['product_variants']                   = "Các thuộc tính sản phẩm";
+$lang['product_barcode']                    = "Mã vạch";
 $lang['prduct_not_found']                   = "Không có sản phẩm";
 $lang['list_open_registers']                = "Lịch sử mở két tiền";
 $lang['delivery']                           = "Giao hàng";

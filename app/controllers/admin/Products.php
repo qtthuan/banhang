@@ -206,6 +206,17 @@ class Products extends MY_Controller
         if ($this->form_validation->run() == true) {
 
             $style = $this->input->post('style');
+            $increase_size = false;
+
+            if (!$this->input->post('site_name') && 
+                !$this->input->post('variants') && 
+                !$this->input->post('product_image') &&
+                !$this->input->post('product_barcode') &&
+                !$this->input->post('product_code') &&
+                !$this->input->post('product_supllier') &&
+                !$this->input->post('product_brand')) {
+                    $increase_size = true;
+            }
 
             // bci_size: height of the barcode image
             $bci_size = ($style == 10 || $style == 12 ? 29 : ($style == 14 || $style == 18 ? 30 : 20 || $style == 55 ? 40: 20));
@@ -271,7 +282,7 @@ class Products extends MY_Controller
                                 'site' => $this->input->post('site_name') ? $this->Settings->site_name : FALSE,
                                 'name' => $this->input->post('product_name') ? $product->name : FALSE,
                                 'image' => $this->input->post('product_image') ? $product->image : FALSE,
-                                'barcode' => $this->product_barcode($text_code, 'code128', $bci_size),
+                                'barcode' => $this->input->post('product_barcode') ? $this->product_barcode($text_code, 'code128', $bci_size) : FALSE,
                                 'price' => $this->input->post('price') ?  $this->sma->formatMoney($option->price != 0 ? ($price+$option->price) : $price) : FALSE,
                                 'promo' => $this->input->post('check_promo'),
                                 'price_before_promo' => $this->input->post('check_promo') ? $this->sma->formatMoney($option->price != 0 ? ($price_before_promo) : $price_before_promo) : FALSE,
@@ -280,10 +291,11 @@ class Products extends MY_Controller
                                 'currencies' => $this->input->post('currencies'),
                                 'variants' => $this->input->post('variants') ? $variants : FALSE,
                                 'quantity' => $quantity,
-                                'text_code' => $text_code,
-                                'text_suppliers' => $suppliers,
-                                'text_brand'  => $text_brand,
+                                'text_code' => $this->input->post('product_code') ? $text_code : FALSE,
+                                'text_suppliers' => $this->input->post('product_supplier') ? $suppliers : FALSE,
+                                'text_brand'  => $this->input->post('product_brand') ? $text_brand : FALSE,
                                 'name_brand'  => $name_brand,
+                                'increase_size' => $increase_size,
                                 );
                         }
                     }
@@ -294,7 +306,7 @@ class Products extends MY_Controller
                         'site' => $this->input->post('site_name') ? $this->Settings->site_name : FALSE,
                         'name' => $this->input->post('product_name') ? $product->name : FALSE,
                         'image' => $this->input->post('product_image') ? $product->image : FALSE,
-                        'barcode' => $this->product_barcode($product->code, $product->barcode_symbology, $bci_size),
+                        'barcode' => $this->input->post('product_barcode') ? $this->product_barcode($product->code, $product->barcode_symbology, $bci_size) : FALSE,
                         'price_before_promo' => $this->input->post('price') ?  $this->sma->formatMoney($price_before_promo) : FALSE,
                         'promo' => $this->input->post('check_promo'),
                         'price' => $this->input->post('check_promo') ? $this->sma->formatMoney($price) : FALSE,
@@ -303,10 +315,11 @@ class Products extends MY_Controller
                         'currencies' => $this->input->post('currencies'),
                         'variants' => FALSE,
                         'quantity' => $quantity,
-                        'text_code' => $product->code,
-                        'text_suppliers' => $suppliers,
-                        'text_brand'  => $text_brand,
+                        'text_code' => $this->input->post('product_code') ? $product->code : FALSE,
+                        'text_suppliers' => $this->input->post('product_supplier') ? $suppliers : FALSE,
+                        'text_brand'  => $this->input->post('product_brand') ? $text_brand : FALSE,
                         'name_brand'  => $name_brand,
+                        'increase_size' => $increase_size,
                         );
                 }
 
