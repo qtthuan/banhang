@@ -340,3 +340,4 @@ $lang['promo_header']                   = "PHẦN BỐC THĂM";
 $lang['reciept_footer_notes']           = "Đổi hàng trong <strong>3 ngày</strong>, từ <strong>10:00 - 17:00</strong><br>- Phải có hóa đơn, không hoàn lại tiền<br>- Chỉ đổi sản phẩm giá cao hơn hoặc bằng<br>- Hàng còn nguyên tem, chưa qua sử dụng<br>- Hàng <strong>Giảm giá</strong> vui lòng <strong><u>không</u></strong> đổi trả";
 $lang['footer_thanks']                  = "Cảm ơn quý khách. Hẹn gặp lại!";
 $lang['update_product_quantity']        = "Sản phẩm hết hàng, vui lòng cập nhật!";
+$lang['tiem_nuoc_mini']                 = "Tiệm nước Mini";

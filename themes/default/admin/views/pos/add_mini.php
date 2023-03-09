@@ -441,7 +441,7 @@
 
                     </div>
                     <?php echo form_close(); ?>
-                    <!--<div id="cp">
+                    <div id="cp">
                         <div id="cpinner">
                             <div class="quick-menu">
                                 <div id="proContainer">
@@ -474,7 +474,7 @@
                             </div>
                         </div>
                         <div style="clear:both;"></div>
-                    </div>-->
+                    </div>
                     <div style="clear:both;"></div>
                 </div>
                 <div style="clear:both;"></div>
@@ -482,11 +482,11 @@
         </div>
     </div>
 </div>
-<!--<div class="rotate btn-cat-con">
+<div class="rotate btn-cat-con">
     <button type="button" id="open-brands" class="btn btn-info open-brands"><?= lang('brands'); ?></button>
     <button type="button" id="open-subcategory" class="btn btn-warning open-subcategory"><?= lang('subcategories'); ?></button>
     <button type="button" id="open-category" class="btn btn-primary open-category"><?= lang('categories'); ?></button>
-</div>-->
+</div>
 <div id="brands-slider">
     <div id="brands-list">
         <?php
@@ -1321,7 +1321,8 @@ var lang = {
     }
     $(window).bind("resize", widthFunctions);
     $(document).ready(function () {
-        /*if (localStorage.getItem('poswarehouse') != 3) {
+        //alert(localStorage.getItem('poswarehouse'));
+        if (localStorage.getItem('poswarehouse') != 3) {
             $("#cp").hide();
             $(".btn-cat-con").hide();
         } else {
@@ -1340,7 +1341,7 @@ var lang = {
                 $('.btn-cat-con').toggle('slide', { direction: 'right' }, 100);
             }
 
-        });*/
+        });
 
         $('#view-customer').click(function(){
             $('#myModal').modal({remote: site.base_url + 'customers/view/' + $("input[name=customer]").val()});

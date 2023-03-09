@@ -76,7 +76,11 @@
             </div>
             <div id="receipt-data" style="margin-right: 5px;">
                 <div class="text-center">
+                <?php if ($inv->warehouse_id != 3) { ?>
                     <strong><span style="font-size: 18px; text-transform: uppercase;"><?=$this->Settings->site_name?></span></strong><br />
+                <?php } else { ?>
+                    <strong><span style="font-size: 18px; text-transform: uppercase;"><?=lang("tiem_nuoc_mini");?></span></strong><br />
+                <?php } ?>
                     <?php //$this->sma->print_arrays($inv);
                     echo "<p style='padding-top: 5px;'>" . $biller->address . " " . $biller->city . " " . $biller->postal_code . " " . $biller->state . " " . $biller->country .
                     "<br> " . $biller->phone . " - " . $biller->cf1 . "<br />";
@@ -130,8 +134,10 @@
                 }
                 echo "<p>";
                 ?>
+            <?php if ($inv->warehouse_id != 3) { ?>
                 <?=lang("customer") . ': ' . ($customer->company && $customer->company != '-' ? $customer->company : $customer->name)?><span style="color:red; font-size: 13px; margin-left: 15px;" class="no-print"><a href="#" id="view-customer" class="external pos-tip" title="<?=lang('customers_info');?>" data-toggle="modal" data-target="#myModal2"><i class="fa fa-bars" id="addIcon" style="font-size: 1.7em;"></i></a></span>
                 <br>
+            <?php } ?>
                 <?=$customer->customer_group_percent != 0 ?  lang("customers_group_txt") . ': <strong>' . $customer->customer_group_name . '</strong><br>' : ''?>
 
                 <?php
@@ -569,12 +575,17 @@
             <div style="clear:both;"></div>
             <div style="padding: 0 10px 10px;">
                 <p style="border-top: 1px solid black;">
+                <?php if ($biller->cf3) { ?>
                     <div class="text-center" style="padding-bottom: 7px; font-size: 14px; font-style: italic"><?= $biller->cf3 ? $this->sma->decode_html($biller->cf3) : ''; ?></div>
-                    <div style="font-size: 12px;">
+                <?php } ?>
+                <?php if ($inv->warehouse_id != 3) { ?>
+                    <div style="font-size: 12px;">                    
                         <?= $biller->invoice_footer ? $this->sma->decode_html($biller->invoice_footer) : ''; ?>
                     </div>
-
+                <?php } ?>
+                <?php if ($biller->cf2) { ?>
                     <div style="margin: 10px 0; font-size: 14px;"><?= $biller->cf2 ? '<p class="text-center">'.$this->sma->decode_html($biller->cf2).'</p>' : ''; ?></div>
+                <?php } ?>
                 </p>
             </div>
             <?php if ($display_promo_cut == 1 && $promo->promo_cut == 1 && $customer->id != 1) { ?>
