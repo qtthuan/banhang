@@ -176,11 +176,15 @@ body:before, body:after {
 #pos #leftdiv {
     min-width: 900px;
     width: 99%;
-    max-width: 99%;
+    max-width: 99%; 
     padding:10px 10px 5px 10px;
     background: #F5f5F5;
     float:left;
     margin: 0;
+}
+#pos .mini_leftdiv {
+    min-width: 400px !important;
+    width: 40% !important;
 }
 #pos #cp #cpinner {
     min-width: 200px;
@@ -313,6 +317,11 @@ body:before, body:after {
         max-width: 16%;
     }
 }
+
+#pos #cp .mini_cpinner {
+    max-width: 58% !important;
+}
+
 @media (max-width: 1152px) {
     #pos #cp #cpinner {
         max-width: 55%;

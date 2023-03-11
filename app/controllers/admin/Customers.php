@@ -369,7 +369,7 @@ class Customers extends MY_Controller
             return FALSE;
         }
         $limit = $this->input->get('limit', TRUE);
-        $rows['results'] = $this->companies_model->getCustomerSuggestions($term, $limit, lang('award_points'));
+        $rows['results'] = $this->companies_model->getCustomerSuggestions($term, $limit, lang('award_points_short'));
         $this->sma->send_json($rows);
     }
 
@@ -391,7 +391,7 @@ class Customers extends MY_Controller
             array(
                 array(
                     'id' => $row->id,
-                    'text' => ($row->customer_no != '' ? $row->name . '('.$row->customer_group_name.'): '.$row->phone.' # ' .lang('award_points').': '.$row->award_points . '  (' . $row->customer_no . ')' : $row->name),
+                    'text' => ($row->customer_no != '' ? $row->name . ': '.$row->phone.' # ' .lang('award_points_short').': '.$row->award_points . '  (' . $row->customer_no . ')' : $row->name),
                     'customer_group_id' => $row->customer_group_id,
                     'customer_group_name' => $row->customer_group_name
                     )));

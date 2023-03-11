@@ -441,7 +441,7 @@
 
                     </div>
                     <?php echo form_close(); ?>
-                    <!--<div id="cp">
+                    <div id="cp">
                         <div id="cpinner">
                             <div class="quick-menu">
                                 <div id="proContainer">
@@ -474,7 +474,7 @@
                             </div>
                         </div>
                         <div style="clear:both;"></div>
-                    </div>-->
+                    </div>
                     <div style="clear:both;"></div>
                 </div>
                 <div style="clear:both;"></div>
@@ -482,11 +482,11 @@
         </div>
     </div>
 </div>
-<!--<div class="rotate btn-cat-con">
+<div class="rotate btn-cat-con">
     <button type="button" id="open-brands" class="btn btn-info open-brands"><?= lang('brands'); ?></button>
     <button type="button" id="open-subcategory" class="btn btn-warning open-subcategory"><?= lang('subcategories'); ?></button>
     <button type="button" id="open-category" class="btn btn-primary open-category"><?= lang('categories'); ?></button>
-</div>-->
+</div>
 <div id="brands-slider">
     <div id="brands-list">
         <?php
@@ -1320,27 +1320,35 @@ var lang = {
         $('#product-list').css("min-height", 278);
     }
     $(window).bind("resize", widthFunctions);
+    function openMini(e) {
+        $("#leftdiv").addClass('mini_leftdiv');
+        $("#cpinner").addClass('mini_cpinner');
+        $("#cp").show();
+        $(".btn-cat-con").show();
+    }
+    function closeMini(e) {
+        $("#leftdiv").removeClass('mini_leftdiv');
+        $("#cpinner").removeClass('mini_cpinner');
+        $("#cp").hide();
+        $(".btn-cat-con").hide();
+    }
     $(document).ready(function () {
-        /*if (localStorage.getItem('poswarehouse') != 3) {
-            $("#cp").hide();
-            $(".btn-cat-con").hide();
+        //alert(localStorage.getItem('poswarehouse'));
+        if (localStorage.getItem('poswarehouse') != 3) {
+            closeMini();
         } else {
-            $("#cp").show();
-            $(".btn-cat-con").show();
+            openMini();
             //$('.btn-cat-con').toggle('slide', { direction: 'right' }, 100);
         }
         $('#poswarehouse').change(function () {
             var v = $(this).val();
             if (v != 3) {
-                //$('#code').val(($('#category_code' + v).val()));
-                $("#cp").hide();
-                $(".btn-cat-con").hide();
+                closeMini();
             } else {
-                $("#cp").show();
-                $('.btn-cat-con').toggle('slide', { direction: 'right' }, 100);
+                openMini();
             }
 
-        });*/
+        });
 
         $('#view-customer').click(function(){
             $('#myModal').modal({remote: site.base_url + 'customers/view/' + $("input[name=customer]").val()});
@@ -1448,7 +1456,7 @@ var lang = {
         $('#poscustomer').val(localStorage.getItem('poscustomer')).select2({
             minimumInputLength: 1,
             data: [],
-            initSelection: function (element, callback) {
+            initSelection: function (element, callback) { // Hiển thị Khách Ba-Ni mặc định
                 $.ajax({
                     type: "get", async: false,
                     url: "<?=admin_url('customers/getCustomer')?>/" + $(element).val(),
@@ -2242,6 +2250,7 @@ var lang = {
     });
  
     $(document).ready(function () {
+        console.log(localStorage.getItem('poscustomer'));
         $('#print_order').click(function () {
             if (count == 1) {
                 bootbox.alert('<?=lang('x_total');?>');

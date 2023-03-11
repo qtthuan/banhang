@@ -648,7 +648,7 @@ class Pos extends MY_Controller
         }
     }
 
-    public function add_mini($sid = NULL)
+    public function mini($sid = NULL)
     {
         $this->sma->checkPermissions();
 
@@ -1171,7 +1171,7 @@ class Pos extends MY_Controller
                 }
             }
 
-            $this->load->view($this->theme . 'pos/add_mini', $this->data);
+            $this->load->view($this->theme . 'pos/mini', $this->data);
         }
     }
 

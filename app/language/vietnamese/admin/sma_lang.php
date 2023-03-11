@@ -442,6 +442,7 @@ $lang['returned']                           = "Trả hàng";
 $lang['award_points_sale_notes']            = '<strong><u>KHÔNG</u></strong> <strong>TÍCH ĐIỂM ĐỐI VỚI HÀNG GIẢM GIÁ</strong>';
 $lang['award_points_title']                 = 'THÔNG TIN ĐIỂM';
 $lang['award_points']                       = 'Điểm tích lũy';
+$lang['award_points_short']                 = 'Điểm';
 $lang['award_points1']                      = 'Điểm tích lũy';
 $lang['points_per_year']                    = 'Doanh số trong năm';
 $lang['use_points']                         = "Sử dụng điểm";
