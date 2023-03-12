@@ -190,7 +190,7 @@ body:before, body:after {
     min-width: 200px;
     max-width: 28%;
     float: left;
-    margin-left: 2%;
+    margin-left: 0.2%;
     padding:10px 10px 5px 10px;
     background: #F5f5F5;
 }
@@ -239,11 +239,11 @@ body:before, body:after {
     height: 125px;
     margin: 0 0 3px 2px;
     padding: 2px;
-    width: 12.5%;
+    width: 12.3%;
     min-width: 100px;
     overflow: hidden;
     display: inline-block;
-    font-size: 15px;
+    font-size: 16px;
 }
 /*.btn-prni:hover {
     background: #eee;
@@ -252,7 +252,7 @@ body:before, body:after {
 .btn-prni span {
     display: table-cell;
     height: 45px;
-    line-height: 15px;
+    line-height: 17px;
     vertical-align: middle;
     width: 10.5%;
     min-width: 94px;
@@ -318,7 +318,7 @@ body:before, body:after {
 }
 
 #pos #cp .mini_cpinner {
-    max-width: 63% !important;
+    max-width: 64% !important;
 }
 
 @media (max-width: 1152px) {
