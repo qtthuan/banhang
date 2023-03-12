@@ -1453,7 +1453,10 @@ class Pos extends MY_Controller
                     $category_id = "0" . ($category_id / 100) * 100;
                 }
 
-                $prods .= "<button id=\"product-" . $category_id . $count . "\" type=\"button\" value='" . $product->code . "' title=\"" . $product->name . "\" class=\"btn-prni btn-" . $this->pos_settings->product_button_color . " product pos-tip\" data-container=\"body\"><img src=\"" . base_url() . "assets/uploads/thumbs/" . $product->image . "\" alt=\"" . $product->name . "\" class='img-rounded' /><span>" . character_limiter($product->name, 40) . "</span></button>";
+                $prods .= "<button id=\"product-" . $category_id . $count . "\" type=\"button\" value='" . $product->code . "' title=\"" . $product->name . "\" class=\"btn-prni btn-" . $this->pos_settings->product_button_color . " product pos-tip\" data-container=\"body\"><img src=\"" . base_url() . "assets/uploads/thumbs/" . $product->image . "\" alt=\"" . $product->name . "\" class='img-rounded' />";
+                $prods .= "<span>" . character_limiter($product->name, 40) . "<br />" . $this->sma->formatMoney($product->price) . "</span>";
+                //$prods .= "<span>x" . $product->price . "</span>";
+                $prods .= "</button>";
 
                 $pro++;
             }
