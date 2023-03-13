@@ -1909,10 +1909,13 @@ var lang = {
         $('select, .select').select2({minimumResultsForSearch: 7});
 
         $(document).on('click', '.product', function (e) {
+           
             $('#modal-loading').show();
             code = $(this).val(),
-                wh = $('#poswarehouse').val(),
-                cu = $('#poscustomer').val();
+            wh = $('#poswarehouse').val(),
+            cu = $('#poscustomer').val();
+
+            //alert(code + '-' + wh + '-' + cu);
             $.ajax({
                 type: "get",
                 url: "<?=admin_url('pos/getProductDataByCode')?>",
@@ -1921,6 +1924,7 @@ var lang = {
                 success: function (data) {
                     e.preventDefault();
                     if (data !== null) {
+                        console.log(JSON.stringify(data));
                         add_invoice_item(data);
                         $('#modal-loading').hide();
                     } else {

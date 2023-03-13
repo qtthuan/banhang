@@ -1109,6 +1109,7 @@ function loadItems() {
         }
         var category = 0, print_cate = false;
         // var itn = parseInt(Object.keys(sortedItems).length);
+        //console.log(JSON.stringify(sortedItems));
         $.each(sortedItems, function () {
             var item = this;            
             var item_id = site.settings.item_addition == 1 ? item.item_id : item.id;
@@ -1120,6 +1121,10 @@ function loadItems() {
             var item_comment = item.row.comment ? item.row.comment : '';
             var item_ordered = item.row.ordered ? item.row.ordered : 0;
             var discount_class = '';
+
+            if(!item_image) {
+                item_image = 'no_image.png';
+            }
             
             if(item.units && item.row.fup != 1 && product_unit != item.row.base_unit) {
                 $.each(item.units, function() {
@@ -1230,12 +1235,13 @@ function loadItems() {
             if (site.settings.tax1 == 1) {
                 tr_html += '<input class="form-control input-sm text-right rproduct_tax" name="product_tax[]" type="hidden" id="product_tax_' + row_no + '" value="' + pr_tax.id + '"><input type="hidden" class="sproduct_tax" id="sproduct_tax_' + row_no + '" value="' + formatMoney(pr_tax_val * item_qty) + '">';
             }
-
+            
             if (item_discount > 0) {
+                console.log('abc');
                 var display_price = '<span style="font-weight: bold">' + formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val)) + '</span>(<span style="text-decoration: line-through">' + unit_price + '</span>)';
                 tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '"><input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '"><input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '"><input class="no_points" name="no_points[]" type="hidden" value="' + item.no_points + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + display_price + '</span></td>';
             } else {
-
+                console.log('ggg');
                 if (item_original_price > 0) {
                     display_price = '<span style="font-weight: bold">' + formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val)) + '</span>';
                     display_price += '(<span style="text-decoration: line-through">' + formatMoney(item_original_price) + '</span>)';
@@ -1467,7 +1473,25 @@ function printLine(str) {
  ---------------------------- */
 
  function add_invoice_item(item) {
+    //console.log(JSON.stringify(item));
 
+
+
+    /*
+    if ($this->sma->isPromo($row)) {
+                    $row->original_price = $row->price;
+                    $row->price = $row->promo_price;
+                } elseif ($customer->price_group_id) {
+                    if ($pr_group_price = $this->site->getProductGroupPrice($row->id, $customer->price_group_id)) {
+                        $row->original_price = $row->price;
+                        $row->price = $pr_group_price->price;
+                    }
+                } elseif ($warehouse->price_group_id) {
+                    if ($pr_group_price = $this->site->getProductGroupPrice($row->id, $warehouse->price_group_id)) {
+                        $row->original_price = $row->price;
+                        $row->price = $pr_group_price->price;
+                    }
+                }*/
     if (count == 1) {
         positems = {};
         if ($('#poswarehouse').val() && $('#poscustomer').val()) {
@@ -1501,6 +1525,7 @@ function printLine(str) {
     }
     positems[item_id].order = new Date().getTime();
     localStorage.setItem('positems', JSON.stringify(positems));
+    console.log(JSON.stringify(positems));
     loadItems();
     return true;
  }
