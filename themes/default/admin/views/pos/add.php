@@ -1333,22 +1333,7 @@ var lang = {
         $(".btn-cat-con").hide();
     }
     $(document).ready(function () {
-        //alert(localStorage.getItem('poswarehouse'));
-        if (localStorage.getItem('poswarehouse') != 3) {
-            closeMini();
-        } else {
-            openMini();
-            //$('.btn-cat-con').toggle('slide', { direction: 'right' }, 100);
-        }
-        $('#poswarehouse').change(function () {
-            var v = $(this).val();
-            if (v != 3) {
-                closeMini();
-            } else {
-                openMini();
-            }
-
-        });
+        
 
         $('#view-customer').click(function(){
             $('#myModal').modal({remote: site.base_url + 'customers/view/' + $("input[name=customer]").val()});
@@ -2254,7 +2239,24 @@ var lang = {
     });
  
     $(document).ready(function () {
-        console.log(localStorage.getItem('poscustomer'));
+        //console.log(localStorage.getItem('poscustomer'));
+        //alert(localStorage.getItem('poswarehouse'));
+        if (localStorage.getItem('poswarehouse') != 3) {
+            closeMini();
+        } else {
+            openMini();
+            //$('.btn-cat-con').toggle('slide', { direction: 'right' }, 100);
+        }
+        $('#poswarehouse').change(function () {
+            var v = $(this).val();
+            if (v != 3) {
+                closeMini();
+            } else {
+                openMini();
+            }
+
+        });
+        
         $('#print_order').click(function () {
             if (count == 1) {
                 bootbox.alert('<?=lang('x_total');?>');
