@@ -1444,6 +1444,7 @@ function loadItems() {
             $('#poswarehouse').select2("readonly", false);
         }
         if (KB) { display_keyboards(); }
+        
         if (site.settings.set_focus == 1) {
             $('#add_item').attr('tabindex', an);
             $('[tabindex='+(an-1)+']').focus().select();
@@ -1525,7 +1526,7 @@ function printLine(str) {
     }
     positems[item_id].order = new Date().getTime();
     localStorage.setItem('positems', JSON.stringify(positems));
-    console.log(JSON.stringify(positems));
+    //console.log(JSON.stringify(positems));
     loadItems();
     return true;
  }

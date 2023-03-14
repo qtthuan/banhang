@@ -316,8 +316,8 @@
                                         <thead>
                                         <tr>
                                             <th width="63%"><?=lang("product");?></th>
-                                            <th width="12%"><?=lang("price");?></th>
-                                            <th width="6%"><?=lang("qty");?></th>
+                                            <th width="11%"><?=lang("price");?></th>
+                                            <th width="9%"><?=lang("qty");?></th>
                                             <th width="12%"><?=lang("subtotal");?></th>
                                             <th style="width: 5%; text-align: center;">
                                                 <i class="fa fa-trash-o" style="opacity:0.5; filter:alpha(opacity=50);"></i>
@@ -336,7 +336,7 @@
                                        style="width:100%; float:right; padding:5px; color:#000; background: #FFF;">
                                     <tr>
                                         <td style="width: 11%; padding-left: 15px; border-top: 1px solid #DDD; font-size: 16px;">
-                                            <?=lang('items');?>: <span id="titems" style="font-weight: bold">0</span>
+                                            <?=lang('total_items');?>: <span id="titems" style="font-weight: bold">0</span>
                                         </td>
                                         <td style="width: 12%; border-top: 1px solid #DDD; font-size: 16px;">
                                             <?=lang('total');?>: <span id="total" style="font-weight: bold">0.00</span>
@@ -348,7 +348,7 @@
                                             </a>
                                             <span id="tship" style="font-weight: bold"></span>
                                         </td>
-                                        <td class="text-left" style="width: 15%; border-top: 1px solid #DDD; font-size: 16px;">
+                                        <td id="col_return"  class="text-left" style="width: 15%; border-top: 1px solid #DDD; font-size: 16px;">
                                             <?=lang('return_amount');?>
                                             <a href="#" id="preturn" class="external pos-tip" style="vertical-align: -webkit-baseline-middle" title="<?=$pos_settings->return_sale?>">
                                                 <i class="fa fa-2x fa-minus-square"></i>
@@ -1323,14 +1323,24 @@ var lang = {
     function openMini(e) {
         $("#leftdiv").addClass('mini_leftdiv');
         $("#cpinner").addClass('mini_cpinner');
+        $("#reset").addClass('font_size_16');
+        $("#suspend").addClass('font_size_16');
+        $("#print_bill").addClass('font_size_16');
+        $("#payment").addClass('font_size_16');
         $("#cp").show();
         $(".btn-cat-con").show();
+        $("#col_return").hide();
     }
     function closeMini(e) {
         $("#leftdiv").removeClass('mini_leftdiv');
         $("#cpinner").removeClass('mini_cpinner');
+        $("#reset").removeClass('font_size_16');
+        $("#suspend").removeClass('font_size_16');
+        $("#print_bill").removeClass('font_size_16');
+        $("#payment").removeClass('font_size_16');
         $("#cp").hide();
         $(".btn-cat-con").hide();
+        $("#col_return").show();
     }
     $(document).ready(function () {
         

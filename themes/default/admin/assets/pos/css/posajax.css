@@ -186,6 +186,10 @@ body:before, body:after {
     min-width: 400px !important;
     width: 35% !important;
 }
+
+.font_size_16 {
+    font-size: 16px !important;
+}
 #pos #cp #cpinner {
     min-width: 200px;
     max-width: 28%;
