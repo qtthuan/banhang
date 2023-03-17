@@ -190,7 +190,7 @@ body:before, body:after {
 }
 #pos .mini_leftdiv {
     min-width: 400px !important;
-    width: 40% !important;
+    width: 42% !important;
 }
 
 .font_size_16 {
@@ -328,7 +328,7 @@ body:before, body:after {
 }
 
 #pos #cp .mini_cpinner {
-    max-width: 59% !important;
+    max-width: 57% !important;
 }
 
 @media (max-width: 1152px) {

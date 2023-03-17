@@ -315,10 +315,10 @@
                                            id="posTable" style="margin-bottom: 0;">
                                         <thead>
                                         <tr>
-                                            <th width="63%"><?=lang("product");?></th>
-                                            <th width="11%"><?=lang("price");?></th>
-                                            <th width="9%"><?=lang("qty");?></th>
-                                            <th width="12%"><?=lang("subtotal");?></th>
+                                            <th width="67%"><?=lang("product");?></th>
+                                            <th width="9%"><?=lang("price");?></th>
+                                            <th width="8%"><?=lang("qty");?></th>
+                                            <th width="11%"><?=lang("subtotal");?></th>
                                             <th style="width: 5%; text-align: center;">
                                                 <i class="fa fa-trash-o" style="opacity:0.5; filter:alpha(opacity=50);"></i>
                                             </th>
