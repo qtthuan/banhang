@@ -1220,6 +1220,7 @@ function loadItems() {
                         '<input name="promo_original_price[]" type="hidden" class="roprice" value="' + item_original_price + '">' +
                         '<input name="is_promo[]" type="hidden" class="is_promo" value="' + (is_promo && checkValidPromotionDate(start_date, end_date) ? is_promo : 0) + '">' +
                         '<span class="sname" id="name_' + row_no + '"><img src="' + site.url + '/assets/uploads/' + item_image + '" width="40">' + item_code +' - '+ item_name +(sel_opt != '' ? ' ('+sel_opt+')' : '')+'</span>' +
+                        (item_comment ? '<span style="font-weight: bold;"> (' + item_comment + ')</span>' : '') +
                         '<span class="lb"></span>' +
                         '<i class="pull-right fa fa-edit fa-2x fa-bx tip pointer edit" id="' + row_no + '" data-item="' + item_id + '" title="Cập nhật Size/Giá" style="cursor:pointer;"></i>' +
                         '<i class="pull-right fa fa-comment fa-2x fa-bx' + (item_comment != '' ? '' : '-o') +
@@ -1245,6 +1246,7 @@ function loadItems() {
                 tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '"><input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '"><input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '"><input class="no_points" name="no_points[]" type="hidden" value="' + item.no_points + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + display_price + '</span></td>';
             } else {
                 console.log('ggg');
+                console.log(JSON.stringify(sortedItems));
                 if (item_original_price > 0) {
                     display_price = '<span style="font-weight: bold">' + formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val)) + '</span>';
                     display_price += '(<span style="text-decoration: line-through">' + formatMoney(item_original_price) + '</span>)';
