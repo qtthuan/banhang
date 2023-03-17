@@ -776,7 +776,7 @@
             <div class="modal-body" id="pr_popover_content">
                 <div class="form-group">
                     <?= lang('comment', 'icomment'); ?>
-                    <?= form_textarea('comment', '', 'class="form-control" id="icomment" style="height:80px;"'); ?>
+                    <input type="text" name="comment" class="form-control kb-text" id="icomment">
                 </div>
                 <!--<div class="form-group">
                     <?= lang('ordered', 'iordered'); ?>
@@ -2308,7 +2308,14 @@ var lang = {
                 }
             });
         });
-
+        $('#cmModal').on('shown.bs.modal', function() {
+            $(this).find('#icomment').select().focus();
+            $(this).keypress(function( e ) {
+                if ( e.which == 13 ) {
+                    $('#editComment').click();
+                }
+            });
+        });
         $('#prModal').on('shown.bs.modal', function() {
             $(this).find('#pdiscount').select().focus();
 
