@@ -193,7 +193,10 @@
                         }
                     ?>
                     <tr>
-                        <td colspan="5"><span><?=$r?></span>&#8594;&nbsp;<?=product_name($row->product_name, ($printer ? $printer->char_per_line : null))?></td>
+                        <td colspan="5">
+                            <span><?=$r?></span>&#8594;&nbsp;<?=product_name($row->product_name, ($printer ? $printer->char_per_line : null))?>
+                            <?php if (!empty($row->comment)) { echo ' <strong>(' . $row->comment . ')</strong>'; } ?>
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="2" style="font-size: 11px;"><?=$row->product_code . ($row->variant ? '-' . $this->sma->getSizeNumber($row->variant)  : '')?></td>

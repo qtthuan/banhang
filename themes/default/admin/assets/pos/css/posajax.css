@@ -163,6 +163,12 @@ body:before, body:after {
     line-height: 16px;
     font-size: 14px;
 }
+.form-control.input-md {
+    padding: 3px;
+    height: auto;
+    line-height: 16px;
+    font-size: 14px;
+}
 .pos { margin: 0 auto; }
 #pos {
     position:relative;
@@ -184,7 +190,7 @@ body:before, body:after {
 }
 #pos .mini_leftdiv {
     min-width: 400px !important;
-    width: 35% !important;
+    width: 38% !important;
 }
 
 .font_size_16 {
@@ -322,7 +328,7 @@ body:before, body:after {
 }
 
 #pos #cp .mini_cpinner {
-    max-width: 64% !important;
+    max-width: 61% !important;
 }
 
 @media (max-width: 1152px) {

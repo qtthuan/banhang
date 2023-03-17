@@ -1222,6 +1222,9 @@ function loadItems() {
                         '<span class="sname" id="name_' + row_no + '"><img src="' + site.url + '/assets/uploads/' + item_image + '" width="40">' + item_code +' - '+ item_name +(sel_opt != '' ? ' ('+sel_opt+')' : '')+'</span>' +
                         '<span class="lb"></span>' +
                         '<i class="pull-right fa fa-edit fa-2x fa-bx tip pointer edit" id="' + row_no + '" data-item="' + item_id + '" title="Cập nhật Size/Giá" style="cursor:pointer;"></i>' +
+                        '<i class="pull-right fa fa-comment fa-2x fa-bx' + (item_comment != '' ? '' : '-o') +
+                        ' tip pointer comment" id="' + row_no + '" data-item="' + item_id +
+                        '" title="Comment" style="cursor:pointer;margin-right:5px;"></i>'
                 '</td>';
 
                

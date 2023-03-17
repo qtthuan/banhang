@@ -778,13 +778,13 @@
                     <?= lang('comment', 'icomment'); ?>
                     <?= form_textarea('comment', '', 'class="form-control" id="icomment" style="height:80px;"'); ?>
                 </div>
-                <div class="form-group">
+                <!--<div class="form-group">
                     <?= lang('ordered', 'iordered'); ?>
                     <?php
                     $opts = array(0 => lang('no'), 1 => lang('yes'));
                     ?>
                     <?= form_dropdown('ordered', $opts, '', 'class="form-control" id="iordered" style="width:100%;"'); ?>
-                </div>
+                </div>-->
                 <input type="hidden" id="irow_id" value=""/>
             </div>
             <div class="modal-footer">
