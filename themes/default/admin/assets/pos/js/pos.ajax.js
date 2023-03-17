@@ -498,6 +498,10 @@ $('#posdiscount').focus(function () {
         product_option = row.children().children('.roption').val(),
         unit_price = formatDecimal(row.children().children('.ruprice').val()),
         discount = row.children().children('.rdiscount').val();
+        original_price = parseFloat(row.children().children('.roprice').val());
+        is_promo = row.children().children('.is_promo').val();
+
+        console.log('bef: ' + unit_price + ' promo: ' + is_promo);
 
         if(item.options !== false) {
             $.each(item.options, function () {
@@ -511,9 +515,9 @@ $('#posdiscount').focus(function () {
         var net_price = unit_price;
         var start_date = item.row.start_date;
         var end_date = item.row.end_date;
-        $('#prModalLabel').text(item.row.code + ' - ' + item.row.name);
+        $('#prModalLabel').text(item.row.code + ' - ' + item.row.name + ' / ' + original_price + ' / ' + discount);
 
-        if (item.row.promotion && checkValidPromotionDate(start_date, end_date)) {
+        /*if (item.row.promotion && checkValidPromotionDate(start_date, end_date)) {
             $('#pdiscount').attr('readonly', true);
             $('#price_after_discount').attr('readonly', true);
             $('#pprice').attr('readonly', true);
@@ -522,12 +526,14 @@ $('#posdiscount').focus(function () {
             $('#pdiscount').attr('readonly', false);
             $('#price_after_discount').attr('readonly', false);
             $('#pprice').attr('readonly', false);
-        }
+        }*/
 
         if (site.settings.tax1) {
             $('#ptax').select2('val', item.row.tax_rate);
             $('#old_tax').val(item.row.tax_rate);
             var item_discount = 0, ds = discount ? discount : '0';
+            
+            
             if (ds.indexOf("%") !== -1) {
                 var pds = ds.split("%");
                 if (!isNaN(pds[0])) {
@@ -539,6 +545,7 @@ $('#posdiscount').focus(function () {
                 item_discount = parseFloat(ds);
             }
             net_price -= item_discount;
+            
             var pr_tax = item.row.tax_rate, pr_tax_val = 0;
             if (pr_tax !== null && pr_tax != 0) {
                 $.each(tax_rates, function () {
@@ -599,14 +606,26 @@ $('#posdiscount').focus(function () {
         $('select.select').select2({minimumResultsForSearch: 7});
         $('#pquantity').val(qty);
         $('#old_qty').val(qty);
-        $('#pprice').val(unit_price);
+        
         $('#punit_price').val(formatDecimal(parseFloat(unit_price)+parseFloat(pr_tax_val)));
         $('#poption').select2('val', item.row.option);
         $('#old_price').val(unit_price);
         $('#row_id').val(row_id);
         $('#item_id').val(item_id);
         $('#pserial').val(row.children().children('.rserial').val());
-        $('#pdiscount').val(discount);
+        if (is_promo == 1) {
+            console.log('xxx:  ' + original_price + ' - ' + unit_price);
+            $('#pdiscount').val(original_price - unit_price);
+            $('#pprice').val(original_price);
+            //discount = original_price - unit_price;
+            //ds = original_price - unit_price;
+           // unit_price = original_price;
+            //console.log('af: ' + ds);
+        } else {
+            $('#pdiscount').val(discount);
+            $('#pprice').val(unit_price);
+        }
+        
         $('#net_price').val(formatMoney(net_price));
         $('#price_after_discount').val(net_price);
         $('#pro_tax').text(formatMoney(pr_tax_val));
@@ -642,7 +661,8 @@ $('#posdiscount').focus(function () {
         if($('#poption').select2('val') != '') {
             $('#poption').select2('val', product_variant);
             product_variant = 0;
-        }
+        }        
+        $(this).find('#price_after_discount').select().blur();
         $(this).find('#pdiscount').select().focus();
     });
 
@@ -748,6 +768,7 @@ $('#posdiscount').focus(function () {
         }
         var unit = $('#punit').val();
         var base_quantity = parseFloat($('#pquantity').val());
+        //console.log(JSON.stringify(positems[item_id]));
         if(unit != positems[item_id].row.base_unit) {
             $.each(positems[item_id].units, function(){
                 if (this.id == unit) {
@@ -1243,7 +1264,10 @@ function loadItems() {
             if (item_discount > 0) {
                 console.log('abc');
                 var display_price = '<span style="font-weight: bold">' + formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val)) + '</span>(<span style="text-decoration: line-through">' + unit_price + '</span>)';
-                tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '"><input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '"><input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '"><input class="no_points" name="no_points[]" type="hidden" value="' + item.no_points + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + display_price + '</span></td>';
+                tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '">' +
+                            '<input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '">' + 
+                            '<input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '">' + 
+                            '<input class="no_points" name="no_points[]" type="hidden" value="' + item.no_points + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + display_price + '</span></td>';
             } else {
                 console.log('ggg');
                 console.log(JSON.stringify(sortedItems));
