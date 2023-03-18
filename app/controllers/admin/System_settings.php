@@ -2938,6 +2938,7 @@ class system_settings extends MY_Controller
             ->select("{$this->db->dbprefix('products')}.id as id, {$this->db->dbprefix('products')}.code as product_code, {$this->db->dbprefix('products')}.name as product_name, PP.price as price ")
             ->from("products")
             ->join($pp, 'PP.product_id=products.id', 'left')
+            ->where("products.category_id", 38)  // Chỉ hiển thị nhóm Nước ép- Sinh tố
             ->edit_column("price", "$1__$2", 'id, price')
             ->add_column("Actions", "<div class=\"text-center\"><button class=\"btn btn-primary btn-xs form-submit\" type=\"button\"><i class=\"fa fa-check\"></i></button></div>", "id");
 
