@@ -604,6 +604,11 @@
                                                     <i class="fa fa-th-large"></i><span class="text"> <?= lang('pos_settings'); ?></span>
                                                 </a>
                                             </li>
+                                            <li id="system_settings_price_groups">
+                                                <a href="<?= admin_url('system_settings/price_groups') ?>">
+                                                    <i class="fa fa-dollar"></i><span class="text"> <?= lang('price_groups'); ?></span>
+                                                </a>
+                                            </li>
                                             <li id="system_settings_product_description_list">
                                                 <a href="<?= admin_url('system_settings/product_description_list') ?>">
                                                     <i class="fa fa-money"></i><span class="text"> <?= lang('product_description_list'); ?></span>
@@ -655,12 +660,7 @@
                                             <a href="<?= admin_url('system_settings/currencies') ?>">
                                                 <i class="fa fa-money"></i><span class="text"> <?= lang('currencies'); ?></span>
                                             </a>
-                                        </li>
-                                        <li id="system_settings_price_groups">
-                                            <a href="<?= admin_url('system_settings/price_groups') ?>">
-                                                <i class="fa fa-dollar"></i><span class="text"> <?= lang('price_groups'); ?></span>
-                                            </a>
-                                        </li>
+                                        </li>                                        
 
                                         <li id="system_settings_expense_categories">
                                             <a href="<?= admin_url('system_settings/expense_categories') ?>">
