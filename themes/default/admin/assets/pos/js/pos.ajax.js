@@ -1075,6 +1075,7 @@ function loadItems() {
         total_with_no_points = 0;
         percent_detail = '';
         order_discount_percent_for_return_sale = 0;
+        customer_group_id = $("#customer_group_id").val();
         count = 1;
         an = 1;
         product_tax = 0;
@@ -1262,16 +1263,16 @@ function loadItems() {
             }
             
             if (item_discount > 0) {
-                console.log('abc');
+                //console.log('abc');
                 var display_price = '<span style="font-weight: bold">' + formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val)) + '</span>(<span style="text-decoration: line-through">' + unit_price + '</span>)';
                 tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '">' +
                             '<input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '">' + 
                             '<input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '">' + 
                             '<input class="no_points" name="no_points[]" type="hidden" value="' + item.no_points + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + display_price + '</span></td>';
             } else {
-                console.log('ggg');
-                console.log(JSON.stringify(sortedItems));
-                if (item_original_price > 0) {
+                //console.log('ggg');
+                //console.log(JSON.stringify(sortedItems));
+                if (item_original_price > 0 && customer_group_id != 4) {
                     display_price = '<span style="font-weight: bold">' + formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val)) + '</span>';
                     display_price += '(<span style="text-decoration: line-through">' + formatMoney(item_original_price) + '</span>)';
                 } else {

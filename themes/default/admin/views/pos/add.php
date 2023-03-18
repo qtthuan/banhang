@@ -202,6 +202,7 @@
                                 <?php
                                 	echo form_input('customer', (isset($_POST['customer']) ? $_POST['customer'] : ""), 'id="poscustomer" data-placeholder="' . $this->lang->line("select") . ' ' . $this->lang->line("customer") . '" required="required" class="form-control pos-input-tip" style="width:100%;"');
                                 ?>
+                                <input name="customer_group_id" type="hidden" value="" id="customer_group_id">
                                     <div class="input-group-addon no-print" style="padding: 2px 16px; border-left: 0;">
                                         <a href="#" id="toogle-customer-read-attr" class="external pos-tip" title="<?=lang('customer_selection')?>">
                                             <i class="fa fa-pencil" id="addIcon" style="font-size: 1.7em;"></i>
@@ -1372,6 +1373,9 @@ var lang = {
         if (localStorage.getItem('posdiscount')) {
             localStorage.removeItem('posdiscount');
         }
+        if (localStorage.getItem('customer_group_id')) {
+            localStorage.removeItem('customer_group_id');
+        }
         if (localStorage.getItem('postax2')) {
             localStorage.removeItem('postax2');
         }
@@ -1410,7 +1414,8 @@ var lang = {
         widthFunctions();
         <?php if ($suspend_sale) {?>
         localStorage.setItem('postax2', '<?=$suspend_sale->order_tax_id;?>');
-        localStorage.setItem('posdiscount', '<?=$suspend_sale->order_discount_id;?>');
+        localStorage.setItem('posdiscount', '<?=$suspend_sale->order_discount_id;?>');        
+        localStorage.setItem('posdiscount', '<?=$suspend_sale->customer_group_id;?>');        
         localStorage.setItem('poswarehouse', '<?=$suspend_sale->warehouse_id;?>');
         localStorage.setItem('poscustomer', '<?=$suspend_sale->customer_id;?>');
         localStorage.setItem('posbiller', '<?=$suspend_sale->biller_id;?>');
@@ -1421,6 +1426,7 @@ var lang = {
         <?php if ($old_sale) {?>
         localStorage.setItem('postax2', '<?=$old_sale->order_tax_id;?>');
         localStorage.setItem('posdiscount', '<?=$old_sale->order_discount_id;?>');
+        localStorage.setItem('posdiscount', '<?=$old_sale->customer_group_id;?>');
         localStorage.setItem('poswarehouse', '<?=$old_sale->warehouse_id;?>');
         localStorage.setItem('poscustomer', '<?=$old_sale->customer_id;?>');
         localStorage.setItem('posbiller', '<?=$old_sale->biller_id;?>');
@@ -1538,6 +1544,7 @@ var lang = {
                 url: "<?= admin_url('customers/getCustomerGroupByCustomerID') ?>/" + localStorage.getItem('poscustomer'),
                 dataType: "json",
                 success: function (cgdata) {
+                    $("#customer_group_id").val(cgdata['id']);
                     var percent = cgdata['customer_group_percent'];
                     if (is_valid_discount(percent)) {
                         var realPercent = (percent*-1) + '%';
@@ -1552,6 +1559,8 @@ var lang = {
                         }
                         localStorage.removeItem('posdiscount');
                         localStorage.setItem('posdiscount', realPercent);
+                        localStorage.removeItem('customer_group_id');
+                        localStorage.setItem('customer_group_id', cgdata['id']);
                         loadItems();
                     }
                 },
@@ -2251,6 +2260,7 @@ var lang = {
     $(document).ready(function () {
         //console.log(localStorage.getItem('poscustomer'));
         //alert(localStorage.getItem('poswarehouse'));
+        $("#poscustomer").change();
         if (localStorage.getItem('poswarehouse') != 3) {
             closeMini();
         } else {

@@ -257,7 +257,7 @@ class Products extends MY_Controller
                     $text_brand = $brand->code;
                     $name_brand = $brand->name;
                 }
-                if ($this->input->post('check_promo') && $product->promo_price) {
+                if ($this->input->post('check_promo') && $this->sma->isPromo($product)) {
                     
                     if ($product->promotion) {
                         $price_before_promo = $price;
@@ -799,7 +799,7 @@ class Products extends MY_Controller
             die("<script type='text/javascript'>setTimeout(function(){ window.top.location.href = '" . admin_url('welcome') . "'; }, 10);</script>");
         }
 
-        $rows = $this->products_model->getProductsForPrinting($term, 10);
+        $rows = $this->products_model->getProductsForPrinting($term, 15);
         if ($rows) {
             foreach ($rows as $row) {
                 $variants = $this->products_model->getProductOptions($row->id);

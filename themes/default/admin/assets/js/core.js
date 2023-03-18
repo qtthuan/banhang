@@ -1000,6 +1000,26 @@ function set_page_focus() {
     });
 }
 
+// qtthuan: hàm so sánh ngày hiện tại có thuộc 2 ngày đã cho không
+function checkValidPromotionDate(date1, date2) {
+    if (!date1) {
+        return false;
+    }
+    D_1 = moment(date1).format('DD-MM-YYYY').split("-");
+    D_2 = moment(date2).format('DD-MM-YYYY').split("-");
+    D_3 = moment(new Date()).format('DD-MM-YYYY').split("-");
+
+    var d1 = new Date(D_1[2], parseInt(D_1[1]) - 1, D_1[0]);
+    var d2 = new Date(D_2[2], parseInt(D_2[1]) - 1, D_2[0]);
+    var d3 = new Date(D_3[2], parseInt(D_3[1]) - 1, D_3[0]);
+
+    if (d3 >= d1 && d3 <= d2) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 $(document).ready(function() {
     $('#view-customer').click(function(){
         $('#myModal').modal({remote: site.base_url + 'customers/view/' + $("input[name=customer]").val()});

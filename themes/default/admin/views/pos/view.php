@@ -134,7 +134,8 @@
                 }
                 echo "<p>";
                 ?>
-            <?php if ($inv->warehouse_id != 3 || ($inv->warehouse_id == 3 && $inv->customer_id != 1) ) { ?>
+            <?php if ($inv->warehouse_id != 3 || ($inv->warehouse_id == 3 && $inv->customer_id != 1)) { ?>
+                <!--Nếu kho Ba-Ni hoặc (Tiệm Nước Mini và Có nhập tên) => Hiện Tên Khách-->
                 <?=lang("customer") . ': ' . ($customer->company && $customer->company != '-' ? $customer->company : $customer->name)?><span style="color:red; font-size: 13px; margin-left: 15px;" class="no-print"><a href="#" id="view-customer" class="external pos-tip" title="<?=lang('customers_info');?>" data-toggle="modal" data-target="#myModal2"><i class="fa fa-bars" id="addIcon" style="font-size: 1.7em;"></i></a></span>
                 <br>
             <?php } ?>
@@ -147,8 +148,10 @@
                     if ($customer->vat_no != "-" && $customer->vat_no != "") {
                         echo "<br>" . lang("vat_no") . ": " . $customer->vat_no;
                     }
-                    echo lang("address") . ": " . $customer->address . "<br>";
-                    echo lang("tel") . ": " . $customer->phone . "<br>";
+                    if ($customer->customer_group_id != 4) {
+                        echo lang("address") . ": " . $customer->address . "<br>";
+                        echo lang("tel") . ": " . $customer->phone . "<br>";
+                    }
                     if (!empty($customer->cf1) && $customer->cf1 != "-") {
                         echo "<br>" . lang("ccf1") . ": " . $customer->cf1;
                     }

@@ -130,6 +130,7 @@
                                     echo '<div class="barcode">';
                                 }
                                 $total_items = 0;
+                                //$this->sma->print_arrays($barcodes);
                                 foreach ($barcodes as $item) {
                                     for ($r = 1; $r <= $item['quantity']; $r++) {
                                         $total_items++;
@@ -657,7 +658,7 @@
             bcitems = JSON.parse(localStorage.getItem('bcitems'));
 
             $.each(bcitems, function () {
-
+                //console.log(JSON.stringify(bcitems));
                 var item = this;
                 var row_no = item.id;
                 var vd = '';

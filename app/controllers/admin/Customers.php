@@ -99,7 +99,15 @@ class Customers extends MY_Controller
 
         if ($this->form_validation->run('companies/add') == true) {
             $cg = $this->site->getCustomerGroupByID($this->input->post('customer_group'));
-            $pg = $this->site->getPriceGroupByID($this->input->post('price_group'));
+            
+            $price_group_id = null;
+            $price_group_name = null;
+            if ($this->input->post('customer_group') && $this->input->post('customer_group') == 4) { // Nhóm Baemin => Tự động lấy bảng giá Baemin
+                $price_group_id = 2;
+                $pg = $this->site->getPriceGroupByID($price_group_id);
+                $price_group_name = $pg->name;
+            }
+            
             $data = array('name' => $this->input->post('name'),
                 'company' => '-',
                 'group_id' => '3',
@@ -110,10 +118,13 @@ class Customers extends MY_Controller
                 'fb_link' => $this->input->post('fb_link'),
                 'address' => $this->input->post('address'),
                 'phone' => $this->input->post('phone'),
+                'price_group_id'      => $price_group_id,
+                'price_group_name'    => $price_group_name,
                 'cf1' => $this->input->post('cf1'),
                 'award_points' => 0,
                 'created_date' => date('Y-m-d H:i:s'),
             );
+            //$this->sma->print_arrays($data);
         } elseif ($this->input->post('add_customer')) {
             $this->session->set_flashdata('error', validation_errors());
             admin_redirect('customers');
