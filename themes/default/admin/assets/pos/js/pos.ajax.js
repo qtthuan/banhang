@@ -501,7 +501,7 @@ $('#posdiscount').focus(function () {
         original_price = parseFloat(row.children().children('.roprice').val());
         is_promo = row.children().children('.is_promo').val();
 
-        console.log('bef: ' + unit_price + ' promo: ' + is_promo);
+        //console.log('bef: ' + unit_price + ' promo: ' + is_promo);
 
         if(item.options !== false) {
             $.each(item.options, function () {
@@ -614,7 +614,7 @@ $('#posdiscount').focus(function () {
         $('#item_id').val(item_id);
         $('#pserial').val(row.children().children('.rserial').val());
         if (is_promo == 1) {
-            console.log('xxx:  ' + original_price + ' - ' + unit_price);
+            //console.log('xxx:  ' + original_price + ' - ' + unit_price);
             $('#pdiscount').val(original_price - unit_price);
             $('#pprice').val(original_price);
             //discount = original_price - unit_price;
@@ -1475,10 +1475,11 @@ function loadItems() {
         }
         if (KB) { display_keyboards(); }
         
-        if (site.settings.set_focus == 1) {
+        if (site.settings.set_focus == 1 && localStorage.getItem('poswarehouse') == 3) { 
+            // Focus vào ô điều chỉnh số lượng sau khi scan sản phẩm (Kho Tiệm Nước)
             $('#add_item').attr('tabindex', an);
             $('[tabindex='+(an-1)+']').focus().select();
-        } else {
+        } else { // Focus vào ô scan mã vạch (Kho Ba-Ni)
             $('#add_item').attr('tabindex', 1);
             $('#add_item').focus();
         }

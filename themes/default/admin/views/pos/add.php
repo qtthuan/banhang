@@ -1928,7 +1928,7 @@ var lang = {
                 success: function (data) {
                     e.preventDefault();
                     if (data !== null) {
-                        console.log(JSON.stringify(data));
+                        //console.log(JSON.stringify(data));
                         add_invoice_item(data);
                         $('#modal-loading').hide();
                     } else {

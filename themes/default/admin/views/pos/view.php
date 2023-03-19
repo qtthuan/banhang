@@ -148,7 +148,7 @@
                     if ($customer->vat_no != "-" && $customer->vat_no != "") {
                         echo "<br>" . lang("vat_no") . ": " . $customer->vat_no;
                     }
-                    if ($customer->customer_group_id != 4) {
+                    if ($customer->customer_group_id != 4) { // Nhóm Baemin không hiển thị thông tin này
                         echo lang("address") . ": " . $customer->address . "<br>";
                         echo lang("tel") . ": " . $customer->phone . "<br>";
                     }
@@ -378,12 +378,8 @@
                         }
 
                         ?>
-                        
-                        <?php if ($payments) {
-                            $str_border_bottom_style = 'style="border-bottom: dotted 1px black;"';
-                        } ?>
 
-                        <tr <?=$str_border_bottom_style?>>
+                        <tr>
                             <th colspan="2">&nbsp;</th>
                             <th colspan="2"><div style="margin-left: 2px;"><?=lang("total");?></div></th>
                             <th class="text-right" colspan="2">
@@ -408,12 +404,13 @@
                         <?php } ?>
                             
                         <?php
-                        if ($payments) {
+                        if ($payments && $customer->customer_group_id != 4) { // Nhóm Baemin không hiển thị nội dung này
+
                             foreach ($payments as $payment) {
                         ?>       
                             
                             <?php if (($payment->paid_by == 'cash' || $payment->paid_by == 'pts' || $payment->paid_by == 'deposit') && $payment->pos_paid) { ?> 
-                            <tr>
+                            <tr style="border-top: dotted 1px black;">
                                 <th colspan="2" style="border-top: none;">&nbsp;</th>
                                 <th colspan="2" style="border-top: none;"><div style="margin-left: 2px; color: red"><?=lang("total_paying1");?></div></th>
                                 <th class="text-right" colspan="2" style="border-top:none; color: red">
