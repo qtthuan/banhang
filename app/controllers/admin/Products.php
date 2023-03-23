@@ -206,7 +206,7 @@ class Products extends MY_Controller
         if ($this->form_validation->run() == true) {
 
             $style = $this->input->post('style');
-            $increase_size = false;
+            $increase_size = false;            
 
             if (!$this->input->post('site_name') && 
                 !$this->input->post('variants') && 

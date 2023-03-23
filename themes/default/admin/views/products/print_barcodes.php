@@ -79,11 +79,11 @@
                         </div>
                         <div class="form-group">
                             <span style="font-weight: bold; margin-right: 15px;"><?= lang('print'); ?>:</span>
-                            <input name="site_name" type="checkbox" id="site_name" value="1" style="display:inline-block;" />
+                            <input name="site_name" type="checkbox" id="site_name" class="chkPrint" value="1" style="display:inline-block;" />
                             <label for="site_name" class="padding05"><?= lang('site_name'); ?></label>
-                            <input name="product_name" type="checkbox" id="product_name" value="1" checked="checked" style="display:inline-block;" />
+                            <input name="product_name" type="checkbox" id="product_name" class="chkPrint" value="1" checked="checked" style="display:inline-block;" />
                             <label for="product_name" class="padding05"><?= lang('product_name'); ?></label>
-                            <input name="price" type="checkbox" id="price" value="1" checked="checked" style="display:inline-block;" />
+                            <input name="price" type="checkbox" id="price" class="chkPrint" value="1" checked="checked" style="display:inline-block;" />
                             <label for="price" class="padding05"><?= lang('price'); ?></label>
                             <!--<input name="currencies" type="checkbox" id="currencies" value="1" style="display:inline-block;" />
                             <label for="currencies" class="padding05"><?= lang('currencies'); ?></label>
@@ -91,21 +91,21 @@
                             <label for="unit" class="padding05"><?= lang('unit'); ?></label>
                             <input name="category" type="checkbox" id="category" value="1" style="display:inline-block;" />
                             <label for="category" class="padding05"><?= lang('category'); ?></label>-->
-                            <input name="variants" type="checkbox" id="variants" value="1" style="display:inline-block;" />
+                            <input name="variants" type="checkbox" id="variants" class="chkPrint" value="1" style="display:inline-block;" />
                             <label for="variants" class="padding05"><?= lang('variants'); ?></label>
-                            <input name="product_image" type="checkbox" id="product_image" value="1" style="display:inline-block;" />
+                            <input name="product_image" type="checkbox" id="product_image" class="chkPrint" value="1" style="display:inline-block;" />
                             <label for="product_image" class="padding05"><?= lang('product_image'); ?></label>
-                            <input name="check_promo" type="checkbox" id="check_promo" value="1" checked="checked" style="display:inline-block;" />
+                            <input name="check_promo" type="checkbox" id="check_promo" class="chkPrint" value="1" checked="checked" style="display:inline-block;" />
                             <label for="check_promo" class="padding05"><?= lang('check_promo'); ?></label>
                         </div>
                         <div class="form-group group-not-for-mini" style="margin-left: 35px">
-                            <input name="product_barcode" type="checkbox" id="product_barcode" value="1" checked="checked" style="display:inline-block;" />
+                            <input name="product_barcode" type="checkbox" id="product_barcode" class="chkPrint" value="1" checked="checked" style="display:inline-block;" />
                             <label for="product_barcode" class="padding05"><?= lang('product_barcode'); ?></label>
-                            <input name="product_code" type="checkbox" id="product_code" value="1" checked="checked" style="display:inline-block;" />
+                            <input name="product_code" type="checkbox" id="product_code" class="chkPrint" value="1" checked="checked" style="display:inline-block;" />
                             <label for="product_code" class="padding05"><?= lang('product_code'); ?></label>
-                            <input name="product_supplier" type="checkbox" id="product_supplier" value="1" checked="checked" style="display:inline-block;" />
+                            <input name="product_supplier" type="checkbox" id="product_supplier" class="chkPrint" value="1" checked="checked" style="display:inline-block;" />
                             <label for="product_supplier" class="padding05"><?= lang('suppliers'); ?></label>
-                            <input name="product_brand" type="checkbox" id="product_brand" value="1" checked="checked" style="display:inline-block;" />
+                            <input name="product_brand" type="checkbox" id="product_brand" class="chkPrint" value="1" checked="checked" style="display:inline-block;" />
                             <label for="product_brand" class="padding05"><?= lang('brand'); ?></label>
                         </div>
 
@@ -136,8 +136,8 @@
                                         $total_items++;
                                         if($item['increase_size']) {
                                             $increase_size = "increase_size";
-                                        }
-                                        echo '<div class="item style'.$style.'" '.
+                                        }                                        
+                                        echo '<div class="item style' . $style . ' ' . $valign_middle . '" '.
                                         ($style == 50 && $this->input->post('cf_width') && $this->input->post('cf_height') ?
                                             'style="width:'.$this->input->post('cf_width').'in;height:'.$this->input->post('cf_height').'in;border:0;"' : '')
                                         .'>';
@@ -628,6 +628,11 @@
             localStorage.setItem('bcitems', JSON.stringify(bcitems));
         });
 
+        console.log($('#price').val() + 'ccc');
+        if ($('#price').prop('checked') == false) {
+            console.log($('#price').val() + 'cvvv');
+            $('#barcode-con .barcode .item').addClass('valign_barcode_middle');
+        }
     });
 
     function add_product_item(item) {
@@ -654,11 +659,11 @@
 
     function uncheckMini(code) {
         if (code.includes('GK')) {
-            $('.group-not-for-mini').find(':checkbox').each(function() {
+            $('#barcode-print-form').find('.chkPrint').each(function() {
                 console.log($(this).val())
                 $(this).prop("checked", false);
-
             });
+            $('#product_name').prop("checked", true);            
         }
     }
 
