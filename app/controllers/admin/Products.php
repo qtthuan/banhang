@@ -226,6 +226,7 @@ class Products extends MY_Controller
                 $this->session->set_flashdata('error', lang('no_product_selected'));
                 admin_redirect("products/print_barcodes");
             }
+            
             for ($m = 0; $m < $s; $m++) {
                 $pid = $_POST['product'][$m];
                 $quantity = $_POST['quantity'][$m];
@@ -358,8 +359,9 @@ class Products extends MY_Controller
                     $this->data['message'] = lang('products_added_to_list');
                 }
             }
-
+        
             if ($product_id) {
+                
                 if ($row = $this->site->getProductByID($product_id)) {
 
                     $selected_variants = false;
@@ -803,7 +805,9 @@ class Products extends MY_Controller
         if ($rows) {
             foreach ($rows as $row) {
                 $variants = $this->products_model->getProductOptions($row->id);
-                $pr[] = array('id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'code' => $row->code, 'name' => $row->name, 'price' => $row->price, 'qty' => 1, 'variants' => $variants);
+                $pr[] = array('id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 
+                            'code' => $row->code, 'name' => $row->name, 'price' => $row->price, 
+                            'qty' => 1, 'variants' => $variants, 'category_id' => $row->category_id);
             }
             $this->sma->send_json($pr);
         } else {
@@ -2108,9 +2112,10 @@ class Products extends MY_Controller
 
         $this->form_validation->set_rules('form_action', lang("form_action"), 'required');
 
-        if ($this->form_validation->run() == true) {
+        if ($this->form_validation->run() == true) {    
 
             if (!empty($_POST['val'])) {
+                
                 if ($this->input->post('form_action') == 'sync_quantity') {
 
                     foreach ($_POST['val'] as $id) {
@@ -2129,7 +2134,7 @@ class Products extends MY_Controller
                     redirect($_SERVER["HTTP_REFERER"]);
 
                 } elseif ($this->input->post('form_action') == 'labels') {
-
+                    $i = 0;
                     foreach ($_POST['val'] as $id) {
                         $row = $this->products_model->getProductByID($id);
                         $selected_variants = false;
@@ -2138,7 +2143,9 @@ class Products extends MY_Controller
                                 $selected_variants[$variant->id] = $variant->quantity > 0 ? 1 : 0;
                             }
                         }
-                        $pr[$row->id] = array('id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'code' => $row->code, 'name' => $row->name, 'price' => $row->price, 'qty' => 1, 'variants' => $variants, 'selected_variants' => $selected_variants);
+                        //$this->sma->print_arrays($_POST['val']);
+                        $pr[$row->id] = array('id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'code' => $row->code, 'name' => $row->name, 'price' => $row->price, 'qty' => ($_POST['qty'][$i] ? $_POST['qty'][$i] : 1), 'variants' => $variants, 'selected_variants' => $selected_variants);
+                        $i++;
                     }
 
                     $this->data['items'] = isset($pr) ? json_encode($pr) : false;

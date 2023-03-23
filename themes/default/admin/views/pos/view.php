@@ -41,6 +41,7 @@
         <?php
     } ?>
     <div id="wrapper">
+
         <div id="receiptData">
             <div class="no-print">
                 <?php
@@ -196,7 +197,8 @@
                         }
                     ?>
                     <tr>
-                        <td colspan="5">
+                        <td colspan="5">  
+                                              
                             <span><?=$r?></span>&#8594;&nbsp;<?=product_name($row->product_name, ($printer ? $printer->char_per_line : null))?>
                             <?php if (!empty($row->comment)) { echo ' <strong>(' . $row->comment . ')</strong>'; } ?>
                         </td>
@@ -641,6 +643,9 @@
                         <?php
                         if ($pos->remote_printing == 1) {
                             echo '<button onclick="window.print();" class="btn btn-block btn-primary">'.lang("print").'</button>';
+                            if ($inv->warehouse_id == 3) {
+                                echo '</div><div class="btn-group" role="group"><button type="button" id="printLabel" data-action="labels" name="printLabel" class="btn btn-block btn-success" style="text-transform:uppercase;"><li class="fa fa-barcode" style="margin-right: 10px;"></li>'.lang("print_barcodes").'</button>';
+                            }
                         } else {
                             echo '<button onclick="return printReceipt()" class="btn btn-block btn-primary">'.lang("print").'</button>';
                         }
@@ -648,7 +653,7 @@
                         ?>
                     </div>
                     <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-default" data-dismiss="modal"><?= lang('close'); ?></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="text-transform:uppercase;"><?= lang('close'); ?></button>
                     </div>
                 </div>
                 <?php
@@ -656,8 +661,14 @@
                 ?>
                 <span class="pull-right col-xs-12">
                     <?php
-                    if ($pos->remote_printing == 1) {
+                    if ($pos->remote_printing == 1) {                      
                         echo '<button onclick="window.print();" class="btn btn-block btn-primary">'.lang("print").'</button>';
+                        if ($inv->warehouse_id == 3) {
+                            echo '<button type="button" id="printLabel" data-action="labels" name="printLabel" class="btn btn-block btn-success" style="text-transform:uppercase;"><li class="fa fa-barcode" style="margin-right: 10px;"></li>'.lang("print_barcodes").'</button>';
+                        }
+                    ?>
+                        
+                    <?php
                     } else {
                         echo '<button onclick="return printReceipt()" class="btn btn-block btn-primary">'.lang("print").'</button>';
                         echo '<button onclick="return openCashDrawer()" class="btn btn-block btn-default">'.lang("open_cash_drawer").'</button>';
@@ -688,6 +699,22 @@
             <div style="clear:both;"></div>
         </div>
     </div>
+<?php if ($Owner || $GP['bulk_actions']) {
+    echo admin_form_open('products/product_actions'.($warehouse_id ? '/'.$warehouse_id : ''), 'id="label-form"');
+    foreach ($rows as $row) {
+?>
+        <input name="val[]" type="hidden" value="<?=$row->product_id?>">
+        <input name="qty[]" type="hidden" value="<?=$row->quantity?>">    
+<?php
+    }
+} ?>
+<?php if ($Owner || $GP['bulk_actions']) { ?>
+    <div style="display: none;">
+        <input type="hidden" name="form_action" value="labels" id="form_action"/>
+        <?= form_submit('performAction', 'performAction', 'id="label-form-submit"') ?>
+    </div>
+    <?= form_close() ?>
+<?php } ?>
 
     <div class="modal fade in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          aria-hidden="true"></div>
@@ -704,6 +731,15 @@
     ?>
     <script type="text/javascript">
         $(document).ready(function () {
+           
+            $('body').on('click', '#printLabel', function(e) {
+            
+                console.log('yyyy');
+                e.preventDefault();
+                //$('#form_action').val($(this).attr('data-action'));
+                console.log($('#form_action').val() + ' - ' + $('#label-form-submit').val());
+                $('#label-form-submit').trigger('click');
+            });
             $('#view-customer').click(function(){
                 console.log('customers/view/<?=$customer->id?>');
                 $('#myModal2').modal({remote: site.base_url + 'customers/view/<?=$customer->id?>'});

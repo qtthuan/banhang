@@ -504,6 +504,7 @@ class Products_model extends CI_Model
     {
         $this->db->select('' . $this->db->dbprefix('products') . '.id, code, ' .
                             $this->db->dbprefix('products') . '.name as name, ' . 
+                            $this->db->dbprefix('products') . '.category_id as category_id, ' . 
                             $this->db->dbprefix('products') . '.price as price')
             ->where("(" . $this->db->dbprefix('products') . ".name LIKE '%" . $term . "%' OR code LIKE '%" . $term . "%' OR
                 concat(" . $this->db->dbprefix('products') . ".name, ' (', code, ')') LIKE '%" . $term . "%')")

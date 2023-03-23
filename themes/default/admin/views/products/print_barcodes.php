@@ -98,7 +98,7 @@
                             <input name="check_promo" type="checkbox" id="check_promo" value="1" checked="checked" style="display:inline-block;" />
                             <label for="check_promo" class="padding05"><?= lang('check_promo'); ?></label>
                         </div>
-                        <div class="form-group" style="margin-left: 35px">
+                        <div class="form-group group-not-for-mini" style="margin-left: 35px">
                             <input name="product_barcode" type="checkbox" id="product_barcode" value="1" checked="checked" style="display:inline-block;" />
                             <label for="product_barcode" class="padding05"><?= lang('product_barcode'); ?></label>
                             <input name="product_code" type="checkbox" id="product_code" value="1" checked="checked" style="display:inline-block;" />
@@ -316,6 +316,7 @@
                 event.preventDefault();
                 if (ui.item.id !== 0) {
                     var row = add_product_item(ui.item);
+                    console.log(JSON.stringify(ui.item));
                     if (row) {
                         $(this).val('');
                     }
@@ -645,10 +646,20 @@
             });
         }
 
-        localStorage.setItem('bcitems', JSON.stringify(bcitems));
+        localStorage.setItem('bcitems', JSON.stringify(bcitems));        
         loadItems();
         return true;
 
+    }
+
+    function uncheckMini(code) {
+        if (code.includes('GK')) {
+            $('.group-not-for-mini').find(':checkbox').each(function() {
+                console.log($(this).val())
+                $(this).prop("checked", false);
+
+            });
+        }
     }
 
     function loadItems () {
@@ -660,6 +671,7 @@
             $.each(bcitems, function () {
                 //console.log(JSON.stringify(bcitems));
                 var item = this;
+                uncheckMini(item.code);
                 var row_no = item.id;
                 var vd = '';
                 var newTr = $('<tr id="row_' + row_no + '" class="row_' + item.id + '" data-item-id="' + item.id + '"></tr>');
