@@ -702,10 +702,13 @@
 <?php if ($Owner || $GP['bulk_actions']) {
     echo admin_form_open('products/product_actions'.($warehouse_id ? '/'.$warehouse_id : ''), 'id="label-form"');
     foreach ($rows as $row) {
+        if($row->product_code != 'GK3031' && $row->product_code != 'GK3030') { // KHÔNG IN MÃ VẠCH KEM CHUỐI VÀ SINH TỐ ĐẬU BỊCH 
 ?>
-        <input name="val[]" type="hidden" value="<?=$row->product_id?>">
-        <input name="qty[]" type="hidden" value="<?=$row->quantity?>">    
+            <input name="code[]" type="hidden" value="<?=$row->product_code?>">
+            <input name="val[]" type="hidden" value="<?=$row->product_id?>">
+            <input name="qty[]" type="hidden" value="<?=$row->quantity?>">    
 <?php
+        }
     }
 } ?>
 <?php if ($Owner || $GP['bulk_actions']) { ?>
@@ -730,14 +733,9 @@
     }
     ?>
     <script type="text/javascript">
-        $(document).ready(function () {
-           
-            $('body').on('click', '#printLabel', function(e) {
-            
-                console.log('yyyy');
-                e.preventDefault();
-                //$('#form_action').val($(this).attr('data-action'));
-                console.log($('#form_action').val() + ' - ' + $('#label-form-submit').val());
+        $(document).ready(function () {           
+            $('body').on('click', '#printLabel', function(e) {            
+                e.preventDefault();                
                 $('#label-form-submit').trigger('click');
             });
             $('#view-customer').click(function(){
