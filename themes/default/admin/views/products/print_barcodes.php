@@ -628,9 +628,7 @@
             localStorage.setItem('bcitems', JSON.stringify(bcitems));
         });
 
-        console.log($('#price').val() + 'ccc');
         if ($('#price').prop('checked') == false) {
-            console.log($('#price').val() + 'cvvv');
             $('#barcode-con .barcode .item').addClass('valign_barcode_middle');
         }
     });
