@@ -231,6 +231,7 @@ class Products extends MY_Controller
                 $pid = $_POST['product'][$m];
                 $quantity = $_POST['quantity'][$m];
                 $product = $this->products_model->getProductWithCategory($pid);
+                //$this->sma->print_arrays($product);
                 $suppliers = '';
                 if ($this->companies_model->getCompanyByID($product->supplier1)->name != '') {
                     $suppliers .= $this->companies_model->getCompanyByID($product->supplier1)->name . ', ';
@@ -321,6 +322,7 @@ class Products extends MY_Controller
                         'text_brand'  => $this->input->post('product_brand') ? $text_brand : FALSE,
                         'name_brand'  => $name_brand,
                         'increase_size' => $increase_size,
+                        'comment' => $_POST['comment'][$m] ? $_POST['comment'][$m] : '',
                         );
                 }
 
@@ -2137,16 +2139,18 @@ class Products extends MY_Controller
                     $i = 0;
                     foreach ($_POST['val'] as $id) {
                         $row = $this->products_model->getProductByID($id);
+                        $pr_id = $row->id . '_' . $i;
                         $selected_variants = false;
                         if ($variants = $this->products_model->getProductOptions($row->id)) {
                             foreach ($variants as $variant) {
                                 $selected_variants[$variant->id] = $variant->quantity > 0 ? 1 : 0;
                             }
                         }
-                        //$this->sma->print_arrays($_POST['val']);
-                        $pr[$row->id] = array('id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'code' => $row->code, 'name' => $row->name, 'price' => $row->price, 'qty' => ($_POST['qty'][$i] ? $_POST['qty'][$i] : 1), 'variants' => $variants, 'selected_variants' => $selected_variants);
+                        //$this->sma->print_arrays($_POST['val'], $_POST['code'],$_POST['qty']);
+                        $pr[$pr_id] = array('id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'code' => $row->code, 'name' => $row->name, 'price' => $row->price, 'qty' => ($_POST['qty'][$i] ? $_POST['qty'][$i] : 1), 'comment' => ($_POST['comment'][$i] ? $_POST['comment'][$i] : ''), 'variants' => $variants, 'selected_variants' => $selected_variants);
                         $i++;
                     }
+                    //$this->sma->print_arrays($pr);
 
                     $this->data['items'] = isset($pr) ? json_encode($pr) : false;
                     $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));

@@ -707,6 +707,7 @@
             <input name="code[]" type="hidden" value="<?=$row->product_code?>">
             <input name="val[]" type="hidden" value="<?=$row->product_id?>">
             <input name="qty[]" type="hidden" value="<?=$row->quantity?>">    
+            <input name="comment[]" type="hidden" value="<?=$row->comment?>">    
 <?php
         }
     }

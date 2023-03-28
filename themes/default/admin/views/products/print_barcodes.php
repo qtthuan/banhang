@@ -85,6 +85,8 @@
                             <label for="product_name" class="padding05"><?= lang('product_name'); ?></label>
                             <input name="price" type="checkbox" id="price" class="chkPrint" value="1" checked="checked" style="display:inline-block;" />
                             <label for="price" class="padding05"><?= lang('price'); ?></label>
+                            <input name="check_promo" type="checkbox" id="check_promo" class="chkPrint" value="1" checked="checked" style="display:inline-block;" />
+                            <label for="check_promo" class="padding05"><?= lang('check_promo'); ?></label>
                             <!--<input name="currencies" type="checkbox" id="currencies" value="1" style="display:inline-block;" />
                             <label for="currencies" class="padding05"><?= lang('currencies'); ?></label>
                             <input name="unit" type="checkbox" id="unit" value="1" style="display:inline-block;" />
@@ -95,8 +97,7 @@
                             <label for="variants" class="padding05"><?= lang('variants'); ?></label>
                             <input name="product_image" type="checkbox" id="product_image" class="chkPrint" value="1" style="display:inline-block;" />
                             <label for="product_image" class="padding05"><?= lang('product_image'); ?></label>
-                            <input name="check_promo" type="checkbox" id="check_promo" class="chkPrint" value="1" checked="checked" style="display:inline-block;" />
-                            <label for="check_promo" class="padding05"><?= lang('check_promo'); ?></label>
+                            
                         </div>
                         <div class="form-group group-not-for-mini" style="margin-left: 35px">
                             <input name="product_barcode" type="checkbox" id="product_barcode" class="chkPrint" value="1" checked="checked" style="display:inline-block;" />
@@ -136,6 +137,9 @@
                                         $total_items++;
                                         if($item['increase_size']) {
                                             $increase_size = "increase_size";
+                                            if ($item['comment']) {
+                                                $increase_size .= '_1';
+                                            }
                                         }                                        
                                         echo '<div class="item style' . $style . ' ' . $valign_middle . '" '.
                                         ($style == 50 && $this->input->post('cf_width') && $this->input->post('cf_height') ?
@@ -166,7 +170,11 @@
                                             echo '<span class="barcode_site">'.$item['site'].'</span>';
                                         }
                                         if($item['name']) {
-                                            echo '<span class="barcode_name '.$increase_size.'">'.$item['name'].'</span>';
+                                            echo '<span class="barcode_name '.$increase_size.'">'.$item['name'];
+                                            if($item['comment']) {
+                                                echo ' (<strong>' . $item['comment'] . '</strong>)';
+                                            }
+                                            echo '</span>';
                                         }
 
                                         if($item['unit']) {
@@ -677,8 +685,12 @@
                 uncheckMini(item.code);
                 var row_no = item.id;
                 var vd = '';
+                var comment = '';
+                if (item.comment) {
+                    comment += ' - <strong>' + item.comment + '</strong>';
+                }
                 var newTr = $('<tr id="row_' + row_no + '" class="row_' + item.id + '" data-item-id="' + item.id + '"></tr>');
-                tr_html = '<td><input name="product[]" type="hidden" value="' + item.id + '"><span id="name_' + row_no + '">' + item.name + ' (' + item.code + ')</span></td>';
+                tr_html = '<td><input name="product[]" type="hidden" value="' + item.id + '"><input name="comment[]" type="hidden" value="' + item.comment + '"><span id="name_' + row_no + '">' + item.name + ' (' + item.code + ') ' + comment + '</span></td>';
                 tr_html += '<td><input class="form-control quantity text-center" name="quantity[]" type="text" value="' + formatDecimal(item.qty) + '" data-id="' + row_no + '" data-item="' + item.id + '" id="quantity_' + row_no + '" onClick="this.select();"></td>';
                 if(item.variants) {
                     $.each(item.variants, function () {
