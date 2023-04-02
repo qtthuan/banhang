@@ -253,7 +253,7 @@ body:before, body:after {
     min-width: 100px;
     overflow: hidden;
     display: inline-block;
-    font-size: 15px;
+    font-size: 14px;
 }
 /*.btn-prni:hover {
     background: #eee;
