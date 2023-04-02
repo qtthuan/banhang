@@ -253,7 +253,7 @@ body:before, body:after {
     min-width: 100px;
     overflow: hidden;
     display: inline-block;
-    font-size: 16px;
+    font-size: 15px;
 }
 /*.btn-prni:hover {
     background: #eee;
@@ -262,7 +262,7 @@ body:before, body:after {
 .btn-prni span {
     display: table-cell;
     height: 45px;
-    line-height: 17px;
+    line-height: 16px;
     vertical-align: middle;
     width: 10.5%;
     min-width: 94px;
