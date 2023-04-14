@@ -2138,17 +2138,19 @@ class Products extends MY_Controller
                 } elseif ($this->input->post('form_action') == 'labels') {
                     $i = 0;
                     foreach ($_POST['val'] as $id) {
-                        $row = $this->products_model->getProductByID($id);
-                        $pr_id = $row->id . '_' . $i;
-                        $selected_variants = false;
-                        if ($variants = $this->products_model->getProductOptions($row->id)) {
-                            foreach ($variants as $variant) {
-                                $selected_variants[$variant->id] = $variant->quantity > 0 ? 1 : 0;
+                        if ($row = $this->products_model->getProductByID($id)) {
+                            $pr_id = $row->id . '_' . $i;
+                            $selected_variants = false;
+                            if ($variants = $this->products_model->getProductOptions($row->id)) {
+                                foreach ($variants as $variant) {
+                                    $selected_variants[$variant->id] = $variant->quantity > 0 ? 1 : 0;
+                                }
                             }
+                            
+                            $pr[$pr_id] = array('id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'code' => $row->code, 'name' => $row->name, 'price' => $row->price, 'qty' => ($_POST['qty'][$i] ? $_POST['qty'][$i] : 1), 'comment' => ($_POST['comment'][$i] ? $_POST['comment'][$i] : ''), 'variants' => $variants, 'selected_variants' => $selected_variants);
+                            //$this->sma->print_arrays($_POST['val'], $_POST['code'],$_POST['qty'], $pr);
+                            $i++;
                         }
-                        //$this->sma->print_arrays($_POST['val'], $_POST['code'],$_POST['qty']);
-                        $pr[$pr_id] = array('id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'code' => $row->code, 'name' => $row->name, 'price' => $row->price, 'qty' => ($_POST['qty'][$i] ? $_POST['qty'][$i] : 1), 'comment' => ($_POST['comment'][$i] ? $_POST['comment'][$i] : ''), 'variants' => $variants, 'selected_variants' => $selected_variants);
-                        $i++;
                     }
                     //$this->sma->print_arrays($pr);
 

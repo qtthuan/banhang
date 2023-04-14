@@ -875,7 +875,7 @@ class Pos extends MY_Controller
             $tax_rate = $this->site->getTaxRateByID($row->tax_rate);
             $category = $this->site->getCategoryByID($row->category_id);
 
-            $pr = array('id' => str_replace(".", "", microtime(true)), 'item_id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'category' => $row->category_id, 'row' => $row, 'combo_items' => $combo_items, 'tax_rate' => $tax_rate, 'units' => $units, 'options' => $options, 'no_points' => $category->no_points);
+            $pr = array('id' => str_replace(".", "", microtime(true)), 'item_id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'category' => $row->category_id, 'row' => $row, 'combo_items' => $combo_items, 'tax_rate' => $tax_rate, 'units' => $units, 'options' => $options, 'no_points' => $this->sma->isPromo($row) ? 1 : $category->no_points);
 
             $this->sma->send_json($pr);
         } else {

@@ -2214,7 +2214,7 @@ class Sales extends MY_Controller
                 $category = $this->site->getCategoryByID($row->category_id);
 
                 $pr[] = array('warehouse' => $warehouse_id, 'customer' => $customer_id, 'id' => ($c + $r), 'item_id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'category' => $row->category_id,
-                    'no_points' => $category->no_points, 'row' => $row, 'combo_items' => $combo_items, 'tax_rate' => $tax_rate, 'units' => $units, 'options' => $options);
+                    'no_points' => $this->sma->isPromo($row) ? 1 : $category->no_points, 'row' => $row, 'combo_items' => $combo_items, 'tax_rate' => $tax_rate, 'units' => $units, 'options' => $options);
                 $r++;
             }
             $this->sma->send_json($pr);
