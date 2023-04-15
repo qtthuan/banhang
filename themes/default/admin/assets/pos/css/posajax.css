@@ -249,11 +249,11 @@ body:before, body:after {
     height: 125px;
     margin: 0 0 3px 2px;
     padding: 2px;
-    width: 12.3%;
+    width: 10.9%;
     min-width: 100px;
     overflow: hidden;
     display: inline-block;
-    font-size: 14px;
+    font-size: 13px;
 }
 /*.btn-prni:hover {
     background: #eee;
