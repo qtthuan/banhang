@@ -420,3 +420,4 @@ $lang['edit_price_on_sale']              = "Sửa giá bán";
 $lang['login_logo']                      = "Login Logo";
 $lang['unit_has_subunit']                = "Không thể xóa đơn vị chứa đơn vị con";
 $lang['header_pos_txt']                  = "Bán hàng";
+$lang['header_mini_txt']                 = "Mini";

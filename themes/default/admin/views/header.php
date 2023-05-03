@@ -95,7 +95,7 @@
                         </a>
                     </li>
                     <?php } ?>
-                    <li class="dropdown hidden-xs">
+                    <!--<li class="dropdown hidden-xs">
                         <a class="btn tip" title="<?= lang('calculator') ?>" data-placement="bottom" href="#" data-toggle="dropdown">
                             <i class="fa fa-calculator"></i>
                         </a>
@@ -104,7 +104,7 @@
                                 <span id="inlineCalc"></span>
                             </li>
                         </ul>
-                    </li>
+                    </li>-->
                     <?php if ($info) { ?>
                         <li class="dropdown hidden-sm">
                             <a class="btn tip" title="<?= lang('notifications') ?>" data-placement="bottom" href="#" data-toggle="dropdown">
@@ -128,7 +128,7 @@
                         </li>
                     <?php } ?>
                     <?php if ($events) { ?>
-                        <li class="dropdown hidden-xs">
+                        <!--<li class="dropdown hidden-xs">
                             <a class="btn tip" title="<?= lang('calendar') ?>" data-placement="bottom" href="#" data-toggle="dropdown">
                                 <i class="fa fa-calendar"></i>
                                 <span class="number blightOrange black"><?= sizeof($events) ?></span>
@@ -152,13 +152,13 @@
                                     </a>
                                 </li>
                             </ul>
-                        </li>
+                        </li>-->
                     <?php } else { ?>
-                    <li class="dropdown hidden-xs">
+                    <!--<li class="dropdown hidden-xs">
                         <a class="btn tip" title="<?= lang('calendar') ?>" data-placement="bottom" href="<?= admin_url('calendar') ?>">
                             <i class="fa fa-calendar"></i>
                         </a>
-                    </li>
+                    </li>-->
                     <?php } ?>
                     <li class="dropdown hidden-sm">
                         <a class="btn tip" title="<?= lang('styles') ?>" data-placement="bottom" data-toggle="dropdown"
@@ -183,7 +183,7 @@
                            </li>
                         </ul>
                     </li>
-                    <li class="dropdown hidden-xs">
+                    <!--<li class="dropdown hidden-xs">
                         <a class="btn tip" title="<?= lang('language') ?>" data-placement="bottom" data-toggle="dropdown"
                            href="#">
                             <img src="<?= base_url('assets/images/' . $Settings->user_language . '.png'); ?>" alt="">
@@ -208,14 +208,14 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </li>-->
                     <?php if ($Owner && $Settings->update) { ?>
-                    <li class="dropdown hidden-sm">
+                    <!--<li class="dropdown hidden-sm">
                         <a class="btn blightOrange tip" title="<?= lang('update_available') ?>"
                             data-placement="bottom" data-container="body" href="<?= admin_url('system_settings/updates') ?>">
                             <i class="fa fa-download"></i>
                         </a>
-                    </li>
+                    </li>-->
                         <?php } ?>
                     <?php if (($Owner || $Admin || $GP['reports-quantity_alerts'] || $GP['reports-expiry_alerts']) && ($qty_alert_num > 0 || $exp_alert_num > 0 || $shop_sale_alerts)) { ?>
                         <li class="dropdown hidden-sm">
@@ -262,6 +262,11 @@
                     <li class="dropdown hidden-xs">
                         <a class="btn bdarkGreen tip" title="" data-placement="bottom" href="<?= admin_url('pos') ?>">
                             <i class="fa fa-th-large"></i> <span class="padding05" style="text-transform: uppercase"><?= lang('header_pos_txt') ?></span>
+                        </a>
+                    </li>
+                    <li class="dropdown hidden-xs">
+                        <a class="btn blightBlue tip" title="" data-placement="bottom" href="<?= admin_url('pos/mini') ?>">
+                            <i class="fa fa-th-large"></i> <span class="padding05" style="text-transform: uppercase"><?= lang('header_mini_txt') ?></span>
                         </a>
                     </li>
                     <?php } ?>

@@ -122,3 +122,4 @@ $lang['purchase_already_paid']              = "Trạng thái đã được thanh
 $lang['payment_sent']                       = "Thanh toán thành công";
 $lang['update_supplier_email']              = "Vui lòng cập nhật email NCC";
 $lang['header_pos_txt']                     = "Bán hàng";
+$lang['header_mini_txt']                    = "Mini";

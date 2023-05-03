@@ -155,4 +155,5 @@ $lang['topup_added']                        = "Thay đổi phiếu mua hàng th�
 $lang['duplicate_sale']                     = "Sao chép hóa đơn";
 $lang['update_customer_email']              = "Vui lòng bổ sung địa chỉ email";
 $lang['header_pos_txt']                     = "Bán hàng";
+$lang['header_mini_txt']                    = "Mini";
 $lang['input_discount_help']                = "Nhập giá giảm hoặc phần trăm(%)";

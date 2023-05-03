@@ -44,3 +44,4 @@ $lang['scf2']                               = "Tên tài khoản";
 $lang['company']                            = "Tên NCC";
 $lang['name']                               = "Mã NCC";
 $lang['header_pos_txt']                     = "Bán hàng";
+$lang['header_mini_txt']                    = "Mini";

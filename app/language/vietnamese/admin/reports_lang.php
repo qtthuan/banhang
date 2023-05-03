@@ -86,3 +86,4 @@ $lang['category_code']              = "Mã danh mục";
 $lang['category_name']              = "Tên danh mục";
 $lang['total_returns']              = "Tổng trả lại hàng";
 $lang['header_pos_txt']             = "Bán hàng";
+$lang['header_mini_txt']            = "Mini";

@@ -36,3 +36,4 @@ $lang['stamp_sign']                     = "Ký tên & đóng dấu";
 $lang['create_sale']                    = "Thêm bán hàng";
 $lang['create_purchase']                = "Thêm nhập hàng";
 $lang['header_pos_txt']                 = "Bán hàng";
+$lang['header_mini_txt']                = "Mini";

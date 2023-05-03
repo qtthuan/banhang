@@ -33,3 +33,4 @@ $lang['for_staff_only']             = "Chỉ cho nhân viên";
 $lang['for_both']                   = "Cho cả hai";
 $lang['till']                       = "Cho đến khi";
 $lang['header_pos_txt']             = "Bán hàng";
+$lang['header_mini_txt']                = "Mini";

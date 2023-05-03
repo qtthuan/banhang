@@ -71,4 +71,5 @@ $lang['generate_customer_no']           = "Tạo mã khách hàng tự động";
 $lang['default_customer_address']       = "TP Cần Thơ";
 $lang['customer_award_points']          = "Điểm thưởng";
 $lang['header_pos_txt']                 = "Bán hàng";
+$lang['header_mini_txt']                = "Mini";
 $lang['total_amount_per_year']          = "Doanh số trong năm";

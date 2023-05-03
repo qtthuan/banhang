@@ -214,4 +214,5 @@ $lang['pls_select_category']                = "Bạn chưa chọn nhóm hàng!";
 $lang['oops_pls_enter_code']                = "Oops!!!<br>Vui lòng nhập mã sản phẩm cũ nhé!";
 $lang['product_code_short']                 = "Mã SP";
 $lang['header_pos_txt']                     = "Bán hàng";
+$lang['header_mini_txt']                = "Mini";
 $lang['is_not_numeric']                     = "Giá cộng vào phải là số";

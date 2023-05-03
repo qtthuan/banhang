@@ -46,3 +46,4 @@ $lang['first_2_are_required_other_optional']            = "<strong>Hai cột đ�
 $lang['pr_not_found']                                   = "Không tìm thấy sản phẩm ";
 $lang['line_no']                                        = "Số dòng";
 $lang['header_pos_txt']                                 = "Bán hàng";
+$lang['header_mini_txt']                                = "Mini";
