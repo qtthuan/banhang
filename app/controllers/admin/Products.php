@@ -2148,7 +2148,7 @@ class Products extends MY_Controller
                             }
                             
                             $pr[$pr_id] = array('id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'code' => $row->code, 'name' => $row->name, 'price' => $row->price, 'qty' => ($_POST['qty'][$i] ? $_POST['qty'][$i] : 1), 'comment' => ($_POST['comment'][$i] ? $_POST['comment'][$i] : ''), 'variants' => $variants, 'selected_variants' => $selected_variants);
-                            $this->sma->print_arrays($_POST['val'], $_POST['code'],$_POST['qty'], $pr);
+                            //$this->sma->print_arrays($_POST['val'], $_POST['code'],$_POST['qty'], $pr);
                             $i++;
                         }
                     }
