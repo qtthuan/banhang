@@ -197,6 +197,7 @@ body:before, body:after {
     font-size: 16px !important;
 }
 #pos #cp #cpinner {
+    overflow: hidden;
     min-width: 200px;
     max-width: 28%;
     float: left;
@@ -246,7 +247,7 @@ body:before, body:after {
 .btn-prni {
     border: 1px solid #eee;
     cursor: pointer;
-    height: 111px;
+    height: 115px;
     margin: 0 0 3px 2px;
     padding: 2px;
     width: 10.9%;
@@ -272,7 +273,7 @@ body:before, body:after {
     background: #eee;
 }*/
 .btn-prni img {
-    max-height: 60px !important;
+    max-height: 62px !important;
 }
 .btn-prni.active { background: #eee; border: 1px solid #e5e5e5; cursor: default;  }
 #pos #totalTable td { padding: 2px; }

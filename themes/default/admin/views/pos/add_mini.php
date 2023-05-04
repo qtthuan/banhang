@@ -444,33 +444,33 @@
                     <?php echo form_close(); ?>
                     <div id="cp">
                         <div id="cpinner">
-                            <div class="quick-menu">
+                            <div class="quick-menu" style="overflow: auto;">
                                 <div id="proContainer">
                                     <div id="ajaxproducts">
                                         <div id="item-list">
                                             <?php echo $products; ?>
                                         </div>
-                                        <div class="btn-group btn-group-justified pos-grid-nav">
-                                            <div class="btn-group">
-                                                <button style="z-index:10002;" class="btn btn-primary pos-tip" title="<?=lang('previous')?>" type="button" id="previous">
-                                                    <i class="fa fa-chevron-left"></i>
-                                                </button>
-                                            </div>
-                                            <?php if ($Owner || $Admin || $GP['sales-add_gift_card']) {?>
-                                            <div class="btn-group">
-                                                <button style="z-index:10003;" class="btn btn-primary pos-tip" type="button" id="sellGiftCard" title="<?=lang('sell_gift_card')?>">
-                                                    <i class="fa fa-credit-card" id="addIcon"></i><?=lang('sell_gift_card')?>
-                                                </button>
-                                            </div>
-                                            <?php } ?>
-                                            <div class="btn-group">
-                                                <button style="z-index:10004;" class="btn btn-primary pos-tip" title="<?=lang('next')?>" type="button" id="next">
-                                                    <i class="fa fa-chevron-right"></i>
-                                                </button>
-                                            </div>
-                                        </div>
                                     </div>
                                     <div style="clear:both;"></div>
+                                </div>
+                            </div>
+                            <div class="btn-group btn-group-justified pos-grid-nav">
+                                <div class="btn-group">
+                                    <button style="z-index:10002;" class="btn btn-primary pos-tip" title="<?=lang('previous')?>" type="button" id="previous">
+                                        <i class="fa fa-chevron-left"></i>
+                                    </button>
+                                </div>
+                                <?php if ($Owner || $Admin || $GP['sales-add_gift_card']) {?>
+                                <div class="btn-group">
+                                    <button style="z-index:10003;" class="btn btn-primary pos-tip" type="button" id="sellGiftCard" title="<?=lang('sell_gift_card')?>">
+                                        <i class="fa fa-credit-card" id="addIcon"></i><?=lang('sell_gift_card')?>
+                                    </button>
+                                </div>
+                                <?php } ?>
+                                <div class="btn-group">
+                                    <button style="z-index:10004;" class="btn btn-primary pos-tip" title="<?=lang('next')?>" type="button" id="next">
+                                        <i class="fa fa-chevron-right"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -1313,7 +1313,7 @@ var lang = {
         var wh = $(window).height(),
             lth = $('#left-top').height(),
             lbh = $('#left-bottom').height();
-        $('#item-list').css("height", wh - 140);
+        $('#item-list').css("height", wh - 110);
         $('#item-list').css("min-height", 515);
         $('#left-middle').css("height", wh - lth - lbh - 102);
         $('#left-middle').css("min-height", 278);
