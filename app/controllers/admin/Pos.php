@@ -650,7 +650,7 @@ class Pos extends MY_Controller
 
     public function mini($sid = NULL)
     {
-        $this->sma->checkPermissions();
+        //$this->sma->checkPermissions();
 
         if (!$this->pos_settings->default_biller || !$this->pos_settings->default_customer || !$this->pos_settings->default_category) {
             $this->session->set_flashdata('warning', lang('please_update_settings'));

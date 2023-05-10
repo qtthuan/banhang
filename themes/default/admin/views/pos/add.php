@@ -2260,22 +2260,26 @@ var lang = {
     $(document).ready(function () {
         //console.log(localStorage.getItem('poscustomer'));
         //alert(localStorage.getItem('poswarehouse'));
-        $("#poscustomer").change();
-        if (localStorage.getItem('poswarehouse') != 3) {
-            closeMini();
-        } else {
-            openMini();
-            //$('.btn-cat-con').toggle('slide', { direction: 'right' }, 100);
-        }
+        //$('#poswarehouse').val(1).change();
         $('#poswarehouse').change(function () {
             var v = $(this).val();
             if (v != 3) {
                 closeMini();
             } else {
                 openMini();
+                console.log('1111');
             }
 
         });
+        $("#poscustomer").change();
+        if (localStorage.getItem('poswarehouse') != 3) {
+            closeMini();
+        } else {
+            openMini();
+            console.log('222');
+            //$('.btn-cat-con').toggle('slide', { direction: 'right' }, 100);
+        }
+        
         
         $('#print_order').click(function () {
             if (count == 1) {
