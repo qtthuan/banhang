@@ -1131,7 +1131,7 @@ function loadItems() {
         }
         var category = 0, print_cate = false;
         // var itn = parseInt(Object.keys(sortedItems).length);
-        console.log(JSON.stringify(sortedItems));
+        //console.log(JSON.stringify(sortedItems));
         $.each(sortedItems, function () {
             var item = this;            
             var item_id = site.settings.item_addition == 1 ? item.item_id : item.id;
@@ -1161,6 +1161,7 @@ function loadItems() {
                     if(this.id == item.row.option && this.price != 0 && this.price != '' && this.price != null) {
                         item_price = parseFloat(unit_price)+(parseFloat(this.price));
                         unit_price = item_price;
+                        item_original_price = parseFloat(item_original_price) + parseFloat(this.price);
                     }
                 });
             }
@@ -1214,7 +1215,7 @@ function loadItems() {
                 }
             });
 
-            //console.log('is_promo: ' + is_promo + ' - date valid: ' + checkValidPromotionDate(start_date, end_date))
+            console.log('is_promo: ' + is_promo + ' - date valid: ' + checkValidPromotionDate(start_date, end_date))
 
             if ((is_promo && checkValidPromotionDate(start_date, end_date)) || (item.no_points == 1 && item_discount == 0)) {
             //if (item.no_points == 1 && item_discount == 0) {
@@ -1270,9 +1271,9 @@ function loadItems() {
                             '<input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '">' + 
                             '<input class="no_points" name="no_points[]" type="hidden" value="' + item.no_points + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + display_price + '</span></td>';
             } else {
-                //console.log('ggg');
+                console.log('ggg');
                 //console.log(JSON.stringify(sortedItems));
-                if (item_original_price > 0 && customer_group_id != 4) {
+                if (is_promo && checkValidPromotionDate(start_date, end_date) && customer_group_id != 4) { // Loại nhóm BAEMIN
                     display_price = '<span style="font-weight: bold">' + formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val)) + '</span>';
                     display_price += '(<span style="text-decoration: line-through">' + formatMoney(item_original_price) + '</span>)';
                 } else {
