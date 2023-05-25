@@ -2258,9 +2258,12 @@ var lang = {
     });
  
     $(document).ready(function () {
-        //console.log(localStorage.getItem('poscustomer'));
-        //alert(localStorage.getItem('poswarehouse'));
-        //$('#poswarehouse').val(1).change();
+       
+
+
+
+        $('#poswarehouse').val(1).change();
+        localStorage.setItem('poswarehouse', 1);
         $('#poswarehouse').change(function () {
             var v = $(this).val();
             if (v != 3) {
@@ -2279,7 +2282,8 @@ var lang = {
             console.log('222');
             //$('.btn-cat-con').toggle('slide', { direction: 'right' }, 100);
         }
-        
+        $("#poscustomer").change();
+        //closeMini();
         
         $('#print_order').click(function () {
             if (count == 1) {
