@@ -1240,125 +1240,170 @@ class Products extends MY_Controller
     {
         $this->sma->checkPermissions('csv');
         $this->load->helper('security');
-        $this->form_validation->set_rules('userfile', lang("upload_file"), 'xss_clean');
+        $this->form_validation->set_rules('userfile', lang('upload_file'), 'xss_clean');
 
         if ($this->form_validation->run() == true) {
-
-            if (isset($_FILES["userfile"])) {
-
+            if (isset($_FILES['userfile'])) {
                 $this->load->library('upload');
-                $config['upload_path'] = $this->digital_upload_path;
+                $config['upload_path']   = $this->digital_upload_path;
                 $config['allowed_types'] = 'csv';
-                $config['max_size'] = $this->allowed_file_size;
-                $config['overwrite'] = TRUE;
-                $config['encrypt_name'] = TRUE;
-                $config['max_filename'] = 25;
+                $config['max_size']      = $this->allowed_file_size;
+                $config['overwrite']     = true;
+                $config['encrypt_name']  = true;
+                $config['max_filename']  = 25;
                 $this->upload->initialize($config);
 
                 if (!$this->upload->do_upload()) {
                     $error = $this->upload->display_errors();
                     $this->session->set_flashdata('error', $error);
-                    admin_redirect("products/import_csv");
+                    admin_redirect('products/import_csv');
                 }
 
                 $csv = $this->upload->file_name;
 
-                $arrResult = array();
-                $handle = fopen($this->digital_upload_path . $csv, "r");
+                $arrResult = [];
+                $handle    = fopen($this->digital_upload_path . $csv, 'r');
                 if ($handle) {
-                    while (($row = fgetcsv($handle, 5000, ",")) !== FALSE) {
+                    while (($row = fgetcsv($handle, 5000, ',')) !== false) {
                         $arrResult[] = $row;
                     }
                     fclose($handle);
                 }
-                $titles = array_shift($arrResult);
-                $keys = array('name', 'code', 'barcode_symbology', 'brand', 'category_code', 'unit', 'sale_unit', 'purchase_unit', 'cost', 'price', 'alert_quantity', 'tax_rate', 'tax_method', 'image', 'subcategory_code', 'variants', 'cf1', 'cf2', 'cf3', 'cf4', 'cf5', 'cf6');
-
-                $final = array();
-                foreach ($arrResult as $key => $value) {
-                    $final[] = array_combine($keys, $value);
+                $arr_length = count($arrResult);
+                if ($arr_length > 999) {
+                    $this->session->set_flashdata('error', lang('too_many_products'));
+                    redirect($_SERVER['HTTP_REFERER']);
+                    exit();
                 }
-                // $this->sma->print_arrays($final);
-                $rw = 2; $items = array();
-                foreach ($final as $csv_pr) {
-                    if ( ! $this->products_model->getProductByCode(trim($csv_pr['code']))) {
-                        if ($catd = $this->products_model->getCategoryByCode(trim($csv_pr['category_code']))) {
-                            $brand = $this->products_model->getBrandByName(trim($csv_pr['brand']));
-                            $unit = $this->products_model->getUnitByCode(trim($csv_pr['unit']));
-                            $base_unit = $unit ? $unit->id : NULL;
-                            $sale_unit = $base_unit;
-                            $purcahse_unit = $base_unit;
-                            if ($base_unit) {
-                                $units = $this->site->getUnitsByBUID($base_unit);
-                                foreach ($units as $u) {
-                                    if ($u->code == trim($csv_pr['sale_unit'])) {
-                                        $sale_unit = $u->id;
-                                    }
-                                    if ($u->code == trim($csv_pr['purchase_unit'])) {
-                                        $purcahse_unit = $u->id;
+                $titles  = array_shift($arrResult);
+                $updated = 0;
+                $items   = [];
+                foreach ($arrResult as $key => $value) {
+                    $supplier_name = isset($value[24]) ? trim($value[24]) : '';
+                    $supplier      = $supplier_name ? $this->products_model->getSupplierByName($supplier_name) : false;
+
+                    $item = [
+                        'name'              => isset($value[0]) ? trim($value[0]) : '',
+                        'code'              => isset($value[1]) ? trim($value[1]) : '',
+                        'barcode_symbology' => isset($value[2]) ? mb_strtolower(trim($value[2]), 'UTF-8') : '',
+                        'brand'             => isset($value[3]) ? trim($value[3]) : '',
+                        'category_code'     => isset($value[4]) ? trim($value[4]) : '',
+                        'unit'              => isset($value[5]) ? trim($value[5]) : '',
+                        'sale_unit'         => isset($value[6]) ? trim($value[6]) : '',
+                        'purchase_unit'     => isset($value[7]) ? trim($value[7]) : '',
+                        'cost'              => isset($value[8]) ? trim($value[8]) : '',
+                        'price'             => isset($value[9]) ? trim($value[9]) : '',
+                        'alert_quantity'    => isset($value[10]) ? trim($value[10]) : '',
+                        'tax_rate'          => isset($value[11]) ? trim($value[11]) : '',
+                        'tax_method'        => isset($value[12]) ? (trim($value[12]) == 'exclusive' ? 1 : 0) : '',
+                        'image'             => isset($value[13]) ? trim($value[13]) : '',
+                        'subcategory_code'  => isset($value[14]) ? trim($value[14]) : '',
+                        'variants'          => isset($value[15]) ? trim($value[15]) : '',
+                        'cf1'               => isset($value[16]) ? trim($value[16]) : '',
+                        'cf2'               => isset($value[17]) ? trim($value[17]) : '',
+                        'cf3'               => isset($value[18]) ? trim($value[18]) : '',
+                        'cf4'               => isset($value[19]) ? trim($value[19]) : '',
+                        'cf5'               => isset($value[20]) ? trim($value[20]) : '',
+                        'cf6'               => isset($value[21]) ? trim($value[21]) : '',
+                        'quantity'          => isset($value[22]) ? trim($value[22]) : '',
+                        'second_name'       => isset($value[23]) ? trim($value[23]) : '',
+                        'supplier1'         => $supplier ? $supplier->id : null,
+                        'supplier1_part_no' => isset($value[25]) ? trim($value[25]) : '',
+                        'supplier1price'    => isset($value[26]) ? trim($value[26]) : '',
+                        'slug'              => $this->Settings->use_code_for_slug ? $this->sma->slug($value[1]) : $this->sma->slug($value[0]),
+                    ];
+
+                    if ($catd = $this->products_model->getCategoryByCode($item['category_code'])) {
+                        $tax_details   = $this->products_model->getTaxRateByName($item['tax_rate']);
+                        $prsubcat      = $this->products_model->getCategoryByCode($item['subcategory_code']);
+                        $brand         = $this->products_model->getBrandByName($item['brand']);
+                        $unit          = $this->products_model->getUnitByCode($item['unit']);
+                        $base_unit     = $unit ? $unit->id : null;
+                        $sale_unit     = $base_unit;
+                        $purcahse_unit = $base_unit;
+                        if ($base_unit) {
+                            $units = $this->site->getUnitsByBUID($base_unit);
+                            foreach ($units as $u) {
+                                if ($u->code == $item['sale_unit']) {
+                                    $sale_unit = $u->id;
+                                }
+                                if ($u->code == $item['purchase_unit']) {
+                                    $purcahse_unit = $u->id;
+                                }
+                            }
+                        } else {
+                            $this->session->set_flashdata('error', lang('check_unit') . ' (' . $item['unit'] . '). ' . lang('unit_code_x_exist') . ' ' . lang('line_no') . ' ' . ($key + 1));
+                            admin_redirect('products/import_csv');
+                        }
+
+                        unset($item['category_code'], $item['subcategory_code']);
+                        $item['unit']           = $base_unit;
+                        $item['sale_unit']      = $sale_unit;
+                        $item['category_id']    = $catd->id;
+                        $item['purchase_unit']  = $purcahse_unit;
+                        $item['brand']          = $brand ? $brand->id : null;
+                        $item['tax_rate']       = $tax_details ? $tax_details->id : null;
+                        $item['subcategory_id'] = $prsubcat ? $prsubcat->id : null;
+
+                        if ($product = $this->products_model->getProductByCode($item['code'])) {
+                            if ($product->type == 'standard') {
+                                if ($item['variants']) {
+                                    $vs = explode('|', $item['variants']);
+                                    foreach ($vs as $v) {
+                                        if (!empty(trim($v))) {
+                                            $variants[] = ['product_id' => $product->id, 'name' => trim($v)];
+                                        }
                                     }
                                 }
-                            } else {
-                                $this->session->set_flashdata('error', lang("check_unit") . " (" . $csv_pr['unit'] . "). " . lang("unit_code_x_exist") . " " . lang("line_no") . " " . $rw);
-                                admin_redirect("products/import_csv");
+                                unset($item['variants']);
+                                if ($this->products_model->updateProduct($product->id, $item, null, null, null, null, $variants)) {
+                                    $updated++;
+                                }
                             }
-
-                            $tax_details = $this->products_model->getTaxRateByName(trim($csv_pr['tax_rate']));
-                            $prsubcat = $this->products_model->getCategoryByCode(trim($csv_pr['subcategory_code']));
-                            $items[] = array (
-                                'code' => trim($csv_pr['code']),
-                                'name' => trim($csv_pr['name']),
-                                'category_id' => $catd->id,
-                                'barcode_symbology' => mb_strtolower(trim($csv_pr['barcode_symbology']), 'UTF-8'),
-                                'brand' => ($brand ? $brand->id : NULL),
-                                'unit' => $base_unit,
-                                'sale_unit' => $sale_unit,
-                                'purchase_unit' => $purcahse_unit,
-                                'cost' => trim($csv_pr['cost']),
-                                'price' => trim($csv_pr['price']),
-                                'alert_quantity' => trim($csv_pr['alert_quantity']),
-                                'tax_rate' => ($tax_details ? $tax_details->id : NULL),
-                                'tax_method' => ($csv_pr['tax_method'] == 'exclusive' ? 1 : 0),
-                                'subcategory_id' => ($prsubcat ? $prsubcat->id : NULL),
-                                'variants' => trim($csv_pr['variants']),
-                                'image' => trim($csv_pr['image']),
-                                'cf1' => trim($csv_pr['cf1']),
-                                'cf2' => trim($csv_pr['cf2']),
-                                'cf3' => trim($csv_pr['cf3']),
-                                'cf4' => trim($csv_pr['cf4']),
-                                'cf5' => trim($csv_pr['cf5']),
-                                'cf6' => trim($csv_pr['cf6']),
-                                );
-                        } else {
-                            $this->session->set_flashdata('error', lang("check_category_code") . " (" . $csv_pr['category_code'] . "). " . lang("category_code_x_exist") . " " . lang("line_no") . " " . $rw);
-                            admin_redirect("products/import_csv");
+                            $item = false;
                         }
+                    } else {
+                        $this->session->set_flashdata('error', lang('check_category_code') . ' (' . $item['category_code'] . '). ' . lang('category_code_x_exist') . ' ' . lang('line_no') . ' ' . ($key + 1));
+                        admin_redirect('products/import_csv');
                     }
 
-                    $rw++;
+                    if ($item) {
+                        $items[] = $item;
+                    }
                 }
             }
 
-            // $this->sma->print_arrays($items);
+            //$this->sma->print_arrays($items);
         }
 
-        if ($this->form_validation->run() == true && $prs = $this->products_model->add_products($items)) {
-            $this->session->set_flashdata('message', sprintf(lang("products_added"), $prs));
-            admin_redirect('products');
+        if ($this->form_validation->run() == true && !empty($items)) {
+            //$this->sma->print_arrays($items);
+            if ($this->products_model->add_products($items)) {
+                $updated = $updated ? '<p>' . sprintf(lang('products_updated'), $updated) . '</p>' : '';
+                $this->session->set_flashdata('message', sprintf(lang('products_added'), count($items)) . $updated);
+                admin_redirect('products');
+            }
         } else {
+            if (isset($items) && empty($items)) {
+                if ($updated) {
+                    $this->session->set_flashdata('message', sprintf(lang('products_updated'), $updated));
+                    admin_redirect('products');
+                } else {
+                    $this->session->set_flashdata('warning', lang('csv_issue'));
+                }
+                admin_redirect('products/import_csv');
+            }
 
-            $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
+            $this->data['error']    = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
+            $this->data['userfile'] = ['name' => 'userfile',
+                'id'                          => 'userfile',
+                'type'                        => 'text',
+                'value'                       => $this->form_validation->set_value('userfile'),
+            ];
 
-            $this->data['userfile'] = array('name' => 'userfile',
-                'id' => 'userfile',
-                'type' => 'text',
-                'value' => $this->form_validation->set_value('userfile')
-            );
-
-            $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('products'), 'page' => lang('products')), array('link' => '#', 'page' => lang('import_products_by_csv')));
-            $meta = array('page_title' => lang('import_products_by_csv'), 'bc' => $bc);
+            $bc   = [['link' => base_url(), 'page' => lang('home')], ['link' => admin_url('products'), 'page' => lang('products')], ['link' => '#', 'page' => lang('import_products_by_csv')]];
+            $meta = ['page_title' => lang('import_products_by_csv'), 'bc' => $bc];
             $this->page_construct('products/import_csv', $meta, $this->data);
-
         }
     }
 
