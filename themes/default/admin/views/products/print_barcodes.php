@@ -171,8 +171,8 @@
                                         }
                                         if($item['name']) {
                                             echo '<span class="barcode_name '.$increase_size.'">'.$item['name'];
-                                            if($item['comment']) {
-                                                echo ' (<strong>' . $item['comment'] . '</strong>)';
+                                            if($item['comment'] && $item['comment'] != '') {
+                                                echo ' (vv<strong>' . $item['comment'] . '</strong>)';
                                             }
                                             echo '</span>';
                                         }
@@ -194,12 +194,20 @@
                                             echo '<span class="barcode_image">'.$item['barcode'].'</span>';
                                         }
                                         echo '<span class="text_code">'.$item['text_code'].'</span>';
+                                        echo '<span class="text_suppliers">';
                                         if ($item['text_suppliers'] &&  $item['text_suppliers'] != "") {
-                                            echo '<span class="text_suppliers"> -' . $item['text_suppliers'] . '</span>';
+                                            echo ' -' . $item['text_suppliers'];
+                                        } else {
+                                            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                                         }
+                                        echo '</span>';
+                                        echo '<span class="text_suppliers" title="'.$item['name_brand'].'">';
                                         if ($item['text_brand'] && $item['text_brand'] != "") {
-                                            echo '<span class="text_suppliers" title="'.$item['name_brand'].'">-' . $item['text_brand'] . '</span>';
+                                            echo '-' . $item['text_brand'];
+                                        } else {
+                                            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                                         }
+                                        echo '</span>';
                                         if ($item[''])
                                         echo '<br />';
 
@@ -666,10 +674,11 @@
     function uncheckMini(code) {
         if (code.includes('GK')) {
             $('#barcode-print-form').find('.chkPrint').each(function() {
-                console.log($(this).val())
+                //console.log($(this).val())
                 $(this).prop("checked", false);
             });
-            $('#product_name').prop("checked", true);            
+            $('#product_name').prop("checked", true);  
+            $('#product_code').prop("checked", true);           
         }
     }
 

@@ -715,6 +715,7 @@
             <input name="code[]" type="hidden" value="<?=$row->product_code?>">
             <input name="val[]" type="hidden" value="<?=$row->product_id?>">
             <input name="qty[]" type="hidden" value="<?=$row->quantity?>">    
+            <input name="options[]" type="hidden" value="<?=$row->option_id?>">    
             <input name="comment[]" type="hidden" value="<?=$row->comment?>">    
 <?php
         }
@@ -722,7 +723,7 @@
 } ?>
 <?php if ($Owner || $GP['bulk_actions']) { ?>
     <div style="display: none;">
-        <input type="hidden" name="form_action" value="labels" id="form_action"/>
+        <input type="hidden" name="form_action" value="labels_extra" id="form_action"/>
         <?= form_submit('performAction', 'performAction', 'id="label-form-submit"') ?>
     </div>
     <?= form_close() ?>

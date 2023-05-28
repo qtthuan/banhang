@@ -212,7 +212,7 @@ class Products extends MY_Controller
                 !$this->input->post('variants') && 
                 !$this->input->post('product_image') &&
                 !$this->input->post('product_barcode') &&
-                !$this->input->post('product_code') &&
+                //!$this->input->post('product_code') &&
                 !$this->input->post('product_supllier') &&
                 !$this->input->post('product_brand')) {
                     $increase_size = true;
@@ -279,7 +279,11 @@ class Products extends MY_Controller
                         $option_name = substr($option_name, 4, strlen($option_name));
 
                         if ($this->input->post('vt_'.$product->id.'_'.$option->id)) {
-                            $text_code = $product->code . $this->Settings->barcode_separator . $this->sma->getSizeNumber($option->name);
+                            if ($product->category_id == 38) { // Nước ép - sinh tố
+                                $text_code = $this->sma->getSizeNumber($option->name);
+                            } else {
+                                $text_code = $product->code . $this->Settings->barcode_separator . $this->sma->getSizeNumber($option->name);
+                            }
                             $barcodes[] = array(
                                 'site' => $this->input->post('site_name') ? $this->Settings->site_name : FALSE,
                                 'name' => $this->input->post('product_name') ? $product->name : FALSE,
@@ -298,6 +302,7 @@ class Products extends MY_Controller
                                 'text_brand'  => $this->input->post('product_brand') ? $text_brand : FALSE,
                                 'name_brand'  => $name_brand,
                                 'increase_size' => $increase_size,
+                                'comment' => $_POST['comment'][$m] ? $_POST['comment'][$m] : '',
                                 );
                         }
                     }
@@ -317,7 +322,7 @@ class Products extends MY_Controller
                         'currencies' => $this->input->post('currencies'),
                         'variants' => FALSE,
                         'quantity' => $quantity,
-                        'text_code' => $this->input->post('product_code') ? $product->code : FALSE,
+                        'text_code' => ($this->input->post('product_code') && $product->category_id != 38) ? $product->code : FALSE,
                         'text_suppliers' => $this->input->post('product_supplier') ? $suppliers : FALSE,
                         'text_brand'  => $this->input->post('product_brand') ? $text_brand : FALSE,
                         'name_brand'  => $name_brand,
@@ -2153,6 +2158,33 @@ class Products extends MY_Controller
                         }
                     }
                     //$this->sma->print_arrays($pr);
+
+                    $this->data['items'] = isset($pr) ? json_encode($pr) : false;
+                    $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
+                    $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('products'), 'page' => lang('products')), array('link' => '#', 'page' => lang('print_barcodes')));
+                    $meta = array('page_title' => lang('print_barcodes'), 'bc' => $bc);
+                    $this->page_construct('products/print_barcodes', $meta, $this->data);
+
+                } elseif ($this->input->post('form_action') == 'labels_extra') {
+                    $i = 0;
+                    foreach ($_POST['val'] as $id) {
+                        if ($row = $this->products_model->getProductByID($id)) {
+                            $pr_id = $row->id . '_' . $i;
+                            $selected_variants = false;
+                            if ($variants = $this->products_model->getProductOptions($row->id)) {
+                                foreach ($variants as $variant) {
+                                    if ($variant->id == $_POST['options'][$i]) {
+                                        $selected_variants[$variant->id] = $variant->quantity > 0 ? 1 : 0;
+                                    }
+                                }
+                            }
+                            
+                            $pr[$pr_id] = array('id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'code' => $row->code, 'name' => $row->name, 'price' => $row->price, 'qty' => ($_POST['qty'][$i] ? $_POST['qty'][$i] : 1), 'comment' => ($_POST['comment'][$i] ? $_POST['comment'][$i] : ''), 'variants' => $variants, 'selected_variants' => $selected_variants);
+                            //$this->sma->print_arrays($_POST['val'], $_POST['code'],$_POST['qty'], $pr);
+                            $i++;
+                        }
+                    }
+                    //$this->sma->print_arrays($_POST['options']);
 
                     $this->data['items'] = isset($pr) ? json_encode($pr) : false;
                     $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
