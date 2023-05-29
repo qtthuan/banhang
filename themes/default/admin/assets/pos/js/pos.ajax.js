@@ -1131,7 +1131,7 @@ function loadItems() {
         }
         var category = 0, print_cate = false;
         // var itn = parseInt(Object.keys(sortedItems).length);
-        //console.log(JSON.stringify(sortedItems));
+        console.log(JSON.stringify(sortedItems));
         $.each(sortedItems, function () {
             var item = this;            
             var item_id = site.settings.item_addition == 1 ? item.item_id : item.id;
@@ -1215,7 +1215,7 @@ function loadItems() {
                 }
             });
 
-            console.log('is_promo: ' + is_promo + ' - date valid: ' + checkValidPromotionDate(start_date, end_date))
+            //console.log('is_promo: ' + is_promo + ' - date valid: ' + checkValidPromotionDate(start_date, end_date))
 
             if ((is_promo && checkValidPromotionDate(start_date, end_date)) || (item.no_points == 1 && item_discount == 0)) {
             //if (item.no_points == 1 && item_discount == 0) {
@@ -1271,7 +1271,7 @@ function loadItems() {
                             '<input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '">' + 
                             '<input class="no_points" name="no_points[]" type="hidden" value="' + item.no_points + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + display_price + '</span></td>';
             } else {
-                console.log('ggg');
+                //console.log('ggg');
                 //console.log(JSON.stringify(sortedItems));
                 if (is_promo && checkValidPromotionDate(start_date, end_date) && customer_group_id != 4) { // Loại nhóm BAEMIN
                     display_price = '<span style="font-weight: bold">' + formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val)) + '</span>';
@@ -1301,13 +1301,13 @@ function loadItems() {
             if (item_type == 'standard' && item.options !== false) {
                 $.each(item.options, function () {
                     if(this.id == item_option && base_quantity > this.quantity) {
-                        bootbox.alert(lang.update_product_quantity)
+                        bootbox.alert(lang.update_product_quantity + 'zzz')
                         $('#row_' + row_no).find('.posdel').click();
                     }
                 });
             } else if(item_type == 'standard' && base_quantity > item_aqty) {
-                bootbox.alert(lang.update_product_quantity)
-                $('#row_' + row_no).find('.posdel').click();
+                bootbox.alert(lang.update_product_quantity + 'yyy ' + base_quantity + ' - ' + item_aqty)
+                //$('#row_' + row_no).find('.posdel').click();
             } else if (item_type == 'combo') {
                 if(combo_items === false) {
                     $('#row_' + row_no).addClass('danger');

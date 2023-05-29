@@ -172,7 +172,7 @@
                                         if($item['name']) {
                                             echo '<span class="barcode_name '.$increase_size.'">'.$item['name'];
                                             if($item['comment'] && $item['comment'] != '') {
-                                                echo ' (vv<strong>' . $item['comment'] . '</strong>)';
+                                                echo ' (<strong>' . $item['comment'] . '</strong>)';
                                             }
                                             echo '</span>';
                                         }
