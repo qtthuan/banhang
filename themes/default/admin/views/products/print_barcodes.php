@@ -171,7 +171,7 @@
                                         }
                                         if($item['name']) {
                                             echo '<span class="barcode_name '.$increase_size.'">'.$item['name'];
-                                            if($item['comment'] && $item['comment'] != '') {
+                                            if($item['comment'] && $item['comment'] != '' && $item['comment'] != 'undefined') {
                                                 echo ' (<strong>' . $item['comment'] . '</strong>)';
                                             }
                                             echo '</span>';
@@ -193,7 +193,19 @@
                                         if($item['barcode']) {
                                             echo '<span class="barcode_image">'.$item['barcode'].'</span>';
                                         }
-                                        echo '<span class="text_code">'.$item['text_code'].'</span>';
+                                        $str_padding = '';
+                                        if ($item['text_code'] == 'L') {
+                                            $str_padding = ' style="padding-top: 10px;"';
+                                        }
+                                        echo '<span class="text_code"'.$str_padding.'>';
+                                        if ($item['text_code'] == 'L') {
+                                            echo lang('mini_size_l');
+                                        } elseif ($item['text_code'] == 'M')  {
+                                            echo '';
+                                        } else {
+                                            echo $item['text_code'];
+                                        }
+                                        echo '</span>';
                                         echo '<span class="text_suppliers">';
                                         if ($item['text_suppliers'] &&  $item['text_suppliers'] != "") {
                                             echo ' -' . $item['text_suppliers'];

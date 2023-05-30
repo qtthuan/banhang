@@ -216,3 +216,4 @@ $lang['product_code_short']                 = "Mã SP";
 $lang['header_pos_txt']                     = "Bán hàng";
 $lang['header_mini_txt']                = "Mini";
 $lang['is_not_numeric']                     = "Giá cộng vào phải là số";
+$lang['mini_size_l']                    = "LY LỚN";

@@ -308,7 +308,7 @@ class Products extends MY_Controller
                                 'text_brand'  => $this->input->post('product_brand') ? $text_brand : FALSE,
                                 'name_brand'  => $name_brand,
                                 'increase_size' => $increase_size,
-                                'comment' => ($product->category_id == 38) ? $_POST['comment'][$m] : '',
+                                'comment' => ($product->category_id == 38 && $_POST['comment']) ? $_POST['comment'][$m] : '',
                                 );
                         }
                     }
@@ -333,7 +333,7 @@ class Products extends MY_Controller
                         'text_brand'  => $this->input->post('product_brand') ? $text_brand : FALSE,
                         'name_brand'  => $name_brand,
                         'increase_size' => $increase_size,
-                        'comment' => ($product->category_id == 38) ? $_POST['comment'][$m] : '',
+                        'comment' => ($product->category_id == 38 && $_POST['comment']) ? $_POST['comment'][$m] : '',
                         );
                         //$this->sma->print_arrays($barcodes, $_POST['product']);
                 }
