@@ -208,7 +208,19 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="font-size: 11px;"><?=$row->product_code . ($row->variant ? '-' . $this->sma->getSizeNumber($row->variant)  : '')?></td>
+                        <?php
+                            $str_variants = ''; 
+                            if ($row->variant) {
+                                if ($this->sma->getSizeNumber($row->variant) == 'M') {
+                                    $str_variants = '';
+                                } elseif ($this->sma->getSizeNumber($row->variant) == 'L') {
+                                    $str_variants = ' ( ' . lang('mini_size_l') . ')';
+                                } else {
+                                    $str_variants = '-' . $this->sma->getSizeNumber($row->variant);
+                                }
+                            }
+                        ?>
+                        <td colspan="2" style="font-size: 11px;"><?=$row->product_code . $str_variants ?></td>
                         <td class="text-right"><?=$this->sma->formatQuantity($row->quantity)?></td>
                         <td class="text-right">
                             <?php

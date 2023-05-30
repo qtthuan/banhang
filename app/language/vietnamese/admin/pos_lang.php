@@ -344,3 +344,4 @@ $lang['footer_thanks']                  = "Cảm ơn quý khách. Hẹn gặp l�
 $lang['update_product_quantity']        = "Sản phẩm hết hàng, vui lòng cập nhật!";
 $lang['tiem_nuoc_mini']                 = "Tiệm nước Mini";
 $lang['mini_xin_cam_on']                = "Xin Cám Ơn Quí Khách!";
+$lang['mini_size_l']                    = "LY LỚN";
