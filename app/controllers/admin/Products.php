@@ -297,7 +297,7 @@ class Products extends MY_Controller
                                 'barcode' => $this->input->post('product_barcode') ? $this->product_barcode($text_code, 'code128', $bci_size) : FALSE,
                                 'price' => $this->input->post('price') ?  $this->sma->formatMoney($option->price != 0 ? ($price+$option->price) : $price) : FALSE,
                                 'promo' => $this->input->post('check_promo'),
-                                'price_before_promo' => $this->input->post('check_promo') ? $this->sma->formatMoney($option->price != 0 ? ($price_before_promo+$option->price) : $price_before_promo) : FALSE,
+                                'price_before_promo' => $this->input->post('check_promo') ? $this->sma->formatMoney(($option->price != 0 && $price_before_promo > 0) ? ($price_before_promo+$option->price) : $price_before_promo) : FALSE,
                                 'unit' => $this->input->post('unit') ? $product->unit : FALSE,
                                 'category' => $this->input->post('category') ? $product->category : FALSE,
                                 'currencies' => $this->input->post('currencies'),
