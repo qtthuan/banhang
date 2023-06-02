@@ -137,14 +137,14 @@
                                         $total_items++;
                                         if($item['increase_size']) {
                                             $increase_size = "increase_size";
-                                            if ($item['comment']) {
+                                            if ($item['comment'] || $item['text_code'] == 'L') {
                                                 $increase_size .= '_1';
                                             }
                                         } 
                                         $str_padding = '';
                                         if ($item['text_code'] == 'L') {
                                             $str_padding = ' style="padding-top: 10px;"';
-                                            $increase_size .= '_1';
+                                            //$increase_size .= '_1';
                                         }                                       
                                         echo '<div class="item style' . $style . ' ' . $valign_middle . '" '.
                                         ($style == 50 && $this->input->post('cf_width') && $this->input->post('cf_height') ?
