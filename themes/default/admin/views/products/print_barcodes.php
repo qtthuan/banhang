@@ -131,7 +131,7 @@
                                     echo '<div class="barcode">';
                                 }
                                 $total_items = 0;
-                                $this->sma->print_arrays($barcodes);
+                                //$this->sma->print_arrays($barcodes);
                                 foreach ($barcodes as $item) {
                                     for ($r = 1; $r <= $item['quantity']; $r++) {
                                         $total_items++;

@@ -2259,9 +2259,6 @@ var lang = {
  
     $(document).ready(function () {
        
-
-
-
         $('#poswarehouse').val(1).change();
         localStorage.setItem('poswarehouse', 1);
         $('#poswarehouse').change(function () {
@@ -2270,7 +2267,7 @@ var lang = {
                 closeMini();
             } else {
                 openMini();
-                console.log('1111');
+                //console.log('1111');
             }
 
         });
@@ -2279,7 +2276,7 @@ var lang = {
             closeMini();
         } else {
             openMini();
-            console.log('222');
+            //console.log('222');
             //$('.btn-cat-con').toggle('slide', { direction: 'right' }, 100);
         }
         $("#poscustomer").change();
