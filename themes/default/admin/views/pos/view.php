@@ -211,12 +211,14 @@
                         <?php
                             $str_variants = ''; 
                             if ($row->variant) {
-                                if ($this->sma->getSizeNumber($row->variant) == 'M') {
-                                    $str_variants = '';
-                                } elseif ($this->sma->getSizeNumber($row->variant) == 'L') {
-                                    $str_variants = ' ( ' . lang('mini_size_l') . ')';
+                                if ($inv->warehouse_id == 3) { // Tiệm nước mini
+                                    if ($this->sma->getSizeNumber($row->variant) == 'M') {
+                                        $str_variants = '';
+                                    } elseif ($this->sma->getSizeNumber($row->variant) == 'L') {
+                                        $str_variants = ' ( ' . lang('mini_size_l') . ')';
+                                    } 
                                 } else {
-                                    $str_variants = '-' . $this->sma->getSizeNumber($row->variant);
+                                        $str_variants = '-' . $this->sma->getSizeNumber($row->variant);
                                 }
                             }
                         ?>

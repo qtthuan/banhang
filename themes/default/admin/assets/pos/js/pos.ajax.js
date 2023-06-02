@@ -1301,7 +1301,7 @@ function loadItems() {
             if (item_type == 'standard' && item.options !== false) {
                 $.each(item.options, function () {
                     if(this.id == item_option && base_quantity > this.quantity) {
-                        bootbox.alert(lang.update_product_quantity + 'zzz')
+                        bootbox.alert(lang.update_product_quantity)
                         $('#row_' + row_no).find('.posdel').click();
                     }
                 });
