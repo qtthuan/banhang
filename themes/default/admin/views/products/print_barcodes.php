@@ -140,7 +140,12 @@
                                             if ($item['comment']) {
                                                 $increase_size .= '_1';
                                             }
-                                        }                                        
+                                        } 
+                                        $str_padding = '';
+                                        if ($item['text_code'] == 'L') {
+                                            $str_padding = ' style="padding-top: 10px;"';
+                                            $increase_size .= '_1';
+                                        }                                       
                                         echo '<div class="item style' . $style . ' ' . $valign_middle . '" '.
                                         ($style == 50 && $this->input->post('cf_width') && $this->input->post('cf_height') ?
                                             'style="width:'.$this->input->post('cf_width').'in;height:'.$this->input->post('cf_height').'in;border:0;"' : '')
@@ -193,10 +198,7 @@
                                         if($item['barcode']) {
                                             echo '<span class="barcode_image">'.$item['barcode'].'</span>';
                                         }
-                                        $str_padding = '';
-                                        if ($item['text_code'] == 'L') {
-                                            $str_padding = ' style="padding-top: 10px;"';
-                                        }
+                                        
                                         echo '<span class="text_code"'.$str_padding.'>';
                                         if ($item['text_code'] == 'L') {
                                             echo lang('mini_size_l');
