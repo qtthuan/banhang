@@ -1212,7 +1212,7 @@ class Products extends MY_Controller
                 $photos = NULL;
             }
             $data['quantity'] = isset($wh_total_quantity) ? $wh_total_quantity : 0;
-            $this->sma->print_arrays($data, $product_attributes, $photos, $items);
+            //$this->sma->print_arrays($data, $product_attributes, $photos, $items);
         }
 
         if ($this->form_validation->run() == true && $this->products_model->updateProduct($id, $data, $items, $warehouse_qty, $product_attributes, $photos, $update_variants)) {
