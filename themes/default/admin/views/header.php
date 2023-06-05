@@ -264,11 +264,6 @@
                             <i class="fa fa-th-large"></i> <span class="padding05" style="text-transform: uppercase"><?= lang('header_pos_txt') ?></span>
                         </a>
                     </li>
-                    <li class="dropdown hidden-xs">
-                        <a class="btn blightBlue tip" title="" data-placement="bottom" href="<?= admin_url('pos/mini') ?>">
-                            <i class="fa fa-th-large"></i> <span class="padding05" style="text-transform: uppercase"><?= lang('header_mini_txt') ?></span>
-                        </a>
-                    </li>
                     <?php } ?>
                     <?php if ($Owner) { ?>
                         <li class="dropdown">
