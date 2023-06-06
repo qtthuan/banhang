@@ -99,7 +99,10 @@
 
                                         <?php
                                             $is_in_stock = false;
+                                            //echo $warehouse->quantity;
+                                            //$this->sma->print_arrays($product);
                                             if ($variants) {
+                                                //cho 'yyy';
                                                 foreach ($variants as $variant) {
                                                     if ($variant->quantity > 0) {
                                                        $is_in_stock = true;
@@ -118,7 +121,7 @@
                                                 if ($is_in_stock) {
                                                     echo form_dropdown('option', $opts, '', 'class="form-control selectpicker mobile-device" required="required"');
                                                 } 
-                                            } elseif ($warehouse->quantity > 0) {
+                                            } elseif ($warehouse->quantity > 0 || $product->quantity > 0) {
                                                 $is_in_stock = true;
                                             }
                                         ?>
