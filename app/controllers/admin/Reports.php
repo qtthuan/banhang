@@ -265,29 +265,52 @@ class Reports extends MY_Controller
         $this->sma->checkPermissions('products');
 
         $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
+        $y0 = date('Y', strtotime('-0 month'));
+        $m0 = date('m', strtotime('-0 month'));
+        $m0sdate = $y0.'-'.$m0.'-01 00:00:00';
+        $m0edate = $y0.'-'.$m0.'-'. days_in_month($m0, $y0) . ' 23:59:59';
+        $this->data['m0'] = date('M Y', strtotime($y0.'-'.$m0));
+        $this->data['m0bs'] = $this->reports_model->getBestSeller($m0sdate, $m0edate, $warehouse_id);
+
         $y1 = date('Y', strtotime('-1 month'));
         $m1 = date('m', strtotime('-1 month'));
         $m1sdate = $y1.'-'.$m1.'-01 00:00:00';
         $m1edate = $y1.'-'.$m1.'-'. days_in_month($m1, $y1) . ' 23:59:59';
         $this->data['m1'] = date('M Y', strtotime($y1.'-'.$m1));
         $this->data['m1bs'] = $this->reports_model->getBestSeller($m1sdate, $m1edate, $warehouse_id);
+
+
         $y2 = date('Y', strtotime('-2 months'));
         $m2 = date('m', strtotime('-2 months'));
         $m2sdate = $y2.'-'.$m2.'-01 00:00:00';
         $m2edate = $y2.'-'.$m2.'-'. days_in_month($m2, $y2) . ' 23:59:59';
         $this->data['m2'] = date('M Y', strtotime($y2.'-'.$m2));
         $this->data['m2bs'] = $this->reports_model->getBestSeller($m2sdate, $m2edate, $warehouse_id);
-        $y3 = date('Y', strtotime('-3 months'));
-        $m3 = date('m', strtotime('-3 months'));
+
+        $y2_1 = date('Y', strtotime('-3 months'));
+        $m2_1 = date('m', strtotime('-3 months'));
+        $m2_1sdate = $y2_1.'-'.$m2_1.'-01 00:00:00';
+        $m2_1edate = $y2_1.'-'.$m2_1.'-'. days_in_month($m2_1, $y2_1) . ' 23:59:59';
+        $this->data['m2_1'] = date('M Y', strtotime($y2_1.'-'.$m2_1));
+        $this->data['m2_1bs'] = $this->reports_model->getBestSeller($m2_1sdate, $m2_1edate, $warehouse_id);
+
+
+        $y3 = date('Y', strtotime('-4 months'));
+        $m3 = date('m', strtotime('-4 months'));
         $m3sdate = $y3.'-'.$m3.'-01 23:59:59';
         $this->data['m3'] = date('M Y', strtotime($y3.'-'.$m3)).' - '.$this->data['m1'];
         $this->data['m3bs'] = $this->reports_model->getBestSeller($m3sdate, $m1edate, $warehouse_id);
+
+
+
         $y4 = date('Y', strtotime('-12 months'));
         $m4 = date('m', strtotime('-12 months'));
         $m4sdate = $y4.'-'.$m4.'-01 23:59:59';
         $this->data['m4'] = date('M Y', strtotime($y4.'-'.$m4)).' - '.$this->data['m1'];
         $this->data['m4bs'] = $this->reports_model->getBestSeller($m4sdate, $m1edate, $warehouse_id);
-        //$this->sma->print_arrays($this->data['m1bs'], $this->data['m2bs'], $this->data['m3bs'], $this->data['m4bs']);
+
+
+        $this->sma->print_arrays($m0sdate, $m0edate);
         $this->data['warehouses'] = $this->site->getAllWarehouses();
         $this->data['warehouse'] = $warehouse_id ? $this->site->getWarehouseByID($warehouse_id) : NULL;
         $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('reports'), 'page' => lang('reports')), array('link' => '#', 'page' => lang('best_sellers')));
@@ -862,6 +885,8 @@ class Reports extends MY_Controller
         if ( ! $date) { $date = date('Y-m-d'); }
         $bn_sales_by_day = $this->reports_model->getBNSalesByDay($date, $warehouse_id);
         $this->data['costing'] = $this->reports_model->getCosting($date, $warehouse_id);
+        $this->data['total_items'] = $this->reports_model->getTotalItems($date, $warehouse_id);
+        $this->data['best_5'] = $this->reports_model->getBestSellerByDay($date, $warehouse_id);
         $this->data['discount'] = $this->reports_model->getOrderDiscount($date, $warehouse_id);
         $this->data['sale_by_day'] = $this->reports_model->getSalesByDay($date, $warehouse_id);
         $this->data['bn_sales_by_day'] = $bn_sales_by_day;
@@ -872,7 +897,8 @@ class Reports extends MY_Controller
         $this->data['date'] = $date;
 
         $bn_costing_amount = 0;
-        //$this->sma->print_arrays($bn_sales_by_day);
+        //$lmsdate = date('Y-m-d', strtotime($date) . ' 00:00:00';
+        //$this->sma->print_arrays($this->reports_model->getBestSellerByDay($date, 3));
         if (!empty($bn_sales_by_day)) {
             foreach ($bn_sales_by_day as $sale) {
                 $items = $this->reports_model->getAllBNItems($sale->id);

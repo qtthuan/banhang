@@ -9,7 +9,34 @@
                 stops: [[0, color], [1, Highcharts.Color(color).brighten(-0.3).get('rgb')]]
             };
         });
-        <?php if ($m2bs) { ?>
+        <?php if ($m0bs) { ?>
+            $('#m0bschart').highcharts({
+            chart: {type: 'column'},
+            title: {text: ''},
+            credits: {enabled: false},
+            xAxis: {type: 'category', labels: {rotation: -60, style: {fontSize: '13px'}}},
+            yAxis: {min: 0, title: {text: ''}},
+            legend: {enabled: false},
+            series: [{
+                name: '<?=lang('sold');?>',
+                data: [<?php
+                foreach ($m0bs as $r) {
+                    if($r->quantity > 0) {
+                        echo "['".$r->product_name."<br>(".$r->product_code.")', ".$r->quantity."],";
+                    }
+                }
+                ?>],
+                dataLabels: {
+                    enabled: true,
+                    rotation: -90,
+                    color: '#000',
+                    align: 'right',
+                    y: -25,
+                    style: {fontSize: '12px'}
+                }
+            }]
+        });
+        <?php } if ($m2bs) { ?>
         $('#m2bschart').highcharts({
             chart: {type: 'column'},
             title: {text: ''},
@@ -36,6 +63,33 @@
                 }
             }]
         });
+        <?php } if ($m2_1bs) { ?>
+            $('#m2_1bschart').highcharts({
+            chart: {type: 'column'},
+            title: {text: ''},
+            credits: {enabled: false},
+            xAxis: {type: 'category', labels: {rotation: -60, style: {fontSize: '13px'}}},
+            yAxis: {min: 0, title: {text: ''}},
+            legend: {enabled: false},
+            series: [{
+                name: '<?=lang('sold');?>',
+                data: [<?php
+                foreach ($m2_1bs as $r) {
+                    if($r->quantity > 0) {
+                        echo "['".$r->product_name."<br>(".$r->product_code.")', ".$r->quantity."],";
+                    }
+                }
+                ?>],
+                dataLabels: {
+                    enabled: true,
+                    rotation: -90,
+                    color: '#000',
+                    align: 'right',
+                    y: -25,
+                    style: {fontSize: '12px'}
+                }
+            }]
+        });    
         <?php } if ($m1bs) { ?>
         $('#m1bschart').highcharts({
             chart: {type: 'column'},
@@ -148,6 +202,21 @@
     <div class="box-content">
 
     <div class="row" style="margin-bottom: 15px;">
+    <div class="col-sm-6">
+            <div class="box">
+                <div class="box-header">
+                    <h2 class="blue"><?= $m0; ?>
+                    </h2>
+                </div>
+                <div class="box-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="m0bschart" style="width:100%; height:450px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-sm-6">
             <div class="box">
                 <div class="box-header">
@@ -173,6 +242,21 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div id="m2bschart" style="width:100%; height:450px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="box">
+                <div class="box-header">
+                    <h2 class="blue"><?= $m2_1; ?>
+                    </h2>
+                </div>
+                <div class="box-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="m2_1bschart" style="width:100%; height:450px;"></div>
                         </div>
                     </div>
                 </div>

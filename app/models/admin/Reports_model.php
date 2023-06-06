@@ -507,6 +507,49 @@ class Reports_model extends CI_Model
         return false;
     }
 
+    public function getTotalItems($date, $warehouse_id = NULL, $year = NULL, $month = NULL)
+    {
+
+        if ($date) {
+            $date = date('Y-m-d', strtotime($date));
+        }
+        $myQuery = "SELECT SUM( COALESCE( total_items, 0 )) AS total_items 
+            FROM " . $this->db->dbprefix('sales') . " WHERE ";
+        if ($warehouse_id) {
+            $myQuery .= " warehouse_id = {$warehouse_id} AND ";
+        }
+        $myQuery .= " DATE_FORMAT( date,  '%Y-%m-%d' ) = '".$date."'";
+        $q = $this->db->query($myQuery, false);
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }
+        return FALSE;
+
+
+
+        // $this->db->select('SUM( COALESCE( total_items, 0 )) AS total_items ', FALSE);
+        // if ($date) {
+        //     $this->db->where('sales.date', date('Y-m-d', ));
+        // } elseif ($month) {
+        //     $this->load->helper('date');
+        //     $last_day = days_in_month($month, $year);
+        //     $this->db->where('sales.date >=', $year.'-'.$month.'-01 00:00:00');
+        //     $this->db->where('sales.date <=', $year.'-'.$month.'-'.$last_day.' 23:59:59');
+        // }
+
+        // //$this->db->where('costing.quantity >', 0);
+
+        // if ($warehouse_id) {
+        //     $this->db->where('sales.warehouse_id', $warehouse_id);
+        // }
+
+        // $q = $this->db->get('sales');
+        // if ($q->num_rows() > 0) {
+        //     return $q->row();
+        // }
+        // return false;
+    }
+
     public function getExpenses($date, $warehouse_id = NULL, $year = NULL, $month = NULL)
     {
         $sdate = $date.' 00:00:00';
@@ -679,6 +722,28 @@ class Reports_model extends CI_Model
             ->join('sales', 'sales.id = sale_items.sale_id', 'left')
             ->where('date >=', $start_date)->where('date <=', $end_date)
             ->group_by('product_name, product_code')->order_by('sum(quantity)', 'desc')->limit(10);
+        if ($warehouse_id) {
+            $this->db->where('sale_items.warehouse_id', $warehouse_id);
+        }
+            $q = $this->db->get('sale_items');
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return FALSE;
+    }
+
+    public function getBestSellerByDay($date, $warehouse_id = NULL)
+    {
+       
+        $this->db
+            ->select("replace(product_name,'\'','') product_name, product_code")->select_sum('quantity')
+            ->join('sales', 'sales.id = sale_items.sale_id', 'left')
+            ->where('DATE_FORMAT(date, "%Y-%m-%d")=', date('Y-m-d',  strtotime($date)))
+            //$myQuery .= " DATE_FORMAT( date,  '%Y-%m-%d' ) = '".$date."'";
+            ->group_by('product_name, product_code')->order_by('sum(quantity)', 'desc')->limit(5);
         if ($warehouse_id) {
             $this->db->where('sale_items.warehouse_id', $warehouse_id);
         }

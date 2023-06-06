@@ -74,6 +74,40 @@
                         </h4></td>
                 </tr>
                 <tr>
+                    <td style="border-bottom: 1px solid #DDD;" colspan="2">
+                        <h4><?= lang('total_items_ex'); ?>: 
+                        <strong><?php $total_items = $total_items ? $total_items->total_items : 0; echo $total_items; ?></strong>
+                        </h4>
+                    </td>
+                </tr>
+                <?php
+                    if (!empty($best_5)) {
+                        //$str_guide .= '-D'
+                ?>
+                <tr>
+                    <td colspan="2">
+                        <h4><?= lang('best_5'); ?>:</h4>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="border-bottom: 1px solid #EEE;" colspan="2">
+
+                    <?php
+                        $btns = array();
+                        foreach($best_5 as $best) {
+                    ?>
+                            <!-- <span class="label label-primary" style="margin-right: 0 10px 10px 0; font-size: 15px">
+                                <?php echo $best->product_name . '('.$this->sma->formatQuantity($best->quantity).')'?>
+                            </span> -->
+                    <?php
+                            echo '&#9734; ' . $best->product_name . '<strong> ('.$this->sma->formatQuantity($best->quantity).') </strong>' . ' ';
+                        }
+                    ?>
+                    </td>
+                </tr>
+                <?php } ?>
+                <tr>
                     <td width="300px;" style="font-weight:bold;"><h4><strong><?= lang('profit'); ?></strong> <span style="color:red"> (<strong><?=$str_guide?></strong>)</span>:</h4>
                     </td>
                     <td style="text-align:right;">
