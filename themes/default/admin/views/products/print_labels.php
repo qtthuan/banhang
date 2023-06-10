@@ -16,9 +16,7 @@
     <div class="box-content">
         <div class="row">
             <div class="col-lg-12">
-                
-
-                
+                     
                 <div id="barcode-con">
                     <?php                       
                         $style = 10;
@@ -85,7 +83,7 @@
                         if ($style != 50) {
                             echo '</div>';
                         }
-                        echo '<div class="no-print" style="color: green"><h2><strong>(1-'.round($total_items/2).')</strong></h2></div>';
+                        echo '<div id="total_items" class="no-print" style="color: green"><h2><strong>(1-'.round($total_items/2).')</strong></h2></div>';
                         echo '<button type="button" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print') . '</button>';
                     ?>
                 </div>
@@ -94,14 +92,8 @@
     </div>
 </div>
 <script type="text/javascript">
-    var ac = false; bcitems = {};
-    if (localStorage.getItem('bcitems')) {
-        bcitems = JSON.parse(localStorage.getItem('bcitems'));
-    }
-    <?php if($items) { ?>
-    localStorage.setItem('bcitems', JSON.stringify(<?= $items; ?>));
-    <?php } ?>
     $(document).ready(function() {
+        var total_items = <?=$total_items?>;
         <?php if ($this->input->post('print')) { ?>
             $( window ).load(function() {
                 $('html, body').animate({
@@ -110,108 +102,12 @@
             });
         <?php } ?>
         
-        
-        
-
         $(document).on('click', '.item', function () {
             var id = $(this).attr('id');
-            //delete bcitems[id];
-            //localStorage.setItem('bcitems', JSON.stringify(bcitems));
             $(this).remove();
+            total_items = total_items -1;
+            $("#total_items").html("<h2><strong>(1-" + Math.round(total_items/2) + ")</strong></h2>")
         });
-
-        
-
-        var old_row_qty;
-        $(document).on("focus", '.quantity', function () {
-            old_row_qty = $(this).val();
-        }).on("change", '.quantity', function () {
-            var row = $(this).closest('tr');
-            if (!is_numeric($(this).val())) {
-                $(this).val(old_row_qty);
-                bootbox.alert(lang.unexpected_value);
-                return;
-            }
-            var new_qty = parseFloat($(this).val()),
-            item_id = row.attr('data-item-id');
-            bcitems[item_id].qty = new_qty;
-            localStorage.setItem('bcitems', JSON.stringify(bcitems));
-        });
-
-        if ($('#price').prop('checked') == false) {
-            $('#barcode-con .barcode .item').addClass('valign_barcode_middle');
-        }
     });
-
-    function add_product_item(item) {
-        ac = true;
-        if (item == null) {
-            return false;
-        }
-        item_id = item.id;
-        if (bcitems[item_id]) {
-            bcitems[item_id].qty = parseFloat(bcitems[item_id].qty) + 1;
-        } else {
-            bcitems[item_id] = item;
-            bcitems[item_id]['selected_variants'] = {};
-            $.each(item.variants, function () {
-                bcitems[item_id]['selected_variants'][this.id] = 1;
-            });
-        }
-
-        localStorage.setItem('bcitems', JSON.stringify(bcitems));        
-        loadItems();
-        return true;
-
-    }
-
-    function uncheckMini(code) {
-        if (code.includes('GK')) {
-            $('#barcode-print-form').find('.chkPrint').each(function() {
-                //console.log($(this).val())
-                $(this).prop("checked", false);
-            });
-            $('#product_name').prop("checked", true);  
-            $('#product_code').prop("checked", true);           
-        }
-    }
-
-    function loadItems () {
-
-        if (localStorage.getItem('bcitems')) {
-            $("#bcTable tbody").empty();
-            bcitems = JSON.parse(localStorage.getItem('bcitems'));
-
-            $.each(bcitems, function () {
-                console.log(JSON.stringify(bcitems));
-                var item = this;
-                uncheckMini(item.code);
-                var row_no = item.id;
-                var vd = '';
-                var comment = '';
-                if (item.comment) {
-                    comment += ' - <strong>' + item.comment + '</strong>';
-                }
-                var newTr = $('<tr id="row_' + row_no + '" class="row_' + item.id + '" data-item-id="' + item.id + '"></tr>');
-                tr_html = '<td><input name="product[]" type="hidden" value="' + item.id + '"><input name="comment[]" type="hidden" value="' + item.comment + '"><span id="name_' + row_no + '">' + item.name + ' (' + item.code + ') ' + comment + '</span></td>';
-                tr_html += '<td><input class="form-control quantity text-center" name="quantity[]" type="text" value="' + formatDecimal(item.qty) + '" data-id="' + row_no + '" data-item="' + item.id + '" id="quantity_' + row_no + '" onClick="this.select();"></td>';
-                if(item.variants) {
-                    $.each(item.variants, function () {
-                        vd += '<input name="vt_'+ item.id +'_'+ this.id +'" type="checkbox" class="checkbox" id="'+this.id+'" data-item-id="'+item.id+'" value="'+this.id+'" '+( item.selected_variants[this.id] == 1 ? 'checked="checked"' : '')+' style="display:inline-block;" /><label for="'+this.id+'" class="padding05">'+this.name+'</label>';
-                    });
-                }
-                tr_html += '<td>'+vd+'</td>';
-                tr_html += '<td class="text-center"><i class="fa fa-times tip del" id="' + row_no + '" title="Remove" style="cursor:pointer;"></i></td>';
-                newTr.html(tr_html);
-                newTr.appendTo("#bcTable");
-            });
-            $('input[type="checkbox"],[type="radio"]').not('.skip').iCheck({
-                checkboxClass: 'icheckbox_square-blue',
-                radioClass: 'iradio_square-blue',
-                increaseArea: '20%'
-            });
-            return true;
-        }
-    }
 
 </script>
