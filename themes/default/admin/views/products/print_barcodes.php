@@ -703,7 +703,7 @@
             bcitems = JSON.parse(localStorage.getItem('bcitems'));
 
             $.each(bcitems, function () {
-                //console.log(JSON.stringify(bcitems));
+                console.log(JSON.stringify(bcitems));
                 var item = this;
                 uncheckMini(item.code);
                 var row_no = item.id;

@@ -226,7 +226,7 @@ class Products extends MY_Controller
                 $this->session->set_flashdata('error', lang('no_product_selected'));
                 admin_redirect("products/print_barcodes");
             }
-            
+            //$this->sma->print_arrays($this->input->post);
             for ($m = 0; $m < $s; $m++) {
                 $pid = $_POST['product'][$m];
                 $quantity = $_POST['quantity'][$m];
@@ -2201,7 +2201,7 @@ class Products extends MY_Controller
                                 $selected_variants[$variant->id] = $variant->quantity > 0 ? 1 : 0;
                             }
                         }
-                        $pr[$row->id] = ['id' => $row->id, 'label' => $row->name . ' (' . $row->code . ')', 'code' => $row->code, 'name' => $row->name, 'price' => $row->price, 'qty' => $row->quantity, 'variants' => $variants, 'selected_variants' => $selected_variants];
+                        $pr[$row->id] = ['id' => $row->id, 'label' => $row->name . ' (' . $row->code . ')', 'code' => $row->code, 'name' => $row->name, 'price' => $row->price, 'qty' => 1, 'variants' => $variants, 'selected_variants' => $selected_variants];
                     }
                     //$this->sma->print_arrays($pr);
 
@@ -2213,30 +2213,46 @@ class Products extends MY_Controller
 
                 } elseif ($this->input->post('form_action') == 'labels_extra') {
                     $i = 0;
+                    $j = 0;
+                    //$this->sma->print_arrays($_POST);
                     foreach ($_POST['val'] as $id) {
-                        if ($row = $this->products_model->getProductByID($id)) {
-                            $pr_id = $row->id . '_' . $i;
-                            $selected_variants = false;
-                            if ($variants = $this->products_model->getProductOptions($row->id)) {
-                                foreach ($variants as $variant) {
-                                    if ($variant->id == $_POST['options'][$i]) {
-                                        $selected_variants[$variant->id] = $variant->quantity > 0 ? 1 : 0;
-                                    }
-                                }
-                            }
+                        //if ($row = $this->products_model->getProductByID($id)) {
+                            //$pr_id = $id . $_POST['options'][$i];
+                        if (number_format($_POST['qty'][$i]) > 1) {
+                            //$j = 0;
+                            for ($m = 0; $m < $_POST['qty'][$i]; $m++) {
+                                $pr[$j] = array(
+                                            'id' => $id, 
+                                            'label' => $_POST['name'][$i] . " (" . $_POST['code'][$i] . ")", 
+                                            'code' => $_POST['code'][$i], 
+                                            'name' => $_POST['name'][$i], 
+                                            'comment' => $_POST['comment'][$i], 
+                                            'variants' => $_POST['variant'][$i]);
+                                $j++;
                             
-                            $pr[$row->id] = array('id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'code' => $row->code, 'name' => $row->name, 'price' => $row->price, 'qty' => ($_POST['qty'][$i] ? $_POST['qty'][$i] : 1), 'comment' => ($_POST['comment'][$i] ? $_POST['comment'][$i] : ''), 'variants' => $variants, 'selected_variants' => $selected_variants);
-                            //$this->sma->print_arrays($_POST['val'], $_POST['code'],$_POST['qty'], $pr);
-                            $i++;
+                            }
+                        } else {
+                        $pr[$j] = array(
+                            'id' => $id, 
+                            'label' => $_POST['name'][$i] . " (" . $_POST['code'][$i] . ")", 
+                            'code' => $_POST['code'][$i], 
+                            'name' => $_POST['name'][$i], 
+                            'comment' => $_POST['comment'][$i], 
+                            'variants' => $_POST['variant'][$i]);
                         }
+                        $j++; 
+                        $i++;  
+                            
                     }
+                    //}
+                   // $this->sma->print_arrays($pr);
                     //$this->sma->print_arrays($_POST['options']);
 
-                    $this->data['items'] = isset($pr) ? json_encode($pr) : false;
+                    $this->data['barcodes'] = $pr;
                     $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
                     $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('products'), 'page' => lang('products')), array('link' => '#', 'page' => lang('print_barcodes')));
                     $meta = array('page_title' => lang('print_barcodes'), 'bc' => $bc);
-                    $this->page_construct('products/print_barcodes', $meta, $this->data);
+                    $this->page_construct('products/print_labels', $meta, $this->data);
 
                 } elseif ($this->input->post('form_action') == 'supplier') {
                     foreach ($_POST['val'] as $id) {
