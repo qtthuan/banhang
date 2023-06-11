@@ -590,7 +590,7 @@ class Shop extends MY_Shop_Controller
             'in_stock'    => $reset ? null : $this->input->get('in_stock'),
             'page'        => $this->input->get('page') ? $this->input->get('page', true) : 1,
         ];
-
+        //$this->sma->print_arrays($this->data);
         $this->data['filters']    = $filters;
         $this->data['error']      = (validation_errors()) ? validation_errors() : $this->session->flashdata('error');
         $this->data['page_title'] = (!empty($filters['category']) ? $filters['category']->name : (!empty($filters['brand']) ? $filters['brand']->name : lang('products'))) . ' - ' . $this->shop_settings->shop_name;

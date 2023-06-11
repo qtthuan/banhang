@@ -198,13 +198,13 @@
                                 <?= lang('sort'); ?>:
                                 <div class="sort">
                                     <select name="sorting" id="sorting" class="selectpicker" data-style="btn-sm" data-width="150px">
-                                        <option value="name-asc"><?= lang('name_asc'); ?></option>
-                                        <option value="name-desc"><?= lang('name_desc'); ?></option>
+                                        <option value="id-desc"><?= lang('id_desc'); ?></option>
                                         <option value="price-asc"><?= lang('price_asc'); ?></option>
                                         <option value="price-desc"><?= lang('price_desc'); ?></option>
-                                        <option value="id-desc"><?= lang('id_desc'); ?></option>
-                                        <!--<option value="id-asc"><?= lang('id_asc'); ?></option>-->
                                         <option value="views-desc"><?= lang('views_desc'); ?></option>
+                                        <option value="name-asc"><?= lang('name_asc'); ?></option>
+                                        <option value="name-desc"><?= lang('name_desc'); ?></option>
+                                        <!--<option value="id-asc"><?= lang('id_asc'); ?></option>-->
                                         <!--<option value="views-asc"><?= lang('views_asc'); ?></option>-->
                                     </select>
                                 </div>

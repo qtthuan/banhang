@@ -96,6 +96,9 @@ if (!empty($variants)) {
                         <label for="promotion" class="padding05">
                             <?= lang('promotion'); ?>
                         </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input name="featured" type="checkbox" class="checkbox" id="featured" value="1" <?= isset($_POST['featured']) ? 'checked="checked"' : '' ?>/>
+                        <label for="featured" class="padding05"><?= lang('featured') ?></label>
                     </div>
 
                     <div id="promo" style="display:none;">
@@ -136,10 +139,7 @@ if (!empty($variants)) {
                     </div>
                     <div id="img-details"></div>
 
-                    <div class="form-group">
-                        <input name="featured" type="checkbox" class="checkbox" id="featured" value="1" <?= isset($_POST['featured']) ? 'checked="checked"' : '' ?>/>
-                        <label for="featured" class="padding05"><?= lang('featured') ?></label>
-                    </div>
+                    
 
                     <div class="form-group all">
                         <?= lang('slug', 'slug'); ?>

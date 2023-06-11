@@ -2203,7 +2203,6 @@ class Products extends MY_Controller
                         }
                         $pr[$row->id] = ['id' => $row->id, 'label' => $row->name . ' (' . $row->code . ')', 'code' => $row->code, 'name' => $row->name, 'price' => $row->price, 'qty' => 1, 'variants' => $variants, 'selected_variants' => $selected_variants];
                     }
-                    //$this->sma->print_arrays($pr);
 
                     $this->data['items'] = isset($pr) ? json_encode($pr) : false;
                     $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
@@ -2216,8 +2215,6 @@ class Products extends MY_Controller
                     $j = 0;
                     //$this->sma->print_arrays($_POST);
                     foreach ($_POST['val'] as $id) {
-                        //if ($row = $this->products_model->getProductByID($id)) {
-                            //$pr_id = $id . $_POST['options'][$i];
                         if (number_format($_POST['qty'][$i]) > 1) {
                             //$j = 0;
                             for ($m = 0; $m < $_POST['qty'][$i]; $m++) {
@@ -2246,7 +2243,6 @@ class Products extends MY_Controller
                     }
                     //}
                    // $this->sma->print_arrays($pr);
-                    //$this->sma->print_arrays($_POST['options']);
 
                     $this->data['barcodes'] = $pr;
                     $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
