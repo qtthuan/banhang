@@ -206,7 +206,7 @@
                                     <?php
                                     foreach ($categories as $pc) {
                                         echo '<li class="' . ($pc->subcategories ? 'dropdown dropdown-submenu' : '') . '">';
-                                        if ($pc->id != 38) { // Không hiển thị nhóm Nước ép-Sinh tố
+                                        if ($pc->id != 38 || $pc->id != 41) { // Không hiển thị nhóm Nước ép-Sinh tố & Đồ Chơi
                                             echo '<a ' . ($pc->subcategories ? 'class="dropdown-toggle" data-toggle="dropdown"' : '') . ' href="' . site_url('category/' . $pc->slug) . '">' . $pc->name . '</a>';
                                         }
                                         if ($pc->subcategories) {
