@@ -33,6 +33,7 @@ $lang['pos_bill']                       = "Hóa đơn bán hàng";
 $lang['total_amount']                   = "Tổng tiền hàng";
 $lang['total_items']                    = "SL";
 $lang['total_payable']                  = "Tổng tiền";
+$lang['total_payable1']                 = "Tổng";
 $lang['total_sales']                    = "Total Sales";
 $lang['tax1']                           = "Tax 1";
 $lang['total_x_tax']                    = "Tổng";

@@ -75,8 +75,10 @@
                 </tr>
                 <tr>
                     <td style="border-bottom: 1px solid #DDD;" colspan="2">
-                        <h4><?= lang('total_items_ex'); ?>: 
-                        <strong><?php $total_items = $total_items ? $total_items->total_items : 0; echo $total_items; ?></strong>
+                        <h4> 
+                        <span class="label label-primary" style="margin-right: 0 10px 10px 0; font-size: 16px">
+                        <strong><?= lang('total_items_ex'); ?>: <?php $total_items = $total_items ? $total_items->total_items : 0; echo $total_items; ?></strong>
+                        </span>
                         </h4>
                     </td>
                 </tr>
@@ -84,11 +86,7 @@
                     if (!empty($best_5)) {
                         //$str_guide .= '-D'
                 ?>
-                <tr>
-                    <td colspan="2">
-                        <h4><?= lang('best_5'); ?>:</h4>
-                    </td>
-                </tr>
+                
 
                 <tr>
                     <td style="border-bottom: 1px solid #EEE;" colspan="2">
@@ -112,7 +110,8 @@
                     </td>
                     <td style="text-align:right;">
                         <h4>
-                            <span><strong>
+                        <span class="label label-info" style="margin-right: 0 10px 10px 0; font-size: 19px">
+                            <strong>
                                 <?= $this->sma->formatMoney(($sale_by_day->grand_total - $sale_by_day->shipping) - $costing->cost - $bn_costing_amount - $expense); ?>
                             </strong></span>
                         </h4>

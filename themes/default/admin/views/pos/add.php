@@ -367,7 +367,7 @@
                                             <span id="tds_extra" style="font-size: 16px; color:darkblue">&nbsp;</span>
                                         </td>
                                         <td class="text-right" style="width: 8%; padding-right: 7px; font-size: 16px;border-top: 1px solid #666; border-bottom: 1px solid #333; font-weight:bold; background:#333; color:#FFF;">
-                                            <?=lang('total_payable');?>:
+                                            <?=lang('total_payable1');?>:
                                         </td>
                                         <td class="text-right" style="width: 12%; padding-right: 7px; border-top: 1px solid #666; border-bottom: 1px solid #333; font-weight:bold; background:#333; color:#f0ff00;">
                                             <span id="gtotal" style="font-size: 22px">0.00</span>
