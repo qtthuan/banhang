@@ -763,7 +763,7 @@ class Products extends MY_Controller
             $data['quantity'] = isset($wh_total_quantity) ? $wh_total_quantity : 0;
         }
 
-        //$this->sma->print_arrays($warehouse_qty, $product_attributes);
+        //$this->sma->print_arrays($data, $items, $warehouse_qty, $product_attributes, $photos);
 
         if ($this->form_validation->run() == true && $this->products_model->addProduct($data, $items, $warehouse_qty, $product_attributes, $photos)) {
             $this->session->set_flashdata('message', lang("product_added"));

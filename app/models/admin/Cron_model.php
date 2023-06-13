@@ -85,6 +85,8 @@ class Cron_model extends CI_Model
 //        }
         //$this->updateMemberJoiningDate();
 
+        $this->updateCostingOnEditProduct();
+
         $this->clearSuspendedBills();
 
         $this->deleteExpiredCustomers();
@@ -655,7 +657,61 @@ class Cron_model extends CI_Model
         RETURN FALSE;
     }
 
+/**
+     * qtthuan
+     * Cập nhật giá nhập trên hệ thống sau khi thay đổi giá nhập sửa sản phẩm
+     * @return array
+     */
+    public function updateCostingOnEditProduct()
+    {
+        $success = 0;
+        $query = "SELECT distinct pro.id, pro.name, pro.code, pro.cost, purchase.net_unit_cost, pro.created_date";
+        $query .= " FROM " . $this->db->dbprefix('products') . " AS pro ";
+        $query .= " LEFT JOIN " . $this->db->dbprefix('purchase_items') . " AS purchase"; 
+        $query .= " ON pro.id=purchase.product_id where pro.cost <> purchase.net_unit_cost order by pro.created_date desc";
 
+        //exit($query);
+
+        $q = $this->db->query($query);
+
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                if ($row->quantity > 0) {
+                    $data = array(
+                                'net_unit_cost' => $row->cost,
+                                'real_unit_cost' => $row->cost,
+                                'unit_cost' => $row->cost,
+                                'subtotal' => $row->cost*$row->quantity);
+                    $this->db->update("purchase_items", $data, array('product_id' => $row->product_id));
+                }
+            }
+            $success++;
+        }
+
+        $query = "SELECT DISTINCT pro.id AS product_id, pro.name, pro.code, pro.cost, ware.avg_cost, ware.quantity, pro.created_date";
+        $query .= " FROM " . $this->db->dbprefix('products') . " AS pro ";
+        $query .= " JOIN " . $this->db->dbprefix('warehouses_products') . " AS ware"; 
+        $query .= " ON pro.id = ware.product_id where pro.cost <> ware.avg_cost order by pro.created_date desc";
+
+        //exit($query);
+
+        $q = $this->db->query($query);
+
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                if ($row->quantity > 0) {
+                    $data = array('avg_cost' => $row->cost);
+                    $this->db->update("warehouses_products", $data, array('product_id' => $row->product_id));
+                }
+            }
+            $success++;
+        }
+        if ($success > 0 ) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
 
     /**
      * qtthuan
