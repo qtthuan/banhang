@@ -1306,8 +1306,7 @@ function loadItems() {
                     }
                 });
             } else if(item_type == 'standard' && base_quantity > item_aqty) {
-                bootbox.alert(lang.update_product_quantity + 'yyy ' + base_quantity + ' - ' + item_aqty)
-                //$('#row_' + row_no).find('.posdel').click();
+                $('#row_' + row_no).addClass('danger');
             } else if (item_type == 'combo') {
                 if(combo_items === false) {
                     $('#row_' + row_no).addClass('danger');

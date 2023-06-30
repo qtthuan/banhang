@@ -126,14 +126,6 @@
                                             }
                                         ?>
                                         </div>
-                                        
-                                        <!--<div class="form-group">
-                                            <div class="input-group">
-                                                <span class="input-group-addon pointer btn-minus"><span class="fa fa-minus"></span></span>
-                                                <input type="text" name="quantity" class="form-control text-center quantity-input" value="1" required="required">
-                                                <span class="input-group-addon pointer btn-plus"><span class="fa fa-plus"></span></span>
-                                            </div>
-                                        </div>-->
                                         <input type="hidden" name="quantity" class="form-control text-center" value="1">
 
                                         <div class="form-group">
@@ -148,11 +140,11 @@
                                         </div>
                                         <?= form_close(); ?>
                                         <?php
-                                                        } else {
-                                                            echo '<div class="well well-sm"><strong>' . lang('item_out_of_stock') . '</strong></div>';
-                                                        } ?>
+                                                } else {
+                                                    echo '<div class="well well-sm"><strong>' . lang('item_out_of_stock') . 'ccc</strong></div>';
+                                                } ?>
                                         <?php
-                                                    } ?>
+                                            } ?>
                                     </div>
 
                                     <div class="col-sm-7">

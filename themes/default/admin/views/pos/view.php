@@ -68,12 +68,9 @@
                 } else {
                     ?>
                     <span class="col-xs-12">
-                    <?php if ($inv->warehouse_id == 3) { ?>
-                        <a class="btn btn-block btn-warning" href="<?= admin_url('pos/mini'); ?>"><?= lang("back_to_mini"); ?></a>
-                    <?php } else { ?>
+                   
                         <a class="btn btn-block btn-warning" href="<?= admin_url('pos'); ?>"><?= lang("back_to_pos"); ?></a>
-                    <?php } ?>
-                    </span>
+                   
 
                     <?php
                 } ?>
@@ -694,11 +691,9 @@
                     ?>
                 </span>
                 <span class="col-xs-12">
-                <?php if ($inv->warehouse_id == 3) { ?>
-                    <a class="btn btn-block btn-warning" href="<?= admin_url('pos/mini'); ?>"><?= lang("back_to_mini"); ?></a>
-                <?php } else { ?>
+                
                     <a class="btn btn-block btn-warning" href="<?= admin_url('pos'); ?>"><?= lang("back_to_pos"); ?></a>
-                <?php } ?>
+                
                 </span>
                 <?php
             }
