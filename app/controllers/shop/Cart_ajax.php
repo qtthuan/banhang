@@ -42,10 +42,11 @@ class Cart_ajax extends MY_Shop_Controller
             if ($this->checkProductStock($product, 1, $selected)) {
                 if ($this->input->is_ajax_request()) {
                     $this->sma->send_json(['error' => 1, 'message' => lang('item_out_of_stock')]);
-                } else {
+                } 
+                /*else {
                     $this->session->set_flashdata('error', lang('item_out_of_stock'));
                     redirect($_SERVER['HTTP_REFERER']);
-                }
+                }*/
             }
             $tax_rate   = $this->site->getTaxRateByID($product->tax_rate);
             $ctax       = $this->site->calculateTax($product, $tax_rate, $price);
