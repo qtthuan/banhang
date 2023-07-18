@@ -85,7 +85,7 @@ class Cron_model extends CI_Model
 //        }
         //$this->updateMemberJoiningDate();
 
-        //$this->updateCostingOnEditProduct();
+        $this->updateCostingOnEditProduct();
 
         $this->clearSuspendedBills();
 
@@ -661,59 +661,12 @@ class Cron_model extends CI_Model
 /**
      * qtthuan
      * Cập nhật giá nhập trên hệ thống sau khi thay đổi giá nhập sửa sản phẩm
-     * + Cập nhật chi phí option
      * @return array
      */
     public function updateCostingOnEditProduct()
     {
         $success = 0;
-
-        // Lấy danh sách sản phẩm đã thay đổi giá nhập mà chưa cập nhật lại bên table purchase_items
-        $query = "SELECT cost.*, variant.cost";
-        $query .= " FROM " . $this->db->dbprefix('costing') . " AS cost ";
-        $query .= " JOIN " . $this->db->dbprefix('product_variants') . " AS variant"; 
-        $query .= " ON cost.option_id=variant.id ";
-        $query .= " where (variant.cost+cost.purchase_unit_cost) > cost.purchase_unit_cost";
-
-        $q = $this->db->query($query);
-
-        if ($q->num_rows() > 0) {
-            foreach (($q->result()) as $row) {
-                if ($row->quantity > 0) {
-                    $data = array(
-                                'net_unit_cost' => $row->cost,
-                                'real_unit_cost' => $row->cost,
-                                'unit_cost' => $row->cost,
-                                'subtotal' => $row->cost*$row->quantity);
-                    // => Cập nhật lại giá nhập vừa thay đổi lên table purchase_items
-                    $this->db->update("purchase_items", $data, array('product_id' => $row->product_id));
-                }
-            }
-            $success++;
-        }
-
-        // Kiểm tra giá nhập ở table warehouses_products sau khi thay đổi giá nhập sản phẩm
-        $query = "SELECT DISTINCT pro.id AS product_id, pro.name, pro.code, pro.cost, ware.avg_cost, ware.quantity, pro.created_date";
-        $query .= " FROM " . $this->db->dbprefix('products') . " AS pro ";
-        $query .= " JOIN " . $this->db->dbprefix('warehouses_products') . " AS ware"; 
-        $query .= " ON pro.id = ware.product_id where pro.cost <> ware.avg_cost order by pro.created_date desc";
-
-        $q = $this->db->query($query);
-
-        if ($q->num_rows() > 0) {
-            foreach (($q->result()) as $row) {
-                if ($row->quantity > 0) {
-                    $data = array('avg_cost' => $row->cost);
-
-                    // Cập nhật giá nhập vừa thay đổi bên danh sách sản phẩm qua table warehouses_products
-                    $this->db->update("warehouses_products", $data, array('product_id' => $row->product_id));
-                }
-            }
-            $success++;
-        }
-
-        // Kiểm tra giá nhập trên từng option => cập nhật lên table costing để tính chi phí chính xác
-        $query = "SELECT ";
+        $query = "SELECT distinct pro.id, pro.name, pro.code, pro.cost, purchase.net_unit_cost, pro.created_date";
         $query .= " FROM " . $this->db->dbprefix('products') . " AS pro ";
         $query .= " LEFT JOIN " . $this->db->dbprefix('purchase_items') . " AS purchase"; 
         $query .= " ON pro.id=purchase.product_id where pro.cost <> purchase.net_unit_cost order by pro.created_date desc";
@@ -730,13 +683,30 @@ class Cron_model extends CI_Model
                                 'real_unit_cost' => $row->cost,
                                 'unit_cost' => $row->cost,
                                 'subtotal' => $row->cost*$row->quantity);
-                    $this->db->update("costing", $data, array('product_id' => $row->product_id));
+                    $this->db->update("purchase_items", $data, array('product_id' => $row->product_id));
                 }
             }
             $success++;
         }
 
+        $query = "SELECT DISTINCT pro.id AS product_id, pro.name, pro.code, pro.cost, ware.avg_cost, ware.quantity, pro.created_date";
+        $query .= " FROM " . $this->db->dbprefix('products') . " AS pro ";
+        $query .= " JOIN " . $this->db->dbprefix('warehouses_products') . " AS ware"; 
+        $query .= " ON pro.id = ware.product_id where pro.cost <> ware.avg_cost order by pro.created_date desc";
 
+        //exit($query);
+
+        $q = $this->db->query($query);
+
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                if ($row->quantity > 0) {
+                    $data = array('avg_cost' => $row->cost);
+                    $this->db->update("warehouses_products", $data, array('product_id' => $row->product_id));
+                }
+            }
+            $success++;
+        }
         if ($success > 0 ) {
             return TRUE;
         } else {
