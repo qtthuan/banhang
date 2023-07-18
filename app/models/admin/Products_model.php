@@ -340,7 +340,7 @@ class Products_model extends CI_Model
                     }
                 }
             }
-
+            //$this->sma->print_arrays($product_attributes);
             if ($product_attributes) {
                 foreach ($product_attributes as $pr_attr) {
                     $pr_attr_details = $this->getPrductVariantByPIDandName($product_id, $pr_attr['name']);

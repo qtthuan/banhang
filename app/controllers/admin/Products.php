@@ -541,6 +541,7 @@ class Products extends MY_Controller
                                 'warehouse_id' => $_POST['attr_warehouse'][$r],
                                 'quantity' => $_POST['attr_quantity'][$r],
                                 'price' => $_POST['attr_price'][$r],
+                                'cost' => $_POST['attr_cost'][$r],
                                 'option_name_extra' => $this->sma->getSizeNumber($_POST['attr_name'][$r]),
                             );
                             $pv_total_quantity += $_POST['attr_quantity'][$r];
@@ -997,6 +998,7 @@ class Products extends MY_Controller
                                     'warehouse_id' => $_POST['attr_warehouse'][$r],
                                     'quantity' => $_POST['attr_quantity'][$r],
                                     'price' => $_POST['attr_price'][$r],
+                                    'cost' => $_POST['attr_cost'][$r],
                                     'option_name_extra' => $this->sma->getSizeNumber($_POST['attr_name'][$r]),
                                 );
                             }

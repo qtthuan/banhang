@@ -1020,6 +1020,59 @@ class Site extends CI_Model
         return FALSE;
     }
 
+    public function updateOptionCosting($costing_id, $option_id) {
+
+
+        $q = $this->db->get_where('product_variants', array('id' => $option_id), 1);
+        if ($q->num_rows() > 0) {
+            $row = $q->row();
+            if ($row->cost > 0) {
+                
+            }
+        }
+
+
+        $q = $this->db->get_where('product_variants', array('id' => $option_id));
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return FALSE;
+
+
+
+        if (!empty($data)) {
+            foreach ($data as $items) {
+                foreach ($items as $item) {
+                    if (isset($item['pi_overselling'])) {
+                        unset($item['pi_overselling']);
+                        $option_id = (isset($item['option_id']) && !empty($item['option_id'])) ? $item['option_id'] : NULL;
+                        $clause = array('purchase_id' => NULL, 'transfer_id' => NULL, 'product_id' => $item['product_id'], 'warehouse_id' => $item['warehouse_id'], 'option_id' => $option_id);
+                        if ($pi = $this->getPurchasedItem($clause)) {
+                            $quantity_balance = $pi->quantity_balance + $item['quantity_balance'];
+                            $this->db->update('purchase_items', array('quantity_balance' => $quantity_balance), array('id' => $pi->id));
+                        } else {
+                            $clause['quantity'] = 0;
+                            $clause['item_tax'] = 0;
+                            $clause['quantity_balance'] = $item['quantity_balance'];
+                            $clause['status'] = 'received';
+                            $clause['option_id'] = !empty($clause['option_id']) && is_numeric($clause['option_id']) ? $clause['option_id'] : NULL;
+                            $this->db->insert('purchase_items', $clause);
+                        }
+                    } else {
+                        if ($item['inventory']) {
+                            $this->db->update('purchase_items', array('quantity_balance' => $item['quantity_balance']), array('id' => $item['purchase_item_id']));
+                        }
+                    }
+                }
+            }
+            return TRUE;
+        }
+        return FALSE;
+    }
+
     public function getProductByCode($code)
     {
         $q = $this->db->get_where('products', array('code' => $code), 1);

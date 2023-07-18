@@ -291,7 +291,6 @@ class Pos_model extends CI_Model
                                 }
                             }
                         }
-                        $costing_id = $this->db->insert_id();
                     }
                 }
             }

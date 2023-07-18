@@ -85,7 +85,7 @@ class Cron_model extends CI_Model
 //        }
         //$this->updateMemberJoiningDate();
 
-        $this->updateCostingOnEditProduct();
+        //$this->updateCostingOnEditProduct();
 
         $this->clearSuspendedBills();
 
@@ -685,7 +685,7 @@ class Cron_model extends CI_Model
                                 'real_unit_cost' => $row->cost,
                                 'unit_cost' => $row->cost,
                                 'subtotal' => $row->cost*$row->quantity);
-                    // => Cập nhật lại giá nhập vừa đã thay đổi lên table purchase_items
+                    // => Cập nhật lại giá nhập vừa thay đổi lên table purchase_items
                     $this->db->update("purchase_items", $data, array('product_id' => $row->product_id));
                 }
             }
@@ -730,7 +730,7 @@ class Cron_model extends CI_Model
                                 'real_unit_cost' => $row->cost,
                                 'unit_cost' => $row->cost,
                                 'subtotal' => $row->cost*$row->quantity);
-                    $this->db->update("purchase_items", $data, array('product_id' => $row->product_id));
+                    $this->db->update("costing", $data, array('product_id' => $row->product_id));
                 }
             }
             $success++;
