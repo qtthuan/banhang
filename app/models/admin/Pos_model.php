@@ -260,7 +260,7 @@ class Pos_model extends CI_Model
         $total_with_no_points = $data['total_with_no_points'];
         unset($data['total_with_no_points']);
         $cost = $this->site->costing($items);
-        //$this->sma->print_arrays($data);
+        //$this->sma->print_arrays($items);
 
         if ($this->db->insert('sales', $data)) {
             $sale_id = $this->db->insert_id();
@@ -280,6 +280,8 @@ class Pos_model extends CI_Model
                             $item_cost['date'] = date('Y-m-d', strtotime($data['date']));
                             if(! isset($item_cost['pi_overselling'])) {
                                 $this->db->insert('costing', $item_cost);
+                                $costing_id = $this->db->insert_id();
+                                $this->site->updateOptionCosting($costing_id, $item['option_id']);
                             }
                         } else {
                             foreach ($item_cost as $ic) {
@@ -288,6 +290,8 @@ class Pos_model extends CI_Model
                                 $ic['date'] = date('Y-m-d', strtotime($data['date']));
                                 if(! isset($ic['pi_overselling'])) {
                                     $this->db->insert('costing', $ic);
+                                    $costing_id = $this->db->insert_id();
+                                    $this->site->updateOptionCosting($costing_id, $item['option_id']);
                                 }
                             }
                         }
