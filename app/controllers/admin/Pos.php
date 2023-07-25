@@ -856,11 +856,13 @@ class Pos extends MY_Controller
                 if ($pr_group_price = $this->site->getProductGroupPrice($row->id, $customer->price_group_id)) {
                     $row->original_price = $row->price;
                     $row->price = $pr_group_price->price;
+                    $row->big_size_price = $pr_group_price->big_size_price;
                 }
             } elseif ($warehouse->price_group_id) {
                 if ($pr_group_price = $this->site->getProductGroupPrice($row->id, $warehouse->price_group_id)) {
                     $row->original_price = $row->price;
                     $row->price = $pr_group_price->price;
+                    $row->big_size_price = $pr_group_price->big_size_price;
                 }
             }
             $row->price = $row->price + (($row->price * $customer_group->percent) / 100);

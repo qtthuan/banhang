@@ -2274,7 +2274,7 @@ var lang = {
             closeMini();
         } else {
             openMini();
-            console.log('222');
+            //console.log('222');
             //$('.btn-cat-con').toggle('slide', { direction: 'right' }, 100);
         }
         

@@ -774,6 +774,20 @@ class Settings_model extends CI_Model
         return FALSE;
     }
 
+    public function setProductPriceForPriceGroupExtra($product_id, $group_id, $price, $big_size_price)
+    {
+        if ($this->getGroupPrice($group_id, $product_id)) {
+            if ($this->db->update('product_prices', array('price' => $price, 'big_size_price' => $big_size_price), array('price_group_id' => $group_id, 'product_id' => $product_id))) {
+                return true;
+            }
+        } else {
+            if ($this->db->insert('product_prices', array('price' => $price, 'big_size_price' => $big_size_price, 'price_group_id' => $group_id, 'product_id' => $product_id))) {
+                return true;
+            }
+        }
+        return FALSE;
+    }
+
     public function getGroupPrice($group_id, $product_id)
     {
         $q = $this->db->get_where('product_prices', array('price_group_id' => $group_id, 'product_id' => $product_id), 1);

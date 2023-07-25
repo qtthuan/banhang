@@ -2858,7 +2858,7 @@ class system_settings extends MY_Controller
                 if ($this->input->post('form_action') == 'update_price') {
 
                     foreach ($_POST['val'] as $id) {
-                        $this->settings_model->setProductPriceForPriceGroup($id, $group_id, $this->input->post('price'.$id));
+                        $this->settings_model->setProductPriceForPriceGroupExtra($id, $group_id, $this->input->post('price'.$id), $this->input->post('big_size_price'.$id));
                     }
                     $this->session->set_flashdata('message', lang("products_group_price_updated"));
                     redirect($_SERVER["HTTP_REFERER"]);
@@ -2931,15 +2931,18 @@ class system_settings extends MY_Controller
             admin_redirect('system_settings/price_groups');
         }
 
-        $pp = "( SELECT {$this->db->dbprefix('product_prices')}.product_id as product_id, {$this->db->dbprefix('product_prices')}.price as price FROM {$this->db->dbprefix('product_prices')} WHERE price_group_id = {$group_id} ) PP";
+        $pp = "( SELECT {$this->db->dbprefix('product_prices')}.product_id as product_id, {$this->db->dbprefix('product_prices')}.price as price, {$this->db->dbprefix('product_prices')}.big_size_price as big_size_price  FROM {$this->db->dbprefix('product_prices')} WHERE price_group_id = {$group_id} ) PP";
+        //$pp_big_size = "( SELECT {$this->db->dbprefix('product_prices')}.product_id as product_id, {$this->db->dbprefix('product_prices')}.option_big_size as option_big_size FROM {$this->db->dbprefix('product_prices')} WHERE price_group_id = {$group_id} ) BIGSIZE";
 
         $this->load->library('datatables');
         $this->datatables
-            ->select("{$this->db->dbprefix('products')}.id as id, {$this->db->dbprefix('products')}.code as product_code, {$this->db->dbprefix('products')}.name as product_name, PP.price as price ")
+            ->select("{$this->db->dbprefix('products')}.id as id, {$this->db->dbprefix('products')}.code as product_code, {$this->db->dbprefix('products')}.name as product_name, PP.price as price, PP.big_size_price as big_size_price ")
             ->from("products")
             ->join($pp, 'PP.product_id=products.id', 'left')
+            //->join($pp_big_size, 'BIGSIZE.product_id=products.id', 'left')
             ->where("products.category_id", 38)  // Chỉ hiển thị nhóm Nước ép- Sinh tố
             ->edit_column("price", "$1__$2", 'id, price')
+            ->edit_column("big_size_price", "$1__$2", 'id, big_size_price')
             ->add_column("Actions", "<div class=\"text-center\"><button class=\"btn btn-primary btn-xs form-submit\" type=\"button\"><i class=\"fa fa-check\"></i></button></div>", "id");
 
         echo $this->datatables->generate();
@@ -2958,8 +2961,9 @@ class system_settings extends MY_Controller
 
         $product_id = $this->input->post('product_id', TRUE);
         $price = $this->input->post('price', TRUE);
+        $big_size_price = $this->input->post('big_size_price', TRUE);
         if (!empty($product_id) && !empty($price)) {
-            if ($this->settings_model->setProductPriceForPriceGroup($product_id, $group_id, $price)) {
+            if ($this->settings_model->setProductPriceForPriceGroupExtra($product_id, $group_id, $price, $big_size_price)) {
                 $this->sma->send_json(array('status' => 1));
             }
         }

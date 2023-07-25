@@ -12,13 +12,14 @@
             var row = btn.closest('tr');
             var product_id = row.attr('id');
             var price = row.find('.price').val();
+            var big_size_price = row.find('.big_size_price').val();
             $.ajax({
                 type: 'post',
                 url: '<?= admin_url('system_settings/update_product_group_price/'.$price_group->id); ?>',
                 dataType: "json",
                 data: {
                     <?= $this->security->get_csrf_token_name() ?>: '<?= $this->security->get_csrf_hash() ?>',
-                    product_id: product_id, price: price
+                    product_id: product_id, price: price, big_size_price: big_size_price
                 },
                 success: function (data) {
                     if (data.status != 1)
@@ -36,6 +37,12 @@
             ti = ti+1;
             var v = x.split('__');
             return "<div class=\"text-center\"><input type=\"text\" name=\"price"+v[0]+"\" value=\""+(v[1] != '' ? formatDecimals(v[1]) : '')+"\" class=\"form-control text-center price\" tabindex=\""+(ti)+"\" style=\"padding:2px;height:auto;\"></div>"; // onclick=\"this.select();\"
+        }
+        function big_size_price_input(x) {
+            ti = ti+1;
+            //console.log('abc: ' + x);
+            var v = x.split('__');
+            return "<div class=\"text-center\"><input type=\"text\" name=\"big_size_price"+v[0]+"\" value=\""+(v[1] != '' ? formatDecimals(v[1]) : '')+"\" class=\"form-control text-center big_size_price\" tabindex=\""+(ti)+"\" style=\"padding:2px;height:auto;\"></div>"; // onclick=\"this.select();\"
         }
 
         $('#CGData').dataTable({
@@ -56,7 +63,7 @@
                 nRow.className = "product_group_price_id";
                 return nRow;
             },
-            "aoColumns": [{"bSortable": false, "mRender": checkbox}, null, null, {"bSortable": false, "mRender": price_input}, {"bSortable": false}]
+            "aoColumns": [{"bSortable": false, "mRender": checkbox}, null, null, {"bSortable": false, "mRender": price_input}, {"bSortable": false, "mRender": big_size_price_input}, {"bSortable": false}]
         }).fnSetFilteringDelay();
     });
 </script>
@@ -114,12 +121,13 @@
                             <th class="col-xs-3"><?= lang("product_code"); ?></th>
                             <th class="col-xs-4"><?= lang("product_name"); ?></th>
                             <th><?= lang("price"); ?></th>
+                            <th><?= lang("big_size_price"); ?></th>
                             <th style="width:85px;"><?= lang("update"); ?></th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
-                            <td colspan="5" class="dataTables_empty"><?= lang('loading_data_from_server') ?></td>
+                            <td colspan="6" class="dataTables_empty"><?= lang('loading_data_from_server') ?></td>
                         </tr>
 
                         </tbody>

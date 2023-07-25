@@ -346,6 +346,7 @@ $lang['bcc']                                = "BCC";
 $lang['message']                            = "Tin nhắn";
 $lang['show_bcc']                           = "Hiện/Ẩn BCC";
 $lang['price']                              = "Giá";
+$lang['big_size_price']                     = "Giá ly lớn";
 $lang['add_product_manually']               = "Thêm sản phẩm nhanh";
 $lang['currency']                           = "Tiền tệ";
 $lang['product_discount']                   = "Giảm giá";

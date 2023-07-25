@@ -1131,7 +1131,7 @@ function loadItems() {
         }
         var category = 0, print_cate = false;
         // var itn = parseInt(Object.keys(sortedItems).length);
-        console.log(JSON.stringify(sortedItems));
+        //console.log(JSON.stringify(sortedItems));
         $.each(sortedItems, function () {
             var item = this;            
             var item_id = site.settings.item_addition == 1 ? item.item_id : item.id;
@@ -1159,7 +1159,12 @@ function loadItems() {
             if(item.options !== false) {
                 $.each(item.options, function () {
                     if(this.id == item.row.option && this.price != 0 && this.price != '' && this.price != null) {
-                        item_price = parseFloat(unit_price)+(parseFloat(this.price));
+                        //console.log('item.row.option_big_size: ' + item.row.option_big_size);
+                        if (item.row.big_size_price && item.row.big_size_price != 0) {
+                            item_price = parseFloat(item.row.big_size_price);
+                        } else {
+                            item_price = parseFloat(unit_price)+(parseFloat(this.price));
+                        }
                         unit_price = item_price;
                         item_original_price = parseFloat(item_original_price) + parseFloat(this.price);
                     }
