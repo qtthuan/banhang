@@ -51,7 +51,7 @@
                                     $str_comment_style = '';
                                     if($item['comment'] && $item['comment'] != '' && $item['comment'] != 'undefined') {
                                         //echo '<h5 style="border-top: 2px dotted black; padding-top: 4px; margin: 0; font-size: 11px;">';
-                                        $str_comment = '<br /><span style="font-size: 11px;"><strong>' . $item['comment'] . '</strong></span>';
+                                        $str_comment = '<br /><span style="font-size: 10px;"><strong>' . $item['comment'] . '</strong></span>';
                                         $str_comment_style = 'border-bottom: 2px dotted black;';
                                         //echo '</h5>';
                                     }
@@ -64,10 +64,9 @@
                                     echo ' <strong>' . $item['comment'] . '</strong>';
                                     echo '</h5>';
                                 }*/
-                                echo '<h4 style="margin: 2px; position: absolute; bottom: 0;">';
+                                echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 16px;">';
                                 //echo '<span class="text_size"'.$str_padding.'>';
-                                echo '<button type="button" class="text_size btn btn-default multiplex" id="15" style="border-radius: 4px !important; height:28px; font-size: 15px; font-weight: bold">
-                                        <i class="fa"></i>';
+                                echo '<strong>';
                                     
                                 if ($item['variants'] == 'size L') {
                                     echo 'L';
@@ -76,7 +75,7 @@
                                 } else {
                                     echo $item['variants'];
                                 }
-                                echo '</button>';
+                                echo '</strong>';
                                 //echo '</span>';
                                 echo '<span class="text_price">' . $this->sma->formatMoney($item['price']);
                                 echo '</span>';

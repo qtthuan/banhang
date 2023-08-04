@@ -63,7 +63,7 @@
 .barcode .style14 { width: 4in; height: 1.33in; margin: 0 0.1in; padding-top: 0.1in; }
 /*.barcode .style10 { width: 1.83in; min-height: 1.08in; font-size: 11px; line-height: 15px; }*/
 .barcode .style10 { width: 1.74in; min-height: 0.98in; font-size: 11px; line-height: 14px; }
-.barcode .style10_1 { position: relative; width: 1.74in; min-height: 0.98in; font-size: 11px; line-height: 14px; }
+.barcode .style10_1 { position: relative; width: 1.65in; min-height: 0.98in; font-size: 11px; line-height: 14px; }
 .barcode .barcode_site, .barcode .barcode_name, .barcode .barcode_image, .barcode .variants { display: block; }
 /*.barcode .barcode_price, .barcode .barcode_unit, .barcode .barcode_category { display: inline-block; font-size: 15px; padding-top: 2px; }*/
 .barcode .barcode_price, .barcode .barcode_unit, .barcode .barcode_category { display: inline-block; font-size: 16px; }
