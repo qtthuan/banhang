@@ -19,16 +19,12 @@
                      
                 <div id="barcode-con">
                     <?php                       
-                        $style = 10;
+                        $style = '10_1';
                         echo '<button type="button" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print').'</button>';
-                        $c = 1;
-                        if ($style == 12 || $style == 18 || $style == 24 || $style == 40) {
-                            echo '<div class="barcodea4">';
-                        } elseif ($style == 55) {
-                            echo '<div class="barcodea5">';
-                        } elseif ($style != 50) {
+                        
                             echo '<div class="barcode">';
-                        }
+                            
+                        
                         $total_items = 0;
                         //$this->sma->print_arrays($barcodes);
                         foreach ($barcodes as $item) {
@@ -37,7 +33,7 @@
                                 $total_items++;
                                 //if($item['increase_size']) {
                                     $increase_size = "increase_size";
-                                    if ($item['comment'] || $item['variants'] == 'size L') {
+                                    if ($item['comment']) {
                                         $increase_size .= '_1';
                                     }
                                 //} 
@@ -45,28 +41,48 @@
                                 if ($item['variants'] == 'L') {
                                     $str_padding = ' style="padding-top: 10px;"';                                            
                                 }                                       
-                                echo '<div class="item style' . $style . ' ' . $valign_middle . '" '.
+                                echo '<div class="item_1 style' . $style . ' ' . $valign_middle . '" '.
                                 ($style == 50 && $this->input->post('cf_width') && $this->input->post('cf_height') ?
                                     'style="width:'.$this->input->post('cf_width').'in;height:'.$this->input->post('cf_height').'in;border:0;"' : '')
                                 .'>';
                                 
                                 if($item['name']) {
-                                    echo '<span class="barcode_name '.$increase_size.'">'.$item['name'];
+                                    $str_comment = '';
+                                    $str_comment_style = '';
                                     if($item['comment'] && $item['comment'] != '' && $item['comment'] != 'undefined') {
-                                        echo ' (<strong>' . $item['comment'] . '</strong>)';
+                                        //echo '<h5 style="border-top: 2px dotted black; padding-top: 4px; margin: 0; font-size: 11px;">';
+                                        $str_comment = '<br /><span style="font-size: 11px;"><strong>' . $item['comment'] . '</strong></span>';
+                                        $str_comment_style = 'border-bottom: 2px dotted black;';
+                                        //echo '</h5>';
                                     }
+                                    echo '<span style="position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item['name'];
+                                    echo $str_comment;
                                     echo '</span>';
                                 }
-
-                                echo '<span class="text_code"'.$str_padding.'>';
+                                /*if($item['comment'] && $item['comment'] != '' && $item['comment'] != 'undefined') {
+                                    echo '<h5 style="border-top: 2px dotted black; padding-top: 4px; margin: 0; font-size: 11px;">';
+                                    echo ' <strong>' . $item['comment'] . '</strong>';
+                                    echo '</h5>';
+                                }*/
+                                echo '<h4 style="margin: 2px; position: absolute; bottom: 0;">';
+                                //echo '<span class="text_size"'.$str_padding.'>';
+                                echo '<button type="button" class="text_size btn btn-default multiplex" id="15" style="border-radius: 4px !important; height:28px; font-size: 15px; font-weight: bold">
+                                        <i class="fa"></i>';
+                                    
                                 if ($item['variants'] == 'size L') {
-                                    echo lang('mini_size_l');
+                                    echo 'L';
                                 } elseif ($item['variants'] == 'size M')  {
-                                    echo '';
+                                    echo 'M';
                                 } else {
                                     echo $item['variants'];
                                 }
+                                echo '</button>';
+                                //echo '</span>';
+                                echo '<span class="text_price">' . $this->sma->formatMoney($item['price']);
                                 echo '</span>';
+                                echo '</h4>';
+                                
+                                
                                 
                                 if ($item[''])
                                 echo '<br />';

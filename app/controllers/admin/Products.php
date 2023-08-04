@@ -2226,6 +2226,7 @@ class Products extends MY_Controller
                                             'code' => $_POST['code'][$i], 
                                             'name' => $_POST['name'][$i], 
                                             'comment' => $_POST['comment'][$i], 
+                                            'price' => $_POST['price'][$i], 
                                             'variants' => $_POST['variant'][$i]);
                                 $j++;
                             
@@ -2237,6 +2238,7 @@ class Products extends MY_Controller
                             'code' => $_POST['code'][$i], 
                             'name' => $_POST['name'][$i], 
                             'comment' => $_POST['comment'][$i], 
+                            'price' => $_POST['price'][$i], 
                             'variants' => $_POST['variant'][$i]);
                         }
                         $j++; 

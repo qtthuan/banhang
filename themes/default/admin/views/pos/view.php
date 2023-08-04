@@ -718,7 +718,7 @@
     </div>
 <?php if ($Owner || $GP['bulk_actions']) {
     echo admin_form_open('products/product_actions'.($warehouse_id ? '/'.$warehouse_id : ''), 'id="label-form"');
-    //$this->sma->print_arrays($rows);
+        //$this->sma->print_arrays($rows);
     foreach ($rows as $row) {
         if($row->product_code != 'GK3031' && $row->product_code != 'GK3030' && $row->product_code != 'GK3027') { // KHÔNG IN MÃ VẠCH KEM CHUỐI, YAOURT TRÁI CÂY BỊCH VÀ SINH TỐ ĐẬU BỊCH 
 ?>
@@ -728,7 +728,8 @@
             <input name="qty[]" type="hidden" value="<?=$row->quantity?>">    
             <input name="options[]" type="hidden" value="<?=$row->option_id?>">  
             <input name="variant[]" type="hidden" value="<?=$row->variant?>">  
-            <input name="comment[]" type="hidden" value="<?=$row->comment?>">    
+            <input name="comment[]" type="hidden" value="<?=$row->comment?>">   
+            <input name="price[]" type="hidden" value="<?=$row->unit_price?>">   
 <?php
         }
     }
