@@ -23,7 +23,7 @@ class system_settings extends MY_Controller
         $this->thumbs_path = 'assets/uploads/thumbs/';
         $this->image_types = 'gif|jpg|jpeg|png|tif';
         $this->digital_file_types = 'zip|psd|ai|rar|pdf|doc|docx|xls|xlsx|ppt|pptx|gif|jpg|jpeg|png|tif';
-        $this->allowed_file_size = '1024';
+        $this->allowed_file_size = '3072';
     }
 
     function index()
