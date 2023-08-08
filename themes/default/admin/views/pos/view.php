@@ -210,9 +210,9 @@
                             if ($row->variant) {
                                 if ($inv->warehouse_id == 3) { // Tiệm nước mini
                                     if ($this->sma->getSizeNumber($row->variant) == 'M') {
-                                        $str_variants = '';
+                                        $str_variants = ' (<strong>Size M</strong>)';
                                     } elseif ($this->sma->getSizeNumber($row->variant) == 'L') {
-                                        $str_variants = ' ( ' . lang('mini_size_l') . ')';
+                                        $str_variants = ' (<strong>Size L</strong>)';
                                     } 
                                 } else {
                                         $str_variants = '-' . $this->sma->getSizeNumber($row->variant);
