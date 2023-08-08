@@ -2265,7 +2265,7 @@ var lang = {
                 closeMini();
             } else {
                 openMini();
-                console.log('1111');
+                //console.log('1111');
             }
 
         });

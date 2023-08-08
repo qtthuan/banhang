@@ -88,9 +88,30 @@ if (!empty($variants)) {
                         <?= form_input('cost', (isset($_POST['cost']) ? $_POST['cost'] : ($product ? $this->sma->formatDecimal($product->cost) : '')), 'class="form-control tip" id="cost" required="required"') ?>
                     </div>
                     <div class="form-group all">
+                        <button type="button" class="btn btn-success auto_price" id="25000">
+                            <i class="fa"></i>+25.000đ
+                        </button>
+                        <button type="button" class="btn btn-success auto_price" id="30000">
+                            <i class="fa"></i>+30.000đ
+                        </button>
+                        <button type="button" class="btn btn-success auto_price" id="35000">
+                            <i class="fa"></i>+35.000đ
+                        </button>
+                        <button type="button" class="btn btn-success auto_price" id="40000">
+                            <i class="fa"></i>+40.000đ
+                        </button>
+                        <button type="button" class="btn btn-success auto_price" id="45000">
+                            <i class="fa"></i>+45.000đ
+                        </button>
+                        <button type="button" class="btn btn-success auto_price" id="50000">
+                            <i class="fa"></i>+50.000đ
+                        </button>
+                    </div>
+                    <div class="form-group all">
                         <?= lang("product_price", "price") ?>
                         <?= form_input('price', (isset($_POST['price']) ? $_POST['price'] : ($product ? $this->sma->formatDecimal($product->price) : '')), 'class="form-control tip" id="price" required="required"') ?>
                     </div>
+                    
                     <div class="form-group">
                         <input type="checkbox" class="checkbox" value="1" name="promotion" id="promotion" <?= $this->input->post('promotion') ? 'checked="checked"' : ''; ?>>
                         <label for="promotion" class="padding05">
@@ -613,7 +634,13 @@ if (!empty($variants)) {
             }
             $('#modal-loading').hide();
         });
-        //$('#cost').removeAttr('required');
+
+        $('.auto_price').click(function() {
+           if (!isNaN($('#cost').val())) {
+                $('#price').val(parseInt($('#cost').val()) + parseInt($(this).attr('id')));
+           }
+        });
+
         $('#digital_file').change(function () {
             if ($(this).val()) {
                 $('#file_link').removeAttr('required');

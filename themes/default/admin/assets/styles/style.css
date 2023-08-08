@@ -2087,3 +2087,5 @@ animation: blink 1s steps(2, start) infinite;
 #receiptData table td:nth-child(2) { text-align: left; width: 15%; }
 #receiptData table td:nth-child(3) { text-align: left; width: 23%; }
 #receiptData table td:nth-child(4) { width: 23%; }
+
+.auto_price { height:30px; font-size: 14px; padding: 3px; }
