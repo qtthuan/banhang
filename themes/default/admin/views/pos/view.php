@@ -151,7 +151,9 @@
                         echo "<br>" . lang("vat_no") . ": " . $customer->vat_no;
                     }
                     if ($customer->customer_group_id != 4) { // Nhóm Baemin không hiển thị thông tin này
-                        echo lang("address") . ": " . $customer->address . "<br>";
+                        if ($customer->address != 'TP Cần Thơ') {
+                            echo lang("address") . ": " . $customer->address . "<br>";
+                        }
                         echo lang("tel") . ": " . $customer->phone . "<br>";
                     }
                     if (!empty($customer->cf1) && $customer->cf1 != "-") {
