@@ -98,7 +98,7 @@
                         if ($style != 50) {
                             echo '</div>';
                         }
-                        echo '<div id="total_items" class="no-print" style="color: green"><h2><strong>(1-'.round($total_items/2).')</strong></h2></div>';
+                        echo '<div id="total_items" class="no-print" style="color: green"><h1><strong>(1-'.round($total_items/2).')</strong></h1><h2> "Click vào tem để xóa"</h2></div>';
                         echo '<button type="button" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print') . '</button>';
                     ?>
                 </div>
