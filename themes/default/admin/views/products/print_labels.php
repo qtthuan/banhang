@@ -117,7 +117,7 @@
             });
         <?php } ?>
         
-        $(document).on('click', '.item', function () {
+        $(document).on('click', '.item_1', function () {
             var id = $(this).attr('id');
             $(this).remove();
             total_items = total_items -1;
