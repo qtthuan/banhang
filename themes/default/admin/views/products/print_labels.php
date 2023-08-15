@@ -98,7 +98,7 @@
                         if ($style != 50) {
                             echo '</div>';
                         }
-                        echo '<div id="total_items" class="no-print" style="color: green"><h1><strong>(1-'.round($total_items/2).')</strong></h1><h2> "Click vào tem để xóa"</h2></div>';
+                        echo '<div id="total_items" class="no-print" style="color: green"><h1><strong>(1-'.round($total_items/2).')</strong></h1><h2>&#8220;Click vào tem để xóa&#8221;</h2></div>';
                         echo '<button type="button" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print') . '</button>';
                     ?>
                 </div>
@@ -121,7 +121,7 @@
             var id = $(this).attr('id');
             $(this).remove();
             total_items = total_items -1;
-            $("#total_items").html("<h1><strong>(1-" + Math.round(total_items/2) + ")</strong></h1><h2>""Click vào tem để xóa""</h2>")
+            $("#total_items").html("<h1><strong>(1-" + Math.round(total_items/2) + ")</strong></h1><h2>&#8220;Click vào tem để xóa&#8221;</h2>")
         });
     });
 
