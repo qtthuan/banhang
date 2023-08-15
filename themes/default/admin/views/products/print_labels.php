@@ -121,7 +121,7 @@
             var id = $(this).attr('id');
             $(this).remove();
             total_items = total_items -1;
-            $("#total_items").html("<h2><strong>(1-" + Math.round(total_items/2) + ")</strong></h2>")
+            $("#total_items").html("<h1><strong>(1-" + Math.round(total_items/2) + ")</strong></h1><h2> "Click vào tem để xóa"</h2>")
         });
     });
 
