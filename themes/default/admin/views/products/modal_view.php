@@ -46,9 +46,11 @@
                                         <td><?= $subcategory->name; ?></td>
                                     </tr>
                                     <?php } ?>
-                                    <?php if ($Owner || $Admin) {
-                                        //echo '<tr><td>' . lang("cost") . '</td><td>' . $this->sma->formatMoney($product->cost) . '</td></tr>';
-                                        echo '<tr><td>' . lang("price") . '</td><td>' . $this->sma->formatMoney($product->price) . '</td></tr>';
+                                    <?php if ($Owner || $Admin || $this->session->userdata('show_cost')) {
+                                        //if ($this->session->userdata('show_cost')) {
+                                            echo '<tr><td>' . lang("cost") . '</td><td><span style="color:blue" class="cost_click">....</span><span class="cost_details">' . $this->sma->formatMoney($product->cost) . '</span></td></tr>';
+                                        //  }
+                                        echo '<tr><td>c' . lang("price") . '</td><td>' . $this->sma->formatMoney($product->price) . '</td></tr>';
                                         if ($product->promotion) {
                                             echo '<tr><td>' . lang("promotion") . '</td><td>' . $this->sma->formatMoney($product->promo_price) . ' ('.$this->sma->hrsd($product->start_date).' - '.$this->sma->hrsd($product->end_date).')</td></tr>';
                                         }
@@ -218,6 +220,8 @@
                                 <th><?= lang('quantity') . ' (' . lang('rack') . ')'; ?></th>
                                 <?php if ($Owner || $Admin || $this->session->userdata('show_price')) {
                                     echo '<th>' . lang('price_addition') . '</th>';
+                                } ?>
+                                <?php if ($Owner || $Admin || $this->session->userdata('show_cost')) {
                                     echo '<th>' . lang('cost') . '</th>';
                                 } ?>
                             </tr>
@@ -227,8 +231,10 @@
                             foreach ($options as $option) {
                                 //if ($option->wh_qty != 0) {
                                     echo '<tr><td>' . $option->wh_name . '</td><td>' . $option->name . '</td><td class="text-center">' . $this->sma->formatQuantity($option->wh_qty) .'<sup class="col_original" style="display: none; font-weight: bold; color: green; font-size: 14px;">' . $this->sma->formatQuantity($option->wh_original_qty) . '</sup></td>';
-                                    if ($Owner || $Admin || $this->session->userdata('show_price') && (!$Customer || $this->session->userdata('show_cost'))) {
+                                    if ($Owner || $Admin || $this->session->userdata('show_price')) {
                                         echo '<td class="text-right">' . $this->sma->formatMoney($option->price) . '</td>';
+                                    }
+                                    if ($Owner || $Admin || $this->session->userdata('show_cost')) {
                                         echo '<td class="text-right">' . $this->sma->formatMoney($option->cost) . '</td>';
                                     }
                                     echo '</tr>';
@@ -293,13 +299,19 @@
 </div>
 <script type="text/javascript">
 $(document).ready(function() {
+    $('.cost_details').hide();
     $('.change_img').click(function(event) {
         event.preventDefault();
         var img_src = $(this).attr('href');
         $('#pr-image').attr('src', img_src);
         return false;
     });
-
+    $('.cost_click').click(function(event) {
+        //event.preventDefault();
+        $(this).hide();
+        $('.cost_details').show();
+        return false;
+    });
     $("#btn_original").click(function(){
         $(".col_original").slideToggle();
         $(".wh_col_original").slideToggle();
