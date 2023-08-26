@@ -238,7 +238,7 @@
                                             if ($item['promo'] && $item['price_before_promo'] != 0) {
                                                 echo '<span style="font-size: 12px; text-decoration: line-through;"> ' . $item['price_before_promo'] . '</span>';
                                             }
-                                            echo '</span> ';
+                                            echo '&#8727;</span> ';
                                         }
                                         if ($style == 50) {
                                             echo '</div>';

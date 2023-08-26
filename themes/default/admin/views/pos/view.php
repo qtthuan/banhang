@@ -180,7 +180,7 @@
                 <table class="table table-hover table-striped table-condensed" style="margin-bottom: 0;">
                     <thead>
                     <tr>
-                        <th colspan="5" class="text-center"></th>
+                        <th colspan="5" class="text-center" style="border-top: 1px solid black"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -661,7 +661,7 @@
                         if ($pos->remote_printing == 1) {
                             echo '<button onclick="window.print();" class="btn btn-block btn-primary">'.lang("print").'</button>';
                             if ($inv->warehouse_id == 3) {
-                                echo '</div><div class="btn-group" role="group"><button type="button" id="printLabel" data-action="labels" name="printLabel" class="btn btn-block btn-success" style="text-transform:uppercase;"><li class="fa fa-barcode" style="margin-right: 10px;"></li>'.lang("print_barcodes").'</button>';
+                                echo '</div><div class="btn-group" role="group"><button type="button" id="printLabel" data-action="labels" name="printLabel" class="btn btn-block btn-success" style="text-transform:uppercase;"><li class="fa fa-barcode" style="margin-right: 10px;"></li>'.lang("print_labels").'</button>';
                             }
                         } else {
                             echo '<button onclick="return printReceipt()" class="btn btn-block btn-primary">'.lang("print").'</button>';
@@ -681,7 +681,7 @@
                     if ($pos->remote_printing == 1) {                      
                         echo '<button onclick="window.print();" class="btn btn-block btn-primary">'.lang("print").'</button>';
                         if ($inv->warehouse_id == 3) {
-                            echo '<button type="button" id="printLabel" data-action="labels" name="printLabel" class="btn btn-block btn-success" style="text-transform:uppercase;"><li class="fa fa-barcode" style="margin-right: 10px;"></li>'.lang("print_barcodes").'</button>';
+                            echo '<button type="button" id="printLabel" data-action="labels" name="printLabel" class="btn btn-block btn-success" style="text-transform:uppercase;"><li class="fa fa-barcode" style="margin-right: 10px;"></li>'.lang("print_labels").'</button>';
                         }
                     ?>
                         

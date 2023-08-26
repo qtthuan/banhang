@@ -48,7 +48,7 @@
                                     <?php } ?>
                                     <?php if ($Owner || $Admin || $this->session->userdata('show_cost')) {
                                         //if ($this->session->userdata('show_cost')) {
-                                            echo '<tr><td>' . lang("cost") . '</td><td><span style="color:blue" class="cost_click">....</span><span class="cost_details">' . $this->sma->formatMoney($product->cost) . '</span></td></tr>';
+                                            echo '<tr><td>' . lang("cost") . '</td><td class="cost_hover"><span class="cost_click">*****</span><span class="cost_details">' . $this->sma->formatMoney($product->cost) . '</span></td></tr>';
                                         //  }
                                         echo '<tr><td>c' . lang("price") . '</td><td>' . $this->sma->formatMoney($product->price) . '</td></tr>';
                                         if ($product->promotion) {
@@ -306,12 +306,20 @@ $(document).ready(function() {
         $('#pr-image').attr('src', img_src);
         return false;
     });
-    $('.cost_click').click(function(event) {
-        //event.preventDefault();
-        $(this).hide();
-        $('.cost_details').show();
-        return false;
-    });
+   
+
+
+    $( '.cost_hover' ).hover(
+        function() {
+            $('.cost_click').hide();
+            $('.cost_details').show();
+        }, function() {
+            $('.cost_click').show();
+        $('.cost_details').hide();
+        }
+    );
+
+
     $("#btn_original").click(function(){
         $(".col_original").slideToggle();
         $(".wh_col_original").slideToggle();
