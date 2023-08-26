@@ -227,7 +227,7 @@
 
                                         if($item['price']) {
 
-                                            echo '<span class="barcode_price '.$increase_size.'">';
+                                            echo '<span class="barcode_price '.$increase_size.'">&#8727;';
                                             if($item['currencies']) {
                                                 foreach ($currencies as $currency) {
                                                     echo $currency->code . ': ' . $this->sma->formatMoney($item['price'] * $currency->rate).', ';
@@ -579,6 +579,19 @@
             localStorage.setItem('bcitems', JSON.stringify(bcitems));
         });
 
+        /*$(document).on('ifChecked', '.vt_all', function(event) {
+            var item_id = $(this).attr('data-item-id');
+            var vt_id = $(this).attr('id');
+            bcitems[item_id]['selected_variants'][vt_id] = 1;
+            localStorage.setItem('bcitems', JSON.stringify(bcitems));
+        });
+        $(document).on('ifUnchecked', '.vt_all', function(event) {
+            var item_id = $(this).attr('data-item-id');
+            var vt_id = $(this).attr('id');
+            bcitems[item_id]['selected_variants'][vt_id] = 0;
+            localStorage.setItem('bcitems', JSON.stringify(bcitems));
+        });*/
+
         $(document).on('click', '.del', function () {
             var id = $(this).attr('id');
             delete bcitems[id];
@@ -713,7 +726,7 @@
                     comment += ' - <strong>' + item.comment + '</strong>';
                 }
                 var newTr = $('<tr id="row_' + row_no + '" class="row_' + item.id + '" data-item-id="' + item.id + '"></tr>');
-                tr_html = '<td><input name="product[]" type="hidden" value="' + item.id + '"><input name="comment[]" type="hidden" value="' + item.comment + '"><span id="name_' + row_no + '">' + item.name + ' (' + item.code + ') ' + comment + '</span></td>';
+                tr_html = '<td><input name="vt_all_'+ item.id + '" type="checkbox" class="vt_all" style="display:inline-block;" />&nbsp;<input name="product[]" type="hidden" value="' + item.id + '"><input name="comment[]" type="hidden" value="' + item.comment + '"><span id="name_' + row_no + '">' + item.name + ' (' + item.code + ') ' + comment + '</span></td>';
                 tr_html += '<td><input class="form-control quantity text-center" name="quantity[]" type="text" value="' + formatDecimal(item.qty) + '" data-id="' + row_no + '" data-item="' + item.id + '" id="quantity_' + row_no + '" onClick="this.select();"></td>';
                 if(item.variants) {
                     $.each(item.variants, function () {
