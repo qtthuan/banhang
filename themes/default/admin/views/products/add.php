@@ -307,6 +307,18 @@ if (!empty($variants)) {
                                     <button type="button" class="btn btn-info multiplex" id="20" style="height:37px; font-size: 18px;">
                                         <i class="fa"></i>20X
                                     </button>
+                                    <button type="button" class="btn btn-danger multiplex" id="21" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>21X
+                                    </button>
+                                    <button type="button" class="btn btn-primary multiplex" id="22" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>22X
+                                    </button>
+                                    <button type="button" class="btn btn-warning multiplex" id="23" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>23X
+                                    </button>
+                                    <button type="button" class="btn btn-success multiplex" id="24" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>24X
+                                    </button>
                                     <button type="button" class="btn btn-danger multiplex" id="25" style="height:37px; font-size: 18px;">
                                         <i class="fa"></i>25X
                                     </button>
