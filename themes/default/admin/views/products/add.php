@@ -261,17 +261,57 @@ if (!empty($variants)) {
                                     <button type="button" class="btn btn-info multiplex" id="5" style="height:37px; font-size: 18px;">
                                         <i class="fa"></i>5X
                                     </button>
-                                    <button type="button" class="btn btn-primary multiplex" id="10" style="height:37px; font-size: 18px;">
+                                    <button type="button" class="btn btn-danger multiplex" id="6" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>6X
+                                    </button>
+                                    <button type="button" class="btn btn-primary multiplex" id="7" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>7X
+                                    </button>
+                                    <button type="button" class="btn btn-warning multiplex" id="8" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>8X
+                                    </button>
+                                    <button type="button" class="btn btn-success multiplex" id="9" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>9X
+                                    </button>
+                                    
+                                    <button type="button" class="btn btn-info multiplex" id="10" style="height:37px; font-size: 18px;">
                                         <i class="fa"></i>10X
                                     </button>
-                                    <button type="button" class="btn btn-primary multiplex" id="15" style="height:37px; font-size: 18px;">
+                                    <button type="button" class="btn btn-danger multiplex" id="11" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>11X
+                                    </button>
+                                    <button type="button" class="btn btn-primary multiplex" id="12" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>12X
+                                    </button>
+                                    <button type="button" class="btn btn-warning multiplex" id="13" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>13X
+                                    </button>
+                                    <button type="button" class="btn btn-success multiplex" id="14" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>14X
+                                    </button>
+                                    <button type="button" class="btn btn-info multiplex" id="15" style="height:37px; font-size: 18px;">
                                         <i class="fa"></i>15X
                                     </button>
-                                    <button type="button" class="btn btn-primary multiplex" id="20" style="height:37px; font-size: 18px;">
+                                    <button type="button" class="btn btn-danger multiplex" id="16" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>16X
+                                    </button>
+                                    <button type="button" class="btn btn-primary multiplex" id="17" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>17X
+                                    </button>
+                                    <button type="button" class="btn btn-warning multiplex" id="18" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>18X
+                                    </button>
+                                    <button type="button" class="btn btn-success multiplex" id="19" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>19X
+                                    </button>
+                                    <button type="button" class="btn btn-info multiplex" id="20" style="height:37px; font-size: 18px;">
                                         <i class="fa"></i>20X
                                     </button>
-                                    <button type="button" class="btn btn-primary multiplex" id="50" style="height:37px; font-size: 18px;">
-                                        <i class="fa"></i>50X
+                                    <button type="button" class="btn btn-danger multiplex" id="25" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>25X
+                                    </button>
+                                    <button type="button" class="btn btn-primary multiplex" id="30" style="height:37px; font-size: 18px;">
+                                        <i class="fa"></i>30X
                                     </button>
                                 </div>
                                 <table id="attrTable" class="table table-bordered table-condensed table-striped"

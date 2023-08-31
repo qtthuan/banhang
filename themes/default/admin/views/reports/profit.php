@@ -7,6 +7,9 @@
             <button type="button" class="btn btn-xs btn-default no-print pull-right" style="margin-right:15px;" onclick="window.print();">
                 <i class="fa fa-print"></i> <?= lang('print'); ?>
             </button>
+            <button type="button" class="btn btn-xs btn-default no-print pull-right copy" style="margin-right:15px;">
+                <i class="fa fa-copy"></i> Copy
+            </button>
             <h4 class="modal-title" id="myModalLabel"><?= lang('day_profit').' ('.$this->sma->hrsd($date).')'; ?></h4>
         </div>
         <div class="modal-body">
@@ -90,7 +93,10 @@
 
                 <tr>
                     <td style="border-bottom: 1px solid #EEE;" colspan="2">
-
+                    <p>
+  
+  <!--<input type="text" class="js-copytextarea" value="<table><tr><td>2222</td><td>333</td></tr></table>">-->
+</p>
                     <?php
                         $btns = array();
                         foreach($best_5 as $best) {
@@ -134,5 +140,28 @@
                 $('#warehouse').select2({minimumResultsForSearch: 7});
             });
         });
+        
     });
+
+
+    
+
+
+    var copyTextareaBtn = document.querySelector('.copy');
+
+copyTextareaBtn.addEventListener('click', function(event) {
+  var copyTextarea = document.querySelector('.js-copytextarea');
+  copyTextarea.focus();
+  copyTextarea.select();
+
+  try {
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'successful' : 'unsuccessful';
+    console.log('Copying text command was ' + msg);
+  } catch (err) {
+    console.log('Oops, unable to copy');
+  }
+});
+
+
 </script>
