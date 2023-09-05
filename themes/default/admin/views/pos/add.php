@@ -437,6 +437,7 @@
                                 <input type="hidden" name="total_items" id="total_items" value="0" style="display: none;"/>
                                 <input type="hidden" name="has_out_of_stock_products" id="has_out_of_stock_products" value="0" style="display: none;"/>
                                 <input type="submit" id="submit_sale" value="Submit Sale" style="display: none;"/>
+                                <span id="out_of_stock_items" style="display: none;"></span>
                             </div>
                         </div>
 
@@ -1632,9 +1633,9 @@ var lang = {
             suspend.appendTo("#hidesuspend");
             <?php }
             ?>
-           
             if ($('#has_out_of_stock_products').val() == 1) {
-                bootbox.alert('<?=lang('update_product_quantity');?>');
+                out_of_stock_items = $('#out_of_stock_items').text();
+                bootbox.alert('<?=lang('update_product_quantity');?>' + '<br />' + out_of_stock_items.slice(0, -2));
                 return false;
             }
               
@@ -1661,6 +1662,7 @@ var lang = {
             $('#amount_1').select().focus();
         });
         $('#paymentModal').on('show.bs.modal', function(e) {
+            bootbox.alert('vvv');
             $('#submit-sale').text('<?=lang('submit1');?>').attr('disabled', false);
             if ($('#poscustomer').val() == '1') { // Neu khach le thi remove hinh thuc thanh toan diem tich luy
                 $("#paid_by_1 option[value='pts']").remove();

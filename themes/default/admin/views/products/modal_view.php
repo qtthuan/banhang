@@ -50,7 +50,7 @@
                                         //if ($this->session->userdata('show_cost')) {
                                             echo '<tr><td>' . lang("cost") . '</td><td class="cost_hover"><span class="cost_click">*****</span><span class="cost_details">' . $this->sma->formatMoney($product->cost) . '</span></td></tr>';
                                         //  }
-                                        echo '<tr><td>c' . lang("price") . '</td><td>' . $this->sma->formatMoney($product->price) . '</td></tr>';
+                                        echo '<tr><td>' . lang("price") . '</td><td>' . $this->sma->formatMoney($product->price) . '</td></tr>';
                                         if ($product->promotion) {
                                             echo '<tr><td>' . lang("promotion") . '</td><td>' . $this->sma->formatMoney($product->promo_price) . ' ('.$this->sma->hrsd($product->start_date).' - '.$this->sma->hrsd($product->end_date).')</td></tr>';
                                         }
