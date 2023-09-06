@@ -1635,7 +1635,7 @@ var lang = {
             ?>
             if ($('#has_out_of_stock_products').val() == 1) {
                 out_of_stock_items = $('#out_of_stock_items').text();
-                bootbox.alert('<?=lang('update_product_quantity');?>' + '<br />' + out_of_stock_items.slice(0, -2));
+                bootbox.alert('<?=lang('update_product_quantity');?>' + ' CC');
                 return false;
             }
               
@@ -1662,7 +1662,7 @@ var lang = {
             $('#amount_1').select().focus();
         });
         $('#paymentModal').on('show.bs.modal', function(e) {
-            bootbox.alert('vvv');
+            //bootbox.alert('vvv');
             $('#submit-sale').text('<?=lang('submit1');?>').attr('disabled', false);
             if ($('#poscustomer').val() == '1') { // Neu khach le thi remove hinh thuc thanh toan diem tich luy
                 $("#paid_by_1 option[value='pts']").remove();

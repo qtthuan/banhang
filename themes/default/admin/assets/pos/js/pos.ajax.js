@@ -1307,7 +1307,6 @@ function loadItems() {
                 out_of_stock_items = '';
                 $.each(item.options, function () {
                     if(this.id == item_option && base_quantity > this.quantity) {
-                        //out_of_stock_items += item_code + ' (' + this.name + '),';
                         if (!$('#out_of_stock_items').text().includes(item_code + ' (' + this.name + ')')) {
                             $('#out_of_stock_items').append(item_code + ' (' + this.name + '), ');
                         }
@@ -1315,8 +1314,7 @@ function loadItems() {
                         $('#row_' + row_no).addClass('danger');
                     }
                 });
-                //bootbox.alert(out_of_stock_items);
-                //$('#out_of_stock_items').val(out_of_stock_items.slice(0, -1));
+                
             } else if(item_type == 'standard' && base_quantity > item_aqty) {
                 $('#row_' + row_no).addClass('danger');
             } else if (item_type == 'combo') {
