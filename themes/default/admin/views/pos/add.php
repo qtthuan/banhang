@@ -1635,7 +1635,7 @@ var lang = {
             ?>
             if ($('#has_out_of_stock_products').val() == 1) {
                 out_of_stock_items = $('#out_of_stock_items').text();
-                bootbox.alert('<?=lang('update_product_quantity');?>' + ' CC');
+                bootbox.alert('<?=lang('update_product_quantity');?>' + '');
                 return false;
             }
               
