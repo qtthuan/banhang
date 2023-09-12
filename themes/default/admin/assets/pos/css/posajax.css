@@ -190,12 +190,21 @@ body:before, body:after {
 }
 #pos .mini_leftdiv {
     min-width: 400px !important;
-    width: 42% !important;
+    width: 36% !important;
+}
+
+#pos .mini_leftdiv .mini_buttons {
+    font-size: 14px !important;
+    height: 40px !important;
 }
 
 .font_size_16 {
     font-size: 16px !important;
 }
+.font_size_15 {
+    font-size: 15px !important;
+}
+
 #pos #cp #cpinner {
     overflow: hidden;
     min-width: 200px;
@@ -247,14 +256,14 @@ body:before, body:after {
 .btn-prni {
     border: 1px solid #eee;
     cursor: pointer;
-    height: 115px;
-    margin: 0 0 3px 2px;
+    height: 105px;
+    margin: 0 0 1px 1px;
     padding: 2px;
     width: 11%;
     min-width: 100px;
     overflow: hidden;
     display: inline-block;
-    font-size: 13px;
+    font-size: 12px;
 }
 /*.btn-prni:hover {
     background: #eee;
@@ -273,7 +282,7 @@ body:before, body:after {
     background: #eee;
 }*/
 .btn-prni img {
-    max-height: 62px !important;
+    max-height: 55px !important;
 }
 .btn-prni.active { background: #eee; border: 1px solid #e5e5e5; cursor: default;  }
 #pos #totalTable td { padding: 2px; }
@@ -329,7 +338,7 @@ body:before, body:after {
 }
 
 #pos #cp .mini_cpinner {
-    max-width: 57% !important;
+    max-width: 63% !important;
 }
 
 @media (max-width: 1152px) {

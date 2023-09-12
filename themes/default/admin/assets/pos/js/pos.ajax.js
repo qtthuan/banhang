@@ -1236,6 +1236,11 @@ function loadItems() {
             } else {
                 print_cate = false;
             }
+            if ($('#leftdiv').attr('class') == 'mini_leftdiv') {
+                item_code = '';
+            } else {
+                item_code += '- ';
+            }
             var row_no = setTimeout((new Date).getTime(), 500);
             var newTr = $('<tr id="row_' + row_no + '" class="row_' + item_id + discount_class + '" data-item-id="' + item_id + '"></tr>');
             tr_html = '<td>' +
@@ -1247,13 +1252,16 @@ function loadItems() {
                         '<input name="product_comment[]" type="hidden" class="rcomment" value="' + item_comment + '">' +
                         '<input name="promo_original_price[]" type="hidden" class="roprice" value="' + item_original_price + '">' +
                         '<input name="is_promo[]" type="hidden" class="is_promo" value="' + (is_promo && checkValidPromotionDate(start_date, end_date) ? is_promo : 0) + '">' +
-                        '<span class="sname" id="name_' + row_no + '"><img src="' + site.url + '/assets/uploads/' + item_image + '" width="40">' + item_code +' - '+ item_name +(sel_opt != '' ? ' ('+sel_opt+')' : '')+'</span>' +
-                        (item_comment ? '<span style="font-weight: bold;"> (' + item_comment + ')</span>' : '') +
+                        '<span class="sname" id="name_' + row_no + '"><img src="' + site.url + '/assets/uploads/' + item_image + '" width="40">' + item_code + ' ' + item_name +(sel_opt != '' ? ' ('+sel_opt+')' : '')+'</span>' +      
+                        (item_comment ? '<span class="scomment" style="font-weight: bold;"> (' + item_comment + ')</span>' : '') +
                         '<span class="lb"></span>' +
-                        '<i class="pull-right fa fa-edit fa-2x fa-bx tip pointer edit" id="' + row_no + '" data-item="' + item_id + '" title="Cập nhật Size/Giá" style="cursor:pointer;"></i>' +
-                        '<i class="pull-right fa fa-comment fa-2x fa-bx' + (item_comment != '' ? '' : '-o') +
+                '</td>';
+
+            tr_html += '<td class="text-center">' +
+                        '<i class="pull-center fa fa-comment fa-2x fa-bx' + (item_comment != '' ? '' : '-o') +
                         ' tip pointer comment" id="' + row_no + '" data-item="' + item_id +
-                        '" title="Ghi chú" style="cursor:pointer;margin-right:5px;"></i>'
+                        '" title="Ghi chú" style="cursor:pointer;margin-right:5px;"></i>' +
+                        '<i class="pull-center fa fa-edit fa-2x fa-bx tip pointer edit" id="' + row_no + '" data-item="' + item_id + '" title="Cập nhật Size/Giá" style="cursor:pointer;"></i>' +
                 '</td>';
 
                
@@ -1402,6 +1410,14 @@ function loadItems() {
                 });
             }
         }
+        //console.log($('#leftdiv').attr('class') + '/');
+        if ($('#leftdiv').attr('class') == 'mini_leftdiv') {
+            $('.sname').css("font-size", "12px");
+            $('.scomment').css("font-size", "12px");
+            //console.log('xxxx');
+        }
+        $('.comment').css("font-size", "31px");
+        $('.edit').css("font-size", "31px");
 
         total = formatDecimal(total);
         product_tax = formatDecimal(product_tax);
@@ -2000,7 +2016,7 @@ function checkValidPromotionDate(date1, date2) {
         return false;
     }
 }
-
+// Shortcut keys
 //$.ajaxSetup ({ cache: false, headers: { "cache-control": "no-cache" } });
 if(pos_settings.focus_add_item != '') { shortcut.add(pos_settings.focus_add_item, function() { $("#add_item").focus(); }, { 'type':'keydown', 'propagate':false, 'target':document} ); }
 if(pos_settings.add_manual_product != '') { shortcut.add(pos_settings.add_manual_product, function() { $("#addManually").trigger('click'); }, { 'type':'keydown', 'propagate':false, 'target':document} ); }

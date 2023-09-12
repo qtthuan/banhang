@@ -316,7 +316,10 @@
                                            id="posTable" style="margin-bottom: 0;">
                                         <thead>
                                         <tr>
-                                            <th width="67%"><?=lang("product");?></th>
+                                            <th width="52%"><?=lang("product");?></th>
+                                            <th width="15%">
+                                            <i class="fa fa-edit" style="opacity:0.5; filter:alpha(opacity=50);"></i>
+                                            </th>
                                             <th width="9%"><?=lang("price");?></th>
                                             <th width="8%"><?=lang("qty");?></th>
                                             <th width="11%"><?=lang("subtotal");?></th>
@@ -484,11 +487,11 @@
         </div>
     </div>
 </div>
-<div class="rotate btn-cat-con">
+<!--<div class="rotate btn-cat-con">
     <button type="button" id="open-brands" class="btn btn-info open-brands"><?= lang('brands'); ?></button>
     <button type="button" id="open-subcategory" class="btn btn-warning open-subcategory"><?= lang('subcategories'); ?></button>
     <button type="button" id="open-category" class="btn btn-primary open-category"><?= lang('categories'); ?></button>
-</div>
+</div>-->
 <div id="brands-slider">
     <div id="brands-list">
         <?php
@@ -1314,9 +1317,9 @@ var lang = {
         var wh = $(window).height(),
             lth = $('#left-top').height(),
             lbh = $('#left-bottom').height();
-        $('#item-list').css("height", wh - 140);
+        $('#item-list').css("height", wh - 100);
         $('#item-list').css("min-height", 515);
-        $('#left-middle').css("height", wh - lth - lbh - 102);
+        $('#left-middle').css("height", wh - lth - lbh - 112);
         $('#left-middle').css("min-height", 278);
         $('#product-list').css("height", wh - lth - lbh - 107);
         $('#product-list').css("min-height", 278);
@@ -1325,10 +1328,7 @@ var lang = {
     function openMini(e) {
         $("#leftdiv").addClass('mini_leftdiv');
         $("#cpinner").addClass('mini_cpinner');
-        $("#reset").addClass('font_size_16');
-        $("#suspend").addClass('font_size_16');
-        $("#print_bill").addClass('font_size_16');
-        $("#payment").addClass('font_size_16');
+        $("#botbuttons .btn").addClass('mini_buttons');
         $("#cp").show();
         $(".btn-cat-con").show();
         $("#col_return").hide();
@@ -1336,10 +1336,7 @@ var lang = {
     function closeMini(e) {
         $("#leftdiv").removeClass('mini_leftdiv');
         $("#cpinner").removeClass('mini_cpinner');
-        $("#reset").removeClass('font_size_16');
-        $("#suspend").removeClass('font_size_16');
-        $("#print_bill").removeClass('font_size_16');
-        $("#payment").removeClass('font_size_16');
+        $("#botbuttons .btn").removeClass('mini_buttons');
         $("#cp").hide();
         $(".btn-cat-con").hide();
         $("#col_return").show();
@@ -1534,6 +1531,15 @@ var lang = {
                 kb.close();
                 //kb.destroy();
                 $('#add-item').focus();
+            });
+
+            $(document).keypress(function (event) {
+                var keyPressed = event.keyCode;
+                //var altPressed = event.altKey;
+                if (keyPressed == 9/* key code for 's'*/) {
+                    console.log('ccxxx');
+                    //$("#poscustomer").click();            
+                }
             });
 
         }

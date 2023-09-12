@@ -722,7 +722,13 @@
     echo admin_form_open('products/product_actions'.($warehouse_id ? '/'.$warehouse_id : ''), 'id="label-form"');
         //$this->sma->print_arrays($rows);
     foreach ($rows as $row) {
-        if($row->product_code != 'GK3031' && $row->product_code != 'GK3030' && $row->product_code != 'GK3027') { // KHÔNG IN MÃ VẠCH KEM CHUỐI, YAOURT TRÁI CÂY BỊCH VÀ SINH TỐ ĐẬU BỊCH 
+        // KHÔNG IN MÃ VẠCH KEM CHUỐI, YAOURT TRÁI CÂY BỊCH VÀ SINH TỐ ĐẬU BỊCH, ĐÁ, TOPPING, MỨT THÊM
+        if($row->product_code != 'GK3031' 
+            && $row->product_code != 'GK3030' 
+            && $row->product_code != 'GK3027'
+            && $row->product_code != 'GK3069'
+            && $row->product_code != 'GK3070'
+            && $row->product_code != 'GK3071') { 
 ?>
             <input name="name[]" type="hidden" value="<?=$row->product_name?>">
             <input name="code[]" type="hidden" value="<?=$row->product_code?>">
