@@ -59,6 +59,9 @@
                                     echo $str_comment;
                                     echo '</span>';
                                 }
+                                echo '<span style="position: absolute; bottom: 18px;" class="customer_name ">'.$item['customer_name'];
+                                           
+                                            echo '</span>';
                                 /*if($item['comment'] && $item['comment'] != '' && $item['comment'] != 'undefined') {
                                     echo '<h5 style="border-top: 2px dotted black; padding-top: 4px; margin: 0; font-size: 11px;">';
                                     echo ' <strong>' . $item['comment'] . '</strong>';
@@ -98,8 +101,8 @@
                         if ($style != 50) {
                             echo '</div>';
                         }
-                        echo '<br /><div class="no-print">&nbsp;&nbsp;
-                                <button type="button" class="btn btn-warning" id="hide_price" style="height:37px; font-size: 18px;">
+                        echo '<div class="no-print">&nbsp;&nbsp;
+                                <button type="button" class="btn btn-success" id="hide_price" style="height:37px; font-size: 18px;">
                                     <i class="fa"></i>Ẩn/Hiện giá
                                 </button></div>';
                         echo '<div id="total_items" class="no-print" style="color: green"><h1><strong>(1-'.round($total_items/2).')</strong></h1><h2>&#8220;Click vào tem để xóa&#8221;</h2></div>';

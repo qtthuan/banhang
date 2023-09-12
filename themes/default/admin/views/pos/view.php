@@ -738,6 +738,7 @@
             <input name="variant[]" type="hidden" value="<?=$row->variant?>">  
             <input name="comment[]" type="hidden" value="<?=$row->comment?>">   
             <input name="price[]" type="hidden" value="<?=$row->unit_price?>">   
+            <input name="customer_name[]" type="hidden" value="<?=$customer->name?>">   
 <?php
         }
     }

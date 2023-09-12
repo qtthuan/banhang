@@ -2227,7 +2227,9 @@ class Products extends MY_Controller
                                             'name' => $_POST['name'][$i], 
                                             'comment' => $_POST['comment'][$i], 
                                             'price' => $_POST['price'][$i], 
-                                            'variants' => $_POST['variant'][$i]);
+                                            'variants' => $_POST['variant'][$i],
+                                            'customer_name' => $_POST['customer_name'][$i] != 'KHÁCH LẺ' ? $_POST['customer_name'][$i] : ''
+                                        );
                                 $j++;
                             
                             }
@@ -2239,14 +2241,16 @@ class Products extends MY_Controller
                             'name' => $_POST['name'][$i], 
                             'comment' => $_POST['comment'][$i], 
                             'price' => $_POST['price'][$i], 
-                            'variants' => $_POST['variant'][$i]);
+                            'variants' => $_POST['variant'][$i],
+                            'customer_name' => $_POST['customer_name'][$i] != 'KHÁCH LẺ' ? $_POST['customer_name'][$i] : ''
+                        );
                         }
                         $j++; 
                         $i++;  
                             
                     }
                     //}
-                   // $this->sma->print_arrays($pr);
+                   //$this->sma->print_arrays($pr);
 
                     $this->data['barcodes'] = $pr;
                     $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
