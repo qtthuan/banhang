@@ -598,7 +598,7 @@ class Pos_model extends CI_Model
     public function getAllInvoiceItems($sale_id)
     {
         if ($this->pos_settings->item_order == 0) {
-            $this->db->select('sale_items.*, categories.no_points, tax_rates.code as tax_code, tax_rates.name as tax_name, tax_rates.rate as tax_rate, product_variants.price as added_price, product_variants.name as variant, products.details as details, products.promo_price')
+            $this->db->select('sale_items.*, categories.no_points, tax_rates.code as tax_code, tax_rates.name as tax_name, tax_rates.rate as tax_rate, product_variants.price as added_price, product_variants.name as variant, products.details as details, products.promo_price, products.code as product_code')
             ->join('products', 'products.id=sale_items.product_id', 'left')
             ->join('tax_rates', 'tax_rates.id=sale_items.tax_rate_id', 'left')
             ->join('product_variants', 'product_variants.id=sale_items.option_id', 'left')
@@ -606,7 +606,7 @@ class Pos_model extends CI_Model
             ->group_by('sale_items.id')
             ->order_by('id', 'asc');
         } elseif ($this->pos_settings->item_order == 1) {
-            $this->db->select('sale_items.*, categories.no_points, tax_rates.code as tax_code, tax_rates.name as tax_name, tax_rates.rate as tax_rate, product_variants.price as added_price, product_variants.name as variant, categories.id as category_id, categories.name as category_name, products.details as details, products.promo_price')
+            $this->db->select('sale_items.*, categories.no_points, tax_rates.code as tax_code, tax_rates.name as tax_name, tax_rates.rate as tax_rate, product_variants.price as added_price, product_variants.name as variant, categories.id as category_id, categories.name as category_name, products.details as details, products.promo_price, products.code as product_code')
             ->join('tax_rates', 'tax_rates.id=sale_items.tax_rate_id', 'left')
             ->join('product_variants', 'product_variants.id=sale_items.option_id', 'left')
             ->join('products', 'products.id=sale_items.product_id', 'left')
