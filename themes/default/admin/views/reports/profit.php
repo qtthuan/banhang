@@ -95,7 +95,7 @@
                     <td style="border-bottom: 1px solid #EEE;" colspan="2">
                     <p>
   
-  <!--<input type="text" class="js-copytextarea" value="<table><tr><td>2222</td><td>333</td></tr></table>">-->
+  <input type="text" class="js-copytextarea" value="<table><tr><td>test 1</td><td>test 2</td></tr></table>">
 </p>
                     <?php
                         $btns = array();
@@ -131,6 +131,10 @@
 </div>
 
 <script>
+    $(".js-copytextarea").css({
+        position: 'absolute',
+        top: '-110px'
+    });
     $(document).ready(function() {
         $('#warehouse').select2({minimumResultsForSearch: 7});
         $('#warehouse').change(function(e) {

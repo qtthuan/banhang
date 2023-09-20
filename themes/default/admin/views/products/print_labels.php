@@ -59,8 +59,10 @@
                                     echo $str_comment;
                                     echo '</span>';
                                 }
-                                echo '<span style="position: absolute; bottom: 18px;" class="customer_name ">'.$item['customer_name'];   
+                                
+                                echo '<span style="display: none; position: absolute; bottom: 18px;" class="customer_name ">'.$item['customer_name'];   
                                 echo '</span>';
+                                
                                 //echo '<span style="position: absolute; bottom: 18px; right: 4px;" class="sale_note ">'.$item['sale_note'];   
                                 //echo '</span>';
                                 /*if($item['comment'] && $item['comment'] != '' && $item['comment'] != 'undefined') {
@@ -81,8 +83,10 @@
                                 }
                                 echo '</strong>';
                                 //echo '</span>';
-                                echo '<span class="text_price">' . $this->sma->formatMoney($item['price']);
-                                echo '</span>';
+                                if ($item['customer_id'] != 6533) { // Không in giá Cô Ngọc LQĐ
+                                    echo '<span class="text_price">' . $this->sma->formatMoney($item['price']);
+                                    echo '</span>';
+                                }
                                 echo '</h4>';
                                 
                                 

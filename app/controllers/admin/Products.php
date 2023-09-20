@@ -2229,6 +2229,7 @@ class Products extends MY_Controller
                                             'price' => $_POST['price'][$i], 
                                             'variants' => $_POST['variant'][$i],
                                             'customer_name' => $_POST['customer_name'][$i] != 'KHÁCH LẺ' ? $_POST['customer_name'][$i] : '',
+                                            'customer_id' => $_POST['customer_id'][$i],
                                             'sale_note' => $_POST['sale_note'][$i] != '' ? $_POST['sale_note'][$i] : ''
                                         );
                                 $j++;
@@ -2244,6 +2245,7 @@ class Products extends MY_Controller
                             'price' => $_POST['price'][$i], 
                             'variants' => $_POST['variant'][$i],
                             'customer_name' => $_POST['customer_name'][$i] != 'KHÁCH LẺ' ? $_POST['customer_name'][$i] : '',
+                            'customer_id' => $_POST['customer_id'][$i],
                             'sale_note' => $_POST['sale_note'][$i] != '' ? $_POST['sale_note'][$i] : ''
                         );
                         }

@@ -739,6 +739,7 @@
             <input name="comment[]" type="hidden" value="<?=$row->comment?>">   
             <input name="price[]" type="hidden" value="<?=$row->unit_price?>">   
             <input name="customer_name[]" type="hidden" value="<?=$customer->name?>">   
+            <input name="customer_id[]" type="hidden" value="<?=$customer->id?>">   
             <input name="sale_note[]" type="hidden" value="<?=$inv->note?>">   
 <?php
         }
