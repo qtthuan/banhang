@@ -120,6 +120,7 @@
                         </h4>
                     </td>
                 </tr>
+                <?php if ($other_items > 0) { ?>
                 <tr>
                     <td style="border-bottom: 1px solid #DDD;" colspan="2">
                         <h4> 
@@ -129,6 +130,7 @@
                         </h4>
                     </td>
                 </tr>
+                <?php } ?>
                 <tr>
                     <td width="300px;" style="font-weight:bold;"><h4><strong><?= lang('profit'); ?></strong> <span style="color:red"> (<strong><?=$str_guide?></strong>)</span>:</h4>
                     </td>
