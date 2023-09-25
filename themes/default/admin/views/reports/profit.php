@@ -76,16 +76,10 @@
                             <span><?php $expense = $expenses ? $expenses->total : 0; echo $this->sma->formatMoney($expense); ?></span>
                         </h4></td>
                 </tr>
-                <tr>
-                    <td style="border-bottom: 1px solid #DDD;" colspan="2">
-                        <h4> 
-                        <span class="label label-primary" style="margin-right: 0 10px 10px 0; font-size: 16px">
-                        <strong><?= lang('total_items_ex'); ?>: <?php $total_items = $total_items ? $total_items->total_items : 0; echo $total_items; ?></strong>
-                        </span>
-                        </h4>
-                    </td>
-                </tr>
+                
                 <?php
+                $total_best_items = 0;
+                $other_items = 0;
                     if (!empty($best_5)) {
                         //$str_guide .= '-D'
                 ?>
@@ -98,25 +92,49 @@
   <input type="text" class="js-copytextarea" value="<table><tr><td>test 1</td><td>test 2</td></tr></table>">
 </p>
                     <?php
-                        $btns = array();
+                    //$this->sma->print_arrays($best_5);
+                        $exclude_products = array(20358, 20357, 21122, 21121, 20354);
                         foreach($best_5 as $best) {
+                            if (!in_array($best->product_id, $exclude_products)) {
+                            $total_best_items += $best->quantity;
                     ?>
                             <!-- <span class="label label-primary" style="margin-right: 0 10px 10px 0; font-size: 15px">
                                 <?php echo $best->product_name . '('.$this->sma->formatQuantity($best->quantity).')'?>
                             </span> -->
                     <?php
-                            echo '&#9734; ' . $best->product_name . '<strong> ('.$this->sma->formatQuantity($best->quantity).') </strong>' . ' ';
+                                echo '&#9734; ' . $best->product_name . '<strong> ('.$this->sma->formatQuantity($best->quantity).') </strong>' . ' ';
+                            } else {
+                                $other_items += $best->quantity;
+                            }
                         }
                     ?>
                     </td>
                 </tr>
                 <?php } ?>
                 <tr>
+                    <td style="border-bottom: 1px solid #DDD;" colspan="2">
+                        <h4> 
+                        <span class="label label-warning" style="margin-right: 0 10px 10px 0; font-size: 16px">
+                        <strong><?= lang('total_items_ex'); ?>: <?php echo $total_best_items; ?></strong>
+                        </span>
+                        </h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-bottom: 1px solid #DDD;" colspan="2">
+                        <h4> 
+                        <span class="label label-primary" style="margin-right: 0 10px 10px 0; font-size: 16px">
+                        <strong><?= lang('total_items_ex1'); ?>: <?php echo $other_items; ?></strong>
+                        </span>
+                        </h4>
+                    </td>
+                </tr>
+                <tr>
                     <td width="300px;" style="font-weight:bold;"><h4><strong><?= lang('profit'); ?></strong> <span style="color:red"> (<strong><?=$str_guide?></strong>)</span>:</h4>
                     </td>
                     <td style="text-align:right;">
                         <h4>
-                        <span class="label label-info" style="margin-right: 0 10px 10px 0; font-size: 19px">
+                        <span class="label label-danger" style="margin-right: 0 10px 10px 0; font-size: 19px">
                             <strong>
                                 <?= $this->sma->formatMoney(($sale_by_day->grand_total - $sale_by_day->shipping) - $costing->cost - $bn_costing_amount - $expense); ?>
                             </strong></span>

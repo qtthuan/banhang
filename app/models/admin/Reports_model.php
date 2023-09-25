@@ -739,7 +739,7 @@ class Reports_model extends CI_Model
     {
        
         $this->db
-            ->select("replace(product_name,'\'','') product_name, product_code")->select_sum('quantity')
+            ->select("replace(product_name,'\'','') product_name, product_code, product_id")->select_sum('quantity')
             ->join('sales', 'sales.id = sale_items.sale_id', 'left')
             ->where('DATE_FORMAT(date, "%Y-%m-%d")=', date('Y-m-d',  strtotime($date)))
             //$myQuery .= " DATE_FORMAT( date,  '%Y-%m-%d' ) = '".$date."'";
@@ -747,6 +747,7 @@ class Reports_model extends CI_Model
         if ($warehouse_id) {
             $this->db->where('sale_items.warehouse_id', $warehouse_id);
         }
+            //$this->db->where('sale_items.product_id != ', 20358);
             $q = $this->db->get('sale_items');
         if ($q->num_rows() > 0) {
             foreach (($q->result()) as $row) {
