@@ -74,9 +74,9 @@
                                 //echo '<span class="text_size"'.$str_padding.'>';
                                 echo '<strong>';
                                     
-                                if ($item['variants'] == 'size L') {
+                                if (trim($item['variants']) == 'size L') {
                                     echo 'L';
-                                } elseif ($item['variants'] == 'size M')  {
+                                } elseif (trim($item['variants']) == 'size M')  {
                                     echo 'M';
                                 } else {
                                     echo $item['variants'];

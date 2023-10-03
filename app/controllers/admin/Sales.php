@@ -1339,6 +1339,8 @@ class Sales extends MY_Controller
             //$this->sma->print_arrays($data, $products, $payment, $si_return, $extra_data);
         }
 
+        //$this->sma->print_arrays($data, $products, $si_return);
+
         if ($this->form_validation->run() == true && $this->sales_model->addSale($data, $products, $payment, $si_return, $extra_data)) {
             $this->session->set_flashdata('message', lang("return_sale_added"));
             admin_redirect($sale->pos ? "pos/sales" : "sales");

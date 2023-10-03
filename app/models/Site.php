@@ -1037,6 +1037,15 @@ class Site extends CI_Model
         return FALSE;
     }
 
+    public function updateCostingDate($costing_id, $date) {
+
+        if ($this->db->update('costing', array('date' => $date), array('id' => $costing_id))) {
+            return TRUE;
+        }
+        
+        return FALSE;
+    }
+
     public function getProductByCode($code)
     {
         $q = $this->db->get_where('products', array('code' => $code), 1);

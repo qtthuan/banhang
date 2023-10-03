@@ -309,6 +309,8 @@ class Sales_model extends CI_Model
                             $item_cost['date'] = date('Y-m-d', strtotime($data['date']));
                             if(! isset($item_cost['pi_overselling'])) {
                                 $this->db->insert('costing', $item_cost);
+                                $costing_id = $this->db->insert_id();
+                                $this->site->updateOptionCosting($costing_id, $item['option_id']);
                             }
                         } else {
                             foreach ($item_cost as $ic) {
@@ -317,6 +319,8 @@ class Sales_model extends CI_Model
                                 $ic['date'] = date('Y-m-d', strtotime($data['date']));
                                 if(! isset($ic['pi_overselling'])) {
                                     $this->db->insert('costing', $ic);
+                                    $costing_id = $this->db->insert_id();
+                                    $this->site->updateOptionCosting($costing_id, $item['option_id']);
                                 }
                             }
                         }
@@ -398,7 +402,7 @@ class Sales_model extends CI_Model
             $cost = $this->site->costing($items);
         }
 
-        // $this->sma->print_arrays($cost);
+        //$this->sma->print_arrays($data);
 
         if ($this->db->update('sales', $data, array('id' => $id)) && 
             $this->db->delete('sale_items', array('sale_id' => $id)) && 
@@ -417,6 +421,9 @@ class Sales_model extends CI_Model
                             $item_cost['sale_id'] = $id;
                             if(! isset($item_cost['pi_overselling'])) {
                                 $this->db->insert('costing', $item_cost);
+                                $costing_id = $this->db->insert_id();
+                                $this->site->updateOptionCosting($costing_id, $item['option_id']);
+                                $this->site->updateCostingDate($costing_id, date('Y-m-d', strtotime($data['date'])));
                             }
                         } else {
                             foreach ($item_cost as $ic) {
@@ -424,6 +431,9 @@ class Sales_model extends CI_Model
                                 $ic['sale_id'] = $id;
                                 if(! isset($ic['pi_overselling'])) {
                                     $this->db->insert('costing', $ic);
+                                    $costing_id = $this->db->insert_id();
+                                    $this->site->updateOptionCosting($costing_id, $item['option_id']);
+                                    $this->site->updateCostingDate($costing_id, date('Y-m-d', strtotime($data['date'])));
                                 }
                             }
                         }
