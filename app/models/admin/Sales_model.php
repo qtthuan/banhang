@@ -342,15 +342,15 @@ class Sales_model extends CI_Model
                     if ($product->type == 'combo') {
                         $combo_items = $this->site->getProductComboItems($return_item['product_id'], $return_item['warehouse_id']);
                         foreach ($combo_items as $combo_item) {
-                            $this->UpdateCostingAndPurchaseItem($return_item['id'], $combo_item->id, ($return_item['quantity']*$combo_item->qty));
+                            $this->UpdateCostingAndPurchaseItem($data['sale_id'], $return_item['id'], $combo_item->id, ($return_item['quantity']*$combo_item->qty));
                         }
                     } else {
 
-                        $this->UpdateCostingAndPurchaseItem($return_item['id'], $return_item['product_id'], $return_item['quantity']);
+                        $this->UpdateCostingAndPurchaseItem($data['sale_id'], $return_item['id'], $return_item['product_id'], $return_item['quantity']);
 
                     }
                 }
-
+                //exit('end');
                 $this->db->update('sales', array(
                         'total_discount' => $extra_data['return_total_discount'] - $data['total_discount'],
                         'order_discount' => $extra_data['return_order_discount'] - $data['order_discount'],
@@ -958,10 +958,11 @@ class Sales_model extends CI_Model
         return FALSE;
     }
 
-    public function UpdateCostingAndPurchaseItem($item_id, $product_id, $quantity)
+    public function UpdateCostingAndPurchaseItem($sale_id, $item_id, $product_id, $quantity)
     {
         $bln_quantity = $quantity;
         if ($costings = $this->getCostingLines($item_id, $product_id)) {
+
             foreach ($costings as $costing) {
 
                 if ($quantity != 0) {
@@ -978,7 +979,15 @@ class Sales_model extends CI_Model
                 if ($costing->quantity >= $bln_quantity && $bln_quantity != 0) {
                     $qty = $costing->quantity - $bln_quantity;
                     $bln = $costing->quantity_balance && $costing->quantity_balance >= $bln_quantity ? $costing->quantity_balance - $bln_quantity : 0;
-                    $this->db->update('costing', array('quantity' => $qty, 'quantity_balance' => $bln), array('id' => $costing->id));
+                    $this->db->update('costing', array('quantity' => $qty, 'quantity_balance' => $bln), array('id' => $costing->id));    
+
+                    $q = $this->db->get_where('sales', array('id' => $sale_id), 1);
+                    if ($q->num_rows() > 0) {
+                        $costing_return = $q->row()->costing_return;
+                        $this->db->update('sales', array('costing_return' => $costing_return + $this->sma->formatDecimal($bln_quantity*$costing->purchase_unit_cost)), array('id' => $sale_id));
+
+                    }
+    
                     $bln_quantity = 0;
                 } elseif ($costing->quantity < $bln_quantity && $bln_quantity != 0) {
                     $this->db->delete('costing', array('id' => $costing->id));
