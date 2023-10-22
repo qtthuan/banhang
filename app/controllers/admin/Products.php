@@ -2246,7 +2246,8 @@ class Products extends MY_Controller
                             'variants' => $_POST['variant'][$i],
                             'customer_name' => $_POST['customer_name'][$i] != 'KHÁCH LẺ' ? $_POST['customer_name'][$i] : '',
                             'customer_id' => $_POST['customer_id'][$i],
-                            'sale_note' => $_POST['sale_note'][$i] != '' ? $_POST['sale_note'][$i] : ''
+                            'sale_note' => $_POST['sale_note'][$i] != '' ? $_POST['sale_note'][$i] : '',
+                            'reference_no' => $_POST['reference_no'][$i] != '' ? $_POST['reference_no'][$i] : ''
                         );
                         }
                         $j++; 

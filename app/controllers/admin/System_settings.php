@@ -2216,6 +2216,121 @@ class system_settings extends MY_Controller
         }
     }
 
+    /**
+     * qtthuan
+     * Danh sách ghi chú tiệm nước
+     */
+    function order_comment_list()
+    {
+
+        $this->data['error'] = validation_errors() ? validation_errors() : $this->session->flashdata('error');
+
+        $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('system_settings'), 'page' => lang('system_settings')), array('link' => '#', 'page' => lang('product_description_list')));
+        $meta = array('page_title' => lang('order_comment_list'), 'bc' => $bc);
+        $this->page_construct('settings/order_comment_list', $meta, $this->data);
+    }
+
+    function getOrderCommentList()
+    {
+
+        $this->load->library('datatables');
+        $this->datatables
+            ->select("id, comment")
+            ->from("order_comment_list")
+            ->add_column("Actions", "<div class=\"text-center\"><a href='" . admin_url('system_settings/edit_order_comment/$1') . "' class='tip' title='" . lang("edit_order_comment") . "' data-toggle='modal' data-target='#myModal'><i class=\"fa fa-edit\"></i></a> <a href='#' class='tip po' title='<b>" . lang("delete_order_comment") . "</b>' data-content=\"<p>" . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('system_settings/delete_order_comment/$1') . "'>" . lang('i_m_sure') . "</a> <button class='btn po-close'>" . lang('no') . "</button>\"  rel='popover'><i class=\"fa fa-trash-o\"></i></a></div>", "id");
+
+        echo $this->datatables->generate();
+    }
+
+
+
+    function add_order_comment()
+    {
+
+        $this->form_validation->set_rules('comment', lang("order_comment"), 'trim');
+
+        if ($this->form_validation->run() == true) {
+            $data = array(
+                'comment' => $this->input->post('comment')
+            );
+        } elseif ($this->input->post('add_order_comment')) {
+            $this->session->set_flashdata('error', validation_errors());
+            admin_redirect("system_settings/order_comment_list");
+        }
+        
+        if ($this->form_validation->run() == true && $this->settings_model->addOrderComment($data)) {
+            $this->session->set_flashdata('message', lang("order_comment_added"));
+            admin_redirect("system_settings/order_comment_list");
+        } else {
+            $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
+
+            $this->data['modal_js'] = $this->site->modal_js();
+            $this->load->view($this->theme . 'settings/add_order_comment', $this->data);
+        }
+    }
+
+    function edit_order_comment($id = NULL)
+    {
+
+        $this->form_validation->set_rules('comment', lang("order_comment"), 'trim');
+
+        if ($this->form_validation->run() == true) {
+
+            $data = array(
+                'comment' => $this->input->post('comment')
+            );
+        } elseif ($this->input->post('edit_order_comment')) {
+            $this->session->set_flashdata('error', validation_errors());
+            admin_redirect("system_settings/order_comment_list");
+        }
+
+        if ($this->form_validation->run() == true && $this->settings_model->updateOrderComment($id, $data)) {
+            $this->session->set_flashdata('message', lang("order_comment_updated"));
+            admin_redirect("system_settings/order_comment_list");
+        } else {
+            $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
+
+            $this->data['order_comment_list'] = $this->settings_model->getOrderCommentByID($id);
+
+            $this->data['id'] = $id;
+            $this->data['modal_js'] = $this->site->modal_js();
+            $this->load->view($this->theme . 'settings/edit_order_comment', $this->data);
+        }
+    }
+
+    function delete_order_comment($id = NULL)
+    {
+        if ($this->settings_model->deleteOrderComment($id)) {
+            $this->sma->send_json(array('error' => 0, 'msg' => lang("order_comment_deleted")));
+        }
+    }
+
+    function order_comment_actions()
+    {
+
+        $this->form_validation->set_rules('form_action', lang("form_action"), 'required');
+
+        if ($this->form_validation->run() == true) {
+
+            if (!empty($_POST['val'])) {
+                if ($this->input->post('form_action') == 'delete') {
+                    foreach ($_POST['val'] as $id) {
+                        $this->settings_model->deleteOrderComment($id);
+                    }
+                    $this->session->set_flashdata('message', lang("order_comment_deleted"));
+                    redirect($_SERVER["HTTP_REFERER"]);
+                }
+
+            } else {
+                $this->session->set_flashdata('error', lang("no_order_comment_selected"));
+                redirect($_SERVER["HTTP_REFERER"]);
+            }
+        } else {
+            $this->session->set_flashdata('error', validation_errors());
+            redirect($_SERVER["HTTP_REFERER"]);
+        }
+    }
+
     function expense_categories()
     {
 

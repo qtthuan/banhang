@@ -301,6 +301,8 @@ class Sales_model extends CI_Model
                 $sale_item_id = $this->db->insert_id();
                 if ($data['sale_status'] == 'completed' && empty($si_return)) {
 
+                    // Nếu có trả hàng, tổng chỉ phí đơn mới - chi phí đơn trả, lưu kết quả vào đơn trả
+
                     $item_costs = $this->site->item_costing($item);
                     foreach ($item_costs as $item_cost) {
                         if (isset($item_cost['date']) || isset($item_cost['pi_overselling'])) {
@@ -984,7 +986,7 @@ class Sales_model extends CI_Model
                     $q = $this->db->get_where('sales', array('id' => $sale_id), 1);
                     if ($q->num_rows() > 0) {
                         $costing_return = $q->row()->costing_return;
-                        $this->db->update('sales', array('costing_return' => $costing_return + $this->sma->formatDecimal($bln_quantity*$costing->purchase_unit_cost)), array('id' => $sale_id));
+                        $this->db->update('sales', array('costing_return' => $costing_return + $bln_quantity*$costing->purchase_unit_cost), array('id' => $sale_id));
 
                     }
     

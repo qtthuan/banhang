@@ -720,7 +720,7 @@
     </div>
 <?php if ($Owner || $GP['bulk_actions']) {
     echo admin_form_open('products/product_actions'.($warehouse_id ? '/'.$warehouse_id : ''), 'id="label-form"');
-        //$this->sma->print_arrays($rows);
+        //$this->sma->print_arrays($inv);
     foreach ($rows as $row) {
         // KHÔNG IN MÃ VẠCH KEM CHUỐI, YAOURT TRÁI CÂY BỊCH VÀ SINH TỐ ĐẬU BỊCH, ĐÁ, TOPPING, MỨT THÊM
         if($row->product_code != 'GK3031' 
@@ -741,6 +741,7 @@
             <input name="customer_name[]" type="hidden" value="<?=$customer->name?>">   
             <input name="customer_id[]" type="hidden" value="<?=$customer->id?>">   
             <input name="sale_note[]" type="hidden" value="<?=$inv->note?>">   
+            <input name="reference_no[]" type="hidden" value="<?=$inv->reference_no?>"> 
 <?php
         }
     }

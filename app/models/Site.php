@@ -1020,6 +1020,10 @@ class Site extends CI_Model
         return FALSE;
     }
 
+    /**
+     * qtthuan
+     * Cập nhật + chi phí từng size vào chi phí gốc
+     */
     public function updateOptionCosting($costing_id, $option_id) {
 
 

@@ -620,6 +620,39 @@ class Settings_model extends CI_Model
         return FALSE;
     }
 
+    public function addOrderComment($data)
+    {
+        if ($this->db->insert("order_comment_list", $data)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function updateOrderComment($id, $data = array())
+    {
+        if ($this->db->update("order_comment_list", $data, array('id' => $id))) {
+            return true;
+        }
+        return false;
+    }
+
+    public function deleteOrderComment($id)
+    {
+        if ($this->db->delete("order_comment_list", array('id' => $id))) {
+            return true;
+        }
+        return FALSE;
+    }
+
+    public function getOrderCommentByID($id)
+    {
+        $q = $this->db->get_where("order_comment_list", array('id' => $id), 1);
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }
+        return FALSE;
+    }
+
     public function getExpenseCategoryByID($id)
     {
         $q = $this->db->get_where("expense_categories", array('id' => $id), 1);

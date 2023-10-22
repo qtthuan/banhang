@@ -60,9 +60,18 @@
                                     echo '</span>';
                                 }
                                 
-                                echo '<span style="display: none; position: absolute; bottom: 18px;" class="customer_name ">'.$item['customer_name'];   
-                                echo '</span>';
+                                //echo '<span style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold" class="reference_no ">'.$item['reference_no'];   
+                                //echo '</span>';
+                                echo '<span class="circle_text" style="position: absolute; bottom: 14px; right: 3px; font-size: 16px; font-weight: bold" class="reference_no ">';
                                 
+                                if (trim($item['variants']) == 'size L') {
+                                    echo 'L';
+                                } elseif (trim($item['variants']) == 'size M')  {
+                                    echo 'M';
+                                } else {
+                                    echo $item['variants'];
+                                } 
+                                echo '</span>';
                                 //echo '<span style="position: absolute; bottom: 18px; right: 4px;" class="sale_note ">'.$item['sale_note'];   
                                 //echo '</span>';
                                 /*if($item['comment'] && $item['comment'] != '' && $item['comment'] != 'undefined') {
@@ -70,18 +79,10 @@
                                     echo ' <strong>' . $item['comment'] . '</strong>';
                                     echo '</h5>';
                                 }*/
+                                
                                 echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
-                                //echo '<span class="text_size"'.$str_padding.'>';
-                                echo '<strong>';
-                                    
-                                if (trim($item['variants']) == 'size L') {
-                                    echo 'L';
-                                } elseif (trim($item['variants']) == 'size M')  {
-                                    echo 'M';
-                                } else {
-                                    echo $item['variants'];
-                                }
-                                echo '</strong>';
+                                echo '<span style="font-size: 16px; font-weight: bold" class="reference_no ">'.$item['reference_no'];   
+                                echo '</span>';
                                 //echo '</span>';
                                 if ($item['customer_id'] != 6533) { // Không in giá Cô Ngọc LQĐ
                                     echo '<span class="text_price">' . $this->sma->formatMoney($item['price']);
@@ -110,10 +111,10 @@
                                 <button type="button" class="btn btn-success" id="hide_price" style="height:37px; font-size: 18px;">
                                     <i class="fa"></i>Ẩn/Hiện giá
                                 </button></div>';
-                                echo '<div class="no-print">&nbsp;&nbsp;
-                                <button type="button" class="btn btn-info" id="hide_customer_name" style="height:37px; font-size: 18px;">
-                                    <i class="fa"></i>Ẩn/Hiện tên khách
-                                </button></div>';
+                                // echo '<div class="no-print">&nbsp;&nbsp;
+                                // <button type="button" class="btn btn-info" id="hide_customer_name" style="height:37px; font-size: 18px;">
+                                //     <i class="fa"></i>Ẩn/Hiện tên khách
+                                // </button></div>';
                         echo '<div id="total_items" class="no-print" style="color: green"><h1><strong>(1-'.round($total_items/2).')</strong></h1><h2>&#8220;Click vào tem để xóa&#8221;</h2></div>';
                         echo '<button type="button" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print') . '</button>';
                     ?>
