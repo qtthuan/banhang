@@ -62,16 +62,18 @@
                                 
                                 //echo '<span style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold" class="reference_no ">'.$item['reference_no'];   
                                 //echo '</span>';
-                                echo '<span class="circle_text" style="position: absolute; bottom: 15px; right: 3px; font-size: 16px; font-weight: bold" class="reference_no ">';
-                                
-                                if (trim($item['variants']) == 'size L') {
-                                    echo 'L';
-                                } elseif (trim($item['variants']) == 'size M')  {
-                                    echo 'M';
-                                } else {
-                                    echo $item['variants'];
-                                } 
-                                echo '</span>';
+                                if($item['variants'] && $item['variants'] != '' && $item['variants'] != 'undefined') {
+                                    echo '<span class="circle_text" style="position: absolute; bottom: 15px; right: 3px; font-size: 16px; font-weight: bold">';
+                                    
+                                    if (trim($item['variants']) == 'size L') {
+                                        echo 'L';
+                                    } elseif (trim($item['variants']) == 'size M')  {
+                                        echo 'M';
+                                    } else {
+                                        echo $item['variants'];
+                                    } 
+                                    echo '</span>';
+                                }
                                 //echo '<span style="position: absolute; bottom: 18px; right: 4px;" class="sale_note ">'.$item['sale_note'];   
                                 //echo '</span>';
                                 /*if($item['comment'] && $item['comment'] != '' && $item['comment'] != 'undefined') {
