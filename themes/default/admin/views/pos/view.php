@@ -79,17 +79,17 @@
             <div id="receipt-data" style="margin-right: 5px;">
                 <div class="text-center">
                 <?php if ($inv->warehouse_id != 3) { ?>
-                    <strong><span style="font-size: 18px; text-transform: uppercase;"><?=$this->Settings->site_name?></span></strong><br />
+                    <strong><span style="font-size: 19px; text-transform: uppercase;"><?=$this->Settings->site_name?></span></strong><br />
                 <?php } else { ?>
-                    <strong><span style="font-size: 18px; text-transform: uppercase;"><?=lang("tiem_nuoc_mini");?></span></strong><br />
+                    <strong><span style="font-size: 19px; text-transform: uppercase;"><?=lang("tiem_nuoc_mini");?></span></strong><br />
                 <?php } ?>
                     <?php //$this->sma->print_arrays($inv);
                     echo "<p style='padding-top: 5px;'>" . $biller->address . " " . $biller->city . " " . $biller->postal_code . " " . $biller->state . " " . $biller->country .
                     "<br> " . $biller->phone . " - " . $biller->cf1 . "<br />";
                     ?>
-                    <br /><strong><span style="font-size: 13px; text-transform: uppercase"><?=lang('pos_bill');?></span><br>
+                    <br /><strong><span style="font-size: 17px; text-transform: uppercase"><?=lang('pos_bill');?></span><br>
                     <div class="order_barcodes text-center">
-                        <?= $this->sma->save_barcode($inv->reference_no, 'code128', 25, false); ?>
+                        <?= $this->sma->save_barcode($inv->reference_no, 'code128', 40, false); ?>
                     </div><span style="font-size: 16px;"><?=$inv->reference_no?></span></strong><br />
                     <?php
 
@@ -568,7 +568,7 @@
 
                 }
                 ?>
-                <?php if ($inv->warehouse_id != 3) { ?>
+                <?php if ($inv->warehouse_id != 3) { // Không hiển thị thông tin điểm đối với Tiệm nước Mini ?>
                 <?= $customer->award_points != 0 && $Settings->each_spent > 0 ? '<div class="text-center" style="text-decoration: underline"><strong>' . lang('award_points_title') . '</strong></div><p class="text-center" style="font-size: 12px;"><br>'.lang('this_sale').': <strong>'.$str_this_sale.'</strong><br>'.
                 lang('total').' '.lang('award_points').': <strong>'. $customer->award_points . '</strong><span style="font-size:11px">' . $str_point_note . '</span></p>' : ''; ?>
                 <?php } ?>
