@@ -52,7 +52,7 @@
                                     if($item['comment'] && $item['comment'] != '' && $item['comment'] != 'undefined') {
                                         //echo '<h5 style="border-top: 2px dotted black; padding-top: 4px; margin: 0; font-size: 11px;">';
                                         $str_comment = '<br /><span style="font-size: 10px;"><strong>' . $item['comment'] . '</strong></span>';
-                                        $str_comment_style = 'border-bottom: 2px dotted black;';
+                                        //$str_comment_style = 'border-bottom: 2px dotted black;';
                                         //echo '</h5>';
                                     }
                                     echo '<span style="position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item['name'];
@@ -62,7 +62,7 @@
                                 
                                 //echo '<span style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold" class="reference_no ">'.$item['reference_no'];   
                                 //echo '</span>';
-                                echo '<span class="circle_text" style="position: absolute; bottom: 14px; right: 3px; font-size: 16px; font-weight: bold" class="reference_no ">';
+                                echo '<span class="circle_text" style="position: absolute; bottom: 15px; right: 3px; font-size: 16px; font-weight: bold" class="reference_no ">';
                                 
                                 if (trim($item['variants']) == 'size L') {
                                     echo 'L';
