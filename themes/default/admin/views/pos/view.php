@@ -90,7 +90,7 @@
                     <br /><strong><span style="font-size: 13px; text-transform: uppercase"><?=lang('pos_bill');?></span><br>
                     <div class="order_barcodes text-center">
                         <?= $this->sma->save_barcode($inv->reference_no, 'code128', 25, false); ?>
-                    </div><?=$inv->reference_no?></strong><br />
+                    </div><span style="font-size: 16px;"><?=$inv->reference_no?></span></strong><br />
                     <?php
 
                     // comment or remove these extra info if you don't need
