@@ -63,7 +63,7 @@
                                 //echo '<span style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold" class="reference_no ">'.$item['reference_no'];   
                                 //echo '</span>';
                                 if($item['variants'] && $item['variants'] != '' && $item['variants'] != 'undefined') {
-                                    echo '<span class="circle_text" style="position: absolute; bottom: 15px; right: 3px; font-size: 16px; font-weight: bold">';
+                                    echo '<span class="circle_text" style="position: absolute; bottom: 16px; right: 3px; font-size: 16px; font-weight: bold">';
                                     
                                     if (trim($item['variants']) == 'size L') {
                                         echo 'L';
