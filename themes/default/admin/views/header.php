@@ -329,16 +329,17 @@
                                             <span class="text"> <?= lang('add_product'); ?></span>
                                         </a>
                                     </li>
-                                    <li id="products_import_csv">
-                                        <a class="submenu" href="<?= admin_url('products/import_csv'); ?>">
-                                            <i class="fa fa-file-text"></i>
-                                            <span class="text"> <?= lang('import_products'); ?></span>
-                                        </a>
-                                    </li>
+                                    
                                     <li id="products_print_barcodes">
                                         <a class="submenu" href="<?= admin_url('products/print_barcodes'); ?>">
                                             <i class="fa fa-tags"></i>
                                             <span class="text"> <?= lang('print_barcode_label'); ?></span>
+                                        </a>
+                                    </li>
+                                    <li id="products_print_label_mini">
+                                        <a class="submenu" href="<?= admin_url('products/print_label_mini'); ?>">
+                                            <i class="fa fa-tags"></i>
+                                            <span class="text"> <?= lang('print_labels_menu'); ?></span>
                                         </a>
                                     </li>
                                     <li id="products_quantity_adjustments">
@@ -351,6 +352,12 @@
                                         <a class="submenu" href="<?= admin_url('products/add_adjustment'); ?>">
                                             <i class="fa fa-filter"></i>
                                             <span class="text"> <?= lang('add_adjustment'); ?></span>
+                                        </a>
+                                    </li>
+                                    <li id="products_import_csv">
+                                        <a class="submenu" href="<?= admin_url('products/import_csv'); ?>">
+                                            <i class="fa fa-file-text"></i>
+                                            <span class="text"> <?= lang('import_products'); ?></span>
                                         </a>
                                     </li>
                                     <li id="products_stock_counts">

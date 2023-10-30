@@ -147,6 +147,7 @@ $lang['list_products']                      = "Danh sách sản phẩm";
 $lang['add_product']                        = "Thêm sản phẩm";
 $lang['print_barcodes']                     = "In Mã vạch";
 $lang['print_labels']                       = "In Tem Dán";
+$lang['print_labels_menu']                   = "In Tem Dán Mini";
 $lang['import_products']                    = "Import sản phẩm";
 $lang['update_price']                       = "Cập nhật giá";
 $lang['damage_products']                    = "Sản phẩm hư hỏng";

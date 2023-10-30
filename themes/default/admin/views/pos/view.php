@@ -154,7 +154,10 @@
                         if ($customer->address != 'TP Cần Thơ') {
                             echo lang("address") . ": " . $customer->address . "<br>";
                         }
-                        echo lang("tel") . ": " . $customer->phone . "<br>";
+                        if (strpos($customer->phone, '0000') === false) {
+                            echo lang("tel") . ": " . $customer->phone . "<br>";
+                            //echo str_starts_with($customer->phone, "000");
+                       }
                     }
                     if (!empty($customer->cf1) && $customer->cf1 != "-") {
                         echo "<br>" . lang("ccf1") . ": " . $customer->cf1;

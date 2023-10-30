@@ -678,6 +678,22 @@ class Products_model extends CI_Model
         return FALSE;
     }
 
+    public function getLastestMiniInvoice()
+    {
+
+        $query = "SELECT * FROM " . $this->db->dbprefix('sales') . " AS sales";
+        $query .= " WHERE warehouse_id = 3 ORDER BY id DESC LIMIT 3 ";
+
+        //exit($query);
+
+        $q = $this->db->query($query);
+        if ($q->num_rows() > 0) {
+            return $q->result();
+        }
+        
+    }
+
+
     public function getTaxRateByName($name)
     {
         $q = $this->db->get_where('tax_rates', array('name' => $name), 1);
