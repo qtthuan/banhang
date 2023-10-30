@@ -426,7 +426,7 @@
                         <?php } ?>
                             
                         <?php
-                        if ($payments && $customer->customer_group_id != 4) { // Nhóm Baemin không hiển thị nội dung này
+                        if (($payments && $customer->customer_group_id != 4) || $inv->warehouse_id != 3) { // Nhóm Baemin không hiển thị nội dung này
 
                             foreach ($payments as $payment) {
                         ?>       
