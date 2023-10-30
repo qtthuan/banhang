@@ -293,11 +293,23 @@
 
                     </tbody>
                     <tfoot>
+                    <?php 
+                        if($inv->warehouse_id != 3) { 
+                            $total_amount = lang("total_amount");
+                            $total = lang("total");
+                                
+                         } else {
+                            $total_amount = lang("total_amount_mini");
+                            $total = lang("total_mini");
+                        } 
+                    ?>
                         <tr>
                             <th colspan="2">
                                 <span style="font-size: 13px"><?=lang("total_items");?>:&nbsp;<?=$inv->total_items;?></span>
                             </th>
-                            <th colspan="2"><div style="margin-left: 2px;"><?=lang("total_amount");?></div></th>
+                            <th colspan="2"><div style="margin-left: 2px;">
+                                <?=$total_amount;?>
+                            </div></th>
                             <th class="text-right" colspan="2">
                                 <?=$this->sma->formatMoney($return_sale ? (($inv->total + $inv->product_tax)+($return_sale->total + $return_sale->product_tax)) : ($inv->total + $inv->product_tax));?>
                             </th>
@@ -403,7 +415,7 @@
 
                         <tr>
                             <th colspan="2">&nbsp;</th>
-                            <th colspan="2"><div style="margin-left: 2px;"><?=lang("total");?></div></th>
+                            <th colspan="2"><div style="margin-left: 2px;"><?=$total;?></div></th>
                             <th class="text-right" colspan="2">
                                 <?=$this->sma->formatMoney($return_sale ? (($inv->grand_total + $inv->rounding)+$return_sale->grand_total) : ($inv->grand_total + $inv->rounding));?>
                             </th>
@@ -426,7 +438,7 @@
                         <?php } ?>
                             
                         <?php
-                        if (($payments && $customer->customer_group_id != 4) || $inv->warehouse_id != 3) { // Nhóm Baemin không hiển thị nội dung này
+                        if (($payments && $customer->customer_group_id != 4 && $inv->warehouse_id != 3)) { // Nhóm Baemin không hiển thị nội dung này
 
                             foreach ($payments as $payment) {
                         ?>       
