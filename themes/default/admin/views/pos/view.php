@@ -294,6 +294,7 @@
                     </tbody>
                     <tfoot>
                     <?php 
+                        $mini_count_rows = 0;
                         if($inv->warehouse_id != 3) { 
                             $total_amount = lang("total_amount");
                             $total = lang("total");
@@ -315,8 +316,9 @@
                             </th>
                         </tr>
                         <?php
-                        if ($inv->shipping != 0) {
-                            ?>
+                            if ($inv->shipping != 0) {
+                                $mini_count_rows++;
+                        ?>
                             <tr>
                                 <th style="border-top: none" colspan="2">&nbsp;</th>
                                 <th style="border-top: none" colspan="2"><div style="margin-left: 2px;"><?= lang("shipping"); ?></div></th>
@@ -324,12 +326,13 @@
                                     colspan="2"><?= $this->sma->formatMoney($inv->shipping); ?></th>
                             </tr>
 
-                            <?php
-                        }
+                        <?php
+                            }
                         ?>
                         <?php
 
                         if ($inv->order_discount != 0) {
+                            $mini_count_rows++;
                             //if ($has_discount > 0) {
                             $is_saleoff++;
                             //}
@@ -375,6 +378,7 @@
                         ?>
                         <?php
                         if ($inv->change_points > 0) {
+                            $mini_count_rows++;
                             ?>
                             <tr>
                                 <th style="border-top: none" colspan="2">&nbsp;</th>
@@ -388,6 +392,7 @@
 
                         <?php
                         if ($inv->return_amount != 0) {
+                            $mini_count_rows++;
                         ?>
                             <tr>
                                 <th style="border-top: none" colspan="2">&nbsp;</th>
@@ -400,6 +405,7 @@
                         ?>
                         <?php
                         if ($return_sale) {
+                            $mini_count_rows++;
                             if ($return_sale->surcharge != 0) {
                         ?>
                                 <tr>
@@ -413,6 +419,7 @@
 
                         ?>
 
+                        <?php if ($mini_count_rows > 0 && $inv->warehouse_id == 3) { ?>
                         <tr>
                             <th colspan="2">&nbsp;</th>
                             <th colspan="2"><div style="margin-left: 2px;"><?=$total;?></div></th>
@@ -420,6 +427,7 @@
                                 <?=$this->sma->formatMoney($return_sale ? (($inv->grand_total + $inv->rounding)+$return_sale->grand_total) : ($inv->grand_total + $inv->rounding));?>
                             </th>
                         </tr>
+                        <?php } ?>
                         <?php if (($inv->paid) + $inv->change_points < $inv->grand_total) {?>
                             <tr>
                                 <th style="border-top: none" colspan="2">&nbsp;</th>

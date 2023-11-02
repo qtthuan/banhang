@@ -22,13 +22,7 @@
                     <?php                       
                         $style = '10_1';
                         echo '<button type="button" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print').'</button>';
-                        //echo '<div class="no-print">&nbsp;&nbsp;';
-                        // <button type="button" class="btn btn-info" id="hide_customer_name" style="height:37px; font-size: 18px;">
-                        //     <i class="fa"></i>Tải đơn mới nhất
-                        // </button></div>';
-                            echo '<div class="barcode">';
-                            
-                        
+                        echo '<div class="barcode">';
                         $total_items = 0;
                         
                         foreach ($barcodes as $item) {

@@ -440,28 +440,15 @@ class Products extends MY_Controller
     {
         $this->sma->checkPermissions('barcode', true);
 
-        //$this->form_validation->set_rules('style', lang("style"), 'required');
-
-        $lastest_bills = $this->products_model->getLastestMiniInvoice();
+        $lastest_bills = $this->sales_model->getLastestMiniInvoice();
         $this->data['sales'] = $lastest_bills;
-        //$next_bill = $this->products_model->getNextMiniInvoice($lastest_bill->id - 1);
-        //for ($m = 0; $m < $s; $m++) {
         for ($i=0; $i < count($lastest_bills); $i++) {
-            //echo $bill->id . '<br />';
-            //$this->data['bills'] = $bill;
             $items = $this->sales_model->getAllInvoiceItems($lastest_bills[$i]->id);
             $this->data['items'][$lastest_bills[$i]->id] = $items;
-            // $this->data['items'][$lastest_bills[$i]->id]['note'] = $lastest_bills[$i]->note;
-            // $this->data['items'][$lastest_bills[$i]->id]['customer'] = $lastest_bills[$i]->customer;
-            // $this->data['items'][$lastest_bills[$i]->id]['grand_total'] = $lastest_bills[$i]->grand_total;
         }
         
         //$this->sma->print_arrays($this->data['items']);
-        //$this->sma->print_arrays($this->data['items']);
-        ///$this->data['first_bill'] = $lastest_bills[0]; 
-        //$this->data['second_bill'] = $lastest_bills[1];
-        //$this->data['third_bill'] = $lastest_bills[2];
-       //$this->data = array();
+        //$this->sma->print_arrays($this->data['sales']);
         
         $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
         $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('products'), 'page' => lang('products')), array('link' => '#', 'page' => lang('print_labels')));

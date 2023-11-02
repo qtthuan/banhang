@@ -22,16 +22,28 @@
                     <?php                       
                         $style = '10_1';
                         echo '<button type="button" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print').'</button>';
-                       echo '<div style="text-align: center; margin: 5px 0" class="no-print">';
+                        echo '<div style="text-align: center; margin: 5px 0" class="no-print">';
+                        //$i = 0;
                         foreach ($sales as $sale) {
-                            echo '<button type="button" class="btn btn-danger" id="'.$sale->id.'" style="height:40px; width: 140px; font-size: 18px;">';
-                            echo $sale->reference_no;
+                            
+                            echo '<button type="button" class="btn btn-danger bills" id="'.$sale->id.'" style="height:41px; width: 145px; font-size: 18px; line-height: 16px;">';
+                            echo '<span id="reference_'.$sale->id.'">' . $sale->reference_no . '<span>';
+                            echo '<br /><span style="font-size: 11px">'. $sale->customer.'</span>';
+                            echo '<input type="hidden" class="hidd_customer_id" value="'.$sale->customer_id.'">';
+                            echo '<input type="hidden" class="hidd_sale_id" value="'.$sale->id.'">';
+                            echo '<input type="hidden" class="hidd_reference_no" value="'.$sale->reference_no.'">';
                             echo '</button>&nbsp;&nbsp;';
+                            
+                            //$i++;
                         }
                         echo '</div>';
+                        $j = 0;
                         foreach($items as $key => $values) {
-                            //echo $key;
-                            echo '<div class="barcode div'.$key.'">';
+                            $display_btn = '';
+                            if ($j > 0) {
+                                $display_btn = ' style="display: none;"';
+                            }
+                            echo '<div class="barcode div'.$key.'"'.$display_btn.'>';
                             $total_items = 0;
                        
                             foreach ($values as $item) {
@@ -48,24 +60,44 @@
                                 }                                       
                                 echo '<div class="item_1 style' . $style . ' ' . $valign_middle . '" >';
                                 if($item->product_name) {
-                                $str_comment = '';
-                                $str_comment_style = '';
-                                if($item->comment && $item->comment != '' && $item->comment != 'undefined') {
-                                    $str_comment = '<br /><span style="font-size: 10px;"><strong>' . $item->comment . '</strong></span>';
+                                    $str_comment = '';
+                                    $str_comment_style = '';
+                                    if($item->comment && $item->comment != '' && $item->comment != 'undefined') {
+                                        $str_comment = '<br /><span style="font-size: 10px;"><strong>' . $item->comment . '</strong></span>';
+                                    }
+                                    echo '<span style="position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
+                                    echo $str_comment;
+                                    echo '</span>';
                                 }
-                                echo '<span style="position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
-                                echo $str_comment;
-                                echo '</span>';
-                            }
+
+
+                                if($item->variant && $item->variant != '' && $item->variant != 'undefined') {
+                                    echo '<span class="circle_text" style="position: absolute; bottom: 16px; right: 3px; font-size: 16px; font-weight: bold">';
                                     
-                                    
-                                 
+                                    if (trim($item->variant) == 'size L') {
+                                        echo 'L';
+                                    } elseif (trim($item->variant) == 'size M')  {
+                                        echo 'M';
+                                    } else {
+                                        echo $item->variant;
+                                    } 
+                                    echo '</span>';
+                                }
+
+                                    echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
+                                    echo '<span style="font-size: 16px; font-weight: bold" class="reference_no ">';   
+                                    echo '</span>';
+                                    //if ($item->customer_id != 6533) { // Không in giá Cô Ngọc LQĐ
+                                        echo '<span class="text_price">'.$this->sma->formatMoney($item->unit_price);
+                                        echo '</span>';
+                                    //}
+                                    echo '</h4>';
+
+                                    echo '</div>';
                             }
-                            echo '</div>';
+                            echo '</div>';  
+                            $j++;
                         }
-                            
-                            
-                        
                         
                         echo '<div class="no-print">&nbsp;&nbsp;
                                 <button type="button" class="btn btn-success" id="hide_price" style="height:37px; font-size: 18px;">
@@ -102,6 +134,43 @@
         });
         $('#hide_customer_name').click(function(){
             $('.customer_name').toggle();
+        });
+        
+        // Enable first button
+        $('.bills:first').removeClass('btn-danger').addClass('btn-success');
+        $('.reference_no').text($('.hidd_reference_no:first').val());
+        if ($('.hidd_customer_id:first').val() == 6533) {
+            $('.text_price').hide();
+        }
+
+
+        $('.bills').on('click',function() {
+            div_id = $(this).attr('id');
+            customer_id = $('#' + div_id).find('.hidd_customer_id').val();
+            $('.bills' ).each(function( index ) {
+                all_div_ids = $(this).attr('id');
+                $(this).addClass('btn-danger');
+                $(this).removeClass('btn-success');
+                $('.div' + all_div_ids).hide();
+            });
+            if(!$(this).hasClass('btn-success')) {
+                
+                //reference_no = $('.div' + id).find('.hidd_reference_no').val();
+                $(this).removeClass('btn-danger');
+                $('.div' + div_id).show();
+                $(this).addClass('btn-success');
+                $('.reference_no').text($('#' + div_id).find('.hidd_reference_no').val());
+
+                if (customer_id == 6533) {
+                    $('.text_price').hide();
+                } else {
+                    $('.text_price').show();
+                }
+                
+                console.log(customer_id);
+                
+                console.log(div_id);
+            } 
         });
     });
 

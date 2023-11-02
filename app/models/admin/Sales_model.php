@@ -151,6 +151,21 @@ class Sales_model extends CI_Model
         return FALSE;
     }
 
+    public function getLastestMiniInvoice()
+    {
+
+        $query = "SELECT * FROM " . $this->db->dbprefix('sales') . " AS sales";
+        $query .= " WHERE warehouse_id = 3 ORDER BY id DESC LIMIT 5 ";
+
+        //exit($query);
+
+        $q = $this->db->query($query);
+        if ($q->num_rows() > 0) {
+            return $q->result();
+        }
+        
+    }
+
     public function getAllInvoiceItems($sale_id, $return_id = NULL)
     {
         $this->db->select('sale_items.*, tax_rates.code as tax_code, tax_rates.name as tax_name, tax_rates.rate as tax_rate, products.image, products.details as details, products.price, product_variants.name as variant')
