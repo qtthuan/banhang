@@ -26,9 +26,9 @@
                         //$i = 0;
                         foreach ($sales as $sale) {
                             
-                            echo '<button type="button" class="btn btn-danger bills" id="'.$sale->id.'" style="height:41px; width: 145px; font-size: 18px; line-height: 16px;">';
+                            echo '<button type="button" class="btn btn-danger bills" id="'.$sale->id.'" style="height:54px; width: 185px; font-size: 18px; line-height: 20px;">';
                             echo '<span id="reference_'.$sale->id.'">' . $sale->reference_no . '<span>';
-                            echo '<br /><span style="font-size: 11px">'. $sale->customer.'</span>';
+                            echo '<br /><span style="font-size: 15px">'. $sale->customer.'</span>';
                             echo '<input type="hidden" class="hidd_customer_id" value="'.$sale->customer_id.'">';
                             echo '<input type="hidden" class="hidd_sale_id" value="'.$sale->id.'">';
                             echo '<input type="hidden" class="hidd_reference_no" value="'.$sale->reference_no.'">';
