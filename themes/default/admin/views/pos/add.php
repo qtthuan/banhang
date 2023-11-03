@@ -220,11 +220,11 @@
                                         </a>
                                     </div>
                                 <?php } ?>
-                                    <div class="input-group-addon no-print" style="padding: 2px 16px; border-left: 0;">
+                                    <!-- <div class="input-group-addon no-print" style="padding: 2px 16px; border-left: 0;">
                                         <a href="#" id="sellGiftCard" class="external tip" title="<?=lang('sell_gift_card');?> (<?=$pos_settings->gift_card?>)" data-replacement="bottom">
                                             <i class="fa fa-credit-card addIcon fa-2x" id="addIcon" style="font-size: 1.7em;"></i>
                                         </a>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div style="clear:both;"></div>
                             </div>
@@ -461,11 +461,11 @@
                                                 </button>
                                             </div>
                                             <?php if ($Owner || $Admin || $GP['sales-add_gift_card']) {?>
-                                            <div class="btn-group">
+                                            <!-- <div class="btn-group">
                                                 <button style="z-index:10003;" class="btn btn-primary pos-tip" type="button" id="sellGiftCard" title="<?=lang('sell_gift_card')?>">
                                                     <i class="fa fa-credit-card" id="addIcon"></i><?=lang('sell_gift_card')?>
                                                 </button>
-                                            </div>
+                                            </div> -->
                                             <?php } ?>
                                             <div class="btn-group">
                                                 <button style="z-index:10004;" class="btn btn-primary pos-tip" title="<?=lang('next')?>" type="button" id="next">
