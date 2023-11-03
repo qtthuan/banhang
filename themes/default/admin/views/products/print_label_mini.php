@@ -21,12 +21,12 @@
                 <div id="barcode-con">
                     <?php                       
                         $style = '10_1';
-                        echo '<button type="button" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print').'</button>';
+                        echo '<button type="button" style="height: 46px; font-size: 22px" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print').'</button>';
                         echo '<div style="text-align: center; margin: 5px 0" class="no-print">';
                         //$i = 0;
                         foreach ($sales as $sale) {
                             
-                            echo '<button type="button" class="btn btn-danger bills" id="'.$sale->id.'" style="height:84px; width: 210px; font-size: 18px; line-height: 20px;">';
+                            echo '<button type="button" class="btn btn-danger bills" id="'.$sale->id.'" style="height:75px; width: 210px; font-size: 18px; line-height: 22px;">';
                             echo '<span id="reference_'.$sale->id.'">' . $sale->reference_no . '<span>';
                             echo '<br /><span style="font-size: 15px">'. $sale->customer.'</span>';
                             echo '<br /><span style="font-size: 15px">'. $this->sma->formatMoney($sale->grand_total).'</span>';
@@ -99,14 +99,13 @@
                             echo '</div>';  
                             $j++;
                         }
-                        
                         echo '<div class="no-print">&nbsp;&nbsp;
                                 <button type="button" class="btn btn-success" id="hide_price" style="height:37px; font-size: 18px;">
                                     <i class="fa"></i>Ẩn/Hiện giá
                                 </button></div>';
                                
-                        echo '<div id="total_items" class="no-print" style="color: green"><h1><strong>(1-'.round($total_items/2).')</strong></h1><h2>&#8220;Click vào tem để xóa&#8221;</h2></div>';
-                        echo '<button type="button" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print') . '</button>';
+                        echo '<div id="total_items" class="no-print" style="color: green;"><h1><strong>(1-'.round($total_items/2).')</strong></h1><h2>&#8220;Click vào tem để xóa&#8221;</h2></div>';
+                        echo '<button type="button"style="height: 46px; font-size: 22px;" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print') . '</button>';
                     ?>
                 </div>
             </div>
