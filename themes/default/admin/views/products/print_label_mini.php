@@ -39,72 +39,137 @@
                         }
                         echo '</div>';
                         $j = 0;
+                        $total_items = 2;
                         foreach($items as $key => $values) {
+                            //$total_items++;
                             $display_btn = '';
                             if ($j > 0) {
                                 $display_btn = ' style="display: none;"';
                             }
+                            //$this->sma->print_arrays($values);
                             echo '<div class="barcode div'.$key.'"'.$display_btn.'>';
-                            $total_items = 0;
-                       
+                            
                             foreach ($values as $item) {
-                                //echo $item->product_name.'<br />';
-                                $total_items++;
-                                $increase_size = "increase_size";
-                                if ($item->comment) {
-                                    $increase_size .= '_1';
-                                }
                                 
-                                $str_padding = '';
-                                if ($item->variants == 'L') {
-                                    $str_padding = ' style="padding-top: 10px;"';                                            
-                                }                                       
-                                echo '<div class="item_1 style' . $style . ' ' . $valign_middle . '" >';
-                                if($item->product_name) {
-                                    $str_comment = '';
-                                    $str_comment_style = '';
-                                    if($item->comment && $item->comment != '' && $item->comment != 'undefined') {
-                                        $str_comment = '<br /><span style="font-size: 10px;"><strong>' . $item->comment . '</strong></span>';
-                                    }
-                                    echo '<span style="position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
-                                    echo $str_comment;
-                                    echo '</span>';
-                                }
-
-
-                                if($item->variant && $item->variant != '' && $item->variant != 'undefined') {
-                                    echo '<span class="circle_text" style="position: absolute; bottom: 16px; right: 3px; font-size: 16px; font-weight: bold">';
+                                if ($item->product_id != 21121 && $item->product_id != 21122 && $item->product_id != 20354
+                                && $item->product_id != 20357 && $item->product_id != 20358) {
+                                //$total_items++;
+                                //echo 'vv: '. $j.'<br />';
+                                    $item_qty = $item->quantity;
                                     
-                                    if (trim($item->variant) == 'size L') {
-                                        echo 'L';
-                                    } elseif (trim($item->variant) == 'size M')  {
-                                        echo 'M';
+                                    if ($item->quantity > 1) {
+                                        echo '-';
+                                        for ($i=0; $i < $item_qty; $i++) {
+                                            //$total_items++;
+                                            $increase_size = "increase_size";
+                                            if ($item->comment) {
+                                                $increase_size .= '_1';
+                                            }
+                                            
+                                            $str_padding = '';
+                                            if ($item->variants == 'L') {
+                                                $str_padding = ' style="padding-top: 10px;"';                                            
+                                            }                                       
+                                            echo '<div class="item_1 style' . $style . ' ' . $valign_middle . '" >';
+                                            if($item->product_name) {
+                                                $str_comment = '';
+                                                $str_comment_style = '';
+                                                if($item->comment && $item->comment != '' && $item->comment != 'undefined') {
+                                                    $str_comment = '<br /><span style="font-size: 10px;"><strong>' . $item->comment . '</strong></span>';
+                                                }
+                                                echo '<span style="position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
+                                                echo $str_comment;
+                                                echo '</span>';
+                                            }
+
+
+                                            if($item->variant && $item->variant != '' && $item->variant != 'undefined') {
+                                                echo '<span class="circle_text" style="position: absolute; bottom: 16px; right: 3px; font-size: 16px; font-weight: bold">';
+                                                
+                                                if (trim($item->variant) == 'size L') {
+                                                    echo 'L';
+                                                } elseif (trim($item->variant) == 'size M')  {
+                                                    echo 'M';
+                                                } else {
+                                                    echo $item->variant;
+                                                } 
+                                                echo '</span>';
+                                            }
+
+                                            echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
+                                            echo '<span style="font-size: 16px; font-weight: bold" class="reference_no ">';   
+                                            echo '</span>';
+                                            //if ($item->customer_id != 6533) { // Không in giá Cô Ngọc LQĐ
+                                                echo '<span class="text_price">'.$this->sma->formatMoney($item->unit_price);
+                                                echo '</span>';
+                                            //}
+                                            echo '</h4>';
+
+                                            echo '</div>';
+                                        }
                                     } else {
-                                        echo $item->variant;
-                                    } 
-                                    echo '</span>';
-                                }
+                                        
+                                        $increase_size = "increase_size";
+                                        if ($item->comment) {
+                                            $increase_size .= '_1';
+                                        }
+                                        
+                                        $str_padding = '';
+                                        if ($item->variants == 'L') {
+                                            $str_padding = ' style="padding-top: 10px;"';                                            
+                                        }                                       
+                                        echo '<div class="item_1 style' . $style . ' ' . $valign_middle . '" >';
+                                        if($item->product_name) {
+                                            $str_comment = '';
+                                            $str_comment_style = '';
+                                            if($item->comment && $item->comment != '' && $item->comment != 'undefined') {
+                                                $str_comment = '<br /><span style="font-size: 10px;"><strong>' . $item->comment . '</strong></span>';
+                                            }
+                                            echo '<span style="position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
+                                            echo $str_comment;
+                                            echo '</span>';
+                                        }
 
-                                    echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
-                                    echo '<span style="font-size: 16px; font-weight: bold" class="reference_no ">';   
-                                    echo '</span>';
-                                    //if ($item->customer_id != 6533) { // Không in giá Cô Ngọc LQĐ
-                                        echo '<span class="text_price">'.$this->sma->formatMoney($item->unit_price);
+
+                                        if($item->variant && $item->variant != '' && $item->variant != 'undefined') {
+                                            echo '<span class="circle_text" style="position: absolute; bottom: 16px; right: 3px; font-size: 16px; font-weight: bold">';
+                                            
+                                            if (trim($item->variant) == 'size L') {
+                                                echo 'L';
+                                            } elseif (trim($item->variant) == 'size M')  {
+                                                echo 'M';
+                                            } else {
+                                                echo $item->variant;
+                                            } 
+                                            echo '</span>';
+                                        }
+
+                                        echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
+                                        echo '<span style="font-size: 16px; font-weight: bold" class="reference_no ">';   
                                         echo '</span>';
-                                    //}
-                                    echo '</h4>';
+                                        //if ($item->customer_id != 6533) { // Không in giá Cô Ngọc LQĐ
+                                            echo '<span class="text_price">'.$this->sma->formatMoney($item->unit_price);
+                                            echo '</span>';
+                                        //}
+                                        echo '</h4>';
 
-                                    echo '</div>';
+                                        echo '</div>';
+                                        
+                                    }
+                                    
+                                }
                             }
+                            
                             echo '</div>';  
                             $j++;
+                            $total_items++;
                         }
                         echo '<div class="no-print">&nbsp;&nbsp;
                                 <button type="button" class="btn btn-success" id="hide_price" style="height:37px; font-size: 18px;">
                                     <i class="fa"></i>Ẩn/Hiện giá
                                 </button></div>';
                                
-                        echo '<div id="total_items" class="no-print" style="color: green;"><h1><strong>(1-'.round($total_items/2).')</strong></h1><h2>&#8220;Click vào tem để xóa&#8221;</h2></div>';
+                        echo '<div id="total_items" class="no-print" style="color: green;"></div>';
                         echo '<button type="button"style="height: 46px; font-size: 22px;" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print') . '</button>';
                     ?>
                 </div>
@@ -114,7 +179,6 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
-        var total_items = <?=$total_items?>;
         <?php if ($this->input->post('print')) { ?>
             $( window ).load(function() {
                 $('html, body').animate({
@@ -124,10 +188,13 @@
         <?php } ?>
         
         $(document).on('click', '.item_1', function () {
+            var total_items = $(this).closest('.barcode').find('.item_1').length - 1;
+            console.log('cccc: ' + $(this).closest('.barcode').find('.item_1').length);
             var id = $(this).attr('id');
             $(this).remove();
-            total_items = total_items -1;
-            $("#total_items").html("<h1><strong>(1-" + Math.round(total_items/2) + ")</strong></h1><h2>&#8220;Click vào tem để xóa&#8221;</h2>")
+            //total_items = total_items -1;
+            //$("#total_items").html("<h1><strong>(1-" + Math.round(total_items/2) + ")</strong></h1><h2>&#8220;Click vào tem để xóa&#8221;</h2>")
+            fillTotalItems(total_items);
         });
         $('#hide_price').click(function(){
             $('.text_price').toggle();
@@ -135,6 +202,10 @@
         $('#hide_customer_name').click(function(){
             $('.customer_name').toggle();
         });
+
+        function fillTotalItems(total) {
+            $("#total_items").html("<h1><strong>(1-" + Math.round(total/2) + ")</strong></h1><h2>&#8220;Click vào tem để xóa&#8221;</h2>")
+        }
         
         // Enable first button
         $('.bills:first').removeClass('btn-danger').addClass('btn-success');
@@ -142,6 +213,7 @@
         if ($('.hidd_customer_id:first').val() == 6533) {
             $('.text_price').hide();
         }
+        fillTotalItems($('.barcode:first>div').length);
 
 
         $('.bills').on('click',function() {
@@ -167,7 +239,8 @@
                     $('.text_price').show();
                 }
                 
-                console.log(customer_id);
+                console.log($('.div' + div_id +'>div').length);
+                fillTotalItems($('.div' + div_id +'>div').length);
                 
                 console.log(div_id);
             } 

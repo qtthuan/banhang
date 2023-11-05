@@ -563,6 +563,21 @@ class Pos_model extends CI_Model
         return FALSE;
     }
 
+    /**
+     * qtthuan: Danh sachs ghi chú món
+     */
+    public function getOrderCommentList()
+    {
+        $q = $this->db->get('order_comment_list');
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return FALSE;
+    }
+
     public function getAllSales()
     {
         $q = $this->db->get('sales');

@@ -617,6 +617,7 @@ class Pos extends MY_Controller
             $this->data['brands'] = $this->site->getAllBrands();
             $this->data['subcategories'] = $this->site->getSubCategories($this->pos_settings->default_category);
             $this->data['printer'] = $this->pos_model->getPrinterByID($this->pos_settings->printer);
+            $this->data['order_comment_list'] = $this->pos_model->getOrderCommentList();
             $order_printers = json_decode($this->pos_settings->order_printers);
             $printers = array();
             if (!empty($order_printers)) {

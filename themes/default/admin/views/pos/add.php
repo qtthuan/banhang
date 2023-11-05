@@ -810,29 +810,7 @@
             </div>
             <div class="modal-body" id="pr_popover_content">
                 <form class="form-horizontal" role="form">
-                    <?php if ($Settings->tax1) {
-                        ?>
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label"><?=lang('product_tax')?></label>
-                            <div class="col-sm-8">
-                                <?php
-                                	$tr[""] = "";
-                                	    foreach ($tax_rates as $tax) {
-                                	        $tr[$tax->id] = $tax->name;
-                                	    }
-                                	    echo form_dropdown('ptax', $tr, "", 'id="ptax" class="form-control pos-input-tip" style="width:100%;"');
-                                    ?>
-                            </div>
-                        </div>
-                    <?php } ?>
-                    <?php if ($Settings->product_serial) { ?>
-                        <div class="form-group">
-                            <label for="pserial" class="col-sm-4 control-label"><?=lang('serial_no')?></label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control kb-text" id="pserial">
-                            </div>
-                        </div>
-                    <?php } ?>
+                    
                     <?php if ($Settings->product_discount && ($Owner || $Admin || $this->session->userdata('allow_discount'))) { ?>
 
                     <div class="form-group">
@@ -862,17 +840,36 @@
                             <input type="text" class="form-control kb-pad" id="pquantity">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="punit" class="col-sm-4 control-label"><?= lang('product_unit') ?></label>
                         <div class="col-sm-8">
                             <div id="punits-div"></div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="form-group">
                         <label for="poption" class="col-sm-4 control-label"><?=lang('product_option')?></label>
                         <div class="col-sm-8">
                             <div id="poptions-div"></div>
                         </div>
+                    </div>
+                    <div class="box_comment">
+
+
+  
+
+                        <?php 
+                            foreach ($order_comment_list as $comment) {
+                        ?>
+                                <div class="comment_col">
+                                    <input style="width: 25px; height: 25px; vertical-align: bottom;" type="checkbox" id="<?=$comment->id?>" name="<?=$comment->comment?>">
+                            <?php echo '<span style="margin-bottom: 10px; font-size: 12px;">' . $comment->comment . '&nbsp;&nbsp;&nbsp;</span>'; ?>
+                                </div>
+                        <?php 
+                                
+                            } 
+                        ?>
+                        
+                           
                     </div>
                     <table class="table table-bordered table-striped">
                         <tr>
@@ -1920,6 +1917,7 @@ var lang = {
         $('#product-list, #category-list, #subcategory-list').perfectScrollbar({suppressScrollX: true});
         $('select, .select').select2({minimumResultsForSearch: 7});
 
+        // qtthuan
         $(document).on('click', '.product', function (e) {
            
             $('#modal-loading').show();
@@ -1945,6 +1943,12 @@ var lang = {
                     }
                 }
             });
+            //$.wait(5000).then();
+            // setTimeout(function(){
+            //     $('#product-list>table>tbody>tr:first').find('.edit').trigger('click');
+            //     $('#pquantity').select().focus();
+            //     //console.log($('#poswarehouse').val());
+            // }, 100); 
         });
 
         $(document).on('click', '.category', function () {

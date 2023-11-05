@@ -2089,3 +2089,24 @@ animation: blink 1s steps(2, start) infinite;
 #receiptData table td:nth-child(4) { width: 24%; }
 
 .auto_price { height:30px; font-size: 14px; padding: 3px; }
+#prModal fieldset div {
+    display: inline-block; 
+    margin:5px;
+    font-size: 17px;
+  }
+  #prModal fieldset div input {
+    display: inline;
+    width: 25px;
+    height: 25px;
+    vertical-align: bottom;
+  }
+
+  #prModal .box_comment:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  #prModal .box_comment .comment_col {
+    float: left;
+    width: 33%;
+  }

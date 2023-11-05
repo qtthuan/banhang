@@ -440,10 +440,13 @@ class Products extends MY_Controller
     {
         $this->sma->checkPermissions('barcode', true);
 
+        //$this->form_validation->set_rules('style', lang("style"), 'required');
+
         $lastest_bills = $this->sales_model->getLastestMiniInvoice();
         $this->data['sales'] = $lastest_bills;
         for ($i=0; $i < count($lastest_bills); $i++) {
             $items = $this->sales_model->getAllInvoiceItems($lastest_bills[$i]->id);
+
             $this->data['items'][$lastest_bills[$i]->id] = $items;
         }
         
