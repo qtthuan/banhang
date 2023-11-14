@@ -1950,7 +1950,7 @@ var lang = {
                 $('#product-list>table>tbody>tr:first').find('.edit').trigger('click');
                 $('#pquantity').select().focus();
                 //console.log($('#poswarehouse').val());
-            }, 50); 
+            }, 80); 
         });
 
         $(document).on('click', '.category', function () {
