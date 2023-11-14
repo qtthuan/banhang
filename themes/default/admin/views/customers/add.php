@@ -104,6 +104,7 @@
         $(document).on("focus", '#address', function () {
             $(this).select();
         });
+        //qtthuan: uppercase text when typing
         $('#name').keyup(function(){
             $(this).val($(this).val().toUpperCase());
         });

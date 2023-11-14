@@ -2101,6 +2101,10 @@ animation: blink 1s steps(2, start) infinite;
     vertical-align: bottom;
   }
 
+  #prModal .box_comment {
+    margin-bottom: 10px;
+  }
+
   #prModal .box_comment:after {
     content: "";
     display: table;
@@ -2109,4 +2113,28 @@ animation: blink 1s steps(2, start) infinite;
   #prModal .box_comment .comment_col {
     float: left;
     width: 33%;
+    padding-bottom: 10px;
   }
+  #prModal .box_comment .comment_col .chkComment {
+    width: 28px; 
+    height: 28px; 
+    vertical-align: bottom;
+    margin-right: 2px;
+  }
+
+  #prModal .box_comment .comment_col .lblComment {
+   margin-top: 5px;
+  }
+  
+
+  #prModal .box_comment .txtComment {
+    font: medium -moz-fixed;
+    font: -webkit-small-control;
+    height: 32px;
+    overflow: auto;
+    padding: 5px;
+    resize: both;
+    width: 100%;
+    font-size: 14px;
+    text-transform: uppercase;
+   }

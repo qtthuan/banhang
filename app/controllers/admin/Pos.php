@@ -1699,4 +1699,17 @@ class Pos extends MY_Controller
 
     }
 
+    /**
+     * qtthuan
+     */
+     function addOrderComment($comment = NULL)
+    {
+        if ($rows = $this->pos_model->addOrderComment($comment)) {
+            $data = json_encode($rows);
+        } else {
+            $data = false;
+        }
+        echo $data;
+    }
+
 }

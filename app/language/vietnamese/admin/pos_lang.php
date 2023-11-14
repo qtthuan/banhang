@@ -348,3 +348,4 @@ $lang['update_product_quantity']        = "Có sản phẩm hết hàng. <br /> 
 $lang['tiem_nuoc_mini']                 = "Tiệm nước Mini";
 $lang['mini_xin_cam_on']                = "Xin Cám Ơn Quí Khách!";
 $lang['mini_size_l']                    = "LY LỚN";
+$lang['mini_add_comment']               = "Thêm ghi chú";

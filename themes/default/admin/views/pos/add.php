@@ -781,7 +781,7 @@
             <div class="modal-body" id="pr_popover_content">
                 <div class="form-group">
                     <?= lang('comment', 'icomment'); ?>
-                    <input type="text" name="comment" class="form-control kb-text" id="icomment">
+                    <input type="text" style="text-transform: uppercase;" name="comment" class="form-control kb-text" id="icomment">
                 </div>
                 <!--<div class="form-group">
                     <?= lang('ordered', 'iordered'); ?>
@@ -847,28 +847,31 @@
                         </div>
                     </div> -->
                     <div class="form-group">
-                        <label for="poption" class="col-sm-4 control-label"><?=lang('product_option')?></label>
+                        <label for="poptions-div" class="col-sm-4 control-label"><?=lang('product_option')?></label>
                         <div class="col-sm-8">
                             <div id="poptions-div"></div>
                         </div>
                     </div>
                     <div class="box_comment">
-
-
-  
-
+                    <div class="form-group">
+                        <label for="txtComment" class="col-sm-4 control-label"><?=lang('comment')?></label>
+                        <div class="col-sm-8">
+                        <input class="txtComment" type="text" id="txtComment">
+                        </div>
+                    </div>
+                    <!-- <div class="txtComment" contentEditable>&nbsp;</div>   -->
+                    
                         <?php 
                             foreach ($order_comment_list as $comment) {
                         ?>
                                 <div class="comment_col">
-                                    <input style="width: 25px; height: 25px; vertical-align: bottom;" type="checkbox" id="<?=$comment->id?>" name="<?=$comment->comment?>">
-                            <?php echo '<span style="margin-bottom: 10px; font-size: 12px;">' . $comment->comment . '&nbsp;&nbsp;&nbsp;</span>'; ?>
+                                    <input class="chkComment" type="checkbox" id="<?=$comment->id?>" value="<?=$comment->comment?>">
+                                    <label class="lblComment" for="<?=$comment->id?>"><?=$comment->comment?></label>
                                 </div>
                         <?php 
                                 
                             } 
                         ?>
-                        
                            
                     </div>
                     <table class="table table-bordered table-striped">
@@ -1339,7 +1342,6 @@ var lang = {
         $("#col_return").show();
     }
     $(document).ready(function () {
-        
 
         $('#view-customer').click(function(){
             $('#myModal').modal({remote: site.base_url + 'customers/view/' + $("input[name=customer]").val()});
@@ -1944,11 +1946,11 @@ var lang = {
                 }
             });
             //$.wait(5000).then();
-            // setTimeout(function(){
-            //     $('#product-list>table>tbody>tr:first').find('.edit').trigger('click');
-            //     $('#pquantity').select().focus();
-            //     //console.log($('#poswarehouse').val());
-            // }, 100); 
+            setTimeout(function(){
+                $('#product-list>table>tbody>tr:first').find('.edit').trigger('click');
+                $('#pquantity').select().focus();
+                //console.log($('#poswarehouse').val());
+            }, 50); 
         });
 
         $(document).on('click', '.category', function () {
@@ -2347,6 +2349,39 @@ var lang = {
                     $('#editItem').click();
                 }
             });
+
+             //qtthuan: uppercase text when typing
+            // $('.txtComment').keyup(function(){
+            //     $(this).text($(this).text().toUpperCase());
+            // });
+
+            
+            //qtthuan
+            $('.chkComment').removeAttr('checked');
+            //$('.txtComment').text('');
+            if ($('#poswarehouse').val() == 3) {
+                $('.box_comment').show();
+                var selected_comments=[];
+                //if ($('.txtCO'))
+                // 
+                $(".chkComment").change(function() {
+                    var ischecked= $(this).is(':checked');
+                    if (ischecked) {
+                        selected_comments.push($(this).val());
+                    } else {
+                        for (var i=selected_comments.length-1; i>=0; i--) {
+                            if (selected_comments[i] === $(this).val()) 
+                            selected_comments.splice(i, 1);
+                        }
+                    }
+                    
+                    $('.txtComment').val(selected_comments.join(', '));
+
+                }); 
+            } else {
+                $('.box_comment').hide();
+            }
+
         });
 
         $('#sModal').on('shown.bs.modal', function() {

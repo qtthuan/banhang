@@ -500,6 +500,10 @@ $('#posdiscount').focus(function () {
         discount = row.children().children('.rdiscount').val();
         original_price = parseFloat(row.children().children('.roprice').val());
         is_promo = row.children().children('.is_promo').val();
+        comment = item.row.comment;
+        if (comment == '') {
+            $('.chkComment').removeAttr('checked');
+        }
 
         //console.log('bef: ' + unit_price + ' promo: ' + is_promo);
 
@@ -633,6 +637,7 @@ $('#posdiscount').focus(function () {
         $('#net_price').val(formatMoney(net_price));
         $('#price_after_discount').val(net_price);
         $('#pro_tax').text(formatMoney(pr_tax_val));
+        $('.txtComment').val(comment);
         $('#prModal').appendTo("body").modal('show');
 
     });
@@ -791,6 +796,7 @@ $('#posdiscount').focus(function () {
         positems[item_id].row.discount = $('#pdiscount').val() ? $('#pdiscount').val() : '',
         positems[item_id].row.option = $('#poption').val() ? $('#poption').val() : '',
         positems[item_id].row.serial = $('#pserial').val();
+        positems[item_id].row.comment = $('.txtComment').val();
         localStorage.setItem('positems', JSON.stringify(positems));
         $('#prModal').modal('hide');
 

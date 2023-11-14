@@ -568,7 +568,9 @@ class Pos_model extends CI_Model
      */
     public function getOrderCommentList()
     {
+        $this->db->order_by("comment", "asc");
         $q = $this->db->get('order_comment_list');
+        
         if ($q->num_rows() > 0) {
             foreach (($q->result()) as $row) {
                 $data[] = $row;
@@ -577,6 +579,7 @@ class Pos_model extends CI_Model
         }
         return FALSE;
     }
+
 
     public function getAllSales()
     {
