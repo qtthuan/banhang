@@ -1944,10 +1944,10 @@ var lang = {
                 }
             });
             //$.wait(5000).then();
-            setTimeout(function(){
-                $('#product-list>table>tbody>tr:first').find('.edit').trigger('click');
-                $('#pquantity').select().focus();
-            }, 200); 
+            // setTimeout(function(){
+            //     $('#product-list>table>tbody>tr:first').find('.edit').trigger('click');
+            //     $('#pquantity').select().focus();
+            // }, 200); 
         });
 
         $(document).on('click', '.category', function () {
