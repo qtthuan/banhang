@@ -1926,8 +1926,6 @@ var lang = {
             code = $(this).val(),
             wh = $('#poswarehouse').val(),
             cu = $('#poscustomer').val();
-
-            //alert(code + '-' + wh + '-' + cu);
             $.ajax({
                 type: "get",
                 url: "<?=admin_url('pos/getProductDataByCode')?>",
@@ -1946,10 +1944,10 @@ var lang = {
                 }
             });
             //$.wait(5000).then();
-            // setTimeout(function(){
-            //     $('#product-list>table>tbody>tr:first').find('.edit').trigger('click');
-            //     $('#pquantity').select().focus();
-            // }, 80); 
+            setTimeout(function(){
+                $('#product-list>table>tbody>tr:first').find('.edit').trigger('click');
+                $('#pquantity').select().focus();
+            }, 200); 
         });
 
         $(document).on('click', '.category', function () {
