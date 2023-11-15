@@ -659,7 +659,7 @@ $('#posdiscount').focus(function () {
         var row = $('#' + $('#irow_id').val());
         var item_id = row.attr('data-item-id');
         positems[item_id].row.order = parseFloat($('#iorders').val()),
-        positems[item_id].row.comment = $('#icomment').val() ? $('#icomment').val() : '';
+        positems[item_id].row.comment = $('#icomment').val() ? $('#icomment').val().toUpperCase() : '';
         localStorage.setItem('positems', JSON.stringify(positems));
         $('#cmModal').modal('hide');
         loadItems();
@@ -796,7 +796,7 @@ $('#posdiscount').focus(function () {
         positems[item_id].row.discount = $('#pdiscount').val() ? $('#pdiscount').val() : '',
         positems[item_id].row.option = $('#poption').val() ? $('#poption').val() : '',
         positems[item_id].row.serial = $('#pserial').val();
-        positems[item_id].row.comment = $('.txtComment').val();
+        positems[item_id].row.comment = $('.txtComment').val().toUpperCase();
         localStorage.setItem('positems', JSON.stringify(positems));
         $('#prModal').modal('hide');
 
