@@ -150,8 +150,6 @@ class Pos extends MY_Controller
         $this->form_validation->set_rules('biller', $this->lang->line("biller"), 'required');
 
         if ($this->form_validation->run() == TRUE) {
-
-
             $date = date('Y-m-d H:i:s');
             $warehouse_id = $this->input->post('warehouse');
             $customer_id = $this->input->post('customer');
@@ -164,7 +162,11 @@ class Pos extends MY_Controller
             $shipping = $this->input->post('shipping') ? $this->input->post('shipping') : 0;
             $return_amount = $this->input->post('return_amount') ? $this->input->post('return_amount') : 0;
             $customer_details = $this->site->getCompanyByID($customer_id);
-            $customer = $customer_details->company != '-'  ? $customer_details->company : $customer_details->name;
+            if ($this->input->post('customer_name') != '') {
+                $customer = $this->input->post('customer_name');
+            } else {
+                $customer = $customer_details->company != '-'  ? $customer_details->company : $customer_details->name;
+            }
             $biller_details = $this->site->getCompanyByID($biller_id);
             $biller = $biller_details->company != '-' ? $biller_details->company : $biller_details->name;
             $note = $this->sma->clear_tags($this->input->post('pos_note'));
@@ -1704,12 +1706,11 @@ class Pos extends MY_Controller
      */
      function addOrderComment($comment = NULL)
     {
-        if ($rows = $this->pos_model->addOrderComment($comment)) {
-            $data = json_encode($rows);
+        if ($this->products_model->updateSupplier($products, $suppliers)) {
+            $this->session->set_flashdata('message', lang("supplier_updated"));
         } else {
-            $data = false;
+            $this->session->set_flashdata('message', lang("supplier_update_error"));
         }
-        echo $data;
     }
 
 }

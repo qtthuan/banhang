@@ -121,6 +121,7 @@ $lang['print_items_list']               = "In danh sách mặt hàng";
 $lang['finalize_sale']                  = "Thanh toán hóa đơn";
 $lang['open_hold_bills']                = "Mở danh sách hóa đơn tạm";
 $lang['search_product_by_name_code']    = "Bấm nút ";
+$lang['enter_customer_name']            = "Nhập tên khách lẻ";
 $lang['receipt_printer']                = "Máy in hóa đơn";
 $lang['cash_drawer_codes']              = "Mã mở két tiền";
 $lang['pos_list_printers']              = "Danh sách máy in (Phân cách bằng dấu |)";

@@ -227,6 +227,9 @@
                                     </div> -->
                                 </div>
                                 <div style="clear:both;"></div>
+                                <div class="form-group">
+                                <?php echo form_input('customer_name', '', 'class="form-control customer_name" id="customer_name" data-placement="top" placeholder="' . $this->lang->line("enter_customer_name") . '" title=""'); ?>
+                                </div>
                             </div>
                             <div class="no-print">
                                 <?php if ($Owner || $Admin || !$this->session->userdata('warehouse_id')) {
@@ -1913,6 +1916,11 @@ var lang = {
         $('#posTable').stickyTableHeaders({scrollableArea: $('#product-list')});
         $('#product-list, #category-list, #subcategory-list').perfectScrollbar({suppressScrollX: true});
         $('select, .select').select2({minimumResultsForSearch: 7});
+
+        //qtthuan: uppercase text when typing
+            $('#customer_name').keyup(function(){
+                $(this).val($(this).val().toUpperCase());
+            });
         
         // qtthuan
         $(document).on('click', '.product', function (e) {

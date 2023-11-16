@@ -138,7 +138,7 @@
                 ?>
             <?php if ($inv->warehouse_id != 3 || ($inv->warehouse_id == 3 && $inv->customer_id != 1)) { ?>
                 <!--Nếu kho Ba-Ni hoặc (Tiệm Nước Mini và Có nhập tên) => Hiện Tên Khách-->
-                <?=lang("customer") . ': ' . ($customer->company && $customer->company != '-' ? $customer->company : $customer->name)?><span style="color:red; font-size: 13px; margin-left: 15px;" class="no-print"><a href="#" id="view-customer" class="external pos-tip" title="<?=lang('customers_info');?>" data-toggle="modal" data-target="#myModal2"><i class="fa fa-bars" id="addIcon" style="font-size: 1.7em;"></i></a></span>
+                <?=lang("customer") . ': ' .  $inv->customer?><span style="color:red; font-size: 13px; margin-left: 15px;" class="no-print"><a href="#" id="view-customer" class="external pos-tip" title="<?=lang('customers_info');?>" data-toggle="modal" data-target="#myModal2"><i class="fa fa-bars" id="addIcon" style="font-size: 1.7em;"></i></a></span>
                 <br>
             <?php } ?>
                 <?=$customer->customer_group_percent != 0 ?  lang("customers_group_txt") . ': <strong>' . $customer->customer_group_name . '</strong><br>' : ''?>
