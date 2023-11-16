@@ -783,6 +783,22 @@
                     <?= lang('comment', 'icomment'); ?>
                     <input type="text" style="text-transform: uppercase;" name="comment" class="form-control kb-text" id="icomment">
                 </div>
+                <div class="box_comment">
+                <!-- <div class="txtComment" contentEditable>&nbsp;</div>   -->
+                
+                    <?php 
+                        foreach ($order_comment_list as $comment) {
+                    ?>
+                            <div class="comment_col">
+                                <input class="chkComment" type="checkbox" id="<?=$comment->id?>" value="<?=$comment->comment?>">
+                                <label class="lblComment" for="<?=$comment->id?>"><?=$comment->comment?></label>
+                            </div>
+                    <?php 
+                            
+                        } 
+                    ?>
+                        
+                </div>
                 <!--<div class="form-group">
                     <?= lang('ordered', 'iordered'); ?>
                     <?php
@@ -852,28 +868,7 @@
                             <div id="poptions-div"></div>
                         </div>
                     </div>
-                    <div class="box_comment">
-                    <div class="form-group">
-                        <label for="txtComment" class="col-sm-4 control-label"><?=lang('comment')?></label>
-                        <div class="col-sm-8">
-                        <input class="txtComment" type="text" id="txtComment">
-                        </div>
-                    </div>
-                    <!-- <div class="txtComment" contentEditable>&nbsp;</div>   -->
-                    
-                        <?php 
-                            foreach ($order_comment_list as $comment) {
-                        ?>
-                                <div class="comment_col">
-                                    <input class="chkComment" type="checkbox" id="<?=$comment->id?>" value="<?=$comment->comment?>">
-                                    <label class="lblComment" for="<?=$comment->id?>"><?=$comment->comment?></label>
-                                </div>
-                        <?php 
-                                
-                            } 
-                        ?>
-                           
-                    </div>
+                   
                     <table class="table table-bordered table-striped">
                         <tr>
                             <th style="width:25%;"><?=lang('net_unit_price');?></th>
@@ -1918,7 +1913,7 @@ var lang = {
         $('#posTable').stickyTableHeaders({scrollableArea: $('#product-list')});
         $('#product-list, #category-list, #subcategory-list').perfectScrollbar({suppressScrollX: true});
         $('select, .select').select2({minimumResultsForSearch: 7});
-
+        
         // qtthuan
         $(document).on('click', '.product', function (e) {
            
@@ -2337,22 +2332,6 @@ var lang = {
                     $('#editComment').click();
                 }
             });
-        });
-        $('#prModal').on('shown.bs.modal', function() {
-            $(this).find('#pdiscount').select().focus();
-
-            $(this).keypress(function( e ) {
-                if ( e.which == 13 ) {
-                    $('#editItem').click();
-                }
-            });
-
-             //qtthuan: uppercase text when typing
-            // $('.txtComment').keyup(function(){
-            //     $(this).text($(this).text().toUpperCase());
-            // });
-
-            
             //qtthuan
             $('.chkComment').removeAttr('checked');
             //$('.txtComment').text('');
@@ -2372,13 +2351,22 @@ var lang = {
                         }
                     }
                     
-                    $('.txtComment').val(selected_comments.join(', '));
+                    $('#icomment').val(selected_comments.join(', '));
 
                 }); 
             } else {
                 $('.box_comment').hide();
             }
+        });
+        $('#prModal').on('shown.bs.modal', function() {
+            $(this).find('#pdiscount').select().focus();
 
+            $(this).keypress(function( e ) {
+                if ( e.which == 13 ) {
+                    $('#editItem').click();
+                }
+            });
+            
         });
 
         $('#sModal').on('shown.bs.modal', function() {

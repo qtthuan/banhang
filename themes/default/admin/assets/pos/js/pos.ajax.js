@@ -637,7 +637,7 @@ $('#posdiscount').focus(function () {
         $('#net_price').val(formatMoney(net_price));
         $('#price_after_discount').val(net_price);
         $('#pro_tax').text(formatMoney(pr_tax_val));
-        $('.txtComment').val(comment);
+        $('#icomment').val(comment);
         $('#prModal').appendTo("body").modal('show');
 
     });
@@ -796,7 +796,7 @@ $('#posdiscount').focus(function () {
         positems[item_id].row.discount = $('#pdiscount').val() ? $('#pdiscount').val() : '',
         positems[item_id].row.option = $('#poption').val() ? $('#poption').val() : '',
         positems[item_id].row.serial = $('#pserial').val();
-        positems[item_id].row.comment = $('.txtComment').val().toUpperCase();
+        positems[item_id].row.comment = $('#icomment').val().toUpperCase();
         localStorage.setItem('positems', JSON.stringify(positems));
         $('#prModal').modal('hide');
 
@@ -1330,7 +1330,7 @@ function loadItems() {
                 '</td>';
 
             tr_html += '<td class="text-center">' +
-                        '<i class="pull-center fa fa-comment fa-2x fa-bx' + (item_comment != '' ? '' : '-o') +
+                        '<i class="pull-center fa fa-comment fa-3x fa-bx' + (item_comment != '' ? '' : '-o') +
                         ' tip pointer comment" id="' + row_no + '" data-item="' + item_id +
                         '" title="Ghi chú" style="cursor:pointer;margin-right:5px;"></i>' +
                         '<i class="pull-center fa fa-edit fa-2x fa-bx tip pointer edit" id="' + row_no + '" data-item="' + item_id + '" title="Cập nhật Size/Giá" style="cursor:pointer;"></i>' +
