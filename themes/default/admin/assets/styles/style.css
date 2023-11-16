@@ -2110,10 +2110,12 @@ animation: blink 1s steps(2, start) infinite;
     height: 28px; 
     vertical-align: bottom;
     margin-right: 2px;
+    cursor: pointer;
   }
 
   #cmModal .box_comment .comment_col .lblComment {
    margin-top: 5px;
+   cursor: pointer;
   }
   
 
