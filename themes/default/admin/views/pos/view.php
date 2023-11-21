@@ -224,7 +224,7 @@
                                 }
                             }
                         ?>
-                        <td colspan="2" style="font-size: 11px;"><?=$row->product_code . $str_variants ?></td>
+                        <td colspan="2" style="font-size: 10px;"><?=$row->product_code . $str_variants ?></td>
                         <td class="text-right"><?=$this->sma->formatQuantity($row->quantity)?></td>
                         <td class="text-right">
                             <?php
