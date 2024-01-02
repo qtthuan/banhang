@@ -84,6 +84,7 @@ class Cron_model extends CI_Model
 //            $m .= '<p>' . lang('backup_done') . '</p>';
 //        }
         //$this->updateMemberJoiningDate();
+        $this->resetCustomerAwardPoints(12);
 
         $this->updateCostingOnEditProduct();
 
@@ -430,7 +431,7 @@ class Cron_model extends CI_Model
         $reject_month = date('Y-m-d', strtotime('first day of ' . $reject_month)); // KH vừa tạo trong tháng 12 thì không trừ điểm
         $this->db->select("id, name, award_points, customer_group_name, customer_group_id, created_date", FALSE);
         $this->db->where(array(
-            "created_date < " => $reject_month,
+            //"created_date < " => $reject_month,
             "award_points >" => 0));
         $q = $this->db->get('companies');
 
@@ -442,10 +443,10 @@ class Cron_model extends CI_Model
                 $str_content = '';
 
                 $customer_group = $this->site->getCustomerGroupByID($row->customer_group_id);
-                if (($customer_group->percent) * -1 > 0 && $row->award_points >= $top_points) {
+                /*if (($customer_group->percent) * -1 > 0 && $row->award_points >= $top_points) {
                     $str_content = $customer_group->name . ' | ';
                     $new_points = $row->award_points / 2;
-                }
+                }*/
                 $data = array('award_points' => $new_points);
                 $str_content .= $row->award_points . 'đ => ' . $new_points . 'đ';
                 $data_tracking = array('task' => 'Reset points',
