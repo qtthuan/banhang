@@ -770,7 +770,12 @@ class Sales extends MY_Controller
             $shipping = $this->input->post('shipping') ? $this->input->post('shipping') : 0;
             $returns = $this->input->post('returns') ? $this->input->post('returns') : 0;
             $customer_details = $this->site->getCompanyByID($customer_id);
+            
+            
             $customer = !empty($customer_details->company) && $customer_details->company != '-'  ? $customer_details->company : $customer_details->name;
+            if ($inv->customer_id == 1 && $inv->customer != 'Khách lẻ') {
+                $customer = $inv->customer;
+            }
             $biller_details = $this->site->getCompanyByID($biller_id);
             $biller = !empty($biller_details->company) && $biller_details->company != '-' ? $biller_details->company : $biller_details->name;
             $note = $this->sma->clear_tags($this->input->post('note'));
