@@ -230,8 +230,8 @@ if (!empty($variants)) {
                                 <div class="input-group">
                                 <?php 
                                     echo form_input('attributesInput', '', 'class="form-control select-tags" id="attributesInput" placeholder="' . $this->lang->line("enter_attributes") . '"'); 
-                                    echo form_input('added_price', '', 'class="form-control wh" id="added_price" placeholder="' . lang('price_addition') . '"');
                                     echo form_input('attr_cost', '', 'class="form-control wh" id="attr_cost" placeholder="' . lang('cost') . '"');
+                                    echo form_input('added_price', '', 'class="form-control wh" id="added_price" placeholder="' . lang('price_addition') . '"');
                                 ?>
                                     <div class="input-group-addon" style="padding: 2px 5px;">
                                         <a href="#" id="addAttributes">
@@ -944,7 +944,7 @@ if (!empty($variants)) {
                             if($("#drop_select_wh").val() == <?=$warehouse->id;?>) {
                     <?php
 
-                                echo '$(\'#attrTable\').show().append(\'<tr class="attr"><td><input type="hidden" name="attr_name[]" value="\' + attrs[i] + \'"><span>\' + attrs[i] + \'</span></td><td class="code text-center"><input type="hidden" name="attr_warehouse[]" value="'.$warehouse->id.'"><input type="hidden" name="attr_wh_name[]" value="'.$warehouse->name.'"><span>'.$warehouse->name.'</span></td><td class="quantity text-center"><input type="hidden" name="attr_quantity[]" value="1"><span>1</span></td><td class="price text-right"><input type="hidden" name="attr_price[]" value="\' + added_price + \'"><span> \' + currencyFormat(added_price) + \'</span></span></td><td class="attr_cost text-right"><input type="hidden" name="attr_cost[]" value="\' + attr_cost + \'"><span> \' + currencyFormat(attr_cost) + \'</span></span></td><td class="text-center"><i class="fa fa-times delAttr"></i></td></tr>\');';
+                                echo '$(\'#attrTable\').show().append(\'<tr class="attr"><td><input type="hidden" name="attr_name[]" value="\' + attrs[i] + \'"><span>\' + attrs[i] + \'</span></td><td class="code text-center"><input type="hidden" name="attr_warehouse[]" value="'.$warehouse->id.'"><input type="hidden" name="attr_wh_name[]" value="'.$warehouse->name.'"><span>'.$warehouse->name.'</span></td><td class="quantity text-center"><input type="hidden" name="attr_quantity[]" value="1"><span>1</span></td><td class="attr_cost text-right"><input type="hidden" name="attr_cost[]" value="\' + attr_cost + \'"><span> \' + currencyFormat(attr_cost) + \'</span></span></td><td class="price text-right"><input type="hidden" name="attr_price[]" value="\' + added_price + \'"><span> \' + currencyFormat(added_price) + \'</span></span></td><td class="text-center"><i class="fa fa-times delAttr"></i></td></tr>\');';
                     ?>
                             }
                     <?php

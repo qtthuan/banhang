@@ -1506,6 +1506,7 @@ function loadItems() {
         }
         $('#tship').text(parseFloat(shipping) > 0 ? formatMoney(shipping) : '');
         $('#treturn').text(parseFloat(preturn) > 0 ? formatMoney(preturn) : '');
+        $('#total').text(formatMoney(total));
         $('#gtotal').text(formatMoney(gtotal));
         $('#order_discount_percent_for_return_sale').val(parseFloat(order_discount_percent_for_return_sale));
         if (pos_settings.remote_printing != 1) {

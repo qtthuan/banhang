@@ -110,6 +110,7 @@ $lang['read_more']                     = 'Xem tiếp';
 $lang['payment_guide']                 = 'HƯỚNG DẪN THANH TOÁN';
 $lang['delivery_guide']                = 'PHƯƠNG THỨC VẬN CHUYỂN';
 $lang['return_guide']                  = 'CHÍNH SÁCH ĐỔI TRẢ';
+$lang['terms_guide']                   = 'QUY ĐỊNH CHUNG';
 $lang['contact_us']                    = 'LIÊN HỆ';
 $lang['size_table']                    = 'BẢNG SIZE';
 $lang['payment_methods']               = 'Hình thức thanh toán';

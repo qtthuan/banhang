@@ -26,7 +26,7 @@
                     <a href="<?= site_url('page/' . $shop_settings->about_link); ?>"><?= $shop_settings->description; ?></a>
                 </p>
                 <p>
-                    <a href="<?= site_url('page/' . $shop_settings->terms_link); ?>"><?= lang('return_guide'); ?></a>
+                    <a href="<?= site_url('page/' . $shop_settings->terms_link); ?>"><?= lang('terms_guide'); ?></a>
                 </p>
                 <p>
                     <a href="<?= site_url('page/' . $shop_settings->payment_link); ?>"><?= lang('payment_guide'); ?></a>
