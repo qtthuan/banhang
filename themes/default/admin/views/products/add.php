@@ -1014,8 +1014,8 @@ if (!empty($variants)) {
             $('#aModalLabel').text(row.children().eq(0).find('span').text());
             $('#awarehouse').select2("val", (row.children().eq(1).find('input').val()));
             $('#aquantity').val(row.children().eq(2).find('input').val());
-            $('#aprice').val(row.children().eq(3).find('input').val());
-            $('#attrCost').val(row.children().eq(4).find('input').val());
+            $('#aprice').val(row.children().eq(4).find('input').val());
+            $('#attrCost').val(row.children().eq(3).find('input').val());
             $('#aModal').appendTo('body').modal('show');
         });
 
@@ -1043,8 +1043,8 @@ if (!empty($variants)) {
 
             row.children().eq(1).html('<input type="hidden" name="attr_warehouse[]" value="' + wh + '"><input type="hidden" name="attr_wh_name[]" value="' + wh_name + '"><span>' + wh_name + '</span>');
             row.children().eq(2).html('<input type="hidden" name="attr_quantity[]" value="' + ($('#aquantity').val() ? $('#aquantity').val() : 0) + '"><span>' + decimalFormat($('#aquantity').val()) + '</span>');
-            row.children().eq(3).html('<input type="hidden" name="attr_price[]" value="' + $('#aprice').val() + '"><span>' + currencyFormat($('#aprice').val()) + '</span>');
-            row.children().eq(4).html('<input type="hidden" name="attr_cost[]" value="' + $('#attrCost').val() + '"><span>' + currencyFormat($('#attrCost').val()) + '</span>');
+            row.children().eq(4).html('<input type="hidden" name="attr_price[]" value="' + $('#aprice').val() + '"><span>' + currencyFormat($('#aprice').val()) + '</span>');
+            row.children().eq(3).html('<input type="hidden" name="attr_cost[]" value="' + $('#attrCost').val() + '"><span>' + currencyFormat($('#attrCost').val()) + '</span>');
             $('#aModal').modal('hide');
         });
 
@@ -1239,6 +1239,12 @@ if (!empty($variants)) {
                         <div class="col-sm-8">
                             <input type="text" class="form-control" id="aquantity">
                         </div>
+                    </div>                    
+                    <div class="form-group">
+                        <label for="attrCost" class="col-sm-4 control-label"><?= lang('cost') ?></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="attrCost">
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="aprice" class="col-sm-4 control-label"><?= lang('price_addition') ?></label>
@@ -1246,13 +1252,6 @@ if (!empty($variants)) {
                             <input type="text" class="form-control" id="aprice">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="attrCost" class="col-sm-4 control-label"><?= lang('cost') ?></label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" id="attrCost">
-                        </div>
-                    </div>
-
                 </form>
             </div>
             <div class="modal-footer">

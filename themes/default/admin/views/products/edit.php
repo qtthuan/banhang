@@ -242,15 +242,15 @@ if (!empty($variants)) {
                                 <tr class="active">
                                     <th><?= lang('name') ?></th>
                                     <th><?= lang('warehouse') ?></th>
-                                    <th><?= lang('quantity') ?></th>
-                                    <th><?= lang('price_addition') ?></th>
+                                    <th><?= lang('quantity') ?></th>                                    
                                     <th><?= lang('cost') ?></th>
+                                    <th><?= lang('price_addition') ?></th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <?php
                                 foreach ($product_options as $option) {
-                                    echo '<tr><td class="col-xs-3"><input type="hidden" name="attr_id[]" value="' . $option->id . '"><span>' . $option->name . '</span></td><td class="code text-center col-xs-3"><span>' . $option->wh_name . '</span></td><td class="quantity text-center col-xs-2"><span>' . $this->sma->formatQuantity($option->wh_qty) . '</span></td><td class="price text-right col-xs-2">' . $this->sma->formatMoney($option->price) . '</td><td class="price text-right col-xs-2">' . $this->sma->formatMoney($option->cost) . '</td></tr>';
+                                    echo '<tr><td class="col-xs-3"><input type="hidden" name="attr_id[]" value="' . $option->id . '"><span>' . $option->name . '</span></td><td class="code text-center col-xs-3"><span>' . $option->wh_name . '</span></td><td class="quantity text-center col-xs-2"><span>' . $this->sma->formatQuantity($option->wh_qty) . '</span></td><td class="price text-right col-xs-2">' . $this->sma->formatMoney($option->cost) . '</td><td class="price text-right col-xs-2">' . $this->sma->formatMoney($option->price) . '</td></tr>';
                                 }
                             ?>
                             </tbody>
@@ -262,16 +262,16 @@ if (!empty($variants)) {
                                 <table class="table table-bordered table-condensed table-striped" style="margin-top: 10px;">
                                 <thead>
                                 <tr class="active">
-                                    <th class="col-xs-4"><?= lang('name') ?></th>
-                                    <th class="col-xs-4"><?= lang('price_addition') ?></th>
+                                    <th class="col-xs-4"><?= lang('name') ?></th>                                    
                                     <th class="col-xs-4"><?= lang('cost') ?></th>
+                                    <th class="col-xs-4"><?= lang('price_addition') ?></th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <?php
                                 //$this->sma->print_arrays($product_variants);
                                 foreach ($product_variants as $pv) {
-                                     echo '<tr><td class="col-xs-3"><input type="hidden" name="variant_id_' . $pv->id . '" value="' . $pv->id . '"><input type="text" name="variant_name_' . $pv->id . '" value="' . $pv->name . '" class="form-control"></td><td class="price text-right col-xs-2"><input type="text" name="variant_price_' . $pv->id . '" value="' . $this->sma->formatDecimal($pv->price) . '" class="form-control"></td><td class="cost text-right col-xs-2"><input type="text" name="variant_cost_' . $pv->id . '" value="' . $this->sma->formatDecimal($pv->cost) . '" class="form-control"></td></tr>';
+                                     echo '<tr><td class="col-xs-3"><input type="hidden" name="variant_id_' . $pv->id . '" value="' . $pv->id . '"><input type="text" name="variant_name_' . $pv->id . '" value="' . $pv->name . '" class="form-control"></td><td class="cost text-right col-xs-2"><input type="text" name="variant_cost_' . $pv->id . '" value="' . $this->sma->formatDecimal($pv->cost) . '" class="form-control"></td><td class="price text-right col-xs-2"><input type="text" name="variant_price_' . $pv->id . '" value="' . $this->sma->formatDecimal($pv->price) . '" class="form-control"></td></tr>';
                                 }
                                 ?>
                                 </tbody>
@@ -306,8 +306,8 @@ if (!empty($variants)) {
                                     <div class="input-group">
                                     <?php
                                         echo form_input('attributesInput', '', 'class="form-control select-tags" id="attributesInput" placeholder="' . $this->lang->line("enter_attributes") . '"'); 
-                                        echo form_input('added_price', '', 'class="form-control" id="added_price" placeholder="' . lang('price_addition') . '"');
                                         echo form_input('attr_cost', '', 'class="form-control" id="attr_cost" placeholder="' . lang('cost') . '"');
+                                        echo form_input('added_price', '', 'class="form-control" id="added_price" placeholder="' . lang('price_addition') . '"');
                                     ?>
                                         <div class="input-group-addon" style="padding: 2px 5px;">
                                             <a href="#" id="addAttributes">
@@ -355,9 +355,9 @@ if (!empty($variants)) {
                                             <tr class="active">
                                                 <th><?= lang('name') ?></th>
                                                 <th><?= lang('warehouse') ?></th>
-                                                <th><?= lang('quantity') ?></th>
-                                                <th><?= lang('price_addition') ?></th>
+                                                <th><?= lang('quantity') ?></th>                                                
                                                 <th><?= lang('cost') ?></th>
+                                                <th><?= lang('price_addition') ?></th>
                                                 <th><i class="fa fa-times attr-remove-all"></i></th>
                                             </tr>
                                         </thead>
@@ -370,8 +370,8 @@ if (!empty($variants)) {
                                                         <td><input type="hidden" name="attr_name[]" value="' . $_POST['attr_name'][$r] . '"><span>' . $_POST['attr_name'][$r] . '</span></td>
                                                         <td class="code text-center"><input type="hidden" name="attr_warehouse[]" value="' . (isset($_POST['attr_warehouse'][$r]) ? $_POST['attr_warehouse'][$r] : '') . '"><input type="hidden" name="attr_wh_name[]" value="' . (isset($_POST['attr_wh_name'][$r]) ? $_POST['attr_wh_name'][$r] : '') . '"><span>' . (isset($_POST['attr_wh_name'][$r]) ? $_POST['attr_wh_name'][$r] : '') . '</span></td>
                                                         <td class="quantity text-center"><input type="hidden" name="attr_quantity[]" value="' . $_POST['attr_quantity'][$r] . '"><span>' . $_POST['attr_quantity'][$r] . '</span></td>
+                                                        <td class="cost text-right"><input type="hidden" name="attr_cost[]" value="e' . $_POST['attr_cost'][$r] . '"><span>' . $_POST['attr_cost'][$r] . '</span></span></td><td class="text-center"><i class="fa fa-times delAttr"></i></td>
                                                         <td class="price text-right"><input type="hidden" name="attr_price[]" value="' . $_POST['attr_price'][$r] . '"><span>' . $_POST['attr_price'][$r] . '</span></span></td><td class="text-center"></td>
-                                                        <td class="cost text-right"><input type="hidden" name="attr_cost[]" value="' . $_POST['attr_cost'][$r] . '"><span>' . $_POST['attr_cost'][$r] . '</span></span></td><td class="text-center"><i class="fa fa-times delAttr"></i></td>
                                                     </tr>';
                                                 }
                                             }
@@ -778,12 +778,12 @@ if (!empty($variants)) {
                         if ($warehouse->quantity > 0) {
                         //echo $warehouses_products[$i]->quantity . 'x';
                             //echo '$(\'#attrTable\').show().append(\'<tr class="attr"><td><input type="hidden" name="attr_name[]" value="\' + attrs[i] + \'"><span>\' + attrs[i] + \'</span></td><td class="code text-center"><input type="hidden" name="attr_warehouse[]" value="' . $warehouse->id . '"><span>' . $warehouse->name . '</span></td><td class="quantity text-center"><input type="hidden" name="attr_quantity[]" value="1"><span>1</span></td><td class="price text-right"><input type="hidden" name="attr_price[]" value="0"><span>0</span></span></td><td class="cost text-right"><input type="hidden" name="attr_cost[]" value="0"><span>0</span></span></td><td class="text-center"><i class="fa fa-times delAttr"></i></td></tr>\');';
-                            echo '$(\'#attrTable\').show().append(\'<tr class="attr"><td><input type="hidden" name="attr_name[]" value="\' + attrs[i] + \'"><span>\' + attrs[i] + \'</span></td><td class="code text-center"><input type="hidden" name="attr_warehouse[]" value="'.$warehouse->id.'"><input type="hidden" name="attr_wh_name[]" value="'.$warehouse->name.'"><span>'.$warehouse->name.'</span></td><td class="quantity text-center"><input type="hidden" name="attr_quantity[]" value="1"><span>1</span></td><td class="price text-right"><input type="hidden" name="attr_price[]" value="\' + added_price + \'"><span> \' + currencyFormat(added_price) + \'</span></span></td><td class="attr_cost text-right"><input type="hidden" name="attr_cost[]" value="\' + attr_cost + \'"><span> \' + currencyFormat(attr_cost) + \'</span></span></td><td class="text-center"><i class="fa fa-times delAttr"></i></td></tr>\');';
+                            echo '$(\'#attrTable\').show().append(\'<tr class="attr"><td><input type="hidden" name="attr_name[]" value="\' + attrs[i] + \'"><span>\' + attrs[i] + \'</span></td><td class="code text-center"><input type="hidden" name="attr_warehouse[]" value="'.$warehouse->id.'"><input type="hidden" name="attr_wh_name[]" value="'.$warehouse->name.'"><span>'.$warehouse->name.'</span></td><td class="quantity text-center"><input type="hidden" name="attr_quantity[]" value="1"><span>1</span></td><td class="attr_cost text-right"><input type="hidden" name="attr_cost[]" value="\' + attr_cost + \'"><span> \' + currencyFormat(attr_cost) + \'</span></span></td><td class="price text-right"><input type="hidden" name="attr_price[]" value="\' + added_price + \'"><span> \' + currencyFormat(added_price) + \'</span></span></td><td class="text-center"><i class="fa fa-times delAttr"></i></td></tr>\');';
                         }
                         $i++;
                     }
                 } else { ?>
-                    $('#attrTable').show().append('<tr class="attr"><td><input type="hidden" name="attr_name[]" value="' + attrs[i] + '"><span>' + attrs[i] + '</span></td><td class="code text-center"><input type="hidden" name="attr_warehouse[]" value=""><span></span></td><td class="quantity text-center"><input type="hidden" name="attr_quantity[]" value="0"><span></span></td><td class="price text-right"><input type="hidden" name="attr_price[]" value="0"><span>0</span></span></td><td class="cost text-right"><input type="hidden" name="attr_cost[]" value="0"><span>0</span></span></td><td class="text-center"><i class="fa fa-times delAttr"></i></td></tr>');
+                    $('#attrTable').show().append('<tr class="attr"><td><input type="hidden" name="attr_name[]" value="' + attrs[i] + '"><span>' + attrs[i] + '</span></td><td class="code text-center"><input type="hidden" name="attr_warehouse[]" value=""><span></span></td><td class="quantity text-center"><input type="hidden" name="attr_quantity[]" value="0"><span></span></td><td class="cost text-right"><input type="hidden" name="attr_cost[]" value="0"><span>0</span></span></td><td class="price text-right"><input type="hidden" name="attr_price[]" value="0"><span>0</span></span></td><td class="text-center"><i class="fa fa-times delAttr"></i></td></tr>');
             <?php } ?>
                 $('#added_price').val('');
                 $('#attr_cost').val('');
@@ -803,8 +803,8 @@ if (!empty($variants)) {
             $('#aModalLabel').text(row.children().eq(0).find('span').text());
             $('#awarehouse').select2("val", (row.children().eq(1).find('input').val()));
             $('#aquantity').val(row.children().eq(2).find('span').text());
-            $('#aprice').val(row.children().eq(3).find('input').val());
-            $('#attrCost').val(row.children().eq(4).find('input').val());
+            $('#aprice').val(row.children().eq(4).find('input').val());
+            $('#attrCost').val(row.children().eq(3).find('input').val());
             $('#aModal').appendTo('body').modal('show');
         });
 
@@ -826,8 +826,8 @@ if (!empty($variants)) {
             });
             row.children().eq(1).html('<input type="hidden" name="attr_warehouse[]" value="' + wh + '"><input type="hidden" name="attr_wh_name[]" value="' + wh_name + '"><span>' + wh_name + '</span>');
             row.children().eq(2).html('<input type="hidden" name="attr_quantity[]" value="' + ($('#aquantity').val() ? $('#aquantity').val() : 0) + '"><span>' + $('#aquantity').val() + '</span>');
-            row.children().eq(3).html('<input type="hidden" name="attr_price[]" value="' + $('#aprice').val() + '"><span>' + currencyFormat($('#aprice').val()) + '</span>');
-            row.children().eq(4).html('<input type="hidden" name="attr_cost[]" value="' + $('#attrCost').val() + '"><span>' + currencyFormat($('#attrCost').val()) + '</span>');
+            row.children().eq(3).html('<input type="hidden" name="attr_cost[]" value="' + $('#attrCost').val() + '"><span>' + currencyFormat($('#attrCost').val()) + '</span>');
+            row.children().eq(4).html('<input type="hidden" name="attr_price[]" value="' + $('#aprice').val() + '"><span>' + currencyFormat($('#aprice').val()) + '</span>');
             $('#aModal').modal('hide');
         });
 
@@ -1068,16 +1068,17 @@ if (!empty($variants)) {
                             <input type="text" class="form-control" id="aquantity">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="aprice" class="col-sm-4 control-label"><?= lang('price') ?></label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" id="aprice">
-                        </div>
-                    </div>
+                    
                     <div class="form-group">
                         <label for="attrCost" class="col-sm-4 control-label"><?= lang('cost') ?></label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" id="attrCost">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="aprice" class="col-sm-4 control-label"><?= lang('price_addition') ?></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="aprice">
                         </div>
                     </div>
                 </form>
