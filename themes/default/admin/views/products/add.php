@@ -333,8 +333,8 @@ if (!empty($variants)) {
                                         <th><?= lang('name') ?></th>
                                         <th><?= lang('warehouse') ?></th>
                                         <th><?= lang('quantity') ?></th>
-                                        <th><?= lang('price_addition') ?></th>
                                         <th><?= lang('cost') ?></th>
+                                        <th><?= lang('price_addition') ?></th>
                                         <th><i class="fa fa-times attr-remove-all"></i></th>
                                     </tr>
                                     </thead>
