@@ -244,10 +244,12 @@
                                                     <?php
                                                         $i = 0; 
                                                         foreach ($variants as $variant) {
+                                                            $i++;
                                                             if ($variant->quantity > 0) {
-                                                                $i++;
                                                                 echo '<span class="label label-primary">' . $variant->name . '</span> ';
-                                                            } 
+                                                            } else {
+                                                                echo '<span style="background: linear-gradient(to top right, #70747f calc(50% - 1px), black , #70747f calc(50% + 1px));" class="label label-primary">' . $variant->name . '</span> ';
+                                                            }
                                                         } 
                                                         if ($i == 0) {
                                                             echo '<span class="label label-warning">' . lang('out_of_stock') . '</span> ';

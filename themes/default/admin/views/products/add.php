@@ -130,7 +130,7 @@ if (!empty($variants)) {
                             </div>
                             <div class="form-group">
                                 <?= lang('start_date', 'start_date'); ?>
-                                -<?= form_input('start_date', set_value('start_date'), 'class="form-control tip date" id="start_date"'); ?>
+                                <?= form_input('start_date', set_value('start_date'), 'class="form-control tip date" id="start_date"'); ?>
                             </div>
                             <div class="form-group">
                                 <?= lang('end_date', 'end_date'); ?>
