@@ -4,17 +4,17 @@
         <div class="modal-body">
 
             <div class="row">
-                <div class="col-xs-4">
+                <div class="col-xs-5">
                     <img id="pr-image" src="<?= base_url() ?>assets/uploads/<?= $product->image ?>"
                     alt="<?= $product->name ?>" class="img-responsive img-thumbnail"/>
 
                     <div id="multiimages" class="padding10">
                         <?php if (!empty($images)) {
-                            echo '<a class="img-thumbnail change_img" href="' . base_url() . 'assets/uploads/' . $product->image . '" style="margin-right:5px;"><img class="img-responsive" src="' . base_url() . 'assets/uploads/thumbs/' . $product->image . '" alt="' . $product->image . '" style="width:40px; height:40px;" /></a>';
+                            echo '<a class="img-thumbnail change_img" href="' . base_url() . 'assets/uploads/' . $product->image . '" style="margin-right:5px;"><img class="img-responsive" src="' . base_url() . 'assets/uploads/thumbs/' . $product->image . '" alt="' . $product->image . '" style="width:71px; height:71px;" /></a>';
                             foreach ($images as $ph) {
-                                echo '<div class="gallery-image"><a class="img-thumbnail change_img" href="' . base_url() . 'assets/uploads/' . $ph->photo . '" style="margin-right:5px;"><img class="img-responsive" src="' . base_url() . 'assets/uploads/thumbs/' . $ph->photo . '" alt="' . $ph->photo . '" style="width:40px; height:40px;" /></a>';
+                                echo '<div class="gallery-image"><a class="img-thumbnail change_img" href="' . base_url() . 'assets/uploads/' . $ph->photo . '" style="margin-right:5px;"><img class="img-responsive" src="' . base_url() . 'assets/uploads/thumbs/' . $ph->photo . '" alt="' . $ph->photo . '" style="width:71px; height:71px;" /></a>';
                                 if ($Owner || $Admin || $GP['products-edit']) {
-                                    echo '<a href="#" class="delimg" data-item-id="'.$ph->id.'"><i class="fa fa-times"></i></a>';
+                                    echo '<a href="#" class="delimg" data-item-id="'.$ph->id.'"><i class="fa fa-2x fa-times"></i></a>';
                                 }
                                 echo '</div>';
                             }
@@ -23,7 +23,7 @@
                         <div class="clearfix"></div>
                     </div>
                 </div>
-                <div class="col-xs-8">
+                <div class="col-xs-7">
                     <div class="table-responsive">
                         <table class="table table-borderless table-striped dfTable table-right-left">
                             <tbody>
