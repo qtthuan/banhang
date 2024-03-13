@@ -633,6 +633,7 @@ if (!empty($variants)) {
             $('#code').prop('readonly', false);
             $cat_code = $('#category').val();
             $('#code').val($('#category_code' + $cat_code).val());
+            $('#code_extra').val('');
             $('#code').focus();
         });
         $('#oldproduct').on('ifUnchecked', function (event) {
