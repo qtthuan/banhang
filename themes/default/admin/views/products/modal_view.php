@@ -232,11 +232,11 @@
                             foreach ($options as $option) {
                                 //if ($option->wh_qty != 0) {
                                     echo '<tr><td>' . $option->wh_name . '</td><td>' . $option->name . '</td><td class="text-center">' . $this->sma->formatQuantity($option->wh_qty) .'<sup class="col_original" style="display: none; font-weight: bold; color: green; font-size: 14px;">' . $this->sma->formatQuantity($option->wh_original_qty) . '</sup></td>';
-                                    if ($Owner || $Admin || $this->session->userdata('show_price')) {
-                                        echo '<td class="text-right">' . $this->sma->formatMoney($option->price) . '</td>';
-                                    }
                                     if ($Owner || $Admin || $this->session->userdata('show_cost')) {
                                         echo '<td class="text-right">' . $this->sma->formatMoney($option->cost) . '</td>';
+                                    }
+                                    if ($Owner || $Admin || $this->session->userdata('show_price')) {
+                                        echo '<td class="text-right">' . $this->sma->formatMoney($option->price) . '</td>';
                                     }
                                     echo '</tr>';
                                 //}
