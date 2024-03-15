@@ -218,12 +218,13 @@
                                 <th><?= lang('warehouse_name') ?></th>
                                 <th><?= lang('product_variant'); ?></th>
                                 <th><?= lang('quantity') . ' (' . lang('rack') . ')'; ?></th>
-                                <?php if ($Owner || $Admin || $this->session->userdata('show_price')) {
-                                    echo '<th>' . lang('price_addition') . '</th>';
-                                } ?>
                                 <?php if ($Owner || $Admin || $this->session->userdata('show_cost')) {
                                     echo '<th>' . lang('cost') . '</th>';
                                 } ?>
+                                <?php if ($Owner || $Admin || $this->session->userdata('show_price')) {
+                                    echo '<th>' . lang('price_addition') . '</th>';
+                                } ?>
+                                
                             </tr>
                         </thead>
                         <tbody>
