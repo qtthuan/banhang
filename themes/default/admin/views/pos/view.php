@@ -204,8 +204,15 @@
                     ?>
                     <tr>
                         <td colspan="5">  
-                                              
-                            <span><?=$r?></span>&#8594;&nbsp;<?=product_name($row->product_name, ($printer ? $printer->char_per_line : null))?>
+                                       
+                        <?php 
+                            // Nước ngọt có thêm chữ Z_, khi xem bill thì cắt bỏ
+                            $product_name = $row->product_name;
+                            if (strpos($row->product_name, '_') !== false) {
+                                $product_name = substr($row->product_name, 2, strlen($row->product_name));
+                            } 
+                        ?>
+                            <span><?=$r?></span>&#8594;&nbsp;<?=product_name($product_name, ($printer ? $printer->char_per_line : null))?>
                             <?php if (!empty($row->comment)) { echo ' <strong>(' . $row->comment . ')</strong>'; } ?>
                         </td>
                     </tr>
