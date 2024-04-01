@@ -1313,6 +1313,9 @@ function loadItems() {
             } else {
                 item_code += '- ';
             }
+            if (item_name.indexOf('_') != -1) {
+                item_name = item_name.substring(2, item_name.length);
+            }
             var row_no = setTimeout((new Date).getTime(), 500);
             var newTr = $('<tr id="row_' + row_no + '" class="row_' + item_id + discount_class + '" data-item-id="' + item_id + '"></tr>');
             tr_html = '<td>' +
