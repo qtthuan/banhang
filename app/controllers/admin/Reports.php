@@ -310,7 +310,7 @@ class Reports extends MY_Controller
         $this->data['m4bs'] = $this->reports_model->getBestSeller($m4sdate, $m1edate, $warehouse_id);
 
 
-        $this->sma->print_arrays($m0sdate, $m0edate);
+        //$this->sma->print_arrays($m0sdate, $m0edate);
         $this->data['warehouses'] = $this->site->getAllWarehouses();
         $this->data['warehouse'] = $warehouse_id ? $this->site->getWarehouseByID($warehouse_id) : NULL;
         $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('reports'), 'page' => lang('reports')), array('link' => '#', 'page' => lang('best_sellers')));
