@@ -170,6 +170,7 @@ class Customers extends MY_Controller
                 'phone' => $this->input->post('phone'),
                 'award_points' => $this->input->post('award_points'),
                 'cf1' => $this->input->post('cf1'),
+                'discount_percent' => $this->input->post('discount_percent'),
             );
         } elseif ($this->input->post('edit_customer')) {
             $this->session->set_flashdata('error', validation_errors());

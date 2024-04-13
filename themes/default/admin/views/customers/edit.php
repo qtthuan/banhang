@@ -70,6 +70,12 @@
                         <?= form_input('award_points', set_value('award_points', $customer->award_points), 'class="form-control tip" id="award_points"  required="required"'); ?>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <?= lang('discount_percent', 'discount_percent'); ?>
+                        <?= form_input('discount_percent', set_value('discount_percent', $customer->discount_percent), 'class="form-control tip" id="discount_percent"'); ?>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-12">

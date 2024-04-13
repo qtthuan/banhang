@@ -362,6 +362,7 @@ class Pos extends MY_Controller
                           'hash'              => hash('sha256', microtime() . mt_rand()),
                           'delivery_method'   => $_POST['delivery_method'] ? $_POST['delivery_method'] : 'SHOP',
                           'order_discount_percent_for_return_sale'   => $this->input->post('order_discount_percent_for_return_sale'),
+                          'customer_discount_percent' => $customer_details->discount_percent,
             );
             //$this->sma->print_arrays($data);
 
@@ -466,7 +467,7 @@ class Pos extends MY_Controller
         //$this->sma->print_arrays($products);
 
         if ($this->form_validation->run() == TRUE && !empty($products) && !empty($data)) {
-            //$this->sma->print_arrays($data, $payment);
+            //$this->sma->print_arrays($data, $payment, $customer_details);
             if ($suspend) {
 //                $var = $this->pos_model->suspendSale($data, $products, $did);
 //                $this->sma->print_arrays($var);

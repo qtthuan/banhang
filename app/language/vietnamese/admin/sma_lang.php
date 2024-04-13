@@ -446,6 +446,7 @@ $lang['award_points_title']                 = 'THÔNG TIN ĐIỂM';
 $lang['award_points']                       = 'Điểm tích lũy';
 $lang['award_points_short']                 = 'Điểm';
 $lang['award_points1']                      = 'Điểm tích lũy';
+$lang['discount_percent']                   = 'Chiết khấu(APP)';
 $lang['points_per_year']                    = 'Doanh số trong năm';
 $lang['use_points']                         = "Sử dụng điểm";
 $lang['pay_by_points']                      = "TT điểm";

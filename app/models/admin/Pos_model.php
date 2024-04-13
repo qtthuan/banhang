@@ -258,7 +258,9 @@ class Pos_model extends CI_Model
     public function addSale($data = array(), $items = array(), $payments = array(), $sid = NULL)
     {
         $total_with_no_points = $data['total_with_no_points'];
+        $customer_discount_percent = $data['customer_discount_percent'];
         unset($data['total_with_no_points']);
+        unset($data['customer_discount_percent']);
         $cost = $this->site->costing($items);
         //$this->sma->print_arrays($items);
 
@@ -282,6 +284,7 @@ class Pos_model extends CI_Model
                                 $this->db->insert('costing', $item_cost);
                                 $costing_id = $this->db->insert_id();
                                 $this->site->updateOptionCosting($costing_id, $item['option_id']);
+                                $this->site->updateCostingOnApps($costing_id, $item['unit_price'], $customer_discount_percent);
                             }
                         } else {
                             foreach ($item_cost as $ic) {
@@ -292,6 +295,7 @@ class Pos_model extends CI_Model
                                     $this->db->insert('costing', $ic);
                                     $costing_id = $this->db->insert_id();
                                     $this->site->updateOptionCosting($costing_id, $item['option_id']);
+                                    $this->site->updateCostingOnApps($costing_id, $item['unit_price'], $customer_discount_percent);
                                 }
                             }
                         }

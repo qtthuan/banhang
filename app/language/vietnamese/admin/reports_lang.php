@@ -90,3 +90,4 @@ $lang['total_returns']              = "Tổng trả lại hàng";
 $lang['header_pos_txt']             = "Bán hàng";
 $lang['header_mini_txt']            = "Mini";
 $lang['best_5']                     = "Top bán chạy";
+$lang['costing_on_app']             = 'Chiết khấu ShopeeFood/Grab';

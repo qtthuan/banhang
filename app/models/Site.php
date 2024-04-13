@@ -1026,17 +1026,31 @@ class Site extends CI_Model
      */
     public function updateOptionCosting($costing_id, $option_id) {
 
-
         $q = $this->db->get_where('product_variants', array('id' => $option_id), 1);
         if ($q->num_rows() > 0) {
             $row = $q->row();
             if ($row->cost > 0) {
                 $this->db->set('purchase_net_unit_cost', 'purchase_net_unit_cost+' . $row->cost, FALSE);
                 $this->db->set('purchase_unit_cost', 'purchase_unit_cost+' . $row->cost, FALSE);
+                //$this->db->set('costing_on_app', 'sale_net_unit_price*' . $customer_discount_percent/100, FALSE);
                 $this->db->where(array('id' => $costing_id));
                 $this->db->update('costing');
             } 
             return true;
+        }
+        return FALSE;
+    }
+
+    /**
+     * qtthuan
+     * Cập nhật chi phí(%) shopee food và grab food
+     */
+    public function updateCostingOnApps($costing_id, $unit_price, $costing_on_app) {
+
+        $this->db->set('costing_on_app', $unit_price*$costing_on_app/100, FALSE);
+        $this->db->where(array('id' => $costing_id));
+        if($this->db->update('costing')) {
+            return TRUE;
         }
         return FALSE;
     }

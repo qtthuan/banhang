@@ -39,13 +39,26 @@
                         <span><?= $this->sma->formatMoney($costing->cost); ?></span>
                     </h4></td>
                 </tr>
-
+                
+                
                 <tr>
                     <td style="border-bottom: 1px solid #DDD;"><h4><?= lang('shipping'); ?> (<strong>C</strong>):</h4></td>
                     <td style="text-align:right;border-bottom: 1px solid #DDD;"><h4>
                             <span><?php echo $this->sma->formatMoney($sale_by_day->shipping); ?></span>
                         </h4></td>
                 </tr>
+                
+                <?php 
+                    if($costing->costing_on_app > 0) {  
+                        $str_guide .= '-Capp'
+                ?>
+                <tr>
+                    <td style="border-bottom: 1px solid #EEE;"><h4><?= lang('costing_on_app'); ?> (<strong>Capp</strong>):</h4></td>
+                    <td style="text-align:right; border-bottom: 1px solid #EEE;"><h4>
+                        <span><?= $this->sma->formatMoney($costing->costing_on_app); ?></span>
+                    </h4></td>
+                </tr>
+                <?php } ?>
                 <?php
                     if (!empty($bn_sales_by_day)) {
                         $str_guide .= '-D'
@@ -138,7 +151,7 @@
                         <h4>
                         <span class="label label-danger" style="margin-right: 0 10px 10px 0; font-size: 19px">
                             <strong>
-                                <?= $this->sma->formatMoney(($sale_by_day->grand_total - $sale_by_day->shipping) - $costing->cost - $bn_costing_amount - $expense); ?>
+                                <?= $this->sma->formatMoney(($sale_by_day->grand_total - $sale_by_day->shipping) - $costing->cost - $costing->costing_on_app - $bn_costing_amount - $expense); ?>
                             </strong></span>
                         </h4>
                     </td>
