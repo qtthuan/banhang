@@ -225,7 +225,9 @@
                                         $str_variants = ' (<strong>Size M</strong>)';
                                     } elseif ($this->sma->getSizeNumber($row->variant) == 'L') {
                                         $str_variants = ' (<strong>Size L</strong>)';
-                                    } 
+                                    } else {
+                                        $str_variants = ' (<strong>' . $row->variant . '</strong>)';
+                                    }
                                 } else {
                                         $str_variants = '-' . $this->sma->getSizeNumber($row->variant);
                                 }
