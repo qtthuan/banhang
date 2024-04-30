@@ -32,7 +32,7 @@
                             echo '<br /><span style="font-size: 15px">'. $this->sma->formatMoney($sale->grand_total).'</span>';
                             echo '<input type="hidden" class="hidd_customer_id" value="'.$sale->customer_id.'">';
                             echo '<input type="hidden" class="hidd_sale_id" value="'.$sale->id.'">';
-                            echo '<input type="hidden" class="hidd_reference_no" value="'.$sale->reference_no.'">';
+                            echo '<input type="hidden" class="hidd_reference_no" value="#'.substr($sale->reference_no, -3).'">';
                             echo '</button>&nbsp;&nbsp;';
                             
                             //$i++;
@@ -83,21 +83,30 @@
                                             }
 
 
+                                            $str_span_size = '<span class="circle_text" style="position: absolute; bottom: 16px; right: 3px; font-size: 16px; font-weight: bold">';
+                                            $str_span_other = '<span class="circle_text1" style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold">';
                                             if($item->variant && $item->variant != '' && $item->variant != 'undefined') {
-                                                echo '<span class="circle_text" style="position: absolute; bottom: 16px; right: 3px; font-size: 16px; font-weight: bold">';
                                                 
-                                                if (trim($item->variant) == 'size L') {
+                                                if (trim(strtolower($item->variant)) == 'size l') {
+                                                    echo $str_span_size;
                                                     echo 'L';
-                                                } elseif (trim($item->variant) == 'size M')  {
+                                                } elseif (trim(strtolower($item->variant)) == 'size m')  {
+                                                    echo $str_span_size;
                                                     echo 'M';
-                                                } else {
-                                                    echo $item->variant;
+                                                } else {                                                
+                                                    echo $str_span_other;
+                                                    if (trim(strtolower($item->variant)) == 'size không tẩy') {
+                                                        echo 'Không Tẩy';
+                                                    } else {
+                                                        echo $item->variant;
+                                                    }
                                                 } 
+                                                
                                                 echo '</span>';
                                             }
 
                                             echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
-                                            echo '<span style="font-size: 16px; font-weight: bold" class="reference_no ">';   
+                                            echo '<span style="font-size: 17px; font-weight: bold" class="reference_no">';   
                                             echo '</span>';
                                             //if ($item->customer_id != 6533) { // Không in giá Cô Ngọc LQĐ
                                                 echo '<span class="text_price">'.$this->sma->formatMoney($item->unit_price);
@@ -130,22 +139,30 @@
                                             echo '</span>';
                                         }
 
-
+                                        $str_span_size = '<span class="circle_text" style="position: absolute; bottom: 16px; right: 3px; font-size: 16px; font-weight: bold">';
+                                        $str_span_other = '<span class="circle_text1" style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold">';
                                         if($item->variant && $item->variant != '' && $item->variant != 'undefined') {
-                                            echo '<span class="circle_text" style="position: absolute; bottom: 16px; right: 3px; font-size: 16px; font-weight: bold">';
                                             
-                                            if (trim($item->variant) == 'size L') {
+                                            if (trim(strtolower($item->variant)) == 'size l') {
+                                                echo $str_span_size;
                                                 echo 'L';
-                                            } elseif (trim($item->variant) == 'size M')  {
+                                            } elseif (trim(strtolower($item->variant)) == 'size m')  {
+                                                echo $str_span_size;
                                                 echo 'M';
-                                            } else {
-                                                echo $item->variant;
+                                            } else {                                                
+                                                echo $str_span_other;
+                                                if (trim(strtolower($item->variant)) == 'size không tẩy') {
+                                                    echo 'Không Tẩy';
+                                                } else {
+                                                    echo $item->variant;
+                                                }
                                             } 
+                                            
                                             echo '</span>';
                                         }
 
                                         echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
-                                        echo '<span style="font-size: 16px; font-weight: bold" class="reference_no ">';   
+                                        echo '<span style="font-size: 17px; font-weight: bold" class="reference_no ">';   
                                         echo '</span>';
                                         //if ($item->customer_id != 6533) { // Không in giá Cô Ngọc LQĐ
                                             echo '<span class="text_price">'.$this->sma->formatMoney($item->unit_price);

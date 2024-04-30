@@ -63,6 +63,13 @@
     text-align: center;
     font: 28px Arial, sans-serif;
 }
+.circle_text1 {
+    border-radius: 15px;
+    border: 1px solid #000;
+    padding: 7px 5px 5px 7px;
+    width: 98px;
+    height: 28px;
+}
 
 /*Please modify the styles below for barcode/label printing */
 .barcode { width: 4.1in; display: block; margin: 0px auto; page-break-after:always; }
