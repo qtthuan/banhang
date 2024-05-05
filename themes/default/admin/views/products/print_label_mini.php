@@ -25,20 +25,12 @@
                         echo '<div style="text-align: center; margin: 5px 0" class="no-print">';
                         $i = 0;
                         foreach ($sales as $sale) {
-                            $i++;
-                            if ($i < 7) {
-                                echo '<button type="button" class="btn btn-danger bills" id="'.$sale->id.'" style="height:75px; width: 210px; font-size: 18px; line-height: 22px; margin-top: 10px">';
-                                echo '<span id="reference_'.$sale->id.'">#' . substr($sale->reference_no, -3) . '<span>';
-                                echo '<br /><span style="font-size: 15px">'. $sale->customer.'</span>';
-                                echo '<br /><span style="font-size: 15px">'. $this->sma->formatMoney($sale->grand_total).'</span>';
-                                echo '</button>&nbsp;&nbsp;';
-                            } else {
-                                echo '<button type="button" class="btn btn-danger bills" id="'.$sale->id.'" style="height:58px; width: 210px; font-size: 17px; line-height: 16px; margin-top: 10px">';
-                                echo '<span id="reference_'.$sale->id.'">#' . substr($sale->reference_no, -3) . '<span>';
-                                echo '<br /><span style="font-size: 13px">'. $sale->customer.'</span>';
-                                echo '<br /><span style="font-size: 13px">'. $this->sma->formatMoney($sale->grand_total).'</span>';
-                                echo '</button>&nbsp;&nbsp;';
-                            }
+                           
+                            echo '<button type="button" class="btn btn-danger bills" id="'.$sale->id.'" style="height:58px; width: 210px; font-size: 17px; line-height: 16px; margin-top: 10px">';
+                            echo '<span id="reference_'.$sale->id.'">#' . substr($sale->reference_no, -3) . '<span>';
+                            echo '<br /><span style="font-size: 13px">'. $sale->customer.'</span>';
+                            echo '<br /><span style="font-size: 13px">'. $this->sma->formatMoney($sale->grand_total).'</span>';
+                            echo '</button>&nbsp;&nbsp;';
                             
                             echo '<input type="hidden" class="hidd_customer_id" value="'.$sale->customer_id.'">';
                             echo '<input type="hidden" class="hidd_sale_id" value="'.$sale->id.'">';
