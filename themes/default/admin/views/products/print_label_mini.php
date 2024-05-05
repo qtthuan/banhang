@@ -52,7 +52,9 @@
                             foreach ($values as $item) {
                                 
                                 if ($item->product_id != 21121 && $item->product_id != 21122 && $item->product_id != 20354
-                                && $item->product_id != 20357 && $item->product_id != 20358 && $item->product_id != 22133) {
+                                && $item->product_id != 20357 && $item->product_id != 20358 && $item->product_id != 22133
+                                && $item->product_id != 22153 && $item->product_id != 22154 && $item->product_id != 22178
+                                && $item->product_id != 22179 && $item->product_id != 22180) {
                                 //$total_items++;
                                 //echo 'vv: '. $j.'<br />';
                                     $item_qty = $item->quantity;
