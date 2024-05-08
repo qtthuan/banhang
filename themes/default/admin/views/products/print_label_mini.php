@@ -30,12 +30,10 @@
                             echo '<span id="reference_'.$sale->id.'">#' . substr($sale->reference_no, -3) . '<span>';
                             echo '<br /><span style="font-size: 13px">'. $sale->customer.'</span>';
                             echo '<br /><span style="font-size: 13px">'. $this->sma->formatMoney($sale->grand_total).'</span>';
-                            echo '</button>&nbsp;&nbsp;';
-                            
                             echo '<input type="hidden" class="hidd_customer_id" value="'.$sale->customer_id.'">';
                             echo '<input type="hidden" class="hidd_sale_id" value="'.$sale->id.'">';
                             echo '<input type="hidden" class="hidd_reference_no" value="#'.substr($sale->reference_no, -3).'">';
-                            //$i++;
+                            echo '</button>&nbsp;&nbsp;';
                         }
                         echo '</div>';
                         $j = 0;
