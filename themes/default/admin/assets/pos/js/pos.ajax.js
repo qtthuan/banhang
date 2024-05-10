@@ -1333,7 +1333,7 @@ function loadItems() {
                 '</td>';
 
             tr_html += '<td class="text-center">' +
-                        '<i class="pull-center fa fa-edit fa-4x fa-bx tip pointer edit" id="' + row_no + '" data-item="' + item_id + '" title="Cập nhật Size/Giá" style="cursor:pointer;"></i>' +
+                        '<i class="pull-center fa fa-edit fa-3x fa-bx tip pointer edit" id="' + row_no + '" data-item="' + item_id + '" title="Cập nhật Size/Giá" style="cursor:pointer;"></i>' +
                 '</td>';
 
                
