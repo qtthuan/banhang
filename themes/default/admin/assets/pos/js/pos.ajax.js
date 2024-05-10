@@ -1484,8 +1484,8 @@ function loadItems() {
         }
         //console.log($('#leftdiv').attr('class') + '/');
         if ($('#leftdiv').attr('class') == 'mini_leftdiv') {
-            $('.sname').css("font-size", "12px");
-            $('.scomment').css("font-size", "12px");
+            $('.sname').css("font-size", "14px");
+            $('.scomment').css("font-size", "14px");
             //console.log('xxxx');
         }
         //$('.comment').css("font-size", "31px");
