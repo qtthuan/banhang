@@ -771,7 +771,8 @@
     </div>
 </div>
 
-<div class="modal" id="cmModal" tabindex="-1" role="dialog" aria-labelledby="cmModalLabel" aria-hidden="true">
+<!--FORM GHI CHÚ-->
+<!-- <div class="modal" id="cmModal" tabindex="-1" role="dialog" aria-labelledby="cmModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -787,8 +788,6 @@
                     <input type="text" style="text-transform: uppercase;" name="comment" class="form-control kb-text" id="icomment">
                 </div>
                 <div class="box_comment">
-                <!-- <div class="txtComment" contentEditable>&nbsp;</div>   -->
-                
                     <?php 
                         foreach ($order_comment_list as $comment) {
                     ?>
@@ -816,8 +815,9 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
+<!--FORM EDIT, GIẢM GIÁ-->
 <div class="modal" id="prModal" tabindex="-1" role="dialog" aria-labelledby="prModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -878,6 +878,34 @@
                             <th style="width:25%;"><span id="net_price"></span></th>
                         </tr>
                     </table>
+                <div class="form-group" style="padding: 0 15px;">
+                    <?= lang('comment', 'icomment'); ?>
+                    <input type="text" style="text-transform: uppercase;" name="comment" class="form-control kb-text" id="icomment">
+                </div>
+                <div class="box_comment">
+                <!-- <div class="txtComment" contentEditable>&nbsp;</div>   -->
+                
+                    <?php 
+                        foreach ($order_comment_list as $comment) {
+                    ?>
+                            <div class="comment_col">
+                                <input class="chkComment" type="checkbox" id="<?=$comment->id?>" value="<?=$comment->comment?>">
+                                <label class="lblComment" for="<?=$comment->id?>"><?=$comment->comment?></label>
+                            </div>
+                    <?php 
+                            
+                        } 
+                    ?>
+                        
+                </div>
+                <!--<div class="form-group">
+                    <?= lang('ordered', 'iordered'); ?>
+                    <?php
+                    $opts = array(0 => lang('no'), 1 => lang('yes'));
+                    ?>
+                    <?= form_dropdown('ordered', $opts, '', 'class="form-control" id="iordered" style="width:100%;"'); ?>
+                </div>-->
+                <input type="hidden" id="irow_id" value=""/>
                     <input type="hidden" id="punit_price" value=""/>
                     <input type="hidden" id="old_tax" value=""/>
                     <input type="hidden" id="old_qty" value=""/>
@@ -2372,8 +2400,41 @@ var lang = {
             $(this).keypress(function( e ) {
                 if ( e.which == 13 ) {
                     $('#editItem').click();
+                    $('#editComment').click();
                 }
             });
+
+
+
+            //$(this).find('#icomment').select().focus();
+            
+            //qtthuan
+            $('.chkComment').removeAttr('checked');
+            //$('.txtComment').text('');
+            if ($('#poswarehouse').val() == 3) {
+                $('.box_comment').show();
+                var selected_comments=[];
+                //if ($('.txtCO'))
+                // 
+                $(".chkComment").change(function() {
+                    
+                    var ischecked= $(this).is(':checked');
+                    if (ischecked) {
+                        selected_comments.push($(this).val());
+                        
+                    } else {
+                        for (var i=selected_comments.length-1; i>=0; i--) {
+                            if (selected_comments[i] === $(this).val()) 
+                            selected_comments.splice(i, 1);
+                        }
+                    }
+                    console.log(selected_comments.join(', '));
+                    $('#icomment').val(selected_comments.join(', '));
+
+                }); 
+            } else {
+                $('.box_comment').hide();
+            }
             
         });
 

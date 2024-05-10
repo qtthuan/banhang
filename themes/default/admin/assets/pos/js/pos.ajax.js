@@ -1333,10 +1333,7 @@ function loadItems() {
                 '</td>';
 
             tr_html += '<td class="text-center">' +
-                        '<i class="pull-center fa fa-comment fa-3x fa-bx' + (item_comment != '' ? '' : '-o') +
-                        ' tip pointer comment" id="' + row_no + '" data-item="' + item_id +
-                        '" title="Ghi chú" style="cursor:pointer;margin-right:5px;"></i>' +
-                        '<i class="pull-center fa fa-edit fa-2x fa-bx tip pointer edit" id="' + row_no + '" data-item="' + item_id + '" title="Cập nhật Size/Giá" style="cursor:pointer;"></i>' +
+                        '<i class="pull-center fa fa-edit fa-4x fa-bx tip pointer edit" id="' + row_no + '" data-item="' + item_id + '" title="Cập nhật Size/Giá" style="cursor:pointer;"></i>' +
                 '</td>';
 
                
@@ -1491,8 +1488,8 @@ function loadItems() {
             $('.scomment').css("font-size", "12px");
             //console.log('xxxx');
         }
-        $('.comment').css("font-size", "31px");
-        $('.edit').css("font-size", "31px");
+        //$('.comment').css("font-size", "31px");
+        //$('.edit').css("font-size", "31px");
 
         total = formatDecimal(total);
         product_tax = formatDecimal(product_tax);

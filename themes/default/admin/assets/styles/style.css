@@ -2091,21 +2091,21 @@ animation: blink 1s steps(2, start) infinite;
 .auto_price { height:30px; font-size: 14px; padding: 3px; }
 
 
-  #cmModal .box_comment {
+  #pr_popover_content .box_comment {
     margin-bottom: 10px;
   }
 
-  #cmModal .box_comment:after {
+  #pr_popover_content .box_comment:after {
     content: "";
     display: table;
     clear: both;
   }
-  #cmModal .box_comment .comment_col {
+  #pr_popover_content .box_comment .comment_col {
     float: left;
     width: 33%;
     padding-bottom: 10px;
   }
-  #cmModal .box_comment .comment_col .chkComment {
+  #pr_popover_content .box_comment .comment_col .chkComment {
     width: 28px; 
     height: 28px; 
     vertical-align: bottom;
@@ -2113,13 +2113,13 @@ animation: blink 1s steps(2, start) infinite;
     cursor: pointer;
   }
 
-  #cmModal .box_comment .comment_col .lblComment {
+  #pr_popover_content .box_comment .comment_col .lblComment {
    margin-top: 5px;
    cursor: pointer;
   }
   
 
-  #cmModal .box_comment .txtComment {
+  #pr_popover_content .box_comment .txtComment {
     font: medium -moz-fixed;
     font: -webkit-small-control;
     height: 32px;
