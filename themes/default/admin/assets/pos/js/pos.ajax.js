@@ -583,6 +583,7 @@ $('#posdiscount').focus(function () {
             $('#pserial').val(row.children().children('.rserial').val());
         }
         var opt = '<p style="margin: 12px 0 0 0;">n/a</p>';
+        console.log(JSON.stringify(item.options));
         if(item.options !== false) {
             var o = 1;
             opt = $("<select id=\"poption\" name=\"poption\" class=\"form-control select\" />");
