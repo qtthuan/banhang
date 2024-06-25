@@ -572,7 +572,7 @@ class Pos_model extends CI_Model
      */
     public function getOrderCommentList()
     {
-        $this->db->order_by("comment", "asc");
+        $this->db->order_by("order", "asc");
         $q = $this->db->get('order_comment_list');
         
         if ($q->num_rows() > 0) {
