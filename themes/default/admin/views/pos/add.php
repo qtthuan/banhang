@@ -2300,36 +2300,30 @@ var lang = {
     });
  
     $(document).ready(function () {
-
-        var isVisible = $('#poswarehouse').is(':visible');
-        var isHidden = $('#poswarehouse').is(':hidden');
-        console.log(isVisible);
-        console.log(isHidden);
-        
-       
+    
         $('#poswarehouse').change(function () {
             var v = $(this).val();
             if (v != 3) {
                 closeMini();
-                console.log('222');
+                //console.log('222');
             } else {
                 openMini();
-                console.log('1111');
+                //console.log('1111');
             }
 
         });
         $("#poscustomer").change();
         if (localStorage.getItem('poswarehouse') != 3) {
             closeMini();
-            console.log('4444');
+            //console.log('4444');
         } else {
             openMini();
-            console.log('3333');
+            //console.log('3333');
             //$('.btn-cat-con').toggle('slide', { direction: 'right' }, 100);
         }
 
         if ($("#poswarehouse").is(":hidden")) {
-            console.log('open nhe');
+            //console.log('open nhe');
             openMini();
         }
         
