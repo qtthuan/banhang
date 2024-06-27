@@ -2301,6 +2301,10 @@ var lang = {
  
     $(document).ready(function () {
 
+        var isVisible = $('#poswarehouse').is(':visible');
+        var isHidden = $('#poswarehouse').is(':hidden');
+        console.log(isVisible);
+        console.log(isHidden);
         if ($("#poswarehouse").is(":hidden")) {
             console.log('open nhe');
             openMini();
