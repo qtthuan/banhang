@@ -2302,6 +2302,7 @@ var lang = {
     $(document).ready(function () {
 
         if ($("#poswarehouse").is(":hidden")) {
+            console.log('open nhe');
             openMini();
         }
        
