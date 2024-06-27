@@ -357,7 +357,7 @@
                                     if ($opos !== FALSE) {
                                         $ods = explode("%", $inv->order_discount_id);
                                 ?>
-                                    <span style="color:red; font-size: 13px;" class="no-print">
+                                    <span style="color:red; font-size: 13px;" class="no-print">                                        
                                     <?php if ($inv->sale_status == 'returned') { ?>
                                         <?= $this->sma->formatMoney(($inv->grand_total_extra) * -1 + $inv->order_discount);?> x <?= $ods[0] / 100 ?> &#129136;
                                     <?php } else { ?>
@@ -428,7 +428,7 @@
 
                         ?>
 
-                        <?php if ($mini_count_rows > 0 && $inv->warehouse_id == 3) { ?>
+                        <?php if ($mini_count_rows > 0 && $inv->warehouse_id == 3 && $opos !== FALSE) { ?>
                         <tr>
                             <th colspan="2">&nbsp;</th>
                             <th colspan="2"><div style="margin-left: 2px;"><?=$total;?></div></th>

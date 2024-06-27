@@ -2300,6 +2300,10 @@ var lang = {
     });
  
     $(document).ready(function () {
+
+        if ($("#poswarehouse").is(":hidden")) {
+            openMini();
+        }
        
         $('#poswarehouse').change(function () {
             var v = $(this).val();
