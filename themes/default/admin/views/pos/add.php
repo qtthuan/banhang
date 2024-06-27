@@ -2305,10 +2305,7 @@ var lang = {
         var isHidden = $('#poswarehouse').is(':hidden');
         console.log(isVisible);
         console.log(isHidden);
-        if ($("#poswarehouse").is(":hidden")) {
-            console.log('open nhe');
-            openMini();
-        }
+        
        
         $('#poswarehouse').change(function () {
             var v = $(this).val();
@@ -2329,6 +2326,11 @@ var lang = {
             openMini();
             console.log('3333');
             //$('.btn-cat-con').toggle('slide', { direction: 'right' }, 100);
+        }
+
+        if ($("#poswarehouse").is(":hidden")) {
+            console.log('open nhe');
+            openMini();
         }
         
         $('#print_order').click(function () {
