@@ -2324,9 +2324,10 @@ var lang = {
         $("#poscustomer").change();
         if (localStorage.getItem('poswarehouse') != 3) {
             closeMini();
+            console.log('4444');
         } else {
             openMini();
-            //console.log('222');
+            console.log('3333');
             //$('.btn-cat-con').toggle('slide', { direction: 'right' }, 100);
         }
         
