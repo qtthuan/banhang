@@ -2314,9 +2314,10 @@ var lang = {
             var v = $(this).val();
             if (v != 3) {
                 closeMini();
+                console.log('222');
             } else {
                 openMini();
-                //console.log('1111');
+                console.log('1111');
             }
 
         });
