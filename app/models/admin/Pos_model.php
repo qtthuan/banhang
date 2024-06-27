@@ -394,7 +394,9 @@ class Pos_model extends CI_Model
             }
 
             //$this->sma->print_array($data);
-            $this->sma->update_award_points($data['grand_total_extra'] - $total_with_no_points, $data['customer_id'], $data['created_by']);
+            if ($data['warehouse_id'] != 3) { // qtthuan Không tích điểm Tiệm nước Mini
+                $this->sma->update_award_points($data['grand_total_extra'] - $total_with_no_points, $data['customer_id'], $data['created_by']);
+            }
             if ($data['change_points'] > 0) {
                 $this->sma->change_award_points($data['change_points']/1000, $data['customer_id']);
             }

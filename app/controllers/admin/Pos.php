@@ -274,7 +274,7 @@ class Pos extends MY_Controller
                         'promo_original_price' => $promo_original_price,
                     );
 
-                    if (($no_points == 1 && $pr_item_discount == 0) || $is_promo == 1) {
+                    if ($is_promo == 1) {
                         $total_with_no_points += $this->sma->formatDecimal($item_net_price * $item_unit_quantity, 4);
                     }
 

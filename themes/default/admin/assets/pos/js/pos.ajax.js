@@ -1295,9 +1295,13 @@ function loadItems() {
 
             //console.log('is_promo: ' + is_promo + ' - date valid: ' + checkValidPromotionDate(start_date, end_date))
 
-            if ((is_promo && checkValidPromotionDate(start_date, end_date)) || (item.no_points == 1 && item_discount == 0)) {
+            if ((is_promo && checkValidPromotionDate(start_date, end_date))) {
             //if (item.no_points == 1 && item_discount == 0) {
-                total_with_no_points += item_price * item_qty;
+                //if (localStorage.getItem('poswarehouse') != 3) {
+                    total_with_no_points += item_price * item_qty;
+                //} else {
+                    
+                //}
             }
 
             if (pos_settings.item_order == 1 && category != item.row.category_id) {
@@ -1454,7 +1458,7 @@ function loadItems() {
             var ds = posdiscount;
             if (ds.indexOf("%") !== -1) {
                 var pds = ds.split("%");
-                if (!isNaN(pds[0])) {
+                if (!isNaN(pds[0])) {            
                     order_discount = formatDecimal((parseFloat(((total_extra - total_with_no_points) * parseFloat(pds[0])) / 100)), 4);
                     percent_detail = '= ' + formatMoney(total_extra - total_with_no_points) + ' x ' + parseFloat((pds[0]) / 100);
                 } else {
