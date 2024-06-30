@@ -859,12 +859,12 @@
                             <input type="text" class="form-control kb-pad" id="pquantity">
                         </div>
                     </div>
-                    <!-- <div class="form-group">
+                    <div class="form-group">
                         <label for="punit" class="col-sm-4 control-label"><?= lang('product_unit') ?></label>
                         <div class="col-sm-8">
                             <div id="punits-div"></div>
                         </div>
-                    </div> -->
+                    </div>
                     <div class="form-group">
                         <label for="poptions-div" class="col-sm-4 control-label"><?=lang('product_option')?></label>
                         <div class="col-sm-8">
@@ -2435,7 +2435,7 @@ var lang = {
                             selected_comments.splice(i, 1);
                         }
                     }
-                    console.log(selected_comments.join(', '));
+                    //console.log(selected_comments.join(', '));
                     $('#icomment').val(selected_comments.join(', '));
 
                 }); 

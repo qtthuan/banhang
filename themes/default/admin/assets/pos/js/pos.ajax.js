@@ -583,7 +583,7 @@ $('#posdiscount').focus(function () {
             $('#pserial').val(row.children().children('.rserial').val());
         }
         var opt = '<p style="margin: 12px 0 0 0;">n/a</p>';
-        console.log(JSON.stringify(item.options));
+        //console.log(JSON.stringify(item.options));
         if(item.options !== false) {
             var o = 1;
             opt = $("<select id=\"poption\" name=\"poption\" class=\"form-control select\" />");
@@ -779,11 +779,12 @@ $('#posdiscount').focus(function () {
         }
         var unit = $('#punit').val();
         var base_quantity = parseFloat($('#pquantity').val());
-        //console.log(JSON.stringify(positems[item_id]));
+        //console.log(unit);
         if(unit != positems[item_id].row.base_unit) {
             $.each(positems[item_id].units, function(){
                 if (this.id == unit) {
                     base_quantity = unitToBaseQty($('#pquantity').val(), this);
+                    
                 }
             });
         }
@@ -1109,7 +1110,7 @@ $('#posdiscount').focus(function () {
     var old_row_qty;
     $(document).on("focus", '.rquantity', function () {
         old_row_qty = $(this).val();
-    }).on("change", '.rquantity', function () {
+    }).on("keyup", '.rquantity', function () {
         var row = $(this).closest('tr');
         if (!is_numeric($(this).val()) || parseFloat($(this).val()) < 0) {
             $(this).val(old_row_qty);
