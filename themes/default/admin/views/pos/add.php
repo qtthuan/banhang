@@ -854,6 +854,12 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="poptions-div" class="col-sm-4 control-label"><?=lang('product_option')?></label>
+                        <div class="col-sm-8">
+                            <div id="poptions-div"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="pquantity" class="col-sm-4 control-label"><?=lang('quantity')?></label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control kb-pad" id="pquantity">
@@ -865,19 +871,9 @@
                             <div id="punits-div"></div>
                         </div>
                     </div> -->
-                    <div class="form-group">
-                        <label for="poptions-div" class="col-sm-4 control-label"><?=lang('product_option')?></label>
-                        <div class="col-sm-8">
-                            <div id="poptions-div"></div>
-                        </div>
-                    </div>
+                    
                    
-                    <table class="table table-bordered table-striped">
-                        <tr>
-                            <th style="width:25%;"><?=lang('net_unit_price');?></th>
-                            <th style="width:25%;"><span id="net_price"></span></th>
-                        </tr>
-                    </table>
+                    
                 <div class="form-group" style="padding: 0 15px;">
                     <?= lang('comment', 'icomment'); ?>
                     <input type="text" style="text-transform: uppercase;" name="comment" class="form-control kb-text" id="icomment">
@@ -898,6 +894,12 @@
                     ?>
                         
                 </div>
+                <table class="table table-bordered table-striped">
+                        <tr>
+                            <th style="width:25%;"><?=lang('net_unit_price');?></th>
+                            <th style="width:25%;"><span id="net_price"></span></th>
+                        </tr>
+                    </table>
                 <!--<div class="form-group">
                     <?= lang('ordered', 'iordered'); ?>
                     <?php

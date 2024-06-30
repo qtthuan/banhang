@@ -884,6 +884,7 @@ $('#posdiscount').focus(function () {
             });
         }
         $('#pprice').val(parseFloat(base_unit_price)).trigger('change');
+        $('#pquantity').select().focus();
         if(item.options !== false) {
             $.each(item.options, function () {
                 if(this.id == opt && this.price != 0 && this.price != '' && this.price != null) {
