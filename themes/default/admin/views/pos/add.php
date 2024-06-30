@@ -2322,8 +2322,8 @@ var lang = {
             //$('.btn-cat-con').toggle('slide', { direction: 'right' }, 100);
         }
 
-        if ($("#poswarehouse").is(":hidden")) {
-            //console.log('open nhe');
+        if ($("#poswarehouse").is(":hidden") && $("#poswarehouse").val() == 3) {
+            //console.log('open nhe 1');
             openMini();
         }
         

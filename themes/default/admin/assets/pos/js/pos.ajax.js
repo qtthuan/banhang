@@ -1578,8 +1578,9 @@ function loadItems() {
             $('#poswarehouse').select2("readonly", false);
         }
         if (KB) { display_keyboards(); }
-        
-        if (site.settings.set_focus == 1 && localStorage.getItem('poswarehouse') == 3) { 
+        // qtthuan: focus
+        if (site.settings.set_focus == 1 && (localStorage.getItem('poswarehouse') == 3) 
+            || (site.settings.set_focus == 1 && $("#poswarehouse").is(":hidden") && $("#poswarehouse").val() == 3)) { 
             // Focus vào ô điều chỉnh số lượng sau khi scan sản phẩm (Kho Tiệm Nước)
             $('#add_item').attr('tabindex', an);
             $('[tabindex='+(an-1)+']').focus().select();
