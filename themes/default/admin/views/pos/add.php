@@ -859,12 +859,12 @@
                             <input type="text" class="form-control kb-pad" id="pquantity">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="punit" class="col-sm-4 control-label"><?= lang('product_unit') ?></label>
                         <div class="col-sm-8">
                             <div id="punits-div"></div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="form-group">
                         <label for="poptions-div" class="col-sm-4 control-label"><?=lang('product_option')?></label>
                         <div class="col-sm-8">
