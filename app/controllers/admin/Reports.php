@@ -886,7 +886,7 @@ class Reports extends MY_Controller
         $bn_sales_by_day = $this->reports_model->getBNSalesByDay($date, $warehouse_id);
         $this->data['costing'] = $this->reports_model->getCosting($date, $warehouse_id);
         $this->data['total_items'] = $this->reports_model->getTotalItems($date, $warehouse_id);
-        $this->data['best_5'] = $this->reports_model->getBestSellerByDay($date, $warehouse_id);
+        $this->data['best_sellers'] = $this->reports_model->getBestSellerByDay($date, $warehouse_id, 40);
         $this->data['discount'] = $this->reports_model->getOrderDiscount($date, $warehouse_id);
         $this->data['sale_by_day'] = $this->reports_model->getSalesByDay($date, $warehouse_id);
         $this->data['bn_sales_by_day'] = $bn_sales_by_day;

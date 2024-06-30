@@ -93,7 +93,7 @@
                 <?php
                 $total_best_items = 0;
                 $other_items = 0;
-                    if (!empty($best_5)) {
+                    if (!empty($best_sellers)) {
                         //$str_guide .= '-D'
                 ?>
                 
@@ -105,9 +105,12 @@
   <input type="text" class="js-copytextarea" value="<table><tr><td>test 1</td><td>test 2</td></tr></table>">
 </p>
                     <?php
-                    //$this->sma->print_arrays($best_5);
-                        $exclude_products = array(20358, 20357, 21122, 21121, 20354);
-                        foreach($best_5 as $best) {
+                    //$this->sma->print_arrays($best_sellers);
+                        $exclude_products = array(20358, 20357, 21122, 21121, 20354, 22133, 22135,
+                                            22136, 22137, 22138, 22139, 22140, 22141, 22142,
+                                            22143, 22144, 22185, 22181, 22183, 22184, 21789);
+                        // 
+                        foreach($best_sellers as $best) {
                             if (!in_array($best->product_id, $exclude_products)) {
                             $total_best_items += $best->quantity;
                     ?>

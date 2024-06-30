@@ -735,7 +735,7 @@ class Reports_model extends CI_Model
         return FALSE;
     }
 
-    public function getBestSellerByDay($date, $warehouse_id = NULL)
+    public function getBestSellerByDay($date, $warehouse_id = NULL, $limit)
     {
        
         $this->db
@@ -743,7 +743,7 @@ class Reports_model extends CI_Model
             ->join('sales', 'sales.id = sale_items.sale_id', 'left')
             ->where('DATE_FORMAT(date, "%Y-%m-%d")=', date('Y-m-d',  strtotime($date)))
             //$myQuery .= " DATE_FORMAT( date,  '%Y-%m-%d' ) = '".$date."'";
-            ->group_by('product_name, product_code')->order_by('sum(quantity)', 'desc')->limit(40);
+            ->group_by('product_name, product_code')->order_by('sum(quantity)', 'desc')->limit($limit);
         if ($warehouse_id) {
             $this->db->where('sale_items.warehouse_id', $warehouse_id);
         }
