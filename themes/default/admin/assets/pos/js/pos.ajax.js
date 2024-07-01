@@ -622,18 +622,20 @@ $('#posdiscount').focus(function () {
         $('#row_id').val(row_id);
         $('#item_id').val(item_id);
         $('#pserial').val(row.children().children('.rserial').val());
-        if (is_promo == 1) {
-            //console.log('xxx:  ' + original_price + ' - ' + unit_price);
-            $('#pdiscount').val(original_price - unit_price);
-            $('#pprice').val(original_price);
-            //discount = original_price - unit_price;
-            //ds = original_price - unit_price;
-           // unit_price = original_price;
-            //console.log('af: ' + ds);
-        } else {
-            $('#pdiscount').val(discount);
-            $('#pprice').val(unit_price);
-        }
+        // if (is_promo == 1) {
+        //     //console.log('xxx:  ' + original_price + ' - ' + unit_price);
+        //     $('#pdiscount').val(original_price - unit_price);
+        //     $('#pprice').val(original_price);
+        //     //discount = original_price - unit_price;
+        //     //ds = original_price - unit_price;
+        //    // unit_price = original_price;
+        //     //console.log('af: ' + ds);
+        // } else {
+        //     $('#pdiscount').val(discount);
+        //     $('#pprice').val(unit_price);
+        // }
+        $('#pdiscount').val(discount);
+        $('#pprice').val(unit_price);
         
         $('#net_price').val(formatMoney(net_price));
         $('#price_after_discount').val(net_price);
