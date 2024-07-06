@@ -489,7 +489,7 @@ class Products extends MY_Controller
             $tax_rate = $this->input->post('tax_rate') ? $this->site->getTaxRateByID($this->input->post('tax_rate')) : NULL;
             $data = array(
                 'code' => $this->input->post('code'),
-                'code_extra' => $this->input->post('code_extra'),
+                'code_extra' => $this->input->post('oldproduct')? substr($this->input->post('code'), 2): $this->input->post('code_extra'),
                 'barcode_symbology' => $this->input->post('barcode_symbology'),
                 'name' => $this->input->post('name'),
                 'type' => $this->input->post('type'),
@@ -793,7 +793,8 @@ class Products extends MY_Controller
             $data['quantity'] = isset($wh_total_quantity) ? $wh_total_quantity : 0;
         }
 
-        //$this->sma->print_arrays($data, $items, $warehouse_qty, $product_attributes, $photos);
+       
+        //$this->sma->print_arrays($data);
 
         if ($this->form_validation->run() == true && $this->products_model->addProduct($data, $items, $warehouse_qty, $product_attributes, $photos)) {
             $this->session->set_flashdata('message', lang("product_added"));
