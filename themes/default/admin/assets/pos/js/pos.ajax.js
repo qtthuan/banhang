@@ -1107,32 +1107,56 @@ $('#posdiscount').focus(function () {
         $('#mpro_tax').text(formatMoney(pr_tax_val));
     });
 
+    function makeDelay(ms) {
+        var timer = 0;
+        return function(callback){
+            clearTimeout (timer);
+            timer = setTimeout(callback, ms);
+        };
+    };
+
+    // var delay = (function(){
+    //     var timer = 0;
+    //     return function(callback, ms){
+    //       clearTimeout (timer);
+    //       timer = setTimeout(callback, ms);
+    //     };
+    //   })();
+
     /* --------------------------
      * Edit Row Quantity Method
+    qtthuan: Thay đổi số lượng
     --------------------------- */
     var old_row_qty;
+    var timeout = null;
     $(document).on("focus", '.rquantity', function () {
         old_row_qty = $(this).val();
     }).on("keyup", '.rquantity', function () {
         var row = $(this).closest('tr');
-        if (!is_numeric($(this).val()) || parseFloat($(this).val()) < 0) {
-            $(this).val(old_row_qty);
-            bootbox.alert(lang.unexpected_value);
-            return;
-        }
-        var new_qty = parseFloat($(this).val()),
-        item_id = row.attr('data-item-id');
-        positems[item_id].row.base_quantity = new_qty;
-        if(positems[item_id].row.unit != positems[item_id].row.base_unit) {
-            $.each(positems[item_id].units, function(){
-                if (this.id == positems[item_id].row.unit) {
-                    positems[item_id].row.base_quantity = unitToBaseQty(new_qty, this);
-                }
-            });
-        }
-        positems[item_id].row.qty = new_qty;
-        localStorage.setItem('positems', JSON.stringify(positems));
-        loadItems();
+            if (!is_numeric($(this).val()) || parseFloat($(this).val()) < 0) {
+                $(this).val(old_row_qty);
+                bootbox.alert(lang.unexpected_value);
+                return;
+            }
+            var new_qty = parseFloat($(this).val()),
+            item_id = row.attr('data-item-id');
+            positems[item_id].row.base_quantity = new_qty;
+            if(positems[item_id].row.unit != positems[item_id].row.base_unit) {
+                $.each(positems[item_id].units, function(){
+                    if (this.id == positems[item_id].row.unit) {
+                        positems[item_id].row.base_quantity = unitToBaseQty(new_qty, this);
+                    }
+                });
+            }
+            positems[item_id].row.qty = new_qty;
+            localStorage.setItem('positems', JSON.stringify(positems));
+            clearTimeout(timeout)
+            timeout = setTimeout(function() {        
+                loadItems();
+            }, 1000)
+            
+        
+        
     });
 
 
