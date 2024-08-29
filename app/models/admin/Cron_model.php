@@ -78,7 +78,7 @@ class Cron_model extends CI_Model
             $m .= '<p>' . sprintf(lang('excute_adjust_bill_date_costing'), $date) . '</p>';
         }
 
-        $this->clearAllBillsOnWarehouse(1);
+        $this->clearAllBillsOnWarehouse(4);
 //        if ($this->excuteUpdateGrandTotalSaleExtra()) {
 //            $m .= '<p>' . sprintf('update grand total extra ok', $date) . '</p>';
 //        }
