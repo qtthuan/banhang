@@ -167,6 +167,9 @@ class Pos extends MY_Controller
             } else {
                 $customer = $customer_details->company != '-'  ? $customer_details->company : $customer_details->name;
             }
+            if ($this->Owner && $warehouse_id == 3) { // Neu dang nhap bang tai khoan qtthuan(admin) va ban tiem nuoc mini
+                $biller_id = 7283;
+            }
             $biller_details = $this->site->getCompanyByID($biller_id);
             $biller = $biller_details->company != '-' ? $biller_details->company : $biller_details->name;
             $note = $this->sma->clear_tags($this->input->post('pos_note'));
@@ -328,6 +331,7 @@ class Pos extends MY_Controller
                 $round_total = $this->sma->roundNumber($grand_total, $this->pos_settings->rounding);
                 $rounding = $this->sma->formatMoney($round_total - $grand_total);
             }
+            
             $data = array('date'              => $date,
                           'reference_no'      => $reference,
                           'customer_id'       => $customer_id,

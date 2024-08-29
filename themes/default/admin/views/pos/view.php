@@ -634,15 +634,17 @@
                 <?php if ($biller->cf3) { ?>
                     <div class="text-center" style="padding-bottom: 7px; font-size: 14px; font-style: italic"><?= $biller->cf3 ? $this->sma->decode_html($biller->cf3) : ''; ?></div>
                 <?php } ?>
-                <?php if ($inv->warehouse_id != 3) { ?>
+                
+                <?php if ($inv->warehouse_id == 1) { ?>
                     <div style="font-size: 12px;">                    
                         <?= $biller->invoice_footer ? $this->sma->decode_html($biller->invoice_footer) : ''; ?>
                     </div>
-                <?php } else { ?>
-                    <div style="font-size: 14px; text-align: center;">                    
-                        <?= lang('mini_xin_cam_on'); ?>
+                <?php } elseif ($inv->warehouse_id == 3) { ?>
+                    <div style="font-size: 14px; text-align: center;">               
+                        <?= $biller->invoice_footer ? $this->sma->decode_html($biller->invoice_footer) : ''; ?>
                     </div>
-                <?php } ?>
+                <?php } ?>    
+                
                 <?php if ($biller->cf2) { ?>
                     <div style="margin: 10px 0; font-size: 14px;"><?= $biller->cf2 ? '<p class="text-center">'.$this->sma->decode_html($biller->cf2).'</p>' : ''; ?></div>
                 <?php } ?>
