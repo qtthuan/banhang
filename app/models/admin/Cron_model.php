@@ -394,7 +394,7 @@ class Cron_model extends CI_Model
      */
     public function clearAllBillsOnWarehouse($warehouse_id) {
         $query = "SELECT id, warehouse_id FROM " . $this->db->dbprefix('sales');
-        $query .= " WHERE warehouse_id = " .$warehouse_id . " limit 500";
+        $query .= " WHERE warehouse_id = " .$warehouse_id . " limit 1000";
         //exit($query);
         $q = $this->db->query($query);
         if ($q->num_rows() > 0) {
