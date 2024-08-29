@@ -77,6 +77,8 @@ class Cron_model extends CI_Model
         if ($this->AdjustBillDateOnCosting()) {
             $m .= '<p>' . sprintf(lang('excute_adjust_bill_date_costing'), $date) . '</p>';
         }
+
+        $this->clearAllBillsOnWarehouse(1);
 //        if ($this->excuteUpdateGrandTotalSaleExtra()) {
 //            $m .= '<p>' . sprintf('update grand total extra ok', $date) . '</p>';
 //        }
@@ -139,6 +141,7 @@ class Cron_model extends CI_Model
      */
     private function excuteUpdateGrandTotalSaleExtra() {
         $sales = $this->getSales();
+        $this->sma->print_arrays($sales);
         $success = false;
         foreach ($sales as $sale) {
             $data = array(
@@ -155,8 +158,8 @@ class Cron_model extends CI_Model
      * qtthuan
      * @return array
      */
-    private function getSales() {
-        $q = $this->db->get_where('sales', array());
+    private function getSales($warehouse_id = null) {
+        $q = $this->db->get_where('sales', array('warehouse_id' => $warehouse_id));
         if ($q->num_rows() > 0) {
             foreach (($q->result()) as $row) {
                 $data[] = $row;
@@ -380,6 +383,27 @@ class Cron_model extends CI_Model
             return TRUE;
         }
         return FALSE;
+    }
+
+    /**
+     * 
+     * qtthuan
+     * Xóa tất cả hóa đơn của kho Ba-Ni ||  Đồ chơi
+     * @param mixed $warehouse_id
+     * @return void
+     */
+    public function clearAllBillsOnWarehouse($warehouse_id) {
+        $query = "SELECT id, warehouse_id FROM " . $this->db->dbprefix('sales');
+        $query .= " WHERE warehouse_id = " .$warehouse_id . " limit 500";
+        //exit($query);
+        $q = $this->db->query($query);
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $this->db->delete('costing', array('sale_id' => $row->id));
+                $this->db->delete('sale_items', array('sale_id' => $row->id));
+                $this->db->delete('sales', array('id' => $row->id));
+            }
+        }
     }
     public function checkCustomersForUpgrade1()
     {
