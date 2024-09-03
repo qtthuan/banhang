@@ -1153,7 +1153,7 @@ $('#posdiscount').focus(function () {
             clearTimeout(timeout)
             timeout = setTimeout(function() {        
                 loadItems();
-            }, 1000)
+            }, 600)
             
         
         
