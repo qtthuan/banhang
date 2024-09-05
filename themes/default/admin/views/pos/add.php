@@ -872,12 +872,18 @@
                         </div>
                     </div> -->
                     
-                   
-                    
                 <div class="form-group" style="padding: 0 15px;">
-                    <?= lang('comment', 'icomment'); ?>
-                    <input type="text" style="text-transform: uppercase;" name="comment" class="form-control kb-text" id="icomment">
+                    <div class="col-sm-8">
+                        <?= lang('comment', 'icomment'); ?>
+                        <input type="text" style="text-transform: uppercase;" name="comment" class="form-control kb-text" id="icomment">
+                    </div>
+                    <div class="col-sm-4">
+                    <?= lang('comment_name', 'icommentname'); ?>
+                    <input type="text" style="text-transform: uppercase;" name="commentname" class="form-control kb-text" id="icommentname">
+                    </div>
+                    
                 </div>
+                
                 <div class="box_comment">
                 <!-- <div class="txtComment" contentEditable>&nbsp;</div>   -->
                 

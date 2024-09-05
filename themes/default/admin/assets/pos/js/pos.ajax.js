@@ -501,6 +501,7 @@ $('#posdiscount').focus(function () {
         original_price = parseFloat(row.children().children('.roprice').val());
         is_promo = row.children().children('.is_promo').val();
         comment = item.row.comment;
+        comment_name = item.row.comment_name;
         if (comment == '') {
             $('.chkComment').removeAttr('checked');
         }
@@ -641,6 +642,7 @@ $('#posdiscount').focus(function () {
         $('#price_after_discount').val(net_price);
         $('#pro_tax').text(formatMoney(pr_tax_val));
         $('#icomment').val(comment);
+        $('#icommentname').val(comment_name);
         $('#prModal').appendTo("body").modal('show');
 
     });
@@ -663,6 +665,7 @@ $('#posdiscount').focus(function () {
         var item_id = row.attr('data-item-id');
         positems[item_id].row.order = parseFloat($('#iorders').val()),
         positems[item_id].row.comment = $('#icomment').val() ? $('#icomment').val().toUpperCase() : '';
+        positems[item_id].row.comment_name = $('#icommentname').val() ? $('#icommentname').val().toUpperCase() : '';
         localStorage.setItem('positems', JSON.stringify(positems));
         $('#cmModal').modal('hide');
         loadItems();
@@ -801,7 +804,9 @@ $('#posdiscount').focus(function () {
         positems[item_id].row.option = $('#poption').val() ? $('#poption').val() : '',
         positems[item_id].row.serial = $('#pserial').val();
         positems[item_id].row.comment = $('#icomment').val().toUpperCase();
+        positems[item_id].row.comment_name = $('#icommentname').val().toUpperCase();
         localStorage.setItem('positems', JSON.stringify(positems));
+        console.log(JSON.stringify(positems));
         $('#prModal').modal('hide');
 
         loadItems();
@@ -1242,6 +1247,7 @@ function loadItems() {
             var product_unit = item.row.unit, base_quantity = item.row.base_quantity;
             var unit_price = item.row.real_unit_price;
             var item_comment = item.row.comment ? item.row.comment : '';
+            var item_comment_name = item.row.comment_name ? item.row.comment_name : '';
             var item_ordered = item.row.ordered ? item.row.ordered : 0;
             var discount_class = '';
 
@@ -1358,10 +1364,12 @@ function loadItems() {
                         '<input name="product_name[]" type="hidden" class="rname" value="' + item_name + '">' +
                         '<input name="product_option[]" type="hidden" class="roption" value="' + item_option + '">' +
                         '<input name="product_comment[]" type="hidden" class="rcomment" value="' + item_comment + '">' +
+                        '<input name="product_comment_name[]" type="hidden" class="rcomment" value="' + item_comment_name + '">' +
                         '<input name="promo_original_price[]" type="hidden" class="roprice" value="' + item_original_price + '">' +
                         '<input name="is_promo[]" type="hidden" class="is_promo" value="' + (is_promo && checkValidPromotionDate(start_date, end_date) ? is_promo : 0) + '">' +
                         '<span class="sname" id="name_' + row_no + '"><img src="' + site.url + '/assets/uploads/' + item_image + '" width="40">' + item_code + ' ' + item_name +(sel_opt != '' ? ' ('+sel_opt+')' : '')+'</span>' +      
-                        (item_comment ? '<span class="scomment" style="font-weight: bold;"> (' + item_comment + ')</span>' : '') +
+                        (item_comment ? '<span class="scomment" style="font-weight: bold;"> (' + item_comment + ')  </span>' : '') +
+                        (item_comment_name ? '<span class="scomment" style="font-weight: bold;"> - ' + item_comment_name + '  </span>' : '') +
                         '<span class="lb"></span>' +
                 '</td>';
 

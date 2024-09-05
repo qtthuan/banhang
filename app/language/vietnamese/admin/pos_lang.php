@@ -286,6 +286,7 @@ $lang['gc_sale']                        = "Thanh toán phiếu mua hàng";
 $lang['sale_status']                    = "Trạng thái hóa đơn";
 $lang['display_customer_details']       = "Hiển thị chi tiết khách hàng";
 $lang['comment']                        = "Ghi chú";
+$lang['comment_name']                   = "Tên";
 $lang['open_cash_drawer']               = "Mở két tiền";
 $lang['pos_printing']                   = "POS Printing";
 $lang['title']                          = "Tiêu đề";

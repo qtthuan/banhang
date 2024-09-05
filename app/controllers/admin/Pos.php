@@ -194,6 +194,7 @@ class Pos extends MY_Controller
                 $item_code = $_POST['product_code'][$r];
                 $item_name = $_POST['product_name'][$r];
                 $item_comment = $_POST['product_comment'][$r];
+                $item_comment_name = $_POST['product_comment_name'][$r];
                 $item_option = isset($_POST['product_option'][$r]) && $_POST['product_option'][$r] != 'false' ? $_POST['product_option'][$r] : NULL;
                 $real_unit_price = $this->sma->formatDecimal($_POST['real_unit_price'][$r]);
                 $unit_price = $this->sma->formatDecimal($_POST['unit_price'][$r]);
@@ -273,6 +274,7 @@ class Pos extends MY_Controller
                         'serial_no'       => $item_serial,
                         'real_unit_price' => $real_unit_price,
                         'comment'         => $item_comment,
+                        'comment_name'    => $item_comment_name,
                         'is_promo'        => $is_promo,
                         'promo_original_price' => $promo_original_price,
                     );
@@ -880,6 +882,7 @@ class Pos extends MY_Controller
             $row->base_unit_price = $row->price;
             $row->unit = $row->sale_unit ? $row->sale_unit : $row->unit;
             $row->comment = '';
+            $row->comment_name = '';
             $combo_items = false;
             if ($row->type == 'combo') {
                 $combo_items = $this->pos_model->getProductComboItems($row->id, $warehouse_id);

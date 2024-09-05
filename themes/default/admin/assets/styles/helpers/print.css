@@ -64,11 +64,10 @@
     font: 28px Arial, sans-serif;
 }
 .circle_text1 {
-    border-radius: 15px;
+    border-radius: 5px;
     border: 1px solid #000;
-    padding: 7px 5px 5px 7px;
-    width: 98px;
-    height: 28px;
+    padding: 2px;
+    height: 19px;
 }
 
 /*Please modify the styles below for barcode/label printing */
@@ -105,7 +104,7 @@
 .barcode .style10 .increase_size_1 { font-family: Tahoma; font-size: 16px; line-height: 18px; min-height: 18px; }
 .barcode .style10_1 .barcode_site, .barcode .style10 .barcode_name { font-family: Tahoma; font-size: 10px; padding: 1px 4px 1px; min-height: 28px; }
 .barcode .style10_1 .increase_size { font-family: Tahoma; font-size: 13px; line-height: 18px; min-height: 20px; margin-bottom: 8px; }
-.barcode .style10_1 .increase_size_1 { font-family: Tahoma; font-size: 12px; line-height: 14px; min-height: 18px; }
+.barcode .style10_1 .increase_size_1 { font-family: Tahoma; font-size: 12px; line-height: 13px; min-height: 18px; }
 .barcode .valign_barcode_middle { display: grid; align-items: center; padding-left: 5px; padding-right: 2px; }
 .barcodea4 { width: 8.25in; height: 11.6in; display: block; border: 1px solid #CCC; margin: 10px auto; padding: 0.1in 0 0 0.1in; page-break-after:always; }
 .barcodea4 .item { display: block; overflow: hidden; text-align: center; border: 1px dotted #CCC; font-size: 12px; line-height: 14px; float: left; }

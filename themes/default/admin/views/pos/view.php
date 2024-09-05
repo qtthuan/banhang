@@ -213,7 +213,10 @@
                             } 
                         ?>
                             <span><?=$r?></span>&#8594;&nbsp;<?=product_name($product_name, ($printer ? $printer->char_per_line : null))?>
-                            <?php if (!empty($row->comment)) { echo ' <strong>(' . $row->comment . ')</strong>'; } ?>
+                            <?php 
+                                if (!empty($row->comment)) { echo ' <strong>(' . $row->comment . ')</strong>'; } 
+                                if (!empty($row->comment_name)) { echo ' <strong> - ' . $row->comment_name . '</strong>'; } 
+                            ?>
                         </td>
                     </tr>
                     <tr>

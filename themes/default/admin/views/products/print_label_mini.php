@@ -79,13 +79,19 @@
                                                     $str_comment = '<br /><span style="font-size: 10px;"><strong>' . $item->comment . '</strong></span>';
                                                 }
                                                 echo '<span style="position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
+                                                
                                                 echo $str_comment;
                                                 echo '</span>';
                                             }
 
-
+                                            if ($item->comment_name) {
+                                                
+                                                echo '<span class="circle_text1" style="position: absolute; bottom: 18px; left: 3px; font-size: 12px; font-weight: bold">';
+                                                echo ' <strong>' . $item->comment_name . '</strong>';
+                                                echo '</span>';
+                                            }
                                             $str_span_size = '<span class="circle_text" style="position: absolute; bottom: 16px; right: 3px; font-size: 16px; font-weight: bold">';
-                                            $str_span_other = '<span class="circle_text1" style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold">';
+                                            //$str_span_other = '<span class="circle_text1" style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold">';
                                             if($item->variant && $item->variant != '' && $item->variant != 'undefined') {
                                                 
                                                 if (trim(strtolower($item->variant)) == 'size l') {
@@ -94,13 +100,6 @@
                                                 } elseif (trim(strtolower($item->variant)) == 'size m')  {
                                                     echo $str_span_size;
                                                     echo 'M';
-                                                } else {                                                
-                                                    echo $str_span_other;
-                                                    if (trim(strtolower($item->variant)) == 'size không tẩy') {
-                                                        echo 'Không Tẩy';
-                                                    } else {
-                                                        echo $item->variant;
-                                                    }
                                                 } 
                                                 
                                                 echo '</span>';
@@ -136,7 +135,14 @@
                                                 $str_comment = '<br /><span style="font-size: 10px;"><strong>' . $item->comment . '</strong></span>';
                                             }
                                             echo '<span style="position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
+                                            
                                             echo $str_comment;
+                                            echo '</span>';
+                                        }
+                                        if ($item->comment_name) {
+                                                
+                                            echo '<span class="circle_text1" style="position: absolute; bottom: 18px; left: 3px; font-size: 12px; font-weight: bold">';
+                                            echo ' <strong>' . $item->comment_name . '</strong>';
                                             echo '</span>';
                                         }
 
@@ -150,13 +156,6 @@
                                             } elseif (trim(strtolower($item->variant)) == 'size m')  {
                                                 echo $str_span_size;
                                                 echo 'M';
-                                            } else {                                                
-                                                echo $str_span_other;
-                                                if (trim(strtolower($item->variant)) == 'size không tẩy') {
-                                                    echo 'Không Tẩy';
-                                                } else {
-                                                    echo $item->variant;
-                                                }
                                             } 
                                             
                                             echo '</span>';

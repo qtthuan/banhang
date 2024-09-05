@@ -2093,6 +2093,7 @@ animation: blink 1s steps(2, start) infinite;
 
   #pr_popover_content .box_comment {
     margin-bottom: 10px;
+    margin-left: 15px;
   }
 
   #pr_popover_content .box_comment:after {
