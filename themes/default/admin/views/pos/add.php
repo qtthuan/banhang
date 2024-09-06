@@ -2383,31 +2383,6 @@ var lang = {
                     $('#editComment').click();
                 }
             });
-            //qtthuan
-            $('.chkComment').removeAttr('checked');
-            //$('.txtComment').text('');
-            if ($('#poswarehouse').val() == 3) {
-                $('.box_comment').show();
-                var selected_comments=[];
-                //if ($('.txtCO'))
-                // 
-                $(".chkComment").change(function() {
-                    var ischecked= $(this).is(':checked');
-                    if (ischecked) {
-                        selected_comments.push($(this).val());
-                    } else {
-                        for (var i=selected_comments.length-1; i>=0; i--) {
-                            if (selected_comments[i] === $(this).val()) 
-                            selected_comments.splice(i, 1);
-                        }
-                    }
-                    
-                    $('#icomment').val(selected_comments.join(', '));
-
-                }); 
-            } else {
-                $('.box_comment').hide();
-            }
         });
         $('#prModal').on('shown.bs.modal', function() {
             $(this).find('#pdiscount').select().focus();
@@ -2419,18 +2394,11 @@ var lang = {
                 }
             });
 
-
-
-            //$(this).find('#icomment').select().focus();
-            
             //qtthuan
             $('.chkComment').removeAttr('checked');
-            //$('.txtComment').text('');
             if ($('#poswarehouse').val() == 3) {
                 $('.box_comment').show();
                 var selected_comments=[];
-                //if ($('.txtCO'))
-                // 
                 $(".chkComment").change(function() {
                     
                     var ischecked= $(this).is(':checked');
@@ -2443,8 +2411,7 @@ var lang = {
                             selected_comments.splice(i, 1);
                         }
                     }
-                    //console.log(selected_comments.join(', '));
-                    $('#icomment').val(selected_comments.join(', '));
+                    $('#icomment').val(selected_comments.join(', ')).focus();
 
                 }); 
             } else {
