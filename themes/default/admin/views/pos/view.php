@@ -193,6 +193,7 @@
                     $is_saleoff = 0;
                     $has_discount = 0;
                     $total_with_no_points = 0;
+                    $qr_pay = 0;
                     //$this->sma->print_arrays($inv, $rows);
                     //$this->sma->print_arrays($rows);
 
@@ -323,8 +324,9 @@
                             <th colspan="2"><div style="margin-left: 2px;">
                                 <?=$total_amount;?>
                             </div></th>
-                            <th class="text-right" colspan="2">
+                            <th class="text-right amount" colspan="2">
                                 <?=$this->sma->formatMoney($return_sale ? (($inv->total + $inv->product_tax)+($return_sale->total + $return_sale->product_tax)) : ($inv->total + $inv->product_tax));?>
+                                <?php $qr_pay = return_sale ? (($inv->total + $inv->product_tax)+($return_sale->total + $return_sale->product_tax)) : ($inv->total + $inv->product_tax); ?>
                             </th>
                         </tr>
                         <?php
@@ -435,8 +437,9 @@
                         <tr>
                             <th colspan="2">&nbsp;</th>
                             <th colspan="2"><div style="margin-left: 2px;"><?=$total;?></div></th>
-                            <th class="text-right" colspan="2">
+                            <th class="text-right thanhtoan" colspan="2">
                                 <?=$this->sma->formatMoney($return_sale ? (($inv->grand_total + $inv->rounding)+$return_sale->grand_total) : ($inv->grand_total + $inv->rounding));?>
+                                <?php $qr_pay = $return_sale ? (($inv->grand_total + $inv->rounding)+$return_sale->grand_total) : ($inv->grand_total + $inv->rounding); ?>
                             </th>
                         </tr>
                         <?php } ?>
@@ -632,6 +635,10 @@
                 ?>
             </div>
             <div style="clear:both;"></div>
+            <div style="font-size: 14px; text-align: center;">
+                <img src="https://img.vietqr.io/image/vietcombank-0111000285533-qr_only.jpg?amount=<?=$qr_pay?>&addInfo=Thanh%20Toan%20Tien%20Nuoc&accountName=Lu%20Nguyet%20Binh" style="width: 95px">
+                <br /><?=lang('bank_info')?>
+            </div>
             <div style="padding: 0 10px 10px;">
                 <p style="border-top: 1px solid black;">
                 <?php if ($biller->cf3) { ?>
