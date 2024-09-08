@@ -79,18 +79,17 @@
             <div id="receipt-data" style="margin-right: 5px;">
                 <div class="text-center">
                 <?php if ($inv->warehouse_id != 3) { ?>
-                    <strong><span style="font-size: 19px; text-transform: uppercase;"><?=$this->Settings->site_name?></span></strong><br />
+                    <strong><span style="font-size: 17px; text-transform: uppercase;"><?=$this->Settings->site_name?></span></strong><br />
                 <?php } else { ?>
-                    <strong><span style="font-size: 19px; text-transform: uppercase;"><?=lang("tiem_nuoc_mini");?></span></strong><br />
+                    <strong><span style="font-size: 17px; text-transform: uppercase;"><?=lang("tiem_nuoc_mini");?></span></strong><br />
                 <?php } ?>
                     <?php //$this->sma->print_arrays($inv);
                     echo "<p style='padding-top: 5px;'>" . $biller->address . " " . $biller->city . " " . $biller->postal_code . " " . $biller->state . " " . $biller->country .
                     "<br> " . $biller->phone . " - " . $biller->cf1 . "<br />";
                     ?>
-                    <br /><strong><span style="font-size: 17px; text-transform: uppercase"><?=lang('pos_bill');?></span><br>
-                    <div class="order_barcodes text-center">
-                        <?= $this->sma->save_barcode($inv->reference_no, 'code128', 40, false); ?>
-                    </div><span style="font-size: 16px;"><?=$inv->reference_no?></span></strong><br />
+                    <br /><strong><span style="font-size: 15px; text-transform: uppercase"><?=lang('pos_bill');?></span><br>
+                    
+                    <span style="font-size: 15px;"><?=$inv->reference_no?></span></strong><br />
                     <?php
 
                     // comment or remove these extra info if you don't need
@@ -225,19 +224,23 @@
                             $str_variants = ''; 
                             if ($row->variant) {
                                 if ($inv->warehouse_id == 3) { // Tiệm nước mini
+                                    $row->product_code = '';
                                     if ($this->sma->getSizeNumber($row->variant) == 'M') {
-                                        $str_variants = ' (<strong>Size M</strong>)';
+                                        $str_variants = ' <strong>Size M</strong>';
                                     } elseif ($this->sma->getSizeNumber($row->variant) == 'L') {
-                                        $str_variants = ' (<strong>Size L</strong>)';
+                                        $str_variants = ' <strong>Size L</strong>';
                                     } else {
-                                        $str_variants = ' (<strong>' . $row->variant . '</strong>)';
+                                        $str_variants = ' <strong>' . $row->variant . '</strong>';
                                     }
                                 } else {
                                         $str_variants = '-' . $this->sma->getSizeNumber($row->variant);
                                 }
                             }
                         ?>
-                        <td colspan="2" style="font-size: 10px;"><?=$row->product_code . $str_variants ?></td>
+                        <td colspan="2" style="font-size: 11px;">
+                        <span class="circle_text2" style="font-size: 12px; font-weight: bold"> <strong><?=$row->product_code . $str_variants ?></strong></span>
+                            
+                        </td>
                         <td class="text-right"><?=$this->sma->formatQuantity($row->quantity)?></td>
                         <td class="text-right">
                             <?php
@@ -635,8 +638,8 @@
                 ?>
             </div>
             <div style="clear:both;"></div>
-            <div style="font-size: 14px; text-align: center;">
-                <img src="https://img.vietqr.io/image/vietcombank-0111000285533-qr_only.jpg?amount=<?=$qr_pay?>&addInfo=Thanh%20Toan%20Tien%20Nuoc&accountName=Lu%20Nguyet%20Binh" style="width: 95px">
+            <div style="font-size: 12px; text-align: center;">
+                <img src="https://img.vietqr.io/image/vietcombank-0111000285533-qr_only.jpg?amount=<?=$qr_pay?>&addInfo=Thanh%20Toan%20Tien%20Nuoc&accountName=Lu%20Nguyet%20Binh" style="width: 85px">
                 <br /><?=lang('bank_info')?>
             </div>
             <div style="padding: 0 10px 10px;">
@@ -646,11 +649,11 @@
                 <?php } ?>
                 
                 <?php if ($inv->warehouse_id == 1) { ?>
-                    <div style="font-size: 12px;">                    
+                    <div style="font-size: 11px;">                    
                         <?= $biller->invoice_footer ? $this->sma->decode_html($biller->invoice_footer) : ''; ?>
                     </div>
                 <?php } elseif ($inv->warehouse_id == 3) { ?>
-                    <div style="font-size: 14px; text-align: center;">               
+                    <div style="font-size: 11px; text-align: center;">               
                         <?= $biller->invoice_footer ? $this->sma->decode_html($biller->invoice_footer) : ''; ?>
                     </div>
                 <?php } ?>    

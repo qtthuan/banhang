@@ -69,6 +69,12 @@
     padding: 2px;
     height: 19px;
 }
+.circle_text2 {
+    border-radius: 6px;
+    border: 1px solid #e9dcdc;
+    padding: 2px;
+    height: 19px;
+}
 
 /*Please modify the styles below for barcode/label printing */
 .barcode { width: 4.1in; display: block; margin: 0px auto; page-break-after:always; }
