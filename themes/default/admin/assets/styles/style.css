@@ -2082,7 +2082,7 @@ animation: blink 1s steps(2, start) infinite;
 .sprice { font-size: 16px; }
 .ssubtotal { font-size: 16px; }
 .rquantity { font-size: 17px !important; }
-#receiptData { font-size: 10px !important; }
+#receiptData { font-size: 12px !important; }
 #receiptData table td:nth-child(1) { text-align: left; width: 38%; }
 #receiptData table td:nth-child(2) { text-align: left; width: 15%; }
 #receiptData table td:nth-child(3) { text-align: left; width: 25%; }
