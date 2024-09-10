@@ -643,7 +643,7 @@
             </div>
             <div style="clear:both;"></div>
             <div style="font-size: 12px; text-align: center;">
-                <img src="https://img.vietqr.io/image/vietcombank-0111000285533-qr_only.jpg?amount=<?=$qr_pay?>&addInfo=Thanh%20Toan%20Tien%20Nuoc&accountName=Lu%20Nguyet%20Binh" style="width: 85px">
+                <img src="https://img.vietqr.io/image/vietcombank-0111000285533-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Lu%20Nguyet%20Binh" style="width: 85px">
                 <br /><?=lang('bank_info')?>
             </div>
             <div style="padding: 0 10px 10px;">
