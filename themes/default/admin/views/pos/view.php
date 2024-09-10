@@ -238,7 +238,11 @@
                             }
                         ?>
                         <td colspan="2" style="font-size: 11px;">
-                        <span class="circle_text2" style="font-size: 11px; font-weight: bold"> <strong><?=$row->product_code . $str_variants ?></strong></span>
+                            <?php if ($str_variants != '') { ?>
+                                <span class="circle_text2" style="font-size: 11px; font-weight: bold"> 
+                                    <strong><?=$row->product_code . $str_variants ?></strong>
+                                </span>
+                            <?php } else { echo "&nbsp;"; } ?>
                             
                         </td>
                         <td class="text-right"><?=$this->sma->formatQuantity($row->quantity)?></td>
