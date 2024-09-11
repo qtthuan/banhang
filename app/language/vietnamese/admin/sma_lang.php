@@ -123,6 +123,7 @@ $lang['company']                            = "Công ty";
 $lang['customer_no']                        = "Mã thẻ KH";
 $lang['product_code']                       = "Mã sản phẩm";
 $lang['product_name']                       = "Tên sản phẩm";
+$lang['product_name_en']                    = "Tên sản phẩm (Tiếng Anh)";
 $lang['cname']                              = "Tên khách hàng";
 $lang['barcode_symbology']                  = "Ký tự mã vạch";
 $lang['product_unit']                       = "Đơn vị";
