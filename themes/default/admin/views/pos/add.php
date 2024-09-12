@@ -44,9 +44,9 @@
     <header id="header" class="navbar">
         <div class="container">
             <a class="navbar-brand" href="<?=admin_url()?>"><span class="logo"><span class="pos-logo-lg"><?=$Settings->site_name?></span><span class="pos-logo-sm"><?=lang('pos')?></span></span></a>
-
             <div class="header-nav">
-                <ul class="nav navbar-nav pull-right">
+                
+                <ul class="nav navbar-nav pull-right">                    
                     <li class="dropdown">
                         <a class="btn account dropdown-toggle" data-container="body" data-toggle="dropdown" href="#">
                             <img alt="" src="<?=$this->session->userdata('avatar') ? base_url() . 'assets/uploads/avatars/thumbs/' . $this->session->userdata('avatar') : $assets . 'images/' . $this->session->userdata('gender') . '.png';?>" class="mini_avatar img-rounded">
@@ -77,6 +77,9 @@
                 </ul>
 
                 <ul class="nav navbar-nav pull-right">
+                    <li class="dropdown">
+                        <a class="btn borange change_lang" title="Vi/En" data-container="body" data-placement="bottom">VI/EN</a>
+                    </li>
                     <li class="dropdown">
                         <a class="btn bblue pos-tip" title="<?=lang('dashboard')?>" data-container="body" data-placement="bottom" href="<?=admin_url('welcome')?>">
                             <i class="fa fa-dashboard"></i>
@@ -1849,7 +1852,16 @@ var lang = {
             $(this).remove();
             pa--;
         });
-
+        $(document).on('click', '.change_lang', function () {
+           if($(".product_name_vi").is(":visible")) {
+                $(".product_name_vi").attr("style", "display: none");
+                $(".product_name_en").removeAttr("style");
+           } else  {
+            $(".product_name_en").attr("style", "display: none");
+            $(".product_name_vi").removeAttr("style");
+           }
+        
+        });
         $(document).on('focus', '.amount', function () {
             pi = $(this).attr('id');
             calculateTotals();

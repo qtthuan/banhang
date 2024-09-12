@@ -951,7 +951,8 @@ class Pos extends MY_Controller
                     $product->name = substr($product->name, 2, strlen($product->name));
                 }
                 $prods .= "<button id=\"product-" . $category_id . $count . "\" type=\"button\" value='" . $product->code . "' title=\"" . $product->name . "\" class=\"btn-prni btn-" . $this->pos_settings->product_button_color . " product pos-tip\" data-container=\"body\"><img src=\"" . base_url() . "assets/uploads/thumbs/" . $product->image . "\" alt=\"" . $product->name . "\" class='img-rounded' />";
-                $prods .= "<span>" . character_limiter($product->name, 40) . "<br />" . $this->sma->formatMoney($product->price) . "</span>";
+                $prods .= "<span class='product_name_vi'>" . character_limiter($product->name, 40) . "<br />" . $this->sma->formatMoney($product->price) . "</span>";
+                $prods .= "<span class='product_name_en' style='display: none;'>" . character_limiter($product->name_en, 40) . "<br />" . $this->sma->formatMoney($product->price) . "</span>";
                 //$prods .= "<span>x" . $product->price . "</span>";
                 $prods .= "</button>";
 
