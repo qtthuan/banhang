@@ -206,6 +206,7 @@
                                 	echo form_input('customer', (isset($_POST['customer']) ? $_POST['customer'] : ""), 'id="poscustomer" data-placeholder="' . $this->lang->line("select") . ' ' . $this->lang->line("customer") . '" required="required" class="form-control pos-input-tip" style="width:100%;"');
                                 ?>
                                 <input name="customer_group_id" type="hidden" value="" id="customer_group_id">
+                                <input name="sale_language" type="hidden" value="0" id="sale_language">
                                     <div class="input-group-addon no-print" style="padding: 2px 16px; border-left: 0;">
                                         <a href="#" id="toogle-customer-read-attr" class="external pos-tip" title="<?=lang('customer_selection')?>">
                                             <i class="fa fa-pencil" id="addIcon" style="font-size: 1.7em;"></i>
@@ -1856,11 +1857,13 @@ var lang = {
            if($(".product_name_vi").is(":visible")) {
                 $(".product_name_vi").attr("style", "display: none");
                 $(".product_name_en").removeAttr("style");
+                $("#sale_language").val(1);
            } else  {
             $(".product_name_en").attr("style", "display: none");
             $(".product_name_vi").removeAttr("style");
+            $("#sale_language").val(0);
            }
-        
+           loadItems();
         });
         $(document).on('focus', '.amount', function () {
             pi = $(this).attr('id');

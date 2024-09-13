@@ -2079,6 +2079,7 @@ animation: blink 1s steps(2, start) infinite;
 .gallery-image { position: relative; display: inline-block; }
 .gallery-image .delimg { position: absolute; top: 0; right: 9px; }
 .sname { cursor: pointer; font-size: 16px; }
+.sname_en { font-size: 11px; }
 .sprice { font-size: 16px; }
 .ssubtotal { font-size: 16px; }
 .rquantity { font-size: 17px !important; }

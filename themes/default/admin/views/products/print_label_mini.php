@@ -32,6 +32,7 @@
                             echo '<br /><span style="font-size: 13px">'. $this->sma->formatMoney($sale->grand_total).'</span>';
                             echo '<input type="hidden" class="hidd_customer_id" value="'.$sale->customer_id.'">';
                             echo '<input type="hidden" class="hidd_sale_id" value="'.$sale->id.'">';
+                            echo '<input type="hidden" class="hidd_sale_language" value="'.$sale->sale_language.'">';
                             echo '<input type="hidden" class="hidd_reference_no" value="#'.substr($sale->reference_no, -3).'">';
                             echo '</button>&nbsp;&nbsp;';
                         }
@@ -59,7 +60,7 @@
                                     $item_qty = $item->quantity;
                                     
                                     if ($item->quantity > 1) {
-                                        echo '-';
+                                        //echo '-';
                                         for ($i=0; $i < $item_qty; $i++) {
                                             //$total_items++;
                                             $increase_size = "increase_size";
@@ -76,10 +77,10 @@
                                                 $str_comment = '';
                                                 $str_comment_style = '';
                                                 if($item->comment && $item->comment != '' && $item->comment != 'undefined') {
-                                                    $str_comment = '<br /><span style="font-size: 10px;"><strong>' . $item->comment . '</strong></span>';
+                                                    $str_comment = '<br /><span class="comment" style="font-size: 10px;"><strong>' . $item->comment . '</strong></span>';
                                                 }
                                                 echo '<span style="position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
-                                                
+                                                echo '<span class="label_product_name_en" style="display: none;"><br />' . $item->product_name_en . '</span>';
                                                 echo $str_comment;
                                                 echo '</span>';
                                             }
@@ -89,7 +90,9 @@
                                                 echo '<span class="circle_text1" style="position: absolute; bottom: 18px; left: 3px; font-size: 12px; font-weight: bold">';
                                                 echo ' <strong>' . $item->comment_name . '</strong>';
                                                 echo '</span>';
-                                            }
+                                            }                                            
+                                            
+                                            
                                             $str_span_size = '<span class="circle_text" style="position: absolute; bottom: 16px; right: 3px; font-size: 16px; font-weight: bold">';
                                             //$str_span_other = '<span class="circle_text1" style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold">';
                                             if($item->variant && $item->variant != '' && $item->variant != 'undefined') {
@@ -132,10 +135,10 @@
                                             $str_comment = '';
                                             $str_comment_style = '';
                                             if($item->comment && $item->comment != '' && $item->comment != 'undefined') {
-                                                $str_comment = '<br /><span style="font-size: 10px;"><strong>' . $item->comment . '</strong></span>';
+                                                $str_comment = '<br /><span class="comment" style="font-size: 10px;"><strong>' . $item->comment . '</strong></span>';
                                             }
                                             echo '<span style="position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
-                                            
+                                            echo '<span class="label_product_name_en" style="display: none;"><br />' . $item->product_name_en . '</span>';
                                             echo $str_comment;
                                             echo '</span>';
                                         }
@@ -145,6 +148,7 @@
                                             echo ' <strong>' . $item->comment_name . '</strong>';
                                             echo '</span>';
                                         }
+                                       
 
                                         $str_span_size = '<span class="circle_text" style="position: absolute; bottom: 16px; right: 3px; font-size: 16px; font-weight: bold">';
                                         $str_span_other = '<span class="circle_text1" style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold">';
@@ -206,7 +210,7 @@
         
         $(document).on('click', '.item_1', function () {
             var total_items = $(this).closest('.barcode').find('.item_1').length - 1;
-            console.log('cccc: ' + $(this).closest('.barcode').find('.item_1').length);
+            //console.log('cccc: ' + $(this).closest('.barcode').find('.item_1').length);
             var id = $(this).attr('id');
             $(this).remove();
             //total_items = total_items -1;
@@ -227,8 +231,22 @@
         // Enable first button
         $('.bills:first').removeClass('btn-danger').addClass('btn-success');
         $('.reference_no').text($('.hidd_reference_no:first').val());
-        if ($('.hidd_customer_id:first').val() == 6533) {
-            $('.text_price').hide();
+        // if ($('.hidd_customer_id:first').val() == 6533) {
+        //     $('.text_price').hide();
+        // }
+        if($(".bills:first .hidd_sale_language").val() == 1) {
+            $('.barcode:first .label_product_name_en').removeAttr('style');
+            $('.barcode:first .style10_1' ).each(function( index ) {
+                if($(this).find('.comment').text() != '') {
+                    $(this).find('.barcode_name').removeClass('increase_size_1');
+                    $(this).find('.barcode_name').addClass('increase_size_2');
+                    $(this).find('.label_product_name_en').addClass('increase_size_3');
+                } else {
+                    $(this).find('.barcode_name').removeClass('increase_size');
+                    $(this).find('.barcode_name').addClass('increase_size_1');
+                }
+            });
+            
         }
         fillTotalItems($('.barcode:first>div').length);
 
@@ -236,6 +254,7 @@
         $('.bills').on('click',function() {
             div_id = $(this).attr('id');
             customer_id = $('#' + div_id).find('.hidd_customer_id').val();
+            sale_language = $('#' + div_id).find('.hidd_sale_language').val();
             $('.bills' ).each(function( index ) {
                 all_div_ids = $(this).attr('id');
                 $(this).addClass('btn-danger');
@@ -249,17 +268,40 @@
                 $('.div' + div_id).show();
                 $(this).addClass('btn-success');
                 $('.reference_no').text($('#' + div_id).find('.hidd_reference_no').val());
+                //console.log('vvv' + sale_language);
+                if(sale_language == 1) {
+                    //console.log('vvv');
+                    $('.div' + div_id + ' .label_product_name_en').removeAttr('style');
 
-                if (customer_id == 6533) {
-                    $('.text_price').hide();
-                } else {
-                    $('.text_price').show();
+                    $('.div' + div_id + ' .style10_1' ).each(function( index ) {
+                        //console.log('fd' + $(this).find('.comment').text());
+                        if($(this).find('.comment').text() != '') {
+                            $(this).find('.barcode_name').removeClass('increase_size_1');
+                            $(this).find('.barcode_name').addClass('increase_size_2');
+                            $(this).find('.label_product_name_en').addClass('increase_size_3');
+                        } else {
+                            $(this).find('.barcode_name').removeClass('increase_size');
+                            $(this).find('.barcode_name').addClass('increase_size_1');
+                        }
+                    });
+
+                    // if($('.div' + div_id + ' .comment').text() != '') {
+                    //     $('.div' + div_id + ' .barcode_name').removeClass('increase_size_1');
+                    //     $('.div' + div_id + ' .barcode_name').addClass('increase_size_2');
+                    //     $('.div' + div_id + ' .label_product_name_en').addClass('increase_size_3');
+                    // }
                 }
+
+                // if (customer_id == 6533) {
+                //     $('.text_price').hide();
+                // } else {
+                //     $('.text_price').show();
+                // }
                 
-                console.log($('.div' + div_id +'>div').length);
+                //console.log($('.div' + div_id +'>div').length);
                 fillTotalItems($('.div' + div_id +'>div').length);
                 
-                console.log(div_id);
+                //console.log(div_id);
             } 
         });
     });

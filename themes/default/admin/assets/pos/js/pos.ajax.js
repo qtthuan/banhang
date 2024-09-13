@@ -1243,16 +1243,21 @@ function loadItems() {
             var item_id = site.settings.item_addition == 1 ? item.item_id : item.id;
             positems[item_id] = item;
             item.order = item.order ? item.order : new Date().getTime();
-            var product_id = item.row.id, item_image = item.row.image, item_type = item.row.type, combo_items = item.combo_items, is_promo = item.row.promotion, item_original_price = item.row.original_price, start_date = item.row.start_date, end_date = item.row.end_date, item_price = item.row.price, item_qty = item.row.qty, item_aqty = item.row.quantity, item_tax_method = item.row.tax_method, item_ds = item.row.discount, item_discount = 0, item_option = item.row.option, item_code = item.row.code, item_serial = item.row.serial, item_name = item.row.name.replace(/"/g, "&#034;").replace(/'/g, "&#039;");
+            var product_id = item.row.id, item_image = item.row.image, item_type = item.row.type, combo_items = item.combo_items, is_promo = item.row.promotion, item_original_price = item.row.original_price, start_date = item.row.start_date, end_date = item.row.end_date, item_price = item.row.price, item_qty = item.row.qty, item_aqty = item.row.quantity, item_tax_method = item.row.tax_method, item_ds = item.row.discount, item_discount = 0, item_option = item.row.option, item_code = item.row.code, item_serial = item.row.serial, item_name = item.row.name.replace(/"/g, "&#034;").replace(/'/g, "&#039;"), item_name_en = item.row.name_en;
             var product_unit = item.row.unit, base_quantity = item.row.base_quantity;
             var unit_price = item.row.real_unit_price;
             var item_comment = item.row.comment ? item.row.comment : '';
             var item_comment_name = item.row.comment_name ? item.row.comment_name : '';
             var item_ordered = item.row.ordered ? item.row.ordered : 0;
             var discount_class = '';
+            var item_name_en_display = item_name_en;
 
             if(!item_image) {
                 item_image = 'no_image.png';
+            }
+
+            if($(".product_name_vi").is(":visible")) {
+                item_name_en_display = '';
             }
             
             if(item.units && item.row.fup != 1 && product_unit != item.row.base_unit) {
@@ -1362,12 +1367,14 @@ function loadItems() {
                         '<input name="product_type[]" type="hidden" class="rtype" value="' + item_type + '">' +
                         '<input name="product_code[]" type="hidden" class="rcode" value="' + item_code + '">' +
                         '<input name="product_name[]" type="hidden" class="rname" value="' + item_name + '">' +
+                        '<input name="product_name_en[]" type="hidden" class="rname" value="' + item_name_en + '">' +
                         '<input name="product_option[]" type="hidden" class="roption" value="' + item_option + '">' +
                         '<input name="product_comment[]" type="hidden" class="rcomment" value="' + item_comment + '">' +
                         '<input name="product_comment_name[]" type="hidden" class="rcomment" value="' + item_comment_name + '">' +
                         '<input name="promo_original_price[]" type="hidden" class="roprice" value="' + item_original_price + '">' +
                         '<input name="is_promo[]" type="hidden" class="is_promo" value="' + (is_promo && checkValidPromotionDate(start_date, end_date) ? is_promo : 0) + '">' +
-                        '<span class="sname" id="name_' + row_no + '"><img src="' + site.url + '/assets/uploads/' + item_image + '" width="40">' + item_code + ' ' + item_name +(sel_opt != '' ? ' ('+sel_opt+')' : '')+'</span>' +      
+                        '<span class="sname" id="name_' + row_no + '"><img src="' + site.url + '/assets/uploads/' + item_image + '" width="40">' + item_code + ' ' + item_name +(sel_opt != '' ? ' ('+sel_opt+')' : '') + '</span>' +
+                        '<br /><span class="sname_en" id="nam_en_' + row_no + '">' + (item_name_en_display ? '# ' + item_name_en_display : '') + '</span>' +
                         (item_comment ? '<span class="scomment" style="font-weight: bold;"> (' + item_comment + ')  </span>' : '') +
                         (item_comment_name ? '<span class="scomment" style="font-weight: bold;"> - ' + item_comment_name + '  </span>' : '') +
                         '<span class="lb"></span>' +

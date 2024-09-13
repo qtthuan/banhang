@@ -217,6 +217,9 @@
                                 if (!empty($row->comment)) { echo ' <strong>(' . $row->comment . ')</strong>'; } 
                                 if (!empty($row->comment_name)) { echo ' <strong> - ' . $row->comment_name . '</strong>'; } 
                             ?>
+                            <?php if($inv->sale_language) {
+                                echo '<br /><span style="font-size: 10px">&nbsp;&nbsp;# ' . $row->product_name_en . '</span>';
+                            }?>
                         </td>
                     </tr>
                     <tr>

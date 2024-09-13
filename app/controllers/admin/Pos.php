@@ -153,6 +153,7 @@ class Pos extends MY_Controller
             $date = date('Y-m-d H:i:s');
             $warehouse_id = $this->input->post('warehouse');
             $customer_id = $this->input->post('customer');
+            $sale_language = $this->input->post('sale_language');
             $biller_id = $this->input->post('biller');
             $total_items = $this->input->post('total_items');
             $sale_status = 'completed';
@@ -193,6 +194,7 @@ class Pos extends MY_Controller
                 $item_type = $_POST['product_type'][$r];
                 $item_code = $_POST['product_code'][$r];
                 $item_name = $_POST['product_name'][$r];
+                $item_name_en = $_POST['product_name_en'][$r];
                 $item_comment = $_POST['product_comment'][$r];
                 $item_comment_name = $_POST['product_comment_name'][$r];
                 $item_option = isset($_POST['product_option'][$r]) && $_POST['product_option'][$r] != 'false' ? $_POST['product_option'][$r] : NULL;
@@ -256,6 +258,7 @@ class Pos extends MY_Controller
                         'product_id'      => $item_id,
                         'product_code'    => $item_code,
                         'product_name'    => $item_name,
+                        'product_name_en' => $item_name_en,
                         'product_type'    => $item_type,
                         'option_id'       => $item_option,
                         'net_unit_price'  => $item_net_price,
@@ -337,6 +340,7 @@ class Pos extends MY_Controller
             $data = array('date'              => $date,
                           'reference_no'      => $reference,
                           'customer_id'       => $customer_id,
+                          'sale_language'     => $sale_language,
                           'customer'          => $customer,
                           'biller_id'         => $biller_id,
                           'biller'            => $biller,
