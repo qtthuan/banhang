@@ -351,4 +351,5 @@ $lang['tiem_nuoc_mini']                 = "Tiệm nước Mini";
 $lang['mini_xin_cam_on']                = "Xin Cám Ơn Quí Khách!";
 $lang['mini_size_l']                    = "LY LỚN";
 $lang['mini_add_comment']               = "Thêm ghi chú";
-$lang['bank_info']                      = "<strong>STK: 0111000285533</strong> <br /><strong>CTK: LƯ NGUYỆT BÌNH</strong> <br /><strong>NH: VIETCOMBANK CẦN THƠ</strong>";
+$lang['bank_info_vcb']                  = "<strong>STK: 0111000285533</strong> <br /><strong>CTK: LƯ NGUYỆT BÌNH</strong> <br /><strong>NH: VIETCOMBANK CẦN THƠ</strong>";
+$lang['bank_info_bidv']                 = "<strong>STK: 0111000285533</strong> <br /><strong>CTK: LƯ NGUYỆT BÌNH</strong> <br /><strong>NH: BIDV CẦN THƠ</strong>";
