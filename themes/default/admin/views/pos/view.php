@@ -224,9 +224,11 @@
                     </tr>
                     <tr>
                         <?php
+                            $str_product_code_class = '';
                             $str_variants = ''; 
                             if ($row->variant) {
                                 if ($inv->warehouse_id == 3) { // Tiệm nước mini
+                                    $str_product_code_class = 'circle_text2';
                                     $row->product_code = '';
                                     if ($this->sma->getSizeNumber($row->variant) == 'M') {
                                         $str_variants = ' <strong>Size M</strong>';
@@ -242,7 +244,7 @@
                         ?>
                         <td colspan="2" style="font-size: 11px;">
                             <?php if ($str_variants != '') { ?>
-                                <span class="circle_text2" style="font-size: 11px; font-weight: bold"> 
+                                <span class="<?=$str_product_code_class;?>" style="font-size: 11px; font-weight: bold"> 
                                     <strong><?=$row->product_code . $str_variants ?></strong>
                                 </span>
                             <?php } else { echo "&nbsp;"; } ?>
