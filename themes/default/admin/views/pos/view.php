@@ -338,11 +338,12 @@
                             </div></th>
                             <th class="text-right amount" colspan="2">
                                 <?=$this->sma->formatMoney($return_sale ? (($inv->total + $inv->product_tax)+($return_sale->total + $return_sale->product_tax)) : ($inv->total + $inv->product_tax));?>
-                                <?php $qr_pay = return_sale ? (($inv->total + $inv->product_tax)+($return_sale->total + $return_sale->product_tax) - $inv->order_discount) : ($inv->total + $inv->product_tax - $inv->order_discount); ?>
+                                <?php $qr_pay = return_sale ? (($inv->total + $inv->product_tax)+($return_sale->total + $return_sale->product_tax)) : ($inv->total + $inv->product_tax); ?>
                             </th>
                         </tr>
                         <?php
                             if ($inv->shipping != 0) {
+                                $qr_pay += $inv->shipping;
                                 $mini_count_rows++;
                         ?>
                             <tr>
@@ -393,6 +394,7 @@
                                     } else {
                                         echo '-' . $this->sma->formatMoney($inv->order_discount);
                                     }
+                                    $qr_pay -= $inv->order_discount;
                                     //$this->sma->print_arrays($inv);
                                 ?>
 
@@ -405,6 +407,7 @@
                         <?php
                         if ($inv->change_points > 0) {
                             $mini_count_rows++;
+                            $qr_pay -= $inv->change_points;
                             ?>
                             <tr>
                                 <th style="border-top: none" colspan="2">&nbsp;</th>
@@ -419,6 +422,7 @@
                         <?php
                         if ($inv->return_amount != 0) {
                             $mini_count_rows++;
+                            $qr_pay -= $inv->return_amount;
                         ?>
                             <tr>
                                 <th style="border-top: none" colspan="2">&nbsp;</th>
@@ -444,16 +448,18 @@
                         }
 
                         ?>
-
-                        <?php if ($mini_count_rows > 0 && $inv->warehouse_id == 3 && $opos !== FALSE) { ?>
+                        <?php if ($mini_count_rows > 0) { ?>
                         <tr>
                             <th colspan="2">&nbsp;</th>
                             <th colspan="2"><div style="margin-left: 2px;"><?=$total;?></div></th>
                             <th class="text-right thanhtoan" colspan="2">
                                 <?=$this->sma->formatMoney($return_sale ? (($inv->grand_total + $inv->rounding)+$return_sale->grand_total) : ($inv->grand_total + $inv->rounding));?>
-                                <?php $qr_pay = $return_sale ? (($inv->grand_total + $inv->rounding)+$return_sale->grand_total) : ($inv->grand_total + $inv->rounding); ?>
+                                
                             </th>
                         </tr>
+                        <?php } ?>
+                        <?php if ($inv->warehouse_id == 3) { ?>
+                            <?php $qr_pay = $return_sale ? (($inv->grand_total + $inv->rounding)+$return_sale->grand_total) : ($inv->grand_total + $inv->rounding); ?>
                         <?php } ?>
                         <?php if (($inv->paid) + $inv->change_points < $inv->grand_total) {?>
                             <tr>
