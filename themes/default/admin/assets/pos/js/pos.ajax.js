@@ -1237,15 +1237,22 @@ function loadItems() {
         }
         var category = 0, print_cate = false;
         // var itn = parseInt(Object.keys(sortedItems).length);
-        //console.log(JSON.stringify(sortedItems));
+        console.log(JSON.stringify(sortedItems));
         $.each(sortedItems, function () {
             var item = this;            
             var item_id = site.settings.item_addition == 1 ? item.item_id : item.id;
             positems[item_id] = item;
             item.order = item.order ? item.order : new Date().getTime();
-            var product_id = item.row.id, item_image = item.row.image, item_type = item.row.type, combo_items = item.combo_items, is_promo = item.row.promotion, item_original_price = item.row.original_price, start_date = item.row.start_date, end_date = item.row.end_date, item_price = item.row.price, item_qty = item.row.qty, item_aqty = item.row.quantity, item_tax_method = item.row.tax_method, item_ds = item.row.discount, item_discount = 0, item_option = item.row.option, item_code = item.row.code, item_serial = item.row.serial, item_name = item.row.name.replace(/"/g, "&#034;").replace(/'/g, "&#039;"), item_name_en = item.row.name_en;
+            var product_id = item.row.id, item_image = item.row.image;
+            var item_type = item.row.type, combo_items = item.combo_items;
+            var is_promo = item.row.promotion, item_original_price = item.row.original_price;
+            var start_date = item.row.start_date, end_date = item.row.end_date;
+            var item_price = item.row.price, item_qty = item.row.qty, item_aqty = item.row.quantity; 
+            var item_tax_method = item.row.tax_method, item_ds = item.row.discount, item_discount = 0;
+            var item_option = item.row.option, item_code = item.row.code, item_serial = item.row.serial;
+            var item_name = item.row.name.replace(/"/g, "&#034;").replace(/'/g, "&#039;"), item_name_en = item.row.name_en;
             var product_unit = item.row.unit, base_quantity = item.row.base_quantity;
-            var unit_price = item.row.real_unit_price;
+            var unit_price = item.row.real_unit_price, item_product_details = item.row.product_details;
             var item_comment = item.row.comment ? item.row.comment : '';
             var item_comment_name = item.row.comment_name ? item.row.comment_name : '';
             var item_ordered = item.row.ordered ? item.row.ordered : 0;

@@ -1429,6 +1429,9 @@ var lang = {
         if (localStorage.getItem('poscustomer')) {
             localStorage.removeItem('poscustomer');
         }
+        if (localStorage.getItem('customer_name')) {
+            localStorage.removeItem('customer_name');
+        }
         if (localStorage.getItem('posbiller')) {
             localStorage.removeItem('posbiller');
         }
@@ -1453,6 +1456,7 @@ var lang = {
         localStorage.setItem('posdiscount', '<?=$suspend_sale->customer_group_id;?>');        
         localStorage.setItem('poswarehouse', '<?=$suspend_sale->warehouse_id;?>');
         localStorage.setItem('poscustomer', '<?=$suspend_sale->customer_id;?>');
+        localStorage.setItem('customer_name', '<?=$suspend_sale->customer_name;?>');
         localStorage.setItem('posbiller', '<?=$suspend_sale->biller_id;?>');
         localStorage.setItem('posshipping', '<?=$suspend_sale->shipping;?>');
         localStorage.setItem('posreturn', '<?=$suspend_sale->return_amount;?>');
@@ -1464,23 +1468,25 @@ var lang = {
         localStorage.setItem('posdiscount', '<?=$old_sale->customer_group_id;?>');
         localStorage.setItem('poswarehouse', '<?=$old_sale->warehouse_id;?>');
         localStorage.setItem('poscustomer', '<?=$old_sale->customer_id;?>');
+        localStorage.setItem('customer_name', '<?=$old_sale->customer_name;?>');
         localStorage.setItem('posbiller', '<?=$old_sale->biller_id;?>');
         localStorage.setItem('posshipping', '<?=$old_sale->shipping;?>');
         localStorage.setItem('posreturn', '<?=$old_sale->return_amount;?>');
         <?php }
         ?>
-<?php if ($this->input->get('customer')) {?>
-        if (!localStorage.getItem('positems')) {
-            localStorage.setItem('poscustomer', <?=$this->input->get('customer');?>);
-        } else if (!localStorage.getItem('poscustomer')) {
-            localStorage.setItem('poscustomer', <?=$customer->id;?>);
-        }
-        <?php } else {?>
+    <?php 
+        if ($this->input->get('customer')) {?>
+            if (!localStorage.getItem('positems')) {
+                localStorage.setItem('poscustomer', <?=$this->input->get('customer');?>);
+            } else if (!localStorage.getItem('poscustomer')) {
+                localStorage.setItem('poscustomer', <?=$customer->id;?>);
+            }
+    <?php } else {?>
         if (!localStorage.getItem('poscustomer')) {
             localStorage.setItem('poscustomer', <?=$customer->id;?>);
         }
-        <?php }
-        ?>
+    <?php } ?>
+    
         if (!localStorage.getItem('postax2')) {
             localStorage.setItem('postax2', <?=$Settings->default_tax_rate2;?>);
         }

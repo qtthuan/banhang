@@ -338,7 +338,7 @@
                             </div></th>
                             <th class="text-right amount" colspan="2">
                                 <?=$this->sma->formatMoney($return_sale ? (($inv->total + $inv->product_tax)+($return_sale->total + $return_sale->product_tax)) : ($inv->total + $inv->product_tax));?>
-                                <?php $qr_pay = return_sale ? (($inv->total + $inv->product_tax)+($return_sale->total + $return_sale->product_tax)) : ($inv->total + $inv->product_tax); ?>
+                                <?php $qr_pay = return_sale ? (($inv->total + $inv->product_tax)+($return_sale->total + $return_sale->product_tax) - $inv->order_discount) : ($inv->total + $inv->product_tax - $inv->order_discount); ?>
                             </th>
                         </tr>
                         <?php

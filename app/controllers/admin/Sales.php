@@ -2146,7 +2146,7 @@ class Sales extends MY_Controller
             $r = 0;
             foreach ($rows as $row) {
                 $real_price = $row->price;
-                unset($row->cost, $row->details, $row->product_details, $row->barcode_symbology, $row->cf1, $row->cf2, $row->cf3, $row->cf4, $row->cf5, $row->cf6, $row->supplier1price, $row->supplier2price, $row->cfsupplier3price, $row->supplier4price, $row->supplier5price, $row->supplier1, $row->supplier2, $row->supplier3, $row->supplier4, $row->supplier5, $row->supplier1_part_no, $row->supplier2_part_no, $row->supplier3_part_no, $row->supplier4_part_no, $row->supplier5_part_no);
+                unset($row->cost, $row->details, $row->barcode_symbology, $row->cf1, $row->cf2, $row->cf3, $row->cf4, $row->cf5, $row->cf6, $row->supplier1price, $row->supplier2price, $row->cfsupplier3price, $row->supplier4price, $row->supplier5price, $row->supplier1, $row->supplier2, $row->supplier3, $row->supplier4, $row->supplier5, $row->supplier1_part_no, $row->supplier2_part_no, $row->supplier3_part_no, $row->supplier4_part_no, $row->supplier5_part_no);
                 $option = false;
                 $row->quantity = 0;
                 $row->item_tax_method = $row->tax_method;
@@ -2220,8 +2220,10 @@ class Sales extends MY_Controller
                 $tax_rate = $this->site->getTaxRateByID($row->tax_rate);
                 $category = $this->site->getCategoryByID($row->category_id);
 
-                $pr[] = array('warehouse' => $warehouse_id, 'customer' => $customer_id, 'id' => ($c + $r), 'item_id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'category' => $row->category_id,
-                    'no_points' => $this->sma->isPromo($row) ? 1 : $category->no_points, 'row' => $row, 'combo_items' => $combo_items, 'tax_rate' => $tax_rate, 'units' => $units, 'options' => $options);
+                $pr[] = array('warehouse' => $warehouse_id, 'customer' => $customer_id, 'id' => ($c + $r), 'item_id' => $row->id, 
+                    'label' => $row->name . " (" . $row->code . ")", 'category' => $row->category_id, 'product_details' => $row->product_details,
+                    'no_points' => $this->sma->isPromo($row) ? 1 : $category->no_points, 'row' => $row, 
+                    'combo_items' => $combo_items, 'tax_rate' => $tax_rate, 'units' => $units, 'options' => $options);
                 $r++;
             }
             $this->sma->send_json($pr);
