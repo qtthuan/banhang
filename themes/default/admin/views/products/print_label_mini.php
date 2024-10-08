@@ -79,7 +79,7 @@
                                                 if($item->comment && $item->comment != '' && $item->comment != 'undefined') {
                                                     $str_comment = '<br /><span class="comment" style="font-size: 10px;"><strong>' . $item->comment . '</strong></span>';
                                                 }
-                                                echo '<span style="position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
+                                                echo '<span style="margin-top: 3px; position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
                                                 echo '<span class="label_product_name_en" style="display: none;"><br />' . $item->product_name_en . '</span>';
                                                 echo $str_comment;
                                                 echo '</span>';
