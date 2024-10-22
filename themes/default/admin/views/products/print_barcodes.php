@@ -227,7 +227,7 @@
 
                                         if($item['price']) {
 
-                                            echo '<span class="barcode_price '.$increase_size.'">&#8727;';
+                                            echo '<span class="barcode_price '.$increase_size.'">';
                                             if($item['currencies']) {
                                                 foreach ($currencies as $currency) {
                                                     echo $currency->code . ': ' . $this->sma->formatMoney($item['price'] * $currency->rate).', ';
@@ -238,7 +238,7 @@
                                             if ($item['promo'] && $item['price_before_promo'] != 0) {
                                                 echo '<span style="font-size: 12px; text-decoration: line-through;"> ' . $item['price_before_promo'] . '</span>';
                                             }
-                                            echo '&#8727;</span> ';
+                                            echo '</span> ';
                                         }
                                         if ($style == 50) {
                                             echo '</div>';
