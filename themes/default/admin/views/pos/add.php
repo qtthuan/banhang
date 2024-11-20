@@ -1978,6 +1978,9 @@ var lang = {
             $('#customer_name').keyup(function(){
                 $(this).val($(this).val().toUpperCase());
             });
+            $('#mname').keyup(function(){
+                $(this).val($(this).val().toUpperCase());
+            });
         
         // qtthuan
         $(document).on('click', '.product', function (e) {

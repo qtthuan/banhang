@@ -108,5 +108,8 @@
         $('#name').keyup(function(){
             $(this).val($(this).val().toUpperCase());
         });
+        $('#mname').keyup(function(){
+            $(this).val($(this).val().toUpperCase());
+        });
     });
 </script>
