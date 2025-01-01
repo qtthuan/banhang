@@ -1440,6 +1440,7 @@ function loadItems() {
 
             if (item_type == 'standard' && item.options !== false) {
                 out_of_stock_items = '';
+                $('#has_out_of_stock_products').val(0);
                 $.each(item.options, function () {
                     if(this.id == item_option && base_quantity > this.quantity) {
                         if (!$('#out_of_stock_items').text().includes(item_code + ' (' + this.name + ')')) {

@@ -477,10 +477,11 @@ class Pos extends MY_Controller
         //$this->sma->print_arrays($products);
 
         if ($this->form_validation->run() == TRUE && !empty($products) && !empty($data)) {
-            //$this->sma->print_arrays($data, $payment, $customer_details);
+            //$this->sma->print_arrays($data, $payment, $customer_details, $suspend);
             if ($suspend) {
 //                $var = $this->pos_model->suspendSale($data, $products, $did);
 //                $this->sma->print_arrays($var);
+            //$this->sma->print_arrays($data, $products, $did);
                 if ($this->pos_model->suspendSale($data, $products, $did)) {
                     $this->session->set_userdata('remove_posls', 1);
                     $this->session->set_flashdata('message', $this->lang->line("sale_suspended"));
