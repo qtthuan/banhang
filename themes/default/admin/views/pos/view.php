@@ -76,7 +76,7 @@
                 } ?>
                 <div style="clear:both;"></div>
             </div>
-            <div id="receipt-data" style="margin-right: 5px;">
+            <div id="receipt-data" style="margin-right: 15px;">
                 <div class="text-center">
                 <?php if ($inv->warehouse_id != 3) { ?>
                     <strong><span style="font-size: 17px; text-transform: uppercase;"><?=$this->Settings->site_name?></span></strong><br />
