@@ -259,9 +259,9 @@
                                     $is_saleoff++;
                                     $has_discount++;
                                     if ($row->is_promo == 1) {
-                                        echo '(<span style="text-decoration: line-through">' . $this->sma->formatMoney($row->promo_original_price) . '</span>)';
+                                        echo ' (<span style="text-decoration: line-through">' . $this->sma->formatMoney($row->promo_original_price) . '</span>)';
                                     } elseif($row->item_discount != 0) {
-                                        echo '(<span style="text-decoration: line-through">' . $this->sma->formatMoney($row->real_unit_price + $row->added_price) . '</span>)';
+                                        echo ' (<span style="text-decoration: line-through">' . $this->sma->formatMoney($row->real_unit_price + $row->added_price) . '</span>)';
                                     }
                                 }
                                 if ($row->no_points == 1) {
