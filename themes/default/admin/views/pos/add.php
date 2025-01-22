@@ -1580,7 +1580,7 @@ var lang = {
                 var keyPressed = event.keyCode;
                 //var altPressed = event.altKey;
                 if (keyPressed == 9/* key code for 's'*/) {
-                    console.log('ccxxx');
+                    //console.log('ccxxx');
                     //$("#poscustomer").click();            
                 }
             });
