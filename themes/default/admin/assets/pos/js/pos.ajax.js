@@ -806,7 +806,7 @@ $('#posdiscount').focus(function () {
         positems[item_id].row.comment = $('#icomment').val().toUpperCase();
         positems[item_id].row.comment_name = $('#icommentname').val().toUpperCase();
         localStorage.setItem('positems', JSON.stringify(positems));
-        console.log(JSON.stringify(positems));
+        //console.log(JSON.stringify(positems));
         $('#prModal').modal('hide');
 
         loadItems();
@@ -1236,7 +1236,7 @@ function loadItems() {
         }
         var category = 0, print_cate = false;
         // var itn = parseInt(Object.keys(sortedItems).length);
-        console.log(JSON.stringify(sortedItems));
+        //console.log(JSON.stringify(sortedItems));
         $.each(sortedItems, function () {
             var item = this;            
             var item_id = site.settings.item_addition == 1 ? item.item_id : item.id;
@@ -1437,12 +1437,13 @@ function loadItems() {
             }
             count += parseFloat(item_qty);
             an++;
-
-            if (item_type == 'standard' && item.options !== false) { 
-                out_of_stock_items = '';
+            out_of_stock_items = '';
+            if (item_type == 'standard' && item.options !== false) {
+                
                 $('#has_out_of_stock_products').val(0);
+                //console.log(JSON.stringify(item.options));
                 $.each(item.options, function () {
-                    if(this.id == item_option && base_quantity > this.quantity) {
+                    if(this.id == item_option && base_quantity > this.total_quantity) {
                         if (!$('#out_of_stock_items').text().includes(item_code + ' (' + this.name + ')')) {
                             $('#out_of_stock_items').append(item_code + ' (' + this.name + '), ');
                         }
