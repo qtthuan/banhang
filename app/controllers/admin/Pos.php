@@ -193,6 +193,7 @@ class Pos extends MY_Controller
                 $item_id = $_POST['product_id'][$r];
                 $item_type = $_POST['product_type'][$r];
                 $item_code = $_POST['product_code'][$r];
+                $item_image = $_POST['product_image'][$r];
                 $item_name = $_POST['product_name'][$r];
                 $item_name_en = $_POST['product_name_en'][$r];
                 $item_comment = $_POST['product_comment'][$r];
@@ -258,6 +259,7 @@ class Pos extends MY_Controller
                         'product_id'      => $item_id,
                         'product_code'    => $item_code,
                         'product_name'    => $item_name,
+                        'image'           => $item_image,
                         'product_name_en' => $item_name_en,
                         'product_type'    => $item_type,
                         'option_id'       => $item_option,

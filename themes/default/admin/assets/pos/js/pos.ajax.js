@@ -818,7 +818,7 @@ $('#posdiscount').focus(function () {
      ----------------------- */
      $(document).on('click', '#editItemMini', function () {
         var row = $('#' + $('#row_id').val());
-
+        var timeout = null;
         var item_id = row.attr('data-item-id'), new_pr_tax = $('#ptax').val(), new_pr_tax_rate = false;
         if (new_pr_tax) {
             $.each(tax_rates, function () {
@@ -869,7 +869,6 @@ $('#posdiscount').focus(function () {
         positems[item_id].row.serial = $('#pserial').val();
         localStorage.setItem('positems', JSON.stringify(positems));
         $('#prModalMini').modal('hide');
-
         loadItems();
         return;
     });
@@ -1373,6 +1372,7 @@ function loadItems() {
                         '<input name="product_id[]" type="hidden" class="rid" value="' + product_id + '">' +
                         '<input name="product_type[]" type="hidden" class="rtype" value="' + item_type + '">' +
                         '<input name="product_code[]" type="hidden" class="rcode" value="' + item_code + '">' +
+                        '<input name="product_image[]" type="hidden" class="rcode" value="' + item_image + '">' +
                         '<input name="product_name[]" type="hidden" class="rname" value="' + item_name + '">' +
                         '<input name="product_name_en[]" type="hidden" class="rname" value="' + item_name_en + '">' +
                         '<input name="product_option[]" type="hidden" class="roption" value="' + item_option + '">' +
@@ -1438,7 +1438,7 @@ function loadItems() {
             count += parseFloat(item_qty);
             an++;
 
-            if (item_type == 'standard' && item.options !== false) {
+            if (item_type == 'standard' && item.options !== false) { 
                 out_of_stock_items = '';
                 $('#has_out_of_stock_products').val(0);
                 $.each(item.options, function () {
@@ -1450,7 +1450,6 @@ function loadItems() {
                         $('#row_' + row_no).addClass('danger');
                     }
                 });
-                
             } else if(item_type == 'standard' && base_quantity > item_aqty) {
                 $('#row_' + row_no).addClass('danger');
             } else if (item_type == 'combo') {
