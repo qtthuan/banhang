@@ -76,7 +76,7 @@
                 } ?>
                 <div style="clear:both;"></div>
             </div>
-            <div id="receipt-data" style="margin-right: 15px;">
+            <div id="receipt-data" style="margin-right: 20px;">
                 <div class="text-center">
                 <?php if ($inv->warehouse_id != 3) { ?>
                     <strong><span style="font-size: 17px; text-transform: uppercase;"><?=$this->Settings->site_name?></span></strong><br />
@@ -527,7 +527,7 @@
                 </table>
                 <?php
                 if ($payments) {
-                    echo '<table class="table table-striped table-condensed" style="margin-bottom: 10px; margin-top: 5px;"><tfoot>';
+                    echo '<table class="table table-striped table-condensed" style="display: none; margin-bottom: 10px; margin-top: 5px;"><tfoot>';
                     foreach ($payments as $payment) {
                         echo '<tr>';
                         if (($payment->paid_by == 'cash' || $payment->paid_by == 'pts' || $payment->paid_by == 'deposit') && $payment->pos_paid) {
@@ -653,13 +653,13 @@
                 ?>
             </div>
             <div style="clear:both;"></div>
-            <div style="font-size: 12px; text-align: center;">
+            <div style="font-size: 12px; text-align: center;margin-right: 30px">
                 
                 <img src="https://img.vietqr.io/image/vietcombank-0111000285533-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Lu%20Nguyet%20Binh" style="width: 85px">
                 <br /><?=lang('bank_info_vcb')?>
                 
             </div>
-            <div style="padding: 0 10px 10px;">
+            <div style="padding: 0 0 10px; margin-right: 30px;">
                 <p style="border-top: 1px solid black;">
                 <?php if ($biller->cf3) { ?>
                     <div class="text-center" style="padding-bottom: 7px; font-size: 14px; font-style: italic"><?= $biller->cf3 ? $this->sma->decode_html($biller->cf3) : ''; ?></div>
