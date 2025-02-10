@@ -628,7 +628,7 @@
                 <?= $customer->award_points != 0 && $Settings->each_spent > 0 ? '<div class="text-center" style="text-decoration: underline"><strong>' . lang('award_points_title') . '</strong></div><p class="text-center" style="font-size: 12px;"><br>'.lang('this_sale').': <strong>'.$str_this_sale.'</strong><br>'.
                 lang('total').' '.lang('award_points').': <strong>'. $customer->award_points . '</strong><span style="font-size:11px">' . $str_point_note . '</span></p>' : ''; ?>
                 <?php } ?>
-                <?= $inv->note ? '<p class="text-center" style="font-size: 17px; font-weight: bold; color: #006400;">' . $this->sma->decode_html($inv->note) . '</p>' : ''; ?>
+                <?= $inv->note ? '<p class="text-center" style="font-size: 17px; font-weight: bold; color: #006400; margin-right: 15px;">' . $this->sma->decode_html($inv->note) . '</p>' : ''; ?>
                 <?= $inv->staff_note ? '<p class="no-print" style="font-size: 13px; color: #006400;"><strong>' . lang('staff_note') . ':</strong> ' . $this->sma->decode_html($inv->staff_note) . '</p>' : ''; ?>
                 <?php
                     $inv_date = date('Y-m-d', strtotime($inv->date));
