@@ -541,6 +541,7 @@ class Pos extends MY_Controller
             }
 
             if (($sid || $duplicate_sale) && $inv_items) {
+                
                     krsort($inv_items);
                     $c = rand(100000, 9999999);
                     foreach ($inv_items as $item) {
@@ -580,6 +581,7 @@ class Pos extends MY_Controller
                         $row->tax_rate = $item->tax_rate_id;
                         $row->serial = $item->serial_no;
                         $row->option = $item->option_id;
+                        $row->image = $item->image;
                         $options = $this->pos_model->getProductOptions($row->id, $item->warehouse_id);
 
                         if ($options) {
@@ -606,8 +608,8 @@ class Pos extends MY_Controller
                         $units = $this->site->getUnitsByBUID($row->base_unit);
                         $tax_rate = $this->site->getTaxRateByID($row->tax_rate);
                         $ri = $this->Settings->item_addition ? $row->id : $c;
-
-                        $pr[$ri] = array('id' => $c, 'item_id' => $row->id, 'no_points' => $no_points, 'label' => $row->name . " (" . $row->code . ")",
+                        //$this->sma->print_arrays($row);
+                        $pr[$ri] = array('id' => $c, 'item_id' => $row->id, 'item_image' => $row->image, 'no_points' => $no_points, 'label' => $row->name . " (" . $row->code . ")",
                                 'row' => $row, 'combo_items' => $combo_items, 'tax_rate' => $tax_rate, 'units' => $units, 'options' => $options);
                         $c++;
                     }
