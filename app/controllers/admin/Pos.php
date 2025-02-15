@@ -1156,6 +1156,7 @@ class Pos extends MY_Controller
                 'return_sale'               => $this->input->post('return_sale'),
                 'print_items_list'          => $this->input->post('print_items_list'),
                 'finalize_sale'             => $this->input->post('finalize_sale'),
+                'quick_finalize_sale'       => $this->input->post('quick_finalize_sale'),
                 'today_sale'                => $this->input->post('today_sale'),
                 'open_hold_bills'           => $this->input->post('open_hold_bills'),
                 'close_register'            => $this->input->post('close_register'),

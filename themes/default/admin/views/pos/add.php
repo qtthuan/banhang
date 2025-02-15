@@ -206,6 +206,7 @@
                                 	echo form_input('customer', (isset($_POST['customer']) ? $_POST['customer'] : ""), 'id="poscustomer" data-placeholder="' . $this->lang->line("select") . ' ' . $this->lang->line("customer") . '" required="required" class="form-control pos-input-tip" style="width:100%;"');
                                 ?>
                                 <input name="customer_group_id" type="hidden" value="" id="customer_group_id">
+                                <input name="is_quick_finalize_sale" type="hidden" value="" id="is_quick_finalize_sale">
                                 <input name="sale_language" type="hidden" value="0" id="sale_language">
                                     <div class="input-group-addon no-print" style="padding: 2px 16px; border-left: 0;">
                                         <a href="#" id="toogle-customer-read-attr" class="external pos-tip" title="<?=lang('customer_selection')?>">
@@ -389,24 +390,29 @@
                                 <div id="botbuttons" class="col-xs-12 text-center">
                                     <input type="hidden" name="biller" id="biller" value="<?= ($Owner || $Admin || !$this->session->userdata('biller_id')) ? $pos_settings->default_biller : $this->session->userdata('biller_id')?>"/>
                                     <div class="row">
-                                        <div class="col-xs-3" style="padding: 0;">
+                                        <div class="col-xs-2-5" style="padding: 0;">
                                             <button type="button" class="btn btn-danger btn-block" id="reset" style="height:57px; font-size: 20px;">
                                                 <i class="fa fa-times-circle" style="margin-right: 5px;"></i><?=lang('cancel_sale');?> (<strong><?=$pos_settings->cancel_sale?></strong>)
                                             </button>
                                         </div>
-                                        <div class="col-xs-3" style="padding: 0;">
+                                        <div class="col-xs-2-5" style="padding: 0;">
                                             <button type="button" class="btn btn-warning btn-block" id="suspend" style="height:57px; font-size: 20px;">
                                                 <i class="fa fa-sticky-note" style="margin-right: 5px;"></i><?=lang('suspend');?> (<strong><?=$pos_settings->suspend_sale?></strong>)
                                             </button>
                                         </div>
-                                        <div class="col-xs-3" style="padding: 0;">
+                                        <div class="col-xs-2" style="padding: 0;">
                                             <button type="button" class="btn btn-info btn-block" id="print_bill" style="height:57px; font-size: 20px;">
                                                 <i class="fa fa-th" style="margin-right: 5px;"></i><?=lang('bill');?>
                                             </button>
                                         </div>
-                                        <div class="col-xs-3" style="padding: 0;">
+                                        <div class="col-xs-2-5" style="padding: 0;">
                                             <button type="button" class="btn btn-success btn-block" id="payment" style="height:57px; font-size: 20px;">
                                                 <i class="fa fa-money" style="margin-right: 5px;"></i><?=lang('payment');?> (<strong><?=$pos_settings->finalize_sale?></strong>)
+                                            </button> 
+                                        </div>
+                                        <div class="col-xs-2-5" style="padding: 0;">
+                                            <button type="button" class="btn btn-primary btn-block" id="quick_payment" style="height:57px; font-size: 20px;">
+                                                <i class="fa fa-money" style="margin-right: 5px;"></i>TT nhanh (<strong><?=$pos_settings->quick_finalize_sale?></strong>)
                                             </button>
                                         </div>
                                     </div>
@@ -1675,6 +1681,10 @@ var lang = {
         });
         <?php }
         ?>
+        $('#quick_payment').click(function () {
+            $('#is_quick_finalize_sale').val(1);
+            $("#payment").trigger('click')
+        });
         $('#payment').click(function () {
             <?php if ($sid) {?>
             suspend = $('<span></span>');
@@ -1728,6 +1738,11 @@ var lang = {
         });
         $('#paymentModal').on('shown.bs.modal', function(e) {
             $('#amount_1').focus();
+            if ($('#is_quick_finalize_sale').val() == 1) {
+                $('#quick-payable').click();
+                $('#amount_1').blur();
+                $('#submit-sale').click();
+            }
             $('#customer').select2({
                 minimumInputLength: 1,
                 ajax: {
@@ -2332,7 +2347,7 @@ var lang = {
     });
  
     $(document).ready(function () {
-    
+
         $('#poswarehouse').change(function () {
             var v = $(this).val();
             if (v != 3) {

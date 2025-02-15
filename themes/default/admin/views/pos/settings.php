@@ -281,8 +281,8 @@
                     </div>
                     <div class="col-md-4 col-sm-4">
                         <div class="form-group">
-                            <?= lang('return_sale', 'return_sale'); ?>
-                            <?= form_input('return_sale', $pos->return_sale, 'class="form-control tip" id="return_sale"'); ?>
+                            <?= lang('quick_finalize_sale', 'quick_finalize_sale'); ?>
+                            <?= form_input('quick_finalize_sale', $pos->quick_finalize_sale, 'class="form-control tip" id="quick_finalize_sale"'); ?>
                         </div>
                     </div>
 
@@ -290,6 +290,12 @@
                         <div class="form-group">
                             <?= lang('finalize_sale', 'finalize_sale'); ?>
                             <?= form_input('finalize_sale', $pos->finalize_sale, 'class="form-control tip" id="finalize_sale"'); ?>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4">
+                        <div class="form-group">
+                            <?= lang('return_sale', 'return_sale'); ?>
+                            <?= form_input('return_sale', $pos->return_sale, 'class="form-control tip" id="return_sale"'); ?>
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-4">
