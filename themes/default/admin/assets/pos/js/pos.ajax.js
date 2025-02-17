@@ -50,7 +50,6 @@ $(document).ready(function() {
     });
 });
 $(document).ready(function () {
-
 // Order level shipping and discount localStorage
 if (posdiscount = localStorage.getItem('posdiscount')) {
     $('#posdiscount').val(posdiscount);

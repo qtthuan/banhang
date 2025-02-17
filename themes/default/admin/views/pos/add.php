@@ -445,8 +445,10 @@
                                     ?>
                                 </div>
                                 <input name="order_tax" type="hidden" value="<?=$suspend_sale ? $suspend_sale->order_tax_id : ($old_sale ? $old_sale->order_tax_id : $Settings->default_tax_rate2);?>" id="postax2">
-                                <input name="discount" type="hidden" value="<?=$suspend_sale ? $suspend_sale->order_discount_id : ($old_sale ? $old_sale->order_discount_id : '');?>" id="posdiscount">
+                                
+                                <?php //$this->sma->print_arrays($suspend_sale);?>
                                 <input name="shipping" type="hidden" value="<?=$suspend_sale ? $suspend_sale->shipping : ($old_sale ? $old_sale->shipping :  '0');?>" id="posshipping">
+                                <input name="discount" type="hidden" value="<?=$suspend_sale ? $suspend_sale->order_discount_id : ($old_sale ? $old_sale->order_discount_id : '');?>" id="posdiscount">
                                 <input id="order_discount_percent_for_return_sale" name="order_discount_percent_for_return_sale" type="hidden" value="0">
                                 <input name="return_amount" type="hidden" value="<?=$suspend_sale ? $suspend_sale->return_amount : ($old_sale ? $old_sale->return_amount :  '0');?>" id="posreturn">
                                 <input type="hidden" name="rpaidby" id="rpaidby" value="cash" style="display: none;"/>
@@ -1459,10 +1461,10 @@ var lang = {
         <?php if ($suspend_sale) {?>
         localStorage.setItem('postax2', '<?=$suspend_sale->order_tax_id;?>');
         localStorage.setItem('posdiscount', '<?=$suspend_sale->order_discount_id;?>');        
-        localStorage.setItem('posdiscount', '<?=$suspend_sale->customer_group_id;?>');        
+        localStorage.setItem('customer_group_id', '<?=$customer->customer_group_id;?>');        
         localStorage.setItem('poswarehouse', '<?=$suspend_sale->warehouse_id;?>');
         localStorage.setItem('poscustomer', '<?=$suspend_sale->customer_id;?>');
-        localStorage.setItem('customer_name', '<?=$suspend_sale->customer_name;?>');
+        localStorage.setItem('customer_name', '<?=$suspend_sale->customer;?>');
         localStorage.setItem('posbiller', '<?=$suspend_sale->biller_id;?>');
         localStorage.setItem('posshipping', '<?=$suspend_sale->shipping;?>');
         localStorage.setItem('posreturn', '<?=$suspend_sale->return_amount;?>');
@@ -1471,10 +1473,10 @@ var lang = {
         <?php if ($old_sale) {?>
         localStorage.setItem('postax2', '<?=$old_sale->order_tax_id;?>');
         localStorage.setItem('posdiscount', '<?=$old_sale->order_discount_id;?>');
-        localStorage.setItem('posdiscount', '<?=$old_sale->customer_group_id;?>');
+        localStorage.setItem('customer_group_id', '<?=$old_sale->customer_group_id;?>');
         localStorage.setItem('poswarehouse', '<?=$old_sale->warehouse_id;?>');
         localStorage.setItem('poscustomer', '<?=$old_sale->customer_id;?>');
-        localStorage.setItem('customer_name', '<?=$old_sale->customer_name;?>');
+        localStorage.setItem('customer_name', '<?=$old_sale->customer;?>');
         localStorage.setItem('posbiller', '<?=$old_sale->biller_id;?>');
         localStorage.setItem('posshipping', '<?=$old_sale->shipping;?>');
         localStorage.setItem('posreturn', '<?=$old_sale->return_amount;?>');
@@ -1501,6 +1503,7 @@ var lang = {
         //     id: <?=$customer->id;?>,
         //     text: '<?=$customer->company == '-' ? $customer->name : $customer->company;?>'
         // }];
+        //$('#cusstomer_name').val(localStorage.getItem('customer_name'));
         $('#poscustomer').val(localStorage.getItem('poscustomer')).select2({
             minimumInputLength: 1,
             data: [],
@@ -1592,6 +1595,7 @@ var lang = {
             });
 
         }
+        // qtthuan: 
         $(document).on('change', '#poscustomer', function () {
             //console.log(localStorage.getItem('poscustomer'));
             $.ajax({
@@ -1600,24 +1604,27 @@ var lang = {
                 url: "<?= admin_url('customers/getCustomerGroupByCustomerID') ?>/" + localStorage.getItem('poscustomer'),
                 dataType: "json",
                 success: function (cgdata) {
-                    $("#customer_group_id").val(cgdata['id']);
-                    var percent = cgdata['customer_group_percent'];
-                    if (is_valid_discount(percent)) {
-                        var realPercent = (percent*-1) + '%';
-                        $('#posdiscount').val(realPercent);
-
-                        if (percent != 0) {
-                            var str = cgdata['customer_group_name'] + '<?= lang('vip_discount') ?>' + realPercent;
-                            $('#posInfoModalLabel').text(str);
-                            $('#posInfoModal').modal();
-                        } else {
-                            realPercent = 0;
+                    if(cgdata['id'] != 3 && cgdata['id'] != 4) {
+                        $("#customer_group_id").val(cgdata['id']);
+                        var percent = cgdata['customer_group_percent'];
+                        if (is_valid_discount(percent)) {
+                            var realPercent = (percent*-1) + '%';
+                            $('#posdiscount').val(realPercent);
+                            
+                            if (percent != 0) {
+                                console.log(JSON.stringify(cgdata));
+                                var str = cgdata['customer_group_name'] + '<?= lang('vip_discount') ?>' + realPercent;
+                                $('#posInfoModalLabel').text(str);
+                                $('#posInfoModal').modal();
+                            } else {
+                                realPercent = 0;
+                            }
+                            localStorage.removeItem('posdiscount');
+                            localStorage.setItem('posdiscount', realPercent);
+                            localStorage.removeItem('customer_group_id');
+                            localStorage.setItem('customer_group_id', cgdata['id']);
+                            loadItems();
                         }
-                        localStorage.removeItem('posdiscount');
-                        localStorage.setItem('posdiscount', realPercent);
-                        localStorage.removeItem('customer_group_id');
-                        localStorage.setItem('customer_group_id', cgdata['id']);
-                        loadItems();
                     }
                 },
                 error: function () {

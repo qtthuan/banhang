@@ -514,7 +514,7 @@ class Pos extends MY_Controller
             $this->data['oid'] = NULL;
             if ($duplicate_sale) {
                 if ($old_sale = $this->pos_model->getInvoiceByID($duplicate_sale)) {
-                    //$this->sma->print_arrays($old_sale);
+                    $this->sma->print_arrays($old_sale);
                     $inv_items = $this->pos_model->getSaleItems($duplicate_sale);
                     $this->data['oid'] = $duplicate_sale;
                     $this->data['old_sale'] = $old_sale;
@@ -529,11 +529,13 @@ class Pos extends MY_Controller
             if ($sid) {
                 if ($suspended_sale = $this->pos_model->getOpenBillByID($sid)) {
                     $inv_items = $this->pos_model->getSuspendedSaleItems($sid);
+                    
                     $this->data['sid'] = $sid;
                     $this->data['suspend_sale'] = $suspended_sale;
                     $this->data['message'] = lang('suspended_sale_loaded');
                     $this->data['customer'] = $this->pos_model->getCompanyByID($suspended_sale->customer_id);
                     $this->data['reference_note'] = $suspended_sale->suspend_note;
+                    //$this->sma->print_arrays($suspended_sale, $this->data['customer'], $inv_items);
                 } else {
                     $this->session->set_flashdata('error', lang("bill_x_found"));
                     admin_redirect("pos");
