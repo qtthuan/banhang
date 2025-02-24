@@ -187,7 +187,7 @@
     
 
 
-    var copyTextareaBtn = document.querySelector('.copy');
+var copyTextareaBtn = document.querySelector('.copy');
 
 copyTextareaBtn.addEventListener('click', function(event) {
   var copyTextarea = document.querySelector('.js-copytextarea');

@@ -1465,6 +1465,8 @@ var lang = {
         localStorage.setItem('poswarehouse', '<?=$suspend_sale->warehouse_id;?>');
         localStorage.setItem('poscustomer', '<?=$suspend_sale->customer_id;?>');
         localStorage.setItem('customer_name', '<?=$suspend_sale->customer;?>');
+        $('#customer_name').val(localStorage.getItem('customer_name'));
+        $()
         localStorage.setItem('posbiller', '<?=$suspend_sale->biller_id;?>');
         localStorage.setItem('posshipping', '<?=$suspend_sale->shipping;?>');
         localStorage.setItem('posreturn', '<?=$suspend_sale->return_amount;?>');
