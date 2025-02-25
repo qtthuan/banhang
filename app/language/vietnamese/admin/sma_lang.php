@@ -407,6 +407,7 @@ $lang['error_404']                          = "404 Page Not Found ";
 $lang['default_customer_group']             = "Nhóm khách hàng mặc định";
 $lang['pos_settings']                       = "Cài đặt bán hàng";
 $lang['pos_sales']                          = "Hóa đơn bán hàng POS";
+$lang['list_sale_items']                    = "Hóa đơn bán hàng POS";
 $lang['suspended_sales']                    = "Hóa đơn POS tạm";
 $lang['seller']                             = "Người bán";
 $lang['ip:']                                = "IP:";
