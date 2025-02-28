@@ -283,7 +283,7 @@
                                 if ($style != 50) {
                                     echo '</div>';
                                 }
-                                echo '<div class="no-print" style="color: green"><h2><strong>(1-'.round($total_items/2).')</strong></h2></div>';
+                                echo '<div id="total_items" class="no-print" style="color: green"><h2><strong>(1-'.round($total_items/2).')</strong></h2></div>';
                                 echo '<button type="button" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print') . '</button>';
                             } else {
                                 echo '<h3>'.lang('no_product_selected').'</h3>';
@@ -314,6 +314,23 @@
         if (localStorage.getItem('bcitems')) {
             loadItems();
         }
+
+        $(document).on('click', '.item', function () {
+            var total_items = $(this).closest('.barcode').find('.item').length - 1;
+            //console.log('cccc: ' + $(this).closest('.barcode').find('.item_1').length);
+            var id = $(this).attr('id');
+            $(this).remove();
+            //total_items = total_items -1;
+            //$("#total_items").html("<h1><strong>(1-" + Math.round(total_items/2) + ")</strong></h1><h2>&#8220;Click vào tem để xóa&#8221;</h2>")
+            fillTotalItems(total_items);
+        });
+
+        function fillTotalItems(total) {
+            $("#total_items").html("<h1><strong>(1-" + Math.round(total/2) + ")</strong></h1><h2>&#8220;Click vào tem để xóa&#8221;</h2>")
+        }
+
+        fillTotalItems($('.barcode>div').length);
+
         $("#add_item").autocomplete({
             source: '<?= admin_url('products/get_suggestions'); ?>',
             minLength: 2,
@@ -346,7 +363,7 @@
                 event.preventDefault();
                 if (ui.item.id !== 0) {
                     var row = add_product_item(ui.item);
-                    console.log(JSON.stringify(ui.item));
+                    //console.log(JSON.stringify(ui.item));
                     if (row) {
                         $(this).val('');
                     }
@@ -716,7 +733,7 @@
             bcitems = JSON.parse(localStorage.getItem('bcitems'));
 
             $.each(bcitems, function () {
-                console.log(JSON.stringify(bcitems));
+                //console.log(JSON.stringify(bcitems));
                 var item = this;
                 uncheckMini(item.code);
                 var row_no = item.id;
