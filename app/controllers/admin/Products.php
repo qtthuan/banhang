@@ -795,7 +795,7 @@ class Products extends MY_Controller
         }
 
        
-        //$this->sma->print_arrays($data);
+        //$this->sma->print_arrays($data, $items);
 
         if ($this->form_validation->run() == true && $this->products_model->addProduct($data, $items, $warehouse_qty, $product_attributes, $photos)) {
             $this->session->set_flashdata('message', lang("product_added"));
@@ -813,10 +813,11 @@ class Products extends MY_Controller
             $this->data['product'] = $id ? $this->products_model->getProductByID($id) : NULL;
             $this->data['variants'] = $this->products_model->getAllVariants();
             $this->data['combo_items'] = ($id && $this->data['product']->type == 'combo') ? $this->products_model->getProductComboItems($id) : NULL;
-            $this->data['product_options'] = $id ? $this->products_model->getProductOptionsWithWH($id) : NULL;
+            $this->data['product_options'] = $id ? $this->products_model->getProductOptionsWithWHQty($id) : NULL;
             $this->data['size_groups'] = $this->settings_model->getAllSizeGroup();
             $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('products'), 'page' => lang('products')), array('link' => '#', 'page' => lang('add_product')));
             $meta = array('page_title' => lang('add_product'), 'bc' => $bc);
+            //$this->sma->print_arrays($this->data['product_options']);
             $this->page_construct('products/add', $meta, $this->data);
         }
     }

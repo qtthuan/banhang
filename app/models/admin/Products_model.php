@@ -108,6 +108,25 @@ class Products_model extends CI_Model
         }
     }
 
+    /**
+     * qtthuan
+     */
+    public function getProductOptionsWithWHQty($pid)
+    {
+        $this->db->select($this->db->dbprefix('product_variants') . '.*, ' . $this->db->dbprefix('warehouses') . '.name as wh_name, ' . $this->db->dbprefix('warehouses') . '.id as warehouse_id, ' . $this->db->dbprefix('warehouses_products_variants') . '.quantity as wh_qty, ' . $this->db->dbprefix('warehouses_products_variants') . '.original_quantity as wh_original_qty')
+            ->join('warehouses_products_variants', 'warehouses_products_variants.option_id=product_variants.id', 'left')
+            ->join('warehouses', 'warehouses.id=warehouses_products_variants.warehouse_id', 'left')
+            ->group_by(array('' . $this->db->dbprefix('product_variants') . '.id', '' . $this->db->dbprefix('warehouses_products_variants') . '.warehouse_id'))
+            ->order_by('product_variants.id');
+        $q = $this->db->get_where('product_variants', array('product_variants.product_id' => $pid));
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+    }
+
     public function getProductComboItems($pid)
     {
         $this->db->select($this->db->dbprefix('products') . '.id as id, ' . $this->db->dbprefix('products') . '.code as code, ' . $this->db->dbprefix('combo_items') . '.quantity as qty, ' . $this->db->dbprefix('products') . '.name as name, ' . $this->db->dbprefix('combo_items') . '.unit_price as price')->join('products', 'products.code=combo_items.item_code', 'left')->group_by('combo_items.id');
@@ -354,8 +373,9 @@ class Products_model extends CI_Model
                         $this->db->insert('product_variants', $pr_attr);
                         $option_id = $this->db->insert_id();
                     }
+                    // qtthuan
+                    $this->db->insert('warehouses_products_variants', array('option_id' => $option_id, 'product_id' => $product_id, 'warehouse_id' => $variant_warehouse_id, 'quantity' => $pr_attr['quantity'], 'original_quantity' => $pr_attr['quantity']));
                     if ($pr_attr['quantity'] != 0) {
-                        $this->db->insert('warehouses_products_variants', array('option_id' => $option_id, 'product_id' => $product_id, 'warehouse_id' => $variant_warehouse_id, 'quantity' => $pr_attr['quantity'], 'original_quantity' => $pr_attr['quantity']));
 
                         $tax_rate_id = $tax_rate ? $tax_rate->id : NULL;
                         $tax = $tax_rate ? (($tax_rate->type == 1) ? $tax_rate->rate . "%" : $tax_rate->rate) : NULL;
