@@ -653,7 +653,7 @@
                 ?>
             </div>
             <div style="clear:both;"></div>
-            <div style="font-size: 12px; text-align: center;margin-right: 10px">
+            <div style="font-size: 12px; text-align: center;margin-right: 25px">
                 
                 <!-- <img src="https://img.vietqr.io/image/vietcombank-0111000285533-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Lu%20Nguyet%20Binh" style="width: 105px">
                 <br /><?=lang('bank_info_vcb')?> -->
