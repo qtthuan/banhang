@@ -406,14 +406,14 @@
                                             </button>
                                         </div>
                                         <div class="col-xs-2-5" style="padding: 0;">
-                                            <button type="button" class="btn btn-success btn-block" id="payment" style="height:57px; font-size: 20px;">
-                                                <i class="fa fa-money" style="margin-right: 5px;"></i><?=lang('payment');?> (<strong><?=$pos_settings->finalize_sale?></strong>)
-                                            </button> 
-                                        </div>
-                                        <div class="col-xs-2-5" style="padding: 0;">
                                             <button type="button" class="btn btn-primary btn-block" id="quick_payment" style="height:57px; font-size: 20px;">
                                                 <i class="fa fa-money" style="margin-right: 5px;"></i>TT nhanh (<strong><?=$pos_settings->quick_finalize_sale?></strong>)
                                             </button>
+                                        </div>
+                                        <div class="col-xs-2-5" style="padding: 0;">
+                                            <button type="button" class="btn btn-success btn-block" id="payment" style="height:57px; font-size: 20px;">
+                                                <i class="fa fa-money" style="margin-right: 5px;"></i><?=lang('payment');?> (<strong><?=$pos_settings->finalize_sale?></strong>)
+                                            </button> 
                                         </div>
                                     </div>
                                 </div>
