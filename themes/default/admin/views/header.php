@@ -47,6 +47,7 @@
                 <button class="navbar-toggle btn" type="button" data-toggle="collapse" data-target="#sidebar_menu">
                     <span class="fa fa-bars"></span>
                 </button>
+                <a class="btn tip" title="<?= lang('shop') ?>" data-placement="bottom" href="<?= base_url() ?>"><i class="fa fa-shopping-cart"></i></a>
                 <a href="<?= admin_url('users/profile/' . $this->session->userdata('user_id')); ?>" class="btn">
                     <span class="fa fa-user"></span>
                 </a>
