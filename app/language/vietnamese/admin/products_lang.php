@@ -168,6 +168,7 @@ $lang['edit_adjustment']                    = "Cập nhật điều chỉnh";
 $lang['delete_adjustment']                  = "Xóa điều chỉnh";
 $lang['unit_code']                          = "Mã đơn vị";
 $lang['price_addition']                     = "Giá cộng vào";
+$lang['variant_promo_price']                = "Giá KM";
 $lang['default_sale_unit']                  = "Đơn vị bán ra";
 $lang['default_purchase_unit']              = "Đơn vị nhập hàng";
 $lang['select_unit_first']                  = "Vui lòng chọn đơn vị";

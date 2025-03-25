@@ -299,6 +299,7 @@ class Products extends MY_Controller
                                 'image' => $this->input->post('product_image') ? $product->image : FALSE,
                                 'barcode' => $this->input->post('product_barcode') ? $this->product_barcode($text_code, 'code128', $bci_size) : FALSE,
                                 'price' => $this->input->post('price') ?  $this->sma->formatMoney($option->price != 0 ? ($price+$option->price) : $price) : FALSE,
+                                'variant_promo_price' => $option->promo_price,
                                 'promo' => $this->input->post('check_promo'),
                                 'price_before_promo' => $this->input->post('check_promo') ? $this->sma->formatMoney(($option->price != 0 && $price_before_promo > 0) ? ($price_before_promo+$option->price) : $price_before_promo) : FALSE,
                                 'unit' => $this->input->post('unit') ? $product->unit : FALSE,
@@ -315,7 +316,7 @@ class Products extends MY_Controller
                                 );
                         }
                     }
-                    
+                    //$this->sma->print_arrays($barcodes);
                 } else {
                     
                     $barcodes[] = array(
@@ -1004,6 +1005,7 @@ class Products extends MY_Controller
                             'name' => $this->input->post('variant_name_'.$pv->id),
                             'cost' => $this->input->post('variant_cost_'.$pv->id),
                             'price' => $this->input->post('variant_price_'.$pv->id),
+                            'promo_price' => $this->input->post('variant_promo_price_'.$pv->id),
                         );
                     }
                 }

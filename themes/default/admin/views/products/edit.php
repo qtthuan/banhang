@@ -245,16 +245,26 @@ if (!empty($variants)) {
                                 <thead>
                                 <tr class="active">
                                     <th><?= lang('name') ?></th>
-                                    <th><?= lang('warehouse') ?></th>
+                                    <!-- <th><?= lang('warehouse') ?></th> -->
                                     <th><?= lang('quantity') ?></th>                                    
                                     <th><?= lang('cost') ?></th>
                                     <th><?= lang('price_addition') ?></th>
+                                    <th><?= lang('variant_promo_price') ?></th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <?php
                                 foreach ($product_options as $option) {
-                                    echo '<tr><td class="col-xs-3"><input type="hidden" name="attr_id[]" value="' . $option->id . '"><span>' . $option->name . '</span></td><td class="code text-center col-xs-3"><span>' . $option->wh_name . '</span></td><td class="quantity text-center col-xs-2"><span>' . $this->sma->formatQuantity($option->wh_qty) . '</span></td><td class="price text-right col-xs-2">' . $this->sma->formatMoney($option->cost) . '</td><td class="price text-right col-xs-2">' . $this->sma->formatMoney($option->price) . '</td></tr>';
+                                    $str_promo_style = '';
+                                    if ($option->promo_price > 0) {
+                                        $str_promo_style = ' style="background-color: #fff8ba"';
+                                    }
+                                    echo '<tr>
+                                    <td class="col-xs-2"><input type="hidden" name="attr_id[]" value="' . $option->id . '"><span>' . $option->name . '</span></td>
+                                    <td class="quantity text-center col-xs-2"><span>' . $this->sma->formatQuantity($option->wh_qty) . '</span></td>
+                                    <td class="price text-right col-xs-2">' . $this->sma->formatMoney($option->cost) . '</td>
+                                    <td class="price text-right col-xs-2">' . $this->sma->formatMoney($option->price) . '</td>
+                                    <td class="price text-right col-xs-2" '.$str_promo_style.'>' . $this->sma->formatMoney($option->promo_price) . '</td></tr>';
                                 }
                             ?>
                             </tbody>
@@ -266,16 +276,17 @@ if (!empty($variants)) {
                                 <table class="table table-bordered table-condensed table-striped" style="margin-top: 10px;">
                                 <thead>
                                 <tr class="active">
-                                    <th class="col-xs-4"><?= lang('name') ?></th>                                    
-                                    <th class="col-xs-4"><?= lang('cost') ?></th>
-                                    <th class="col-xs-4"><?= lang('price_addition') ?></th>
+                                    <th class="col-xs-3"><?= lang('name') ?></th>                                    
+                                    <th class="col-xs-3"><?= lang('cost') ?></th>
+                                    <th class="col-xs-3"><?= lang('price_addition') ?></th>
+                                    <th class="col-xs-3" style="background-color: #008b8b;"><?= lang('variant_promo_price') ?></th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <?php
                                 //$this->sma->print_arrays($product_variants);
                                 foreach ($product_variants as $pv) {
-                                     echo '<tr><td class="col-xs-3"><input type="hidden" name="variant_id_' . $pv->id . '" value="' . $pv->id . '"><input type="text" name="variant_name_' . $pv->id . '" value="' . $pv->name . '" class="form-control"></td><td class="cost text-right col-xs-2"><input type="text" name="variant_cost_' . $pv->id . '" value="' . $this->sma->formatDecimal($pv->cost) . '" class="form-control"></td><td class="price text-right col-xs-2"><input type="text" name="variant_price_' . $pv->id . '" value="' . $this->sma->formatDecimal($pv->price) . '" class="form-control"></td></tr>';
+                                     echo '<tr><td class="col-xs-3"><input type="hidden" name="variant_id_' . $pv->id . '" value="' . $pv->id . '"><input type="text" name="variant_name_' . $pv->id . '" value="' . $pv->name . '" class="form-control"></td><td class="cost text-right col-xs-2"><input type="text" name="variant_cost_' . $pv->id . '" value="' . $this->sma->formatDecimal($pv->cost) . '" class="form-control"></td><td class="price text-right col-xs-2"><input type="text" name="variant_price_' . $pv->id . '" value="' . $this->sma->formatDecimal($pv->price) . '" class="form-control"></td><td class="price text-right col-xs-2"><input type="text" name="variant_promo_price_' . $pv->id . '" value="' . $this->sma->formatDecimal($pv->promo_price) . '" class="form-control"></td></tr>';
                                 }
                                 ?>
                                 </tbody>

@@ -233,11 +233,19 @@
                                                     echo $currency->code . ': ' . $this->sma->formatMoney($item['price'] * $currency->rate).', ';
                                                 }
                                             } else {
-                                                echo $item['price'];
+                                                if ($item['variant_promo_price'] && $item['variant_promo_price'] > 0 && $item['price_before_promo'] == 0) {
+                                                    echo $this->sma->formatMoney($item['variant_promo_price']);
+                                                } else {
+                                                    echo $item['price'];
+                                                }
                                             }
                                             if ($item['promo'] && $item['price_before_promo'] != 0) {
                                                 echo '<span style="font-size: 12px; text-decoration: line-through;"> ' . $item['price_before_promo'] . '</span>';
                                             }
+                                            if ($item['variant_promo_price'] && $item['variant_promo_price'] > 0 && $item['price_before_promo'] == 0) {
+                                                echo '<span style="font-size: 12px; text-decoration: line-through;"> ' . $item['price'] . '</span>';
+                                            }
+
                                             echo '</span> ';
                                         }
                                         if ($style == 50) {

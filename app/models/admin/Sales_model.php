@@ -87,7 +87,7 @@ class Sales_model extends CI_Model
     public function getProductOptions($product_id, $warehouse_id, $all = NULL)
     {
         $wpv = "( SELECT option_id, warehouse_id, quantity from {$this->db->dbprefix('warehouses_products_variants')} WHERE product_id = {$product_id}) FWPV";
-        $this->db->select('product_variants.id as id, product_variants.name as name, product_variants.price as price, product_variants.quantity as total_quantity, FWPV.quantity as quantity', FALSE)
+        $this->db->select('product_variants.id as id, product_variants.name as name, product_variants.price as price, product_variants.promo_price as variant_promo_price, product_variants.quantity as total_quantity, FWPV.quantity as quantity', FALSE)
             ->join($wpv, 'FWPV.option_id=product_variants.id', 'left')
             //->join('warehouses', 'warehouses.id=product_variants.warehouse_id', 'left')
             ->where('product_variants.product_id', $product_id)

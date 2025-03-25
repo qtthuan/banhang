@@ -1331,22 +1331,18 @@ function loadItems() {
             item_price = item_tax_method == 0 ? formatDecimal((unit_price-pr_tax_val), 4) : formatDecimal(unit_price);
             unit_price = formatDecimal((unit_price+item_discount), 4);
             var sel_opt = '';
+            var sel_opt_promo_price = 0;
             $.each(item.options, function () {
                 if(this.id == item_option) {
                     sel_opt = this.name;
+                    sel_opt_promo_price = this.variant_promo_price;
+                    sel_opt_price = parseFloat(this.price);
                 }
             });
 
             //console.log('is_promo: ' + is_promo + ' - date valid: ' + checkValidPromotionDate(start_date, end_date))
 
-            if ((is_promo && checkValidPromotionDate(start_date, end_date))) {
-            //if (item.no_points == 1 && item_discount == 0) {
-                //if (localStorage.getItem('poswarehouse') != 3) {
-                    total_with_no_points += item_price * item_qty;
-                //} else {
-                    
-                //}
-            }
+            
 
             if (pos_settings.item_order == 1 && category != item.row.category_id) {
                 category = item.row.category_id;
@@ -1377,8 +1373,6 @@ function loadItems() {
                         '<input name="product_option[]" type="hidden" class="roption" value="' + item_option + '">' +
                         '<input name="product_comment[]" type="hidden" class="rcomment" value="' + item_comment + '">' +
                         '<input name="product_comment_name[]" type="hidden" class="rcomment" value="' + item_comment_name + '">' +
-                        '<input name="promo_original_price[]" type="hidden" class="roprice" value="' + item_original_price + '">' +
-                        '<input name="is_promo[]" type="hidden" class="is_promo" value="' + (is_promo && checkValidPromotionDate(start_date, end_date) ? is_promo : 0) + '">' +
                         '<span class="sname" id="name_' + row_no + '"><img src="' + site.url + '/assets/uploads/' + item_image + '" width="40">' + item_code + ' ' + item_name +(sel_opt != '' ? ' ('+sel_opt+')' : '') + '</span>' +
                         '<br /><span class="sname_en" id="nam_en_' + row_no + '">' + (item_name_en_display ? '# ' + item_name_en_display : '') + '</span>' +
                         (item_comment ? '<span class="scomment" style="font-weight: bold;"> (' + item_comment + ')  </span>' : '') +
@@ -1403,26 +1397,67 @@ function loadItems() {
             }
             
             if (item_discount > 0) {
-                //console.log('abc');
+                //console.log('11111');
+                //console.log(JSON.stringify(sortedItems));
                 var display_price = '<span style="font-weight: bold">' + formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val)) + '</span>(<span style="text-decoration: line-through">' + unit_price + '</span>)';
-                tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '">' +
+                tr_html += '<input name="is_promo[]" type="hidden" class="is_promo" value="' + (is_promo && checkValidPromotionDate(start_date, end_date) ? is_promo : 0) + '">' +
+                            '<input name="promo_original_price[]" type="hidden" class="roprice" value="' + item_original_price + '">' + 
+                            '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '">' +
                             '<input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '">' + 
                             '<input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '">' + 
                             '<input class="no_points" name="no_points[]" type="hidden" value="' + item.no_points + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + display_price + '</span></td>';
+                    total_with_no_points += item_price * item_qty;
             } else {
-                //console.log('ggg');
-                //console.log(JSON.stringify(sortedItems));
-                if (is_promo && checkValidPromotionDate(start_date, end_date) && customer_group_id != 4) { // Loại nhóm BAEMIN
+                
+                if (sel_opt_promo_price > 0 && !is_promo) { // Giá KM trên một size cụ thể
+                    //console.log('222222');
+                    //console.log(JSON.stringify(sortedItems));
+                    display_price = '<span style="font-weight: bold">' + formatMoney(parseFloat(sel_opt_promo_price) + parseFloat(pr_tax_val)) + '</span>';
+                    display_price += '(<span style="text-decoration: line-through">' + formatMoney(item_price) + '</span>)';
+                    tr_html += '<input name="is_promo[]" type="hidden" class="is_promo" value="1">';
+                    tr_html += '<input name="promo_original_price[]" type="hidden" class="roprice" value="' + item_price + '">';
+                    tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + sel_opt_promo_price + '">';
+                    tr_html += '<input class="ruprice" name="unit_price[]" type="hidden" value="' + sel_opt_promo_price + '">';
+                    tr_html += '<input class="realuprice" name="real_unit_price[]" type="hidden" value="' + sel_opt_promo_price + '">';
+                    tr_html += '<input class="no_points" name="no_points[]" type="hidden" value="1"><span class="text-right sprice" id="sprice_' + row_no + '">' + display_price + '</span></td>';
+                    //console.log('ggg: ' + item_price);
+                    total_with_no_points += sel_opt_promo_price * item_qty;
+                }
+                else if (is_promo && checkValidPromotionDate(start_date, end_date) && customer_group_id != 4) { // Loại nhóm BAEMIN
+                    //console.log('33333');
+                    //console.log(JSON.stringify(sortedItems));
                     display_price = '<span style="font-weight: bold">' + formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val)) + '</span>';
                     display_price += '(<span style="text-decoration: line-through">' + formatMoney(item_original_price) + '</span>)';
+                    tr_html += '<input name="is_promo[]" type="hidden" class="is_promo" value="' + (is_promo && checkValidPromotionDate(start_date, end_date) ? is_promo : 0) + '">';
+                    tr_html += '<input name="promo_original_price[]" type="hidden" class="roprice" value="' + item_original_price + '">';
+                    tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '">';
+                    tr_html += '<input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '">';
+                    tr_html += '<input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '">';
+                    tr_html += '<input class="no_points" name="no_points[]" type="hidden" value="' + item.no_points + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + display_price + '</span></td>';
+                    total_with_no_points += item_price * item_qty;
                 } else {
+                    //console.log('444444');
+                    //console.log(JSON.stringify(sortedItems));
                     display_price = formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val));
+                    tr_html += '<input name="is_promo[]" type="hidden" class="is_promo" value="' + (is_promo && checkValidPromotionDate(start_date, end_date) ? is_promo : 0) + '">';
+                    tr_html += '<input name="promo_original_price[]" type="hidden" class="roprice" value="' + item_original_price + '">';
+                    tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '">';
+                    tr_html += '<input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '">';
+                    tr_html += '<input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '">';
+                    tr_html += '<input class="no_points" name="no_points[]" type="hidden" value="' + item.no_points + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + display_price + '</span></td>';
                 }
-                tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '"><input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '"><input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '"><input class="no_points" name="no_points[]" type="hidden" value="' + item.no_points + '"><span class="text-right sprice" id="sprice_' + row_no + '">' + display_price + '</span></td>';
+                
+                
+                
             }
-
+           
+            //console.log('total_with_no_point: ' + total_with_no_points);
             tr_html += '<td><input class="form-control input-sm kb-pad text-center rquantity" tabindex="'+((site.settings.set_focus == 1) ? an : (an+1))+'" name="quantity[]" type="text" value="' + formatQuantity2(item_qty) + '" data-id="' + row_no + '" data-item="' + item_id + '" id="quantity_' + row_no + '" onClick="this.select();"><input name="product_unit[]" type="hidden" class="runit" value="' + product_unit + '"><input name="product_base_quantity[]" type="hidden" class="rbase_quantity" value="' + base_quantity + '"></td>';
-            tr_html += '<td class="text-right"><span class="text-right ssubtotal" id="subtotal_' + row_no + '">' + formatMoney(((parseFloat(item_price) + parseFloat(pr_tax_val)) * parseFloat(item_qty))) + '</span></td>';
+            if (sel_opt_promo_price > 0 && !is_promo) {
+                tr_html += '<td class="text-right"><span class="text-right ssubtotal" id="subtotal_' + row_no + '">' + formatMoney(((parseFloat(sel_opt_promo_price) + parseFloat(pr_tax_val)) * parseFloat(item_qty))) + '</span></td>';
+            } else {
+                tr_html += '<td class="text-right"><span class="text-right ssubtotal" id="subtotal_' + row_no + '">' + formatMoney(((parseFloat(item_price) + parseFloat(pr_tax_val)) * parseFloat(item_qty))) + '</span></td>';
+            }
             tr_html += '<td class="text-center"><i class="fa fa-times fa-2x tip pointer posdel" id="' + row_no + '" title="Xóa" style="cursor:pointer;"></i></td>';
             newTr.html(tr_html);
             if (pos_settings.item_order == 1) {
@@ -1430,10 +1465,16 @@ function loadItems() {
             } else {
                 newTr.prependTo("#posTable");
             }
-            total += formatDecimal(((parseFloat(item_price) + parseFloat(pr_tax_val)) * parseFloat(item_qty)), 4);
-            if (item_discount == 0) {
+            if (sel_opt_promo_price > 0 && !is_promo) {
+                total += formatDecimal(((parseFloat(sel_opt_promo_price) + parseFloat(pr_tax_val)) * parseFloat(item_qty)), 4);
+            } else {
+                total += formatDecimal(((parseFloat(item_price) + parseFloat(pr_tax_val)) * parseFloat(item_qty)), 4);
+            }
+            if (item_discount == 0 || sel_opt_promo_price > 0) {
+                //console.log('nnn: ' + item_price + ' - ');
                 total_extra += formatDecimal(((parseFloat(item_price) + parseFloat(pr_tax_val)) * parseFloat(item_qty)), 4);
             }
+            //console.log('total_extra: ' + total_extra);
             count += parseFloat(item_qty);
             an++;
             out_of_stock_items = '';
@@ -1509,8 +1550,8 @@ function loadItems() {
             if (ds.indexOf("%") !== -1) {
                 var pds = ds.split("%");
                 if (!isNaN(pds[0])) {            
-                    order_discount = formatDecimal((parseFloat(((total_extra - total_with_no_points) * parseFloat(pds[0])) / 100)), 4);
-                    percent_detail = '= ' + formatMoney(total_extra - total_with_no_points) + ' x ' + parseFloat((pds[0]) / 100);
+                    order_discount = formatDecimal((parseFloat(((total - total_with_no_points) * parseFloat(pds[0])) / 100)), 4);
+                    percent_detail = '= ' + formatMoney(total - total_with_no_points) + ' x ' + parseFloat((pds[0]) / 100);
                 } else {
                     order_discount = parseFloat(ds);
                 }
@@ -1554,13 +1595,14 @@ function loadItems() {
 
         $('#titems').text((an - 1) + ' (' + formatQty(parseFloat(count) - 1) + ')');
         $('#total_items').val((parseFloat(count) - 1));
-        $('#tds').text('('+formatMoney(product_discount)+') '+formatMoney(order_discount));
+        $('#tds').text('('+formatMoney(product_discount)+') ' + formatMoney(order_discount));
         $('#tds_extra').text(percent_detail);
         if (site.settings.tax2 != 0) {
             $('#ttax2').text(formatMoney(invoice_tax));
         }
         $('#tship').text(parseFloat(shipping) > 0 ? formatMoney(shipping) : '');
         $('#treturn').text(parseFloat(preturn) > 0 ? formatMoney(preturn) : '');
+        console.log('total: ' + total + ' - gtotal: ' + gtotal);
         $('#total').text(formatMoney(total));
         $('#gtotal').text(formatMoney(gtotal));
         $('#order_discount_percent_for_return_sale').val(parseFloat(order_discount_percent_for_return_sale));

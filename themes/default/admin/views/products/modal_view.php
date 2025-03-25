@@ -224,12 +224,19 @@
                                 <?php if ($Owner || $Admin || $this->session->userdata('show_price')) {
                                     echo '<th>' . lang('price_addition') . '</th>';
                                 } ?>
+                                <?php if ($Owner || $Admin || $this->session->userdata('show_price')) {
+                                    echo '<th>' . lang('variant_promo_price') . '</th>';
+                                } ?>
                                 
                             </tr>
                         </thead>
                         <tbody>
                             <?php
                             foreach ($options as $option) {
+                                $str_promo_style = '';
+                                    if ($option->promo_price > 0) {
+                                        $str_promo_style = ' style="background-color: #fff8ba"';
+                                    }
                                 //if ($option->wh_qty != 0) {
                                     echo '<tr><td>' . $option->wh_name . '</td><td>' . $option->name . '</td><td class="text-center">' . $this->sma->formatQuantity($option->wh_qty) .'<sup class="col_original" style="display: none; font-weight: bold; color: green; font-size: 14px;">' . $this->sma->formatQuantity($option->wh_original_qty) . '</sup></td>';
                                     if ($Owner || $Admin || $this->session->userdata('show_cost')) {
@@ -237,6 +244,9 @@
                                     }
                                     if ($Owner || $Admin || $this->session->userdata('show_price')) {
                                         echo '<td class="text-right">' . $this->sma->formatMoney($option->price) . '</td>';
+                                    }
+                                    if ($Owner || $Admin || $this->session->userdata('show_price')) {
+                                        echo '<td class="text-right"' . $str_promo_style . '>' . $this->sma->formatMoney($option->promo_price) . '</td>';
                                     }
                                     echo '</tr>';
                                 //}
