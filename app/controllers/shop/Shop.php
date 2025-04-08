@@ -545,7 +545,7 @@ class Shop extends MY_Shop_Controller
         } else {
             $product->promo_expired = 1;
         }
-
+        
         $this->data['product']        = $product;
         $this->data['other_products'] = $this->shop_model->getOtherProducts($product->id, $product->category_id, $product->brand);
         $this->data['unit']           = $this->site->getUnitByID($product->unit);
@@ -560,6 +560,7 @@ class Shop extends MY_Shop_Controller
         $this->load->helper('text');
         $this->data['page_title'] = $product->code . ' - ' . $product->name;
         $this->data['page_desc']  = character_limiter(strip_tags($product->product_details), 160);
+        //$this->sma->print_arrays($this->data['product'], $this->data['options']);
         $this->page_construct('pages/view_product', $this->data);
     }
 
