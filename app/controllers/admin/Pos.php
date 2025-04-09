@@ -209,6 +209,7 @@ class Pos extends MY_Controller
                 $item_quantity = $_POST['product_base_quantity'][$r];
                 $no_points = $_POST['no_points'][$r];
                 $promo_original_price = $_POST['promo_original_price'][$r];
+                $promo_original_price_for_suspend = $_POST['promo_original_price_for_suspend'][$r];
                 $is_promo = $_POST['is_promo'][$r];
 
                 if (isset($item_code) && isset($real_unit_price) && isset($unit_price) && isset($item_quantity)) {
@@ -281,7 +282,7 @@ class Pos extends MY_Controller
                         'comment'         => $item_comment,
                         'comment_name'    => $item_comment_name,
                         'is_promo'        => $is_promo,
-                        'promo_original_price' => $promo_original_price,
+                        'promo_original_price' => $suspend ? $promo_original_price_for_suspend : $promo_original_price,
                     );
 
                     if ($is_promo == 1) {
@@ -584,6 +585,8 @@ class Pos extends MY_Controller
                         $row->serial = $item->serial_no;
                         $row->option = $item->option_id;
                         $row->image = $item->image;
+                        $row->is_promo = $item->is_promo;
+                        $row->original_price = $item->promo_original_price;
                         $options = $this->pos_model->getProductOptions($row->id, $item->warehouse_id);
 
                         if ($options) {
@@ -617,7 +620,7 @@ class Pos extends MY_Controller
                     }
 
                     $this->data['items'] = json_encode($pr);
- 
+                    //$this->sma->print_arrays($this->data['items']);
             } else {
                 $this->data['customer'] = $this->pos_model->getCompanyByID($this->pos_settings->default_customer);
                 $this->data['reference_note'] = NULL;

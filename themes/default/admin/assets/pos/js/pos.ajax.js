@@ -1243,7 +1243,7 @@ function loadItems() {
             item.order = item.order ? item.order : new Date().getTime();
             var product_id = item.row.id, item_image = item.row.image;
             var item_type = item.row.type, combo_items = item.combo_items;
-            var is_promo = item.row.promotion, item_original_price = item.row.original_price;
+            var is_promo = item.row.promotion, item_original_price = item.row.original_price, item_original_price_for_suspend = item.row.original_price;
             var start_date = item.row.start_date, end_date = item.row.end_date;
             var item_price = item.row.price, item_qty = item.row.qty, item_aqty = item.row.quantity; 
             var item_tax_method = item.row.tax_method, item_ds = item.row.discount, item_discount = 0;
@@ -1402,6 +1402,7 @@ function loadItems() {
                 var display_price = '<span style="font-weight: bold">' + formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val)) + '</span>(<span style="text-decoration: line-through">' + unit_price + '</span>)';
                 tr_html += '<input name="is_promo[]" type="hidden" class="is_promo" value="' + (is_promo && checkValidPromotionDate(start_date, end_date) ? is_promo : 0) + '">' +
                             '<input name="promo_original_price[]" type="hidden" class="roprice" value="' + item_original_price + '">' + 
+                            '<input name="promo_original_price_for_suspend[]" type="hidden" class="roprice" value="' + promo_original_price_for_suspend + '">' + 
                             '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '">' +
                             '<input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '">' + 
                             '<input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '">' + 
@@ -1416,6 +1417,7 @@ function loadItems() {
                     display_price += '(<span style="text-decoration: line-through">' + formatMoney(item_price) + '</span>)';
                     tr_html += '<input name="is_promo[]" type="hidden" class="is_promo" value="1">';
                     tr_html += '<input name="promo_original_price[]" type="hidden" class="roprice" value="' + item_price + '">';
+                    tr_html += '<input name="promo_original_price_for_suspend[]" type="hidden" class="roprice" value="' + promo_original_price_for_suspend + '">'; 
                     tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + sel_opt_promo_price + '">';
                     tr_html += '<input class="ruprice" name="unit_price[]" type="hidden" value="' + sel_opt_promo_price + '">';
                     tr_html += '<input class="realuprice" name="real_unit_price[]" type="hidden" value="' + sel_opt_promo_price + '">';
@@ -1430,6 +1432,7 @@ function loadItems() {
                     display_price += '(<span style="text-decoration: line-through">' + formatMoney(item_original_price) + '</span>)';
                     tr_html += '<input name="is_promo[]" type="hidden" class="is_promo" value="' + (is_promo && checkValidPromotionDate(start_date, end_date) ? is_promo : 0) + '">';
                     tr_html += '<input name="promo_original_price[]" type="hidden" class="roprice" value="' + item_original_price + '">';
+                    tr_html += '<input name="promo_original_price_for_suspend[]" type="hidden" class="roprice" value="' + item_original_price_for_suspend + '">';
                     tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '">';
                     tr_html += '<input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '">';
                     tr_html += '<input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '">';
@@ -1441,6 +1444,7 @@ function loadItems() {
                     display_price = formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val));
                     tr_html += '<input name="is_promo[]" type="hidden" class="is_promo" value="' + (is_promo && checkValidPromotionDate(start_date, end_date) ? is_promo : 0) + '">';
                     tr_html += '<input name="promo_original_price[]" type="hidden" class="roprice" value="' + item_original_price + '">';
+                    tr_html += '<input name="promo_original_price_for_suspend[]" type="hidden" class="roprice" value="' + item_original_price_for_suspend + '">';
                     tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + item_price + '">';
                     tr_html += '<input class="ruprice" name="unit_price[]" type="hidden" value="' + unit_price + '">';
                     tr_html += '<input class="realuprice" name="real_unit_price[]" type="hidden" value="' + item.row.real_unit_price + '">';

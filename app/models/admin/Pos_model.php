@@ -1145,8 +1145,8 @@ class Pos_model extends CI_Model
                 end($addOn);
                 foreach ($items as &$var) {
                     $var = array_merge($addOn, $var);
-                    unset($var['is_promo']);
-                    unset($var['promo_original_price']);
+                    //unset($var['is_promo']);
+                    //unset($var['promo_original_price']);
                     unset($var['product_name_en']);
                     unset($var['comment_name']);
                 }
@@ -1166,8 +1166,8 @@ class Pos_model extends CI_Model
                 //$this->sma->print_arrays($sData, $addOn);
                 foreach ($items as &$var) {
                     $var = array_merge($addOn, $var);
-                    unset($var['is_promo']);
-                    unset($var['promo_original_price']);
+                    //unset($var['is_promo']);
+                    //unset($var['promo_original_price']);
                     unset($var['product_name_en']);
                     unset($var['comment_name']);
                 }
