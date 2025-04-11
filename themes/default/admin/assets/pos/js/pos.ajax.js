@@ -1417,7 +1417,7 @@ function loadItems() {
                     display_price += '(<span style="text-decoration: line-through">' + formatMoney(item_price) + '</span>)';
                     tr_html += '<input name="is_promo[]" type="hidden" class="is_promo" value="1">';
                     tr_html += '<input name="promo_original_price[]" type="hidden" class="roprice" value="' + item_price + '">';
-                    tr_html += '<input name="promo_original_price_for_suspend[]" type="hidden" class="roprice" value="' + promo_original_price_for_suspend + '">'; 
+                    tr_html += '<input name="promo_original_price_for_suspend[]" type="hidden" class="roprice" value="' + item_original_price_for_suspend + '">'; 
                     tr_html += '<input class="rprice" name="net_price[]" type="hidden" id="price_' + row_no + '" value="' + sel_opt_promo_price + '">';
                     tr_html += '<input class="ruprice" name="unit_price[]" type="hidden" value="' + sel_opt_promo_price + '">';
                     tr_html += '<input class="realuprice" name="real_unit_price[]" type="hidden" value="' + sel_opt_promo_price + '">';
