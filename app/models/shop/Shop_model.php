@@ -526,7 +526,7 @@ class Shop_model extends CI_Model
             $warehouse_id = $this->shop_settings->warehouse;
         }
         $wpv = "( SELECT option_id, warehouse_id, quantity from {$this->db->dbprefix('warehouses_products_variants')} WHERE product_id = {$product_id}) FWPV";
-        $this->db->select('product_variants.id as id, product_variants.name as name, product_variants.price as price, product_variants.quantity as total_quantity, FWPV.quantity as quantity', false)
+        $this->db->select('product_variants.id as id, product_variants.name as name, product_variants.price as price, product_variants.promo_price as promo_price, product_variants.quantity as total_quantity, FWPV.quantity as quantity', false)
             ->join($wpv, 'FWPV.option_id=product_variants.id', 'left')
             //->join('warehouses', 'warehouses.id=product_variants.warehouse_id', 'left')
             ->where('product_variants.product_id', $product_id)

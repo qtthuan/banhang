@@ -100,7 +100,7 @@
                                         <?php
                                             $is_in_stock = false;
                                             //echo $warehouse->quantity;
-                                            //$this->sma->print_arrays($product);
+                                            //$this->sma->print_arrays($product, $variants);
                                             if ($variants) {
                                                 //cho 'yyy';
                                                 foreach ($variants as $variant) {
@@ -111,6 +111,9 @@
                                                         if ($product->promotion && !$product->promo_expired) {
                                                             $str_variant = $variant->name . ' (' . $this->sma->convertMoney($product_price_before_promo + $variant->price) . ' &#8594;' . $this->sma->convertMoney($product_price + $variant->price, true, false) . ')';
                                                             //$str_variant .= '<span style="text-decoration: line-through"> ' .  . '<span></del>)';
+                                                        } else if ($variant->promo_price > 0 && !$product->promotion) { 
+                                                            $str_variant = $variant->name . ' (' . $this->sma->convertMoney($product->price + $variant->price) . ' &#8594;' . $this->sma->convertMoney($variant->promo_price, true, false) . ')';
+
                                                         } else {
                                                             $str_variant = $variant->name . ' (' . $this->sma->convertMoney($product_price + $variant->price, true, false) . ')';
                                                         }

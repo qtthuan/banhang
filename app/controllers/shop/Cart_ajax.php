@@ -36,7 +36,11 @@ class Cart_ajax extends MY_Shop_Controller
                 } else {
                     $option = array_values($options)[0];
                 }
-                $price = $option['price'] + $price;
+                if ($option['promo_price'] > 0 && !$this->sma->isPromo($product)) {
+                    $price = $option['promo_price'];
+                } else {
+                    $price = $option['price'] + $price;
+                }
             }
             $selected = $option ? $option['id'] : false;
             if ($this->checkProductStock($product, 1, $selected)) {
@@ -173,17 +177,24 @@ class Cart_ajax extends MY_Shop_Controller
                 $item = $this->cart->get_item($rowid);
                 // $product = $this->site->getProductByID($item['product_id']);
                 $product = $this->shop_model->getProductForCart($item['product_id']);
-                $options = $this->shop_model->getProductVariants($product->id);
+                $options = $this->shop_model->getProductVariants($product->id);                
                 $price   = $this->sma->setCustomerGroupPrice((isset($product->special_price) ? $product->special_price : $product->price), $this->customer_group);
                 $price   = $this->sma->isPromo($product) ? $product->promo_price : $price;
                 // $price = $this->sma->isPromo($product) ? $product->promo_price : $product->price;
                 if ($option = $this->input->post('option')) {
+                    
                     foreach ($options as $op) {
                         if ($op['id'] == $option) {
-                            $price = $price + $op['price'];
+                            
+                            if ($op['promo_price'] > 0 && !$this->sma->isPromo($product)) {
+                                $price = $op['promo_price'];
+                            } else {
+                                $price = $price + $op['price'];
+                            }
                         }
                     }
                 }
+                
                 $selected = $this->input->post('option') ? $this->input->post('option', true) : false;
                 if ($this->checkProductStock($product, $this->input->post('qty', true), $selected)) {
                     if ($this->input->is_ajax_request()) {
