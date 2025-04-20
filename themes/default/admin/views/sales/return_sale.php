@@ -340,7 +340,7 @@
                     }
                 }
 
-                console.log('total_with_no_points: ' + total_with_no_points);
+                //console.log('total_with_no_points: ' + total_with_no_points);
 
                 //'+(item_option != 0 ? ' - '+item.option.name : '')+'
                 var row_no = (new Date).getTime();

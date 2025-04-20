@@ -1403,7 +1403,7 @@ class Sales extends MY_Controller
                 $row->tax_rate = $item->tax_rate_id;
                 $row->serial = $item->serial_no;
                 $row->option = $item->option_id;
-                $row->original_price = $item->price;
+                $row->original_price = $item->promo_original_price;
                 $row->is_promo = $item->is_promo;
                 $options = $this->sales_model->getProductOptions($row->id, $item->warehouse_id, true);
                 $units = $this->site->getUnitsByBUID($row->base_unit);
