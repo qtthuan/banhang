@@ -208,13 +208,6 @@
                                             echo $item['text_code'];
                                         }
                                         echo '</span>';
-                                        echo '<span class="text_suppliers">';
-                                        if ($item['text_suppliers'] &&  $item['text_suppliers'] != "") {
-                                            echo ' -' . $item['text_suppliers'];
-                                        } else {
-                                            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                                        }
-                                        echo '</span>';
                                         echo '<span class="text_suppliers" title="'.$item['name_brand'].'">';
                                         if ($item['text_brand'] && $item['text_brand'] != "") {
                                             echo '-' . $item['text_brand'];
@@ -222,6 +215,14 @@
                                             echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                                         }
                                         echo '</span>';
+                                        echo '<span class="text_suppliers">';
+                                        if ($item['text_suppliers'] &&  $item['text_suppliers'] != "") {
+                                            echo ' -' . $item['text_suppliers'];
+                                        } else {
+                                            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                                        }
+                                        echo '</span>';
+                                        
                                         if ($item[''])
                                         echo '<br />';
 
