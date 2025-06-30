@@ -54,7 +54,7 @@
                                 <div class="col-xs-4">
                                     <div class="form-group">
                                         <div class="input-group">
-                                            <?= form_input('cf_width', '', 'class="form-control" id="cf_width" placeholder="' . lang("width") . '"'); ?>
+                                            <?= form_input('cf_width', '1.575', 'class="form-control" id="cf_width" placeholder="' . lang("width") . '"'); ?>
                                             <span class="input-group-addon" style="padding-left:10px;padding-right:10px;"><?= lang('inches'); ?></span>
                                         </div>
                                     </div>
@@ -62,7 +62,7 @@
                                 <div class="col-xs-4">
                                     <div class="form-group">
                                         <div class="input-group">
-                                            <?= form_input('cf_height', '', 'class="form-control" id="cf_height" placeholder="' . lang("height") . '"'); ?>
+                                            <?= form_input('cf_height', '1.181', 'class="form-control" id="cf_height" placeholder="' . lang("height") . '"'); ?>
                                             <span class="input-group-addon" style="padding-left:10px;padding-right:10px;"><?= lang('inches'); ?></span>
                                         </div>
                                     </div>
@@ -198,6 +198,8 @@
                                         if($item['barcode']) {
                                             echo '<span class="barcode_image">'.$item['barcode'].'</span>';
                                         }
+                                        //echo '<span id="qrcode"></span>';
+
                                         
                                         echo '<span class="text_code"'.$str_padding.'>';
                                         if ($item['text_code'] == 'L') {
@@ -772,5 +774,16 @@
             return true;
         }
     }
+
+  
+    new QRCode(document.getElementById("qrcode"), {
+      text: "https://banicantho.com/product/bo-vay-djap-tho-tai-hoa-have-fun-djen-djo",
+      width: 95,
+      height: 95,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+ 
 
 </script>
