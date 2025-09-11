@@ -142,6 +142,13 @@ if (!empty($variants)) {
                                 <?= form_input('promo_price', set_value('promo_price', $product->promo_price ? $this->sma->formatDecimal($product->promo_price) : ''), 'class="form-control tip" id="promo_price"'); ?>
                             </div>
                             <div class="form-group">
+                                <button type="button" onclick="setDate('day', 1);" class="btn btn-success day1" style="height:35px; width: 80px; font-size: 17px; line-height: 16px; margin-top: 10px">1 Ngày</button>
+                                <button type="button" onclick="setDate('month', 1);"  class="btn btn-success month1" style="margin-left: 10px; height:35px; width: 80px; font-size: 17px; line-height: 16px; margin-top: 10px">1 Tháng</button>
+                                <button type="button" onclick="setDate('year', 1);"  class="btn btn-success year1" style="margin-left: 10px; height:35px; width: 80px; font-size: 17px; line-height: 16px; margin-top: 10px">1 Năm</button>
+                                <button type="button" onclick="setDate('year', 2);"  class="btn btn-success year2" style="margin-left: 10px; height:35px; width: 80px; font-size: 17px; line-height: 16px; margin-top: 10px">2 Năm</button>
+                                <button type="button" onclick="setDate('year', 5);"  class="btn btn-success year5" style="margin-left: 10px; height:35px; width: 80px; font-size: 17px; line-height: 16px; margin-top: 10px">5 Năm</button>
+                            </div>
+                            <div class="form-group">
                                 <?= lang('start_date', 'start_date'); ?>
                                 <?= form_input('start_date', set_value('start_date', $product->start_date ? $this->sma->hrsd($product->start_date) : ''), 'class="form-control tip date" id="start_date"'); ?>
                             </div>
@@ -1053,6 +1060,31 @@ if (!empty($variants)) {
         $("#box_wh_"+ $('#drop_select_wh').val()).show()
         $("#rack_wh_"+ $('#drop_select_wh').val()).show()
     });
+    function formatDate(date) {
+        let d = date.getDate().toString().padStart(2, '0');
+        let m = (date.getMonth() + 1).toString().padStart(2, '0');
+        let y = date.getFullYear();
+        return `${d}/${m}/${y}`;
+    }
+
+    function setDate(type, value) {
+        let start = new Date();
+        let end = new Date(start);
+
+        if (type === 'day' && value === 1) {
+            // 1 ngày thì cùng ngày
+            end = new Date(start);
+        } else if (type === 'day') {
+            end.setDate(end.getDate() + value - 1);
+        } else if (type === 'month') {
+            end.setMonth(end.getMonth() + value);
+        } else if (type === 'year') {
+            end.setFullYear(end.getFullYear() + value);
+        }
+
+        document.getElementById('start_date').value = formatDate(start);
+        document.getElementById('end_date').value = formatDate(end);
+    }
 </script>
 
 <div class="modal" id="aModal" tabindex="-1" role="dialog" aria-labelledby="aModalLabel" aria-hidden="true">
