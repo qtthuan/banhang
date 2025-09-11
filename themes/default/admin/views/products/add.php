@@ -92,6 +92,9 @@ if (!empty($variants)) {
                         <?= form_input('cost', (isset($_POST['cost']) ? $_POST['cost'] : ($product ? $this->sma->formatDecimal($product->cost) : '')), 'class="form-control tip" id="cost" required="required"') ?>
                     </div>
                     <div class="form-group all">
+                        <button type="button" class="btn btn-success auto_price" id="20000">
+                            <i class="fa"></i>+20.000đ
+                        </button>
                         <button type="button" class="btn btn-success auto_price" id="25000">
                             <i class="fa"></i>+25.000đ
                         </button>
@@ -103,12 +106,6 @@ if (!empty($variants)) {
                         </button>
                         <button type="button" class="btn btn-success auto_price" id="40000">
                             <i class="fa"></i>+40.000đ
-                        </button>
-                        <button type="button" class="btn btn-success auto_price" id="45000">
-                            <i class="fa"></i>+45.000đ
-                        </button>
-                        <button type="button" class="btn btn-success auto_price" id="50000">
-                            <i class="fa"></i>+50.000đ
                         </button>
                     </div>
                     <div class="form-group all">
@@ -133,11 +130,11 @@ if (!empty($variants)) {
                                 <?= form_input('promo_price', set_value('promo_price'), 'class="form-control tip" id="promo_price"'); ?>
                             </div>
                             <div class="form-group">
-                                <button type="button" onclick="setDate('day', 1);" class="btn btn-success day1" style="height:35px; width: 80px; font-size: 17px; line-height: 16px; margin-top: 10px">1 Ngày</button>
-                                <button type="button" onclick="setDate('month', 1);"  class="btn btn-success month1" style="margin-left: 10px; height:35px; width: 80px; font-size: 17px; line-height: 16px; margin-top: 10px">1 Tháng</button>
-                                <button type="button" onclick="setDate('year', 1);"  class="btn btn-success year1" style="margin-left: 10px; height:35px; width: 80px; font-size: 17px; line-height: 16px; margin-top: 10px">1 Năm</button>
-                                <button type="button" onclick="setDate('year', 2);"  class="btn btn-success year2" style="margin-left: 10px; height:35px; width: 80px; font-size: 17px; line-height: 16px; margin-top: 10px">2 Năm</button>
-                                <button type="button" onclick="setDate('year', 5);"  class="btn btn-success year5" style="margin-left: 10px; height:35px; width: 80px; font-size: 17px; line-height: 16px; margin-top: 10px">5 Năm</button>
+                                <button type="button" onclick="setDate('day', 1);" class="btn btn-success day1" style="height:30px; width: 65px; font-size: 13px;">1 Ngày</button>
+                                <button type="button" onclick="setDate('month', 1);"  class="btn btn-success month1" style="margin-left: 1px; height:30px; width: 65px; font-size: 13px;">1 Tháng</button>
+                                <button type="button" onclick="setDate('year', 1);"  class="btn btn-success year1" style="margin-left: 1px; height:30px; width: 65px; font-size: 13px;">1 Năm</button>
+                                <button type="button" onclick="setDate('year', 2);"  class="btn btn-success year2" style="margin-left: 1px; height:30px; width: 65px; font-size: 13px;">2 Năm</button>
+                                <button type="button" onclick="setDate('year', 5);"  class="btn btn-success year5" style="margin-left: 1px; height:30px; width: 65px; font-size: 13px;">5 Năm</button>
                             </div>
                             <div class="form-group">
                                 <?= lang('start_date', 'start_date'); ?>
