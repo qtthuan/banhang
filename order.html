@@ -3,255 +3,149 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mini Order Nước</title>
+  <title>Menu Demo</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .qty-box {
+    .scroll-row {
       display: flex;
-      align-items: center;
-      justify-content: center;
+      overflow-x: auto;
+      gap: 10px;
+      padding: 10px 0;
     }
-    .qty-box input {
-      width: 50px;
-      text-align: center;
+    .scroll-row::-webkit-scrollbar {
+      display: none;
     }
-    .qty-box button {
-      width: 30px;
-      height: 30px;
-      line-height: 1;
-    }
-    .note-display {
-      font-size: 0.8rem;
-      color: #555;
-      margin-top: 5px;
-      min-height: 18px;
-    }
-    .cart-icon {
-      position: relative;
-      cursor: pointer;
-    }
-    .cart-badge {
-      position: absolute;
-      top: -5px;
-      right: -10px;
+    .menu-card {
+      min-width: 140px;
+      flex: 0 0 auto;
     }
   </style>
 </head>
 <body class="bg-light">
 
-<!-- Header -->
-<nav class="navbar navbar-dark bg-success mb-3">
-  <div class="container-fluid">
-    <span class="navbar-brand mb-0 h1">☕ Mini Order</span>
-    <div class="cart-icon" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
-      <button class="btn btn-light position-relative">
-        🛒
-        <span class="badge bg-danger cart-badge" id="cartCount">0</span>
-      </button>
-    </div>
-  </div>
-</nav>
+<div class="container py-3">
+  <h4 class="mb-3">🍹 Menu Nước</h4>
 
-<div class="container">
+  <div class="accordion" id="menuAccordion">
 
-  <h5 class="mb-3">Chọn nước uống</h5>
-  <div class="row g-2">
-
-    <!-- Card sản phẩm -->
-    <div class="col-6">
-      <div class="card h-100">
-        <div class="card-body text-center">
-          <h6 class="card-title">Cà phê sữa</h6>
-          <p class="text-muted">25,000đ</p>
-          <div class="note-display" id="note-display-1"></div>
-          <div class="qty-box mb-2">
-            <button class="btn btn-sm btn-outline-secondary btn-minus">-</button>
-            <input type="number" class="form-control form-control-sm mx-1 qty-input" value="0" min="0">
-            <button class="btn btn-sm btn-outline-secondary btn-plus">+</button>
+    <!-- Nhóm 1 -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading1">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#group1">
+          Trà Trái Cây
+        </button>
+      </h2>
+      <div id="group1" class="accordion-collapse collapse show" data-bs-parent="#menuAccordion">
+        <div class="accordion-body">
+          <div class="scroll-row">
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Trà Trái Cây</h6>
+                <p class="text-muted">30,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Trà Dâu Tằm</h6>
+                <p class="text-muted">32,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Trà Dứa</h6>
+                <p class="text-muted">28,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
           </div>
-          <button class="btn btn-sm btn-outline-info w-100 mb-2 btn-note"
-                  data-bs-toggle="modal"
-                  data-bs-target="#noteModal"
-                  data-id="1"
-                  data-product="Cà phê sữa">
-            Ghi chú món
-          </button>
-          <button class="btn btn-sm btn-outline-success w-100 btn-addcart"
-                  data-id="1"
-                  data-name="Cà phê sữa"
-                  data-price="25000">+ Giỏ</button>
         </div>
       </div>
     </div>
 
-    <!-- Card khác -->
-    <div class="col-6">
-      <div class="card h-100">
-        <div class="card-body text-center">
-          <h6 class="card-title">Trà đào</h6>
-          <p class="text-muted">30,000đ</p>
-          <div class="note-display" id="note-display-2"></div>
-          <div class="qty-box mb-2">
-            <button class="btn btn-sm btn-outline-secondary btn-minus">-</button>
-            <input type="number" class="form-control form-control-sm mx-1 qty-input" value="0" min="0">
-            <button class="btn btn-sm btn-outline-secondary btn-plus">+</button>
+    <!-- Nhóm 2 -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading2">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#group2">
+          Cà Phê Phin
+        </button>
+      </h2>
+      <div id="group2" class="accordion-collapse collapse" data-bs-parent="#menuAccordion">
+        <div class="accordion-body">
+          <div class="scroll-row">
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Cà Phê</h6>
+                <p class="text-muted">20,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Cà Phê Sữa</h6>
+                <p class="text-muted">25,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Cà Phê Hạnh Nhân</h6>
+                <p class="text-muted">35,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
           </div>
-          <button class="btn btn-sm btn-outline-info w-100 mb-2 btn-note"
-                  data-bs-toggle="modal"
-                  data-bs-target="#noteModal"
-                  data-id="2"
-                  data-product="Trà đào">
-            Ghi chú món
-          </button>
-          <button class="btn btn-sm btn-outline-success w-100 btn-addcart"
-                  data-id="2"
-                  data-name="Trà đào"
-                  data-price="30000">+ Giỏ</button>
         </div>
       </div>
     </div>
 
-  </div>
-
-</div>
-
-<!-- Modal Ghi chú -->
-<div class="modal fade" id="noteModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Ghi chú món</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="currentProductId">
-        <input type="text" class="form-control mb-2" id="nameInput" placeholder="Tên (ví dụ: A, B...)">
-        <input type="text" class="form-control mb-2" id="noteInput" placeholder="Nhập ghi chú...">
-
-        <div class="form-check">
-          <input class="form-check-input note-check" type="checkbox" value="Ít ngọt" id="note1">
-          <label class="form-check-label" for="note1">Ít ngọt</label>
+    <!-- Nhóm 3 -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading3">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#group3">
+          Sinh Tố
+        </button>
+      </h2>
+      <div id="group3" class="accordion-collapse collapse" data-bs-parent="#menuAccordion">
+        <div class="accordion-body">
+          <div class="scroll-row">
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Sinh Tố Bơ</h6>
+                <p class="text-muted">35,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Sinh Tố Mãng Cầu</h6>
+                <p class="text-muted">38,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Sinh Tố Dâu</h6>
+                <p class="text-muted">40,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Sinh Tố Sa Bô</h6>
+                <p class="text-muted">42,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="form-check">
-          <input class="form-check-input note-check" type="checkbox" value="Không đá" id="note2">
-          <label class="form-check-label" for="note2">Không đá</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input note-check" type="checkbox" value="Nhiều cafe" id="note3">
-          <label class="form-check-label" for="note3">Nhiều cafe</label>
-        </div>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-        <button type="button" class="btn btn-success" id="saveNoteBtn" data-bs-dismiss="modal">Lưu ghi chú</button>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- Offcanvas giỏ hàng -->
-<div class="offcanvas offcanvas-end" tabindex="-1" id="cartCanvas">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title">🛒 Giỏ hàng</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-  </div>
-  <div class="offcanvas-body" id="cartItems">
-    <p class="text-muted">Chưa có món nào</p>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-let cart = JSON.parse(localStorage.getItem('cart')) || {items: []};
-renderCart();
-
-// Tăng giảm số lượng
-document.querySelectorAll('.btn-plus').forEach(btn => {
-  btn.addEventListener('click', () => {
-    let input = btn.closest('.qty-box').querySelector('.qty-input');
-    input.value = parseInt(input.value) + 1;
-  });
-});
-document.querySelectorAll('.btn-minus').forEach(btn => {
-  btn.addEventListener('click', () => {
-    let input = btn.closest('.qty-box').querySelector('.qty-input');
-    if (parseInt(input.value) > 0) {
-      input.value = parseInt(input.value) - 1;
-    }
-  });
-});
-
-// Ghi chú modal
-const noteModal = document.getElementById('noteModal');
-noteModal.addEventListener('show.bs.modal', function (event) {
-  const button = event.relatedTarget;
-  const productId = button.getAttribute('data-id');
-  document.getElementById('currentProductId').value = productId;
-  document.getElementById('nameInput').value = '';
-  document.getElementById('noteInput').value = '';
-  document.querySelectorAll('.note-check').forEach(c => c.checked = false);
-});
-
-// Checkbox update text
-const noteInput = document.getElementById('noteInput');
-document.querySelectorAll('.note-check').forEach(chk => {
-  chk.addEventListener('change', () => {
-    let selected = [];
-    document.querySelectorAll('.note-check:checked').forEach(c => selected.push(c.value));
-    noteInput.value = selected.join(', ');
-  });
-});
-
-// Lưu ghi chú tạm
-document.getElementById('saveNoteBtn').addEventListener('click', () => {
-  const productId = document.getElementById('currentProductId').value;
-  const displayTarget = document.getElementById('note-display-' + productId);
-  let name = document.getElementById('nameInput').value.trim();
-  let note = noteInput.value.trim();
-  let displayText = '';
-  if (name) displayText += 'Người: ' + name;
-  if (note) displayText += (name ? ' | ' : '') + 'Ghi chú: ' + note;
-  displayTarget.textContent = displayText;
-});
-
-// Thêm vào giỏ
-document.querySelectorAll('.btn-addcart').forEach(btn => {
-  btn.addEventListener('click', () => {
-    let card = btn.closest('.card-body');
-    let qty = parseInt(card.querySelector('.qty-input').value);
-    if (qty <= 0) {
-      alert("Vui lòng chọn số lượng > 0");
-      return;
-    }
-    let id = btn.dataset.id;
-    let name = btn.dataset.name;
-    let price = parseInt(btn.dataset.price);
-    let noteText = document.getElementById('note-display-' + id).textContent;
-
-    cart.items.push({id, name, qty, price, note: noteText});
-    localStorage.setItem('cart', JSON.stringify(cart));
-    renderCart();
-    card.querySelector('.qty-input').value = 0;
-  });
-});
-
-// Render giỏ
-function renderCart() {
-  const cartItems = document.getElementById('cartItems');
-  if (cart.items.length === 0) {
-    cartItems.innerHTML = '<p class="text-muted">Chưa có món nào</p>';
-  } else {
-    cartItems.innerHTML = cart.items.map((item, i) =>
-      `<div class="border-bottom py-2">
-         <strong>${item.name}</strong> x${item.qty} - ${item.price * item.qty}đ
-         <br><small>${item.note}</small>
-       </div>`
-    ).join('');
-  }
-  document.getElementById('cartCount').textContent = cart.items.length;
-}
-</script>
-
 </body>
 </html>
