@@ -2133,6 +2133,13 @@ animation: blink 1s steps(2, start) infinite;
     text-transform: uppercase;
    }
    /* ========== Responsive cho Mobile Order ========== */
+   /* Mặc định hiển thị PC */
+.layout-pc {
+  display: block;
+}
+.layout-mobile {
+  display: none;
+}
 @media (max-width: 1024px) {
   /* Ẩn layout PC, chỉ giữ layout mobile */
   .layout-pc {
