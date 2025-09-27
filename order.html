@@ -3,168 +3,149 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Best Seller Slider</title>
+  <title>Menu Demo</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <style>
-    .swiper {
-      padding: 16px 0;
+    .scroll-row {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      padding: 10px 0;
     }
-    .swiper-slide {
-      width: 180px !important;
+    .scroll-row::-webkit-scrollbar {
+      display: none;
     }
-    .bs-card {
-      border: none;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      overflow: hidden;
-    }
-    .bs-card img {
-      height: 120px;
-      object-fit: cover;
+    .menu-card {
+      min-width: 140px;
+      flex: 0 0 auto;
     }
   </style>
 </head>
 <body class="bg-light">
 
 <div class="container py-3">
-  <h4 class="mb-3">🔥 Best Seller</h4>
-  <!-- Swiper -->
-  <div class="swiper mySwiper">
-    <div class="swiper-wrapper">
-      <div class="swiper-slide">
-        <div class="card bs-card">
-          <img src="https://via.placeholder.com/150" class="card-img-top" alt="">
-          <div class="card-body text-center">
-            <h6>Trà Dâu</h6>
-            <p class="text-muted">35,000đ</p>
-            <button class="btn btn-sm btn-success">+ Giỏ</button>
+  <h4 class="mb-3">🍹 Menu Nước</h4>
+
+  <div class="accordion" id="menuAccordion">
+
+    <!-- Nhóm 1 -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading1">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#group1">
+          Trà Trái Cây
+        </button>
+      </h2>
+      <div id="group1" class="accordion-collapse collapse show" data-bs-parent="#menuAccordion">
+        <div class="accordion-body">
+          <div class="scroll-row">
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Trà Trái Cây</h6>
+                <p class="text-muted">30,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Trà Dâu Tằm</h6>
+                <p class="text-muted">32,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Trà Dứa</h6>
+                <p class="text-muted">28,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="swiper-slide">
-        <div class="card bs-card">
-          <img src="https://via.placeholder.com/150" class="card-img-top" alt="">
-          <div class="card-body text-center">
-            <h6>Cà Phê Sữa</h6>
-            <p class="text-muted">30,000đ</p>
-            <button class="btn btn-sm btn-success">+ Giỏ</button>
-          </div>
-        </div>
-      </div>
-      <div class="swiper-slide">
-        <div class="card bs-card">
-          <img src="https://via.placeholder.com/150" class="card-img-top" alt="">
-          <div class="card-body text-center">
-            <h6>Sinh Tố Xoài</h6>
-            <p class="text-muted">40,000đ</p>
-            <button class="btn btn-sm btn-success">+ Giỏ</button>
-          </div>
-        </div>
-      </div>
-      <div class="swiper-slide">
-        <div class="card bs-card">
-          <img src="https://via.placeholder.com/150" class="card-img-top" alt="">
-          <div class="card-body text-center">
-            <h6>Sinh Tố Xoài</h6>
-            <p class="text-muted">40,000đ</p>
-            <button class="btn btn-sm btn-success">+ Giỏ</button>
-          </div>
-        </div>
-      </div>
-      <div class="swiper-slide">
-        <div class="card bs-card">
-          <img src="https://via.placeholder.com/150" class="card-img-top" alt="">
-          <div class="card-body text-center">
-            <h6>Sinh Tố Xoài</h6>
-            <p class="text-muted">40,000đ</p>
-            <button class="btn btn-sm btn-success">+ Giỏ</button>
-          </div>
-        </div>
-      </div>
-      <div class="swiper-slide">
-        <div class="card bs-card">
-          <img src="https://via.placeholder.com/150" class="card-img-top" alt="">
-          <div class="card-body text-center">
-            <h6>Sinh Tố Xoài</h6>
-            <p class="text-muted">40,000đ</p>
-            <button class="btn btn-sm btn-success">+ Giỏ</button>
-          </div>
-        </div>
-      </div>
-      <div class="swiper-slide">
-        <div class="card bs-card">
-          <img src="https://via.placeholder.com/150" class="card-img-top" alt="">
-          <div class="card-body text-center">
-            <h6>Sinh Tố Xoài</h6>
-            <p class="text-muted">40,000đ</p>
-            <button class="btn btn-sm btn-success">+ Giỏ</button>
-          </div>
-        </div>
-      </div>
-      <div class="swiper-slide">
-        <div class="card bs-card">
-          <img src="https://via.placeholder.com/150" class="card-img-top" alt="">
-          <div class="card-body text-center">
-            <h6>Sinh Tố Xoài</h6>
-            <p class="text-muted">40,000đ</p>
-            <button class="btn btn-sm btn-success">+ Giỏ</button>
-          </div>
-        </div>
-      </div>
-      <div class="swiper-slide">
-        <div class="card bs-card">
-          <img src="https://via.placeholder.com/150" class="card-img-top" alt="">
-          <div class="card-body text-center">
-            <h6>Sinh Tố Xoài</h6>
-            <p class="text-muted">40,000đ</p>
-            <button class="btn btn-sm btn-success">+ Giỏ</button>
-          </div>
-        </div>
-      </div>
-      <div class="swiper-slide">
-        <div class="card bs-card">
-          <img src="https://via.placeholder.com/150" class="card-img-top" alt="">
-          <div class="card-body text-center">
-            <h6>Sinh Tố Xoài</h6>
-            <p class="text-muted">40,000đ</p>
-            <button class="btn btn-sm btn-success">+ Giỏ</button>
-          </div>
-        </div>
-      </div>
-      <!-- thêm nhiều swiper-slide -->
     </div>
-    <!-- Nút điều hướng -->
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-pagination"></div>
+
+    <!-- Nhóm 2 -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading2">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#group2">
+          Cà Phê Phin
+        </button>
+      </h2>
+      <div id="group2" class="accordion-collapse collapse" data-bs-parent="#menuAccordion">
+        <div class="accordion-body">
+          <div class="scroll-row">
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Cà Phê</h6>
+                <p class="text-muted">20,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Cà Phê Sữa</h6>
+                <p class="text-muted">25,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Cà Phê Hạnh Nhân</h6>
+                <p class="text-muted">35,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nhóm 3 -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading3">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#group3">
+          Sinh Tố
+        </button>
+      </h2>
+      <div id="group3" class="accordion-collapse collapse" data-bs-parent="#menuAccordion">
+        <div class="accordion-body">
+          <div class="scroll-row">
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Sinh Tố Bơ</h6>
+                <p class="text-muted">35,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Sinh Tố Mãng Cầu</h6>
+                <p class="text-muted">38,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Sinh Tố Dâu</h6>
+                <p class="text-muted">40,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
+            <div class="card menu-card">
+              <div class="card-body text-center">
+                <h6>Sinh Tố Sa Bô</h6>
+                <p class="text-muted">42,000đ</p>
+                <button class="btn btn-sm btn-success">+ Giỏ</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script>
-  var swiper = new Swiper(".mySwiper", {
-    slidesPerView: 2,
-    spaceBetween: 12,
-    loop: true,
-    autoplay: {
-      delay: 2500,
-      disableOnInteraction: false,
-    },
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
-    },
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    },
-    breakpoints: {
-      768: { slidesPerView: 3 },
-      992: { slidesPerView: 4 }
-    }
-  });
-</script>
 </body>
 </html>
