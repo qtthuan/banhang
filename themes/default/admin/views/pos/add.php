@@ -175,331 +175,453 @@
 
     <div id="content">
         <div class="c1">
-            <div class="pos">
-                <?php
-                	if ($error) {
-                	    echo "<div class=\"alert alert-danger\"><button type=\"button\" class=\"close fa-2x\" data-dismiss=\"alert\">&times;</button>" . $error . "</div>";
-                	}
-                ?>
-                <?php
-                	if ($message) {
-                	    echo "<div class=\"alert alert-success\"><button type=\"button\" class=\"close fa-2x\" data-dismiss=\"alert\">&times;</button>" . $message . "</div>";
-                	}
-                ?>
-                <div id="pos">
-                    <?php $attrib = array('data-toggle' => 'validator', 'role' => 'form', 'id' => 'pos-sale-form');
-                    echo admin_form_open("pos", $attrib);?>
-                    <div id="leftdiv">
-                        <div id="printhead">
-                            <h4 style="text-transform:uppercase;"><?php echo $Settings->site_name; ?></h4>
-                            <?php
-                            	echo "<h5 style=\"text-transform:uppercase;\">" . $this->lang->line('order_list') . "</h5>";
-                            	echo $this->lang->line("date") . " " . $this->sma->hrld(date('Y-m-d H:i:s'));
-                            ?>
-                        </div>
-                        <div id="left-top">
-                            <div
-                                style="position: absolute; <?=$Settings->user_rtl ? 'right:-9999px;' : 'left:-9999px;';?>"><?php echo form_input('test', '', 'id="test" class="kb-pad"'); ?></div>
-                            <div class="form-group">
-                                <div class="input-group">
+            <!-- Layout PC -->
+            <div class="layout-pc">
+                <div class="pos">
+                    <?php
+                        if ($error) {
+                            echo "<div class=\"alert alert-danger\"><button type=\"button\" class=\"close fa-2x\" data-dismiss=\"alert\">&times;</button>" . $error . "</div>";
+                        }
+                    ?>
+                    <?php
+                        if ($message) {
+                            echo "<div class=\"alert alert-success\"><button type=\"button\" class=\"close fa-2x\" data-dismiss=\"alert\">&times;</button>" . $message . "</div>";
+                        }
+                    ?>
+                    <div id="pos">
+                        <?php $attrib = array('data-toggle' => 'validator', 'role' => 'form', 'id' => 'pos-sale-form');
+                        echo admin_form_open("pos", $attrib);?>
+                        <div id="leftdiv">
+                            <div id="printhead">
+                                <h4 style="text-transform:uppercase;"><?php echo $Settings->site_name; ?></h4>
                                 <?php
-                                	echo form_input('customer', (isset($_POST['customer']) ? $_POST['customer'] : ""), 'id="poscustomer" data-placeholder="' . $this->lang->line("select") . ' ' . $this->lang->line("customer") . '" required="required" class="form-control pos-input-tip" style="width:100%;"');
+                                    echo "<h5 style=\"text-transform:uppercase;\">" . $this->lang->line('order_list') . "</h5>";
+                                    echo $this->lang->line("date") . " " . $this->sma->hrld(date('Y-m-d H:i:s'));
                                 ?>
-                                <input name="customer_group_id" type="hidden" value="" id="customer_group_id">
-                                <input name="is_quick_finalize_sale" type="hidden" value="" id="is_quick_finalize_sale">
-                                <input name="sale_language" type="hidden" value="0" id="sale_language">
-                                    <div class="input-group-addon no-print" style="padding: 2px 16px; border-left: 0;">
-                                        <a href="#" id="toogle-customer-read-attr" class="external pos-tip" title="<?=lang('customer_selection')?>">
-                                            <i class="fa fa-pencil" id="addIcon" style="font-size: 1.7em;"></i>
-                                        </a>
-                                    </div>
-                                    <div class="input-group-addon no-print" style="padding: 2px 15px; border-left: 0;">
-                                        <a href="#" id="view-customer" class="external pos-tip" title="<?=lang('customers_info');?> (<?=$pos_settings->customers_info?>)" data-toggle="modal" data-target="#myModal">
-                                            <i class="fa fa-eye" id="addIcon" style="font-size: 1.7em;"></i>
-                                        </a>
-                                    </div>
-                                <?php if ($Owner || $Admin || $GP['customers-add']) { ?>
-                                    <div class="input-group-addon no-print" style="padding: 2px 16px;">
-                                        <a href="<?=admin_url('customers/add');?>" id="add-customer" class="external pos-tip" title="<?=lang('add_customer')?> (<?=$pos_settings->add_customer?>)" data-toggle="modal" data-target="#myModal">
-                                            <i class="fa fa-plus-circle" id="addIcon" style="font-size: 1.9em;"></i>
-                                        </a>
-                                    </div>
-                                <?php } ?>
-                                    <!-- <div class="input-group-addon no-print" style="padding: 2px 16px; border-left: 0;">
-                                        <a href="#" id="sellGiftCard" class="external tip" title="<?=lang('sell_gift_card');?> (<?=$pos_settings->gift_card?>)" data-replacement="bottom">
-                                            <i class="fa fa-credit-card addIcon fa-2x" id="addIcon" style="font-size: 1.7em;"></i>
-                                        </a>
-                                    </div> -->
-                                </div>
-                                <div style="clear:both;"></div>
-                                <div class="form-group">
-                                <?php echo form_input('customer_name', '', 'class="form-control customer_name" id="customer_name" data-placement="top" placeholder="' . $this->lang->line("enter_customer_name") . '" title=""'); ?>
-                                </div>
                             </div>
-                            <div class="no-print">
-                                <?php if ($Owner || $Admin || !$this->session->userdata('warehouse_id')) {
+                            <div id="left-top">
+                                <div
+                                    style="position: absolute; <?=$Settings->user_rtl ? 'right:-9999px;' : 'left:-9999px;';?>"><?php echo form_input('test', '', 'id="test" class="kb-pad"'); ?></div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                    <?php
+                                        echo form_input('customer', (isset($_POST['customer']) ? $_POST['customer'] : ""), 'id="poscustomer" data-placeholder="' . $this->lang->line("select") . ' ' . $this->lang->line("customer") . '" required="required" class="form-control pos-input-tip" style="width:100%;"');
                                     ?>
-                                    <div class="form-group">
-                                        <?php
-                                        	$wh[''] = '';
-                                        	    foreach ($warehouses as $warehouse) {
-                                        	        $wh[$warehouse->id] = $warehouse->name;
-                                        	    }
-                                        	    echo form_dropdown('warehouse', $wh, (isset($_POST['warehouse']) ? $_POST['warehouse'] : $Settings->default_warehouse), 'id="poswarehouse" class="form-control pos-input-tip" data-placeholder="' . $this->lang->line("select") . ' ' . $this->lang->line("warehouse") . '" required="required" style="width:100%;" ');
-                                            ?>
-                                    </div>
-                                <?php } else {
-
-                                	    $warehouse_input = array(
-                                	        'type' => 'hidden',
-                                	        'name' => 'warehouse',
-                                	        'id' => 'poswarehouse',
-                                	        'value' => $this->session->userdata('warehouse_id'),
-                                	    );
-
-                                	    echo form_input($warehouse_input);
-                                	}
-                                ?>
-                                <div class="form-group" style="display: none">
-                                    <div class="input-group">
-                                        <div class="no-print col-xs-1" style="padding: 1px 2px; border-left: 0;">
-                                            <button type="button" class="btn btn-danger" id="ag" style="height:35px; font-size: 15px;">
-                                                AG
-                                            </button>
-                                        </div>
-                                        <div class="no-print col-xs-1" style="padding: 1px 2px; border-left: 0;">
-                                            <button type="button" class="btn btn-warning" id="at" style="height:35px; font-size: 15px;">
-                                                AT
-                                            </button>
-                                        </div>
-                                        <div class="no-print col-xs-1" style="padding: 1px 2px; border-left: 0;">
-                                            <button type="button" class="btn btn-info" id="bg" style="height:35px; font-size: 15px;">
-                                                BG
-                                            </button>
-                                        </div>
-                                        <div class="no-print col-xs-1" style="padding: 1px 2px; border-left: 0;">
-                                            <button type="button" class="btn btn-success" id="bt" style="height:35px; font-size: 15px;">
-                                                BT
-                                            </button>
-                                        </div>
-                                        <div class="no-print col-xs-1" style="padding: 1px 2px; border-left: 0;">
-                                            <button type="button" class="btn btn-danger" id="dg" style="height:35px; font-size: 15px;">
-                                                DG
-                                            </button>
-                                        </div>
-                                        <div class="no-print col-xs-1" style="padding: 1px 2px; border-left: 0;">
-                                            <button type="button" class="btn btn-warning" id="qg" style="height:35px; font-size: 15px;">
-                                                QG
-                                            </button>
-                                        </div>
-                                        <div class="no-print col-xs-1" style="padding: 1px 2px; border-left: 0;">
-                                            <button type="button" class="btn btn-info" id="qt" style="height:35px; font-size: 15px;">
-                                                QT
-                                            </button>
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="form-group" id="ui">
-                                    <?php if ($Owner || $Admin || $GP['products-add']) { ?>
-                                    <div class="input-group">
-                                    <?php } ?>
-                                    <?php echo form_input('add_item', '', 'class="form-control pos-tip" id="add_item" data-placement="top" data-trigger="focus" placeholder="' . $this->lang->line("search_product_by_name_code") . $pos_settings->focus_add_item . '" title=""'); ?>
-                                    <?php if ($Owner || $Admin || $GP['products-add']) { ?>
-                                        <div class="input-group-addon" style="padding: 0 22px;">
-                                            <a href="#" id="addManually" class="tip" title="<?=lang('add_product_manually')?> (<?=$pos_settings->add_manual_product?>)">
-                                                <i class="fa fa-plus-circle" id="addIcon" style="font-size: 2.2em;"></i>
+                                    <input name="customer_group_id" type="hidden" value="" id="customer_group_id">
+                                    <input name="is_quick_finalize_sale" type="hidden" value="" id="is_quick_finalize_sale">
+                                    <input name="sale_language" type="hidden" value="0" id="sale_language">
+                                        <div class="input-group-addon no-print" style="padding: 2px 16px; border-left: 0;">
+                                            <a href="#" id="toogle-customer-read-attr" class="external pos-tip" title="<?=lang('customer_selection')?>">
+                                                <i class="fa fa-pencil" id="addIcon" style="font-size: 1.7em;"></i>
                                             </a>
                                         </div>
-                                    </div>
+                                        <div class="input-group-addon no-print" style="padding: 2px 15px; border-left: 0;">
+                                            <a href="#" id="view-customer" class="external pos-tip" title="<?=lang('customers_info');?> (<?=$pos_settings->customers_info?>)" data-toggle="modal" data-target="#myModal">
+                                                <i class="fa fa-eye" id="addIcon" style="font-size: 1.7em;"></i>
+                                            </a>
+                                        </div>
+                                    <?php if ($Owner || $Admin || $GP['customers-add']) { ?>
+                                        <div class="input-group-addon no-print" style="padding: 2px 16px;">
+                                            <a href="<?=admin_url('customers/add');?>" id="add-customer" class="external pos-tip" title="<?=lang('add_customer')?> (<?=$pos_settings->add_customer?>)" data-toggle="modal" data-target="#myModal">
+                                                <i class="fa fa-plus-circle" id="addIcon" style="font-size: 1.9em;"></i>
+                                            </a>
+                                        </div>
                                     <?php } ?>
+                                        <!-- <div class="input-group-addon no-print" style="padding: 2px 16px; border-left: 0;">
+                                            <a href="#" id="sellGiftCard" class="external tip" title="<?=lang('sell_gift_card');?> (<?=$pos_settings->gift_card?>)" data-replacement="bottom">
+                                                <i class="fa fa-credit-card addIcon fa-2x" id="addIcon" style="font-size: 1.7em;"></i>
+                                            </a>
+                                        </div> -->
+                                    </div>
                                     <div style="clear:both;"></div>
+                                    <div class="form-group">
+                                    <?php echo form_input('customer_name', '', 'class="form-control customer_name" id="customer_name" data-placement="top" placeholder="' . $this->lang->line("enter_customer_name") . '" title=""'); ?>
+                                    </div>
+                                </div>
+                                <div class="no-print">
+                                    <?php if ($Owner || $Admin || !$this->session->userdata('warehouse_id')) {
+                                        ?>
+                                        <div class="form-group">
+                                            <?php
+                                                $wh[''] = '';
+                                                    foreach ($warehouses as $warehouse) {
+                                                        $wh[$warehouse->id] = $warehouse->name;
+                                                    }
+                                                    echo form_dropdown('warehouse', $wh, (isset($_POST['warehouse']) ? $_POST['warehouse'] : $Settings->default_warehouse), 'id="poswarehouse" class="form-control pos-input-tip" data-placeholder="' . $this->lang->line("select") . ' ' . $this->lang->line("warehouse") . '" required="required" style="width:100%;" ');
+                                                ?>
+                                        </div>
+                                    <?php } else {
+
+                                            $warehouse_input = array(
+                                                'type' => 'hidden',
+                                                'name' => 'warehouse',
+                                                'id' => 'poswarehouse',
+                                                'value' => $this->session->userdata('warehouse_id'),
+                                            );
+
+                                            echo form_input($warehouse_input);
+                                        }
+                                    ?>
+                                    <div class="form-group" style="display: none">
+                                        <div class="input-group">
+                                            <div class="no-print col-xs-1" style="padding: 1px 2px; border-left: 0;">
+                                                <button type="button" class="btn btn-danger" id="ag" style="height:35px; font-size: 15px;">
+                                                    AG
+                                                </button>
+                                            </div>
+                                            <div class="no-print col-xs-1" style="padding: 1px 2px; border-left: 0;">
+                                                <button type="button" class="btn btn-warning" id="at" style="height:35px; font-size: 15px;">
+                                                    AT
+                                                </button>
+                                            </div>
+                                            <div class="no-print col-xs-1" style="padding: 1px 2px; border-left: 0;">
+                                                <button type="button" class="btn btn-info" id="bg" style="height:35px; font-size: 15px;">
+                                                    BG
+                                                </button>
+                                            </div>
+                                            <div class="no-print col-xs-1" style="padding: 1px 2px; border-left: 0;">
+                                                <button type="button" class="btn btn-success" id="bt" style="height:35px; font-size: 15px;">
+                                                    BT
+                                                </button>
+                                            </div>
+                                            <div class="no-print col-xs-1" style="padding: 1px 2px; border-left: 0;">
+                                                <button type="button" class="btn btn-danger" id="dg" style="height:35px; font-size: 15px;">
+                                                    DG
+                                                </button>
+                                            </div>
+                                            <div class="no-print col-xs-1" style="padding: 1px 2px; border-left: 0;">
+                                                <button type="button" class="btn btn-warning" id="qg" style="height:35px; font-size: 15px;">
+                                                    QG
+                                                </button>
+                                            </div>
+                                            <div class="no-print col-xs-1" style="padding: 1px 2px; border-left: 0;">
+                                                <button type="button" class="btn btn-info" id="qt" style="height:35px; font-size: 15px;">
+                                                    QT
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="ui">
+                                        <?php if ($Owner || $Admin || $GP['products-add']) { ?>
+                                        <div class="input-group">
+                                        <?php } ?>
+                                        <?php echo form_input('add_item', '', 'class="form-control pos-tip" id="add_item" data-placement="top" data-trigger="focus" placeholder="' . $this->lang->line("search_product_by_name_code") . $pos_settings->focus_add_item . '" title=""'); ?>
+                                        <?php if ($Owner || $Admin || $GP['products-add']) { ?>
+                                            <div class="input-group-addon" style="padding: 0 22px;">
+                                                <a href="#" id="addManually" class="tip" title="<?=lang('add_product_manually')?> (<?=$pos_settings->add_manual_product?>)">
+                                                    <i class="fa fa-plus-circle" id="addIcon" style="font-size: 2.2em;"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <?php } ?>
+                                        <div style="clear:both;"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div id="print">
-                            <div id="left-middle">
-                                <div id="product-list">
-                                    <table class="table items table-striped table-bordered table-condensed table-hover sortable_table"
-                                           id="posTable" style="margin-bottom: 0;">
-                                        <thead>
+                            <div id="print">
+                                <div id="left-middle">
+                                    <div id="product-list">
+                                        <table class="table items table-striped table-bordered table-condensed table-hover sortable_table"
+                                            id="posTable" style="margin-bottom: 0;">
+                                            <thead>
+                                            <tr>
+                                                <th width="52%"><?=lang("product");?></th>
+                                                <th width="15%">
+                                                <i class="fa fa-edit" style="opacity:0.5; filter:alpha(opacity=50);"></i>
+                                                </th>
+                                                <th width="9%"><?=lang("price");?></th>
+                                                <th width="8%"><?=lang("qty");?></th>
+                                                <th width="11%"><?=lang("subtotal");?></th>
+                                                <th style="width: 5%; text-align: center;">
+                                                    <i class="fa fa-trash-o" style="opacity:0.5; filter:alpha(opacity=50);"></i>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                        <div style="clear:both;"></div>
+                                    </div>
+                                </div>
+                                <div style="clear:both;"></div>
+                                <div id="left-bottom">
+                                    <table id="totalTable"
+                                        style="width:100%; float:right; padding:5px; color:#000; background: #FFF;">
                                         <tr>
-                                            <th width="52%"><?=lang("product");?></th>
-                                            <th width="15%">
-                                            <i class="fa fa-edit" style="opacity:0.5; filter:alpha(opacity=50);"></i>
-                                            </th>
-                                            <th width="9%"><?=lang("price");?></th>
-                                            <th width="8%"><?=lang("qty");?></th>
-                                            <th width="11%"><?=lang("subtotal");?></th>
-                                            <th style="width: 5%; text-align: center;">
-                                                <i class="fa fa-trash-o" style="opacity:0.5; filter:alpha(opacity=50);"></i>
-                                            </th>
+                                            <td style="width: 11%; padding-left: 15px; border-top: 1px solid #DDD; font-size: 16px;">
+                                                <?=lang('total_items');?>: <span id="titems" style="font-weight: bold">0</span>
+                                            </td>
+                                            <td style="width: 12%; border-top: 1px solid #DDD; font-size: 16px;">
+                                                <?=lang('total');?>: <span id="total" style="font-weight: bold">0.00</span>
+                                            </td>
+                                            <td class="text-left" style="width: 12%; border-top: 1px solid #DDD; font-size: 16px;">
+                                                <?=lang('shipping');?>
+                                                <a href="#" id="pshipping" class="external pos-tip" style="vertical-align: -webkit-baseline-middle" title="<?=$pos_settings->bill_shipping?>">
+                                                    <i class="fa fa-2x fa-plus-square"></i>
+                                                </a>
+                                                <span id="tship" style="font-weight: bold"></span>
+                                            </td>
+                                            <td id="col_return"  class="text-left" style="width: 15%; border-top: 1px solid #DDD; font-size: 16px;">
+                                                <?=lang('return_amount');?>
+                                                <a href="#" id="preturn" class="external pos-tip" style="vertical-align: -webkit-baseline-middle" title="<?=$pos_settings->return_sale?>">
+                                                    <i class="fa fa-2x fa-minus-square"></i>
+                                                </a>
+                                                <span id="treturn" style="font-weight: bold"></span>
+                                            </td>
+                                            <td class="text-left" style="width: 30%; border-top: 1px solid #DDD; font-size: 16px;">
+                                                <?=lang('discount');?>
+                                                <?php if ($Owner || $Admin || $this->session->userdata('allow_discount')) { ?>
+                                                    <a href="#" id="ppdiscount" class="external pos-tip" style="vertical-align: -webkit-baseline-middle" title="<?=$pos_settings->bill_discount?>">
+                                                        <i class="fa fa-2x fa-edit"></i>
+                                                    </a>
+                                                <?php } ?>
+                                                <span id="tds" style="font-weight: bold; color:red">0.00</span>
+                                                <span id="tds_extra" style="font-size: 16px; color:darkblue">&nbsp;</span>
+                                            </td>
+                                            <td class="text-right" style="width: 8%; padding-right: 7px; font-size: 16px;border-top: 1px solid #666; border-bottom: 1px solid #333; font-weight:bold; background:#333; color:#FFF;">
+                                                <?=lang('total_payable1');?>:
+                                            </td>
+                                            <td class="text-right" style="width: 12%; padding-right: 7px; border-top: 1px solid #666; border-bottom: 1px solid #333; font-weight:bold; background:#333; color:#f0ff00;">
+                                                <span id="gtotal" style="font-size: 22px">0.00</span>
+                                            </td>
                                         </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
                                     </table>
-                                    <div style="clear:both;"></div>
+
+                                    <div class="clearfix"></div>
+                                    <div id="botbuttons" class="col-xs-12 text-center">
+                                        <input type="hidden" name="biller" id="biller" value="<?= ($Owner || $Admin || !$this->session->userdata('biller_id')) ? $pos_settings->default_biller : $this->session->userdata('biller_id')?>"/>
+                                        <div class="row">
+                                            <div class="col-xs-2-5" style="padding: 0;">
+                                                <button type="button" class="btn btn-danger btn-block" id="reset" style="height:57px; font-size: 20px;">
+                                                    <i class="fa fa-times-circle" style="margin-right: 5px;"></i><?=lang('cancel_sale');?> (<strong><?=$pos_settings->cancel_sale?></strong>)
+                                                </button>
+                                            </div>
+                                            <div class="col-xs-2-5" style="padding: 0;">
+                                                <button type="button" class="btn btn-warning btn-block" id="suspend" style="height:57px; font-size: 20px;">
+                                                    <i class="fa fa-sticky-note" style="margin-right: 5px;"></i><?=lang('suspend');?> (<strong><?=$pos_settings->suspend_sale?></strong>)
+                                                </button>
+                                            </div>
+                                            <div class="col-xs-2" style="padding: 0;">
+                                                <button type="button" class="btn btn-info btn-block" id="print_bill" style="height:57px; font-size: 20px;">
+                                                    <i class="fa fa-th" style="margin-right: 5px;"></i><?=lang('bill');?>
+                                                </button>
+                                            </div>
+                                            <div class="col-xs-2-5" style="padding: 0;">
+                                                <button type="button" class="btn btn-primary btn-block" id="quick_payment" style="height:57px; font-size: 20px;">
+                                                    <i class="fa fa-money" style="margin-right: 5px;"></i>TT nhanh (<strong><?=$pos_settings->quick_finalize_sale?></strong>)
+                                                </button>
+                                            </div>
+                                            <div class="col-xs-2-5" style="padding: 0;">
+                                                <button type="button" class="btn btn-success btn-block" id="payment" style="height:57px; font-size: 20px;">
+                                                    <i class="fa fa-money" style="margin-right: 5px;"></i><?=lang('payment');?> (<strong><?=$pos_settings->finalize_sale?></strong>)
+                                                </button> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="height:20px;"></div>
+                                    <div id="num">
+                                        <div id="icon"></div>
+                                    </div>
+                                    <span id="hidesuspend"></span>
+                                    <input type="hidden" name="pos_note" value="" id="pos_note">
+                                    <input type="hidden" name="staff_note" value="" id="staff_note">
+                                    <input type="hidden" name="delivery_method" value="Shop" id="delivery_method">
+
+                                    <div id="payment-con">
+                                        <?php for ($i = 1; $i <= 5; $i++) {?>
+                                            <input type="hidden" name="amount[]" id="amount_val_<?=$i?>" value=""/>
+                                            <input type="hidden" name="balance_amount[]" id="balance_amount_<?=$i?>" value=""/>
+                                            <input type="hidden" name="paid_by[]" id="paid_by_val_<?=$i?>" value="cash"/>
+                                            <input type="hidden" name="cc_no[]" id="cc_no_val_<?=$i?>" value=""/>
+                                            <input type="hidden" name="paying_gift_card_no[]" id="paying_gift_card_no_val_<?=$i?>" value=""/>
+                                            <input type="hidden" name="paying_points[]" id="paying_points_val_<?=$i?>" value=""/>
+                                            <input type="hidden" name="cc_holder[]" id="cc_holder_val_<?=$i?>" value=""/>
+                                            <input type="hidden" name="cheque_no[]" id="cheque_no_val_<?=$i?>" value=""/>
+                                            <input type="hidden" name="cc_month[]" id="cc_month_val_<?=$i?>" value=""/>
+                                            <input type="hidden" name="cc_year[]" id="cc_year_val_<?=$i?>" value=""/>
+                                            <input type="hidden" name="cc_type[]" id="cc_type_val_<?=$i?>" value=""/>
+                                            <input type="hidden" name="cc_cvv2[]" id="cc_cvv2_val_<?=$i?>" value=""/>
+                                            <input type="hidden" name="payment_note[]" id="payment_note_val_<?=$i?>" value=""/>
+                                        <?php }
+                                        ?>
+                                    </div>
+                                    <input name="order_tax" type="hidden" value="<?=$suspend_sale ? $suspend_sale->order_tax_id : ($old_sale ? $old_sale->order_tax_id : $Settings->default_tax_rate2);?>" id="postax2">
+                                    
+                                    <?php //$this->sma->print_arrays($suspend_sale);?>
+                                    <input name="shipping" type="hidden" value="<?=$suspend_sale ? $suspend_sale->shipping : ($old_sale ? $old_sale->shipping :  '0');?>" id="posshipping">
+                                    <input name="discount" type="hidden" value="<?=$suspend_sale ? $suspend_sale->order_discount_id : ($old_sale ? $old_sale->order_discount_id : '');?>" id="posdiscount">
+                                    <input id="order_discount_percent_for_return_sale" name="order_discount_percent_for_return_sale" type="hidden" value="0">
+                                    <input name="return_amount" type="hidden" value="<?=$suspend_sale ? $suspend_sale->return_amount : ($old_sale ? $old_sale->return_amount :  '0');?>" id="posreturn">
+                                    <input type="hidden" name="rpaidby" id="rpaidby" value="cash" style="display: none;"/>
+                                    <input type="hidden" name="total_items" id="total_items" value="0" style="display: none;"/>
+                                    <input type="hidden" name="has_out_of_stock_products" id="has_out_of_stock_products" value="0" style="display: none;"/>
+                                    <input type="submit" id="submit_sale" value="Submit Sale" style="display: none;"/>
+                                    <span id="out_of_stock_items" style="display: none;"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                        <?php echo form_close(); ?>
+                        <div id="cp">
+                            <div id="cpinner">
+                                <div class="quick-menu">
+                                    <div id="proContainer">
+                                        <div id="ajaxproducts">
+                                            <div id="item-list">
+                                                <?php echo $products; ?>
+                                            </div>
+                                            <div class="btn-group btn-group-justified pos-grid-nav">
+                                                <div class="btn-group">
+                                                    <button style="z-index:10002;" class="btn btn-primary pos-tip" title="<?=lang('previous')?>" type="button" id="previous">
+                                                        <i class="fa fa-chevron-left"></i>
+                                                    </button>
+                                                </div>
+                                                <?php if ($Owner || $Admin || $GP['sales-add_gift_card']) {?>
+                                                <!-- <div class="btn-group">
+                                                    <button style="z-index:10003;" class="btn btn-primary pos-tip" type="button" id="sellGiftCard" title="<?=lang('sell_gift_card')?>">
+                                                        <i class="fa fa-credit-card" id="addIcon"></i><?=lang('sell_gift_card')?>
+                                                    </button>
+                                                </div> -->
+                                                <?php } ?>
+                                                <div class="btn-group">
+                                                    <button style="z-index:10004;" class="btn btn-primary pos-tip" title="<?=lang('next')?>" type="button" id="next">
+                                                        <i class="fa fa-chevron-right"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="clear:both;"></div>
+                                    </div>
                                 </div>
                             </div>
                             <div style="clear:both;"></div>
-                            <div id="left-bottom">
-                                <table id="totalTable"
-                                       style="width:100%; float:right; padding:5px; color:#000; background: #FFF;">
-                                    <tr>
-                                        <td style="width: 11%; padding-left: 15px; border-top: 1px solid #DDD; font-size: 16px;">
-                                            <?=lang('total_items');?>: <span id="titems" style="font-weight: bold">0</span>
-                                        </td>
-                                        <td style="width: 12%; border-top: 1px solid #DDD; font-size: 16px;">
-                                            <?=lang('total');?>: <span id="total" style="font-weight: bold">0.00</span>
-                                        </td>
-                                        <td class="text-left" style="width: 12%; border-top: 1px solid #DDD; font-size: 16px;">
-                                            <?=lang('shipping');?>
-                                            <a href="#" id="pshipping" class="external pos-tip" style="vertical-align: -webkit-baseline-middle" title="<?=$pos_settings->bill_shipping?>">
-                                                <i class="fa fa-2x fa-plus-square"></i>
-                                            </a>
-                                            <span id="tship" style="font-weight: bold"></span>
-                                        </td>
-                                        <td id="col_return"  class="text-left" style="width: 15%; border-top: 1px solid #DDD; font-size: 16px;">
-                                            <?=lang('return_amount');?>
-                                            <a href="#" id="preturn" class="external pos-tip" style="vertical-align: -webkit-baseline-middle" title="<?=$pos_settings->return_sale?>">
-                                                <i class="fa fa-2x fa-minus-square"></i>
-                                            </a>
-                                            <span id="treturn" style="font-weight: bold"></span>
-                                        </td>
-                                        <td class="text-left" style="width: 30%; border-top: 1px solid #DDD; font-size: 16px;">
-                                            <?=lang('discount');?>
-                                            <?php if ($Owner || $Admin || $this->session->userdata('allow_discount')) { ?>
-                                                <a href="#" id="ppdiscount" class="external pos-tip" style="vertical-align: -webkit-baseline-middle" title="<?=$pos_settings->bill_discount?>">
-                                                    <i class="fa fa-2x fa-edit"></i>
-                                                </a>
-                                            <?php } ?>
-                                            <span id="tds" style="font-weight: bold; color:red">0.00</span>
-                                            <span id="tds_extra" style="font-size: 16px; color:darkblue">&nbsp;</span>
-                                        </td>
-                                        <td class="text-right" style="width: 8%; padding-right: 7px; font-size: 16px;border-top: 1px solid #666; border-bottom: 1px solid #333; font-weight:bold; background:#333; color:#FFF;">
-                                            <?=lang('total_payable1');?>:
-                                        </td>
-                                        <td class="text-right" style="width: 12%; padding-right: 7px; border-top: 1px solid #666; border-bottom: 1px solid #333; font-weight:bold; background:#333; color:#f0ff00;">
-                                            <span id="gtotal" style="font-size: 22px">0.00</span>
-                                        </td>
-                                    </tr>
-                                </table>
-
-                                <div class="clearfix"></div>
-                                <div id="botbuttons" class="col-xs-12 text-center">
-                                    <input type="hidden" name="biller" id="biller" value="<?= ($Owner || $Admin || !$this->session->userdata('biller_id')) ? $pos_settings->default_biller : $this->session->userdata('biller_id')?>"/>
-                                    <div class="row">
-                                        <div class="col-xs-2-5" style="padding: 0;">
-                                            <button type="button" class="btn btn-danger btn-block" id="reset" style="height:57px; font-size: 20px;">
-                                                <i class="fa fa-times-circle" style="margin-right: 5px;"></i><?=lang('cancel_sale');?> (<strong><?=$pos_settings->cancel_sale?></strong>)
-                                            </button>
-                                        </div>
-                                        <div class="col-xs-2-5" style="padding: 0;">
-                                            <button type="button" class="btn btn-warning btn-block" id="suspend" style="height:57px; font-size: 20px;">
-                                                <i class="fa fa-sticky-note" style="margin-right: 5px;"></i><?=lang('suspend');?> (<strong><?=$pos_settings->suspend_sale?></strong>)
-                                            </button>
-                                        </div>
-                                        <div class="col-xs-2" style="padding: 0;">
-                                            <button type="button" class="btn btn-info btn-block" id="print_bill" style="height:57px; font-size: 20px;">
-                                                <i class="fa fa-th" style="margin-right: 5px;"></i><?=lang('bill');?>
-                                            </button>
-                                        </div>
-                                        <div class="col-xs-2-5" style="padding: 0;">
-                                            <button type="button" class="btn btn-primary btn-block" id="quick_payment" style="height:57px; font-size: 20px;">
-                                                <i class="fa fa-money" style="margin-right: 5px;"></i>TT nhanh (<strong><?=$pos_settings->quick_finalize_sale?></strong>)
-                                            </button>
-                                        </div>
-                                        <div class="col-xs-2-5" style="padding: 0;">
-                                            <button type="button" class="btn btn-success btn-block" id="payment" style="height:57px; font-size: 20px;">
-                                                <i class="fa fa-money" style="margin-right: 5px;"></i><?=lang('payment');?> (<strong><?=$pos_settings->finalize_sale?></strong>)
-                                            </button> 
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="height:20px;"></div>
-                                <div id="num">
-                                    <div id="icon"></div>
-                                </div>
-                                <span id="hidesuspend"></span>
-                                <input type="hidden" name="pos_note" value="" id="pos_note">
-                                <input type="hidden" name="staff_note" value="" id="staff_note">
-                                <input type="hidden" name="delivery_method" value="Shop" id="delivery_method">
-
-                                <div id="payment-con">
-                                    <?php for ($i = 1; $i <= 5; $i++) {?>
-                                        <input type="hidden" name="amount[]" id="amount_val_<?=$i?>" value=""/>
-                                        <input type="hidden" name="balance_amount[]" id="balance_amount_<?=$i?>" value=""/>
-                                        <input type="hidden" name="paid_by[]" id="paid_by_val_<?=$i?>" value="cash"/>
-                                        <input type="hidden" name="cc_no[]" id="cc_no_val_<?=$i?>" value=""/>
-                                        <input type="hidden" name="paying_gift_card_no[]" id="paying_gift_card_no_val_<?=$i?>" value=""/>
-                                        <input type="hidden" name="paying_points[]" id="paying_points_val_<?=$i?>" value=""/>
-                                        <input type="hidden" name="cc_holder[]" id="cc_holder_val_<?=$i?>" value=""/>
-                                        <input type="hidden" name="cheque_no[]" id="cheque_no_val_<?=$i?>" value=""/>
-                                        <input type="hidden" name="cc_month[]" id="cc_month_val_<?=$i?>" value=""/>
-                                        <input type="hidden" name="cc_year[]" id="cc_year_val_<?=$i?>" value=""/>
-                                        <input type="hidden" name="cc_type[]" id="cc_type_val_<?=$i?>" value=""/>
-                                        <input type="hidden" name="cc_cvv2[]" id="cc_cvv2_val_<?=$i?>" value=""/>
-                                        <input type="hidden" name="payment_note[]" id="payment_note_val_<?=$i?>" value=""/>
-                                    <?php }
-                                    ?>
-                                </div>
-                                <input name="order_tax" type="hidden" value="<?=$suspend_sale ? $suspend_sale->order_tax_id : ($old_sale ? $old_sale->order_tax_id : $Settings->default_tax_rate2);?>" id="postax2">
-                                
-                                <?php //$this->sma->print_arrays($suspend_sale);?>
-                                <input name="shipping" type="hidden" value="<?=$suspend_sale ? $suspend_sale->shipping : ($old_sale ? $old_sale->shipping :  '0');?>" id="posshipping">
-                                <input name="discount" type="hidden" value="<?=$suspend_sale ? $suspend_sale->order_discount_id : ($old_sale ? $old_sale->order_discount_id : '');?>" id="posdiscount">
-                                <input id="order_discount_percent_for_return_sale" name="order_discount_percent_for_return_sale" type="hidden" value="0">
-                                <input name="return_amount" type="hidden" value="<?=$suspend_sale ? $suspend_sale->return_amount : ($old_sale ? $old_sale->return_amount :  '0');?>" id="posreturn">
-                                <input type="hidden" name="rpaidby" id="rpaidby" value="cash" style="display: none;"/>
-                                <input type="hidden" name="total_items" id="total_items" value="0" style="display: none;"/>
-                                <input type="hidden" name="has_out_of_stock_products" id="has_out_of_stock_products" value="0" style="display: none;"/>
-                                <input type="submit" id="submit_sale" value="Submit Sale" style="display: none;"/>
-                                <span id="out_of_stock_items" style="display: none;"></span>
-                            </div>
-                        </div>
-
-                    </div>
-                    <?php echo form_close(); ?>
-                    <div id="cp">
-                        <div id="cpinner">
-                            <div class="quick-menu">
-                                <div id="proContainer">
-                                    <div id="ajaxproducts">
-                                        <div id="item-list">
-                                            <?php echo $products; ?>
-                                        </div>
-                                        <div class="btn-group btn-group-justified pos-grid-nav">
-                                            <div class="btn-group">
-                                                <button style="z-index:10002;" class="btn btn-primary pos-tip" title="<?=lang('previous')?>" type="button" id="previous">
-                                                    <i class="fa fa-chevron-left"></i>
-                                                </button>
-                                            </div>
-                                            <?php if ($Owner || $Admin || $GP['sales-add_gift_card']) {?>
-                                            <!-- <div class="btn-group">
-                                                <button style="z-index:10003;" class="btn btn-primary pos-tip" type="button" id="sellGiftCard" title="<?=lang('sell_gift_card')?>">
-                                                    <i class="fa fa-credit-card" id="addIcon"></i><?=lang('sell_gift_card')?>
-                                                </button>
-                                            </div> -->
-                                            <?php } ?>
-                                            <div class="btn-group">
-                                                <button style="z-index:10004;" class="btn btn-primary pos-tip" title="<?=lang('next')?>" type="button" id="next">
-                                                    <i class="fa fa-chevron-right"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style="clear:both;"></div>
-                                </div>
-                            </div>
                         </div>
                         <div style="clear:both;"></div>
                     </div>
                     <div style="clear:both;"></div>
                 </div>
-                <div style="clear:both;"></div>
             </div>
+            <div class="layout-mobile">
+  <div class="container">
+
+    <h4 class="text-center">☕ Menu Nước</h4>
+
+    <div class="panel-group" id="accordion">
+
+      <!-- Nhóm Trà Trái Cây -->
+      <div class="panel panel-success">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#group1">🍓 Trà Trái Cây</a>
+          </h4>
         </div>
+        <div id="group1" class="panel-collapse collapse in">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-xs-6">
+                <div class="panel panel-default">
+                  <div class="panel-body text-center">
+                    <h5>Trà Dâu Tằm</h5>
+                    <p class="text-muted">30,000đ</p>
+                    <button class="btn btn-info btn-xs btn-block">Ghi chú món</button>
+                    <button class="btn btn-success btn-xs btn-block">+ Giỏ</button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-6">
+                <div class="panel panel-default">
+                  <div class="panel-body text-center">
+                    <h5>Trà Dứa</h5>
+                    <p class="text-muted">28,000đ</p>
+                    <button class="btn btn-info btn-xs btn-block">Ghi chú món</button>
+                    <button class="btn btn-success btn-xs btn-block">+ Giỏ</button>
+                  </div>
+                </div>
+              </div>
+              <!-- thêm món khác -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nhóm Cà Phê Phin -->
+      <div class="panel panel-success">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#group2">☕ Cà Phê Phin</a>
+          </h4>
+        </div>
+        <div id="group2" class="panel-collapse collapse">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-xs-6">
+                <div class="panel panel-default">
+                  <div class="panel-body text-center">
+                    <h5>Cà Phê Đen</h5>
+                    <p class="text-muted">20,000đ</p>
+                    <button class="btn btn-info btn-xs btn-block">Ghi chú món</button>
+                    <button class="btn btn-success btn-xs btn-block">+ Giỏ</button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-6">
+                <div class="panel panel-default">
+                  <div class="panel-body text-center">
+                    <h5>Cà Phê Sữa</h5>
+                    <p class="text-muted">25,000đ</p>
+                    <button class="btn btn-info btn-xs btn-block">Ghi chú món</button>
+                    <button class="btn btn-success btn-xs btn-block">+ Giỏ</button>
+                  </div>
+                </div>
+              </div>
+              <!-- thêm món khác -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nhóm Sinh Tố -->
+      <div class="panel panel-success">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#group3">🥭 Sinh Tố</a>
+          </h4>
+        </div>
+        <div id="group3" class="panel-collapse collapse">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-xs-6">
+                <div class="panel panel-default">
+                  <div class="panel-body text-center">
+                    <h5>Sinh Tố Bơ</h5>
+                    <p class="text-muted">35,000đ</p>
+                    <button class="btn btn-info btn-xs btn-block">Ghi chú món</button>
+                    <button class="btn btn-success btn-xs btn-block">+ Giỏ</button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-6">
+                <div class="panel panel-default">
+                  <div class="panel-body text-center">
+                    <h5>Sinh Tố Dâu</h5>
+                    <p class="text-muted">32,000đ</p>
+                    <button class="btn btn-info btn-xs btn-block">Ghi chú món</button>
+                    <button class="btn btn-success btn-xs btn-block">+ Giỏ</button>
+                  </div>
+                </div>
+              </div>
+              <!-- thêm món khác -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
     </div>
 </div>
 <!--<div class="rotate btn-cat-con">

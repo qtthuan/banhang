@@ -2132,3 +2132,66 @@ animation: blink 1s steps(2, start) infinite;
     font-size: 14px;
     text-transform: uppercase;
    }
+   /* ========== Responsive cho Mobile Order ========== */
+@media (max-width: 1024px) {
+  /* Ẩn layout PC, chỉ giữ layout mobile */
+  .layout-pc {
+    display: none !important;
+  }
+  .layout-mobile {
+    display: block !important;
+  }
+
+  /* Card sản phẩm mobile */
+  .layout-mobile .card {
+    margin-bottom: 12px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+
+  .layout-mobile .card-body {
+    padding: 12px;
+    text-align: center;
+  }
+
+  .layout-mobile .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .layout-mobile .price {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+  }
+
+  /* Nút giỏ hàng, nút ghi chú to hơn */
+  .layout-mobile .btn {
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 8px;
+  }
+
+  /* Form đặt hàng ở dưới */
+  .order-form {
+    padding: 12px;
+    background: #fff;
+    border-top: 1px solid #ddd;
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+  }
+
+  .order-form input,
+  .order-form textarea {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .order-form button {
+    width: 100%;
+    font-size: 15px;
+    padding: 10px;
+  }
+}
