@@ -505,184 +505,96 @@
             <div class="layout-mobile">
   <div class="container">
 
-    <h3 class="text-center">Menu Nước</h3>
+    <h3 class="text-center" style="margin-bottom:15px;">☕ Menu Nước</h3>
 
     <div class="panel-group" id="accordionMenu">
 
       <!-- Nhóm Trà Trái Cây -->
-      <div class="panel panel-default">
+      <div class="panel panel-success">
         <div class="panel-heading">
-          <h4 class="panel-title">
-            <a data-toggle="collapse" data-parent="#accordionMenu" href="#grpTea">Trà Trái Cây</a>
+          <h4 class="panel-title" style="font-size:16px;">
+            <a data-toggle="collapse" data-parent="#accordionMenu" href="#grpTea">🍓 Trà Trái Cây</a>
           </h4>
         </div>
         <div id="grpTea" class="panel-collapse collapse in">
           <div class="panel-body">
-            <div class="row">
-              <!-- Món 1 -->
-              <div class="col-xs-6">
-                <div class="panel panel-default">
-                  <div class="panel-body text-center">
-                    <h5>Trà Trái Cây</h5>
-                    <p class="text-muted">30,000đ</p>
-                    <button class="btn btn-success btn-xs btn-block btn-addcart"
-                            data-id="1" data-name="Trà Trái Cây" data-price="30000">
-                      + Giỏ
-                    </button>
-                  </div>
-                </div>
+            <!-- Món -->
+            <div class="panel panel-default" style="margin-bottom:10px;">
+              <div class="panel-body text-center">
+                <h4 style="margin-top:0;">Trà Trái Cây</h4>
+                <p class="text-muted" style="font-size:14px;">30,000đ</p>
+                <button class="btn btn-success btn-lg btn-block" data-id="1" data-name="Trà Trái Cây" data-price="30000">+ Giỏ</button>
               </div>
-              <!-- Món 2 -->
-              <div class="col-xs-6">
-                <div class="panel panel-default">
-                  <div class="panel-body text-center">
-                    <h5>Trà Dâu Tằm</h5>
-                    <p class="text-muted">32,000đ</p>
-                    <button class="btn btn-success btn-xs btn-block btn-addcart"
-                            data-id="2" data-name="Trà Dâu Tằm" data-price="32000">
-                      + Giỏ
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <!-- Món 3 -->
-              <div class="col-xs-6">
-                <div class="panel panel-default">
-                  <div class="panel-body text-center">
-                    <h5>Trà Dứa</h5>
-                    <p class="text-muted">28,000đ</p>
-                    <button class="btn btn-success btn-xs btn-block btn-addcart"
-                            data-id="3" data-name="Trà Dứa" data-price="28000">
-                      + Giỏ
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <!-- Nếu còn món khác, tiếp tục thêm ở đây -->
             </div>
+            <div class="panel panel-default" style="margin-bottom:10px;">
+              <div class="panel-body text-center">
+                <h4 style="margin-top:0;">Trà Dâu Tằm</h4>
+                <p class="text-muted" style="font-size:14px;">32,000đ</p>
+                <button class="btn btn-success btn-lg btn-block" data-id="2" data-name="Trà Dâu Tằm" data-price="32000">+ Giỏ</button>
+              </div>
+            </div>
+            <!-- Thêm món khác tương tự -->
           </div>
         </div>
       </div>
 
       <!-- Nhóm Cà Phê Phin -->
-      <div class="panel panel-default">
+      <div class="panel panel-success">
         <div class="panel-heading">
-          <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" data-parent="#accordionMenu" href="#grpCoffee">Cà Phê Phin</a>
+          <h4 class="panel-title" style="font-size:16px;">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordionMenu" href="#grpCoffee">☕ Cà Phê Phin</a>
           </h4>
         </div>
         <div id="grpCoffee" class="panel-collapse collapse">
           <div class="panel-body">
-            <div class="row">
-              <div class="col-xs-6">
-                <div class="panel panel-default">
-                  <div class="panel-body text-center">
-                    <h5>Cà Phê</h5>
-                    <p class="text-muted">20,000đ</p>
-                    <button class="btn btn-success btn-xs btn-block btn-addcart"
-                            data-id="4" data-name="Cà Phê" data-price="20000">
-                      + Giỏ
-                    </button>
-                  </div>
-                </div>
+            <div class="panel panel-default" style="margin-bottom:10px;">
+              <div class="panel-body text-center">
+                <h4 style="margin-top:0;">Cà Phê Đen</h4>
+                <p class="text-muted" style="font-size:14px;">20,000đ</p>
+                <button class="btn btn-success btn-lg btn-block" data-id="3" data-name="Cà Phê Đen" data-price="20000">+ Giỏ</button>
               </div>
-              <div class="col-xs-6">
-                <div class="panel panel-default">
-                  <div class="panel-body text-center">
-                    <h5>Cà Phê Sữa</h5>
-                    <p class="text-muted">25,000đ</p>
-                    <button class="btn btn-success btn-xs btn-block btn-addcart"
-                            data-id="5" data-name="Cà Phê Sữa" data-price="25000">
-                      + Giỏ
-                    </button>
-                  </div>
-                </div>
+            </div>
+            <div class="panel panel-default" style="margin-bottom:10px;">
+              <div class="panel-body text-center">
+                <h4 style="margin-top:0;">Cà Phê Sữa</h4>
+                <p class="text-muted" style="font-size:14px;">25,000đ</p>
+                <button class="btn btn-success btn-lg btn-block" data-id="4" data-name="Cà Phê Sữa" data-price="25000">+ Giỏ</button>
               </div>
-              <div class="col-xs-6">
-                <div class="panel panel-default">
-                  <div class="panel-body text-center">
-                    <h5>Cà Phê Hạnh Nhân</h5>
-                    <p class="text-muted">35,000đ</p>
-                    <button class="btn btn-success btn-xs btn-block btn-addcart"
-                            data-id="6" data-name="Cà Phê Hạnh Nhân" data-price="35000">
-                      + Giỏ
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <!-- thêm món nếu cần -->
             </div>
           </div>
         </div>
       </div>
 
       <!-- Nhóm Sinh Tố -->
-      <div class="panel panel-default">
+      <div class="panel panel-success">
         <div class="panel-heading">
-          <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" data-parent="#accordionMenu" href="#grpSmoothie">Sinh Tố</a>
+          <h4 class="panel-title" style="font-size:16px;">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordionMenu" href="#grpSmoothie">🥭 Sinh Tố</a>
           </h4>
         </div>
         <div id="grpSmoothie" class="panel-collapse collapse">
           <div class="panel-body">
-            <div class="row">
-              <div class="col-xs-6">
-                <div class="panel panel-default">
-                  <div class="panel-body text-center">
-                    <h5>Sinh Tố Bơ</h5>
-                    <p class="text-muted">35,000đ</p>
-                    <button class="btn btn-success btn-xs btn-block btn-addcart"
-                            data-id="7" data-name="Sinh Tố Bơ" data-price="35000">
-                      + Giỏ
-                    </button>
-                  </div>
-                </div>
+            <div class="panel panel-default" style="margin-bottom:10px;">
+              <div class="panel-body text-center">
+                <h4 style="margin-top:0;">Sinh Tố Bơ</h4>
+                <p class="text-muted" style="font-size:14px;">35,000đ</p>
+                <button class="btn btn-success btn-lg btn-block" data-id="5" data-name="Sinh Tố Bơ" data-price="35000">+ Giỏ</button>
               </div>
-              <div class="col-xs-6">
-                <div class="panel panel-default">
-                  <div class="panel-body text-center">
-                    <h5>Sinh Tố Mãng Cầu</h5>
-                    <p class="text-muted">38,000đ</p>
-                    <button class="btn btn-success btn-xs btn-block btn-addcart"
-                            data-id="8" data-name="Sinh Tố Mãng Cầu" data-price="38000">
-                      + Giỏ
-                    </button>
-                  </div>
-                </div>
+            </div>
+            <div class="panel panel-default" style="margin-bottom:10px;">
+              <div class="panel-body text-center">
+                <h4 style="margin-top:0;">Sinh Tố Dâu</h4>
+                <p class="text-muted" style="font-size:14px;">40,000đ</p>
+                <button class="btn btn-success btn-lg btn-block" data-id="6" data-name="Sinh Tố Dâu" data-price="40000">+ Giỏ</button>
               </div>
-              <div class="col-xs-6">
-                <div class="panel panel-default">
-                  <div class="panel-body text-center">
-                    <h5>Sinh Tố Dâu</h5>
-                    <p class="text-muted">40,000đ</p>
-                    <button class="btn btn-success btn-xs btn-block btn-addcart"
-                            data-id="9" data-name="Sinh Tố Dâu" data-price="40000">
-                      + Giỏ
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xs-6">
-                <div class="panel panel-default">
-                  <div class="panel-body text-center">
-                    <h5>Sinh Tố Sa Bô</h5>
-                    <p class="text-muted">42,000đ</p>
-                    <button class="btn btn-success btn-xs btn-block btn-addcart"
-                            data-id="10" data-name="Sinh Tố Sa Bô" data-price="42000">
-                      + Giỏ
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <!-- thêm món nếu cần -->
             </div>
           </div>
         </div>
       </div>
 
-    </div> <!-- end panel-group -->
+    </div><!-- panel-group -->
 
-  </div> <!-- end container -->
+  </div><!-- container -->
 </div>
 
     </div>
