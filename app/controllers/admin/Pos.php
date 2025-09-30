@@ -24,6 +24,7 @@ class Pos extends MY_Controller
         $this->session->set_userdata('last_activity', now());
         $this->lang->admin_load('pos', $this->Settings->user_language);
         $this->load->library('form_validation');
+        $this->load->library('user_agent');
 
         $this->data['pb'] = array(
             'cash' => lang('cash'),
@@ -670,7 +671,15 @@ class Pos extends MY_Controller
                 }
             }
 
-            $this->load->view($this->theme . 'pos/add', $this->data);
+            //$this->load->view($this->theme . 'pos/add', $this->data);
+            if ($this->agent->is_mobile()) {
+                // Mobile view (BS5)
+                $this->load->view($this->theme . 'pos/pos_mobile', $this->data);
+            } else {
+                // PC view (BS3)
+                $this->load->view($this->theme . 'pos/add', $this->data);
+            }
+
         }
     }
 
