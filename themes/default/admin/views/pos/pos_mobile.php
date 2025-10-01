@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>POS Mobile</title>
+  <title>TIỆM NƯỚC MINI</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     .qty-box {
@@ -12,20 +12,14 @@
       justify-content: center;
     }
     .qty-box input {
-      width: 50px;
+      width: 60px;
       text-align: center;
       font-size: 1.2rem;
     }
     .qty-box button {
-      width: 40px;
-      height: 40px;
+      width: 45px;
+      height: 45px;
       font-size: 1.5rem;
-    }
-    .note-display {
-      font-size: 0.8rem;
-      color: #555;
-      margin-top: 5px;
-      min-height: 18px;
     }
     .cart-badge {
       position: absolute;
@@ -34,6 +28,8 @@
     }
     .size-group .btn {
       margin: 2px;
+      padding: 6px 16px;
+      font-size: 1rem;
     }
     .size-group .btn-check:checked + .btn {
       background-color: #198754;
@@ -43,6 +39,11 @@
       max-height: 100px;
       object-fit: cover;
     }
+    .note-display {
+      font-size: 0.85rem;
+      color: #555;
+      min-height: 20px;
+    }
   </style>
 </head>
 <body class="bg-light">
@@ -50,7 +51,7 @@
 <!-- Header -->
 <nav class="navbar navbar-dark bg-success mb-3">
   <div class="container-fluid">
-    <span class="navbar-brand mb-0 h1">🍹 POS Mobile</span>
+    <span class="navbar-brand mb-0 h1">🥤 TIỆM NƯỚC MINI</span>
     <div class="cart-icon" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
       <button class="btn btn-light position-relative">
         🛒
@@ -65,70 +66,26 @@
   <div class="row g-2">
     <?php
     $items = [
-      ["id"=>1,"name"=>"Cà phê","price"=>15000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>2,"name"=>"Cà phê hạnh nhân","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>3,"name"=>"Cà phê sữa","price"=>20000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>4,"name"=>"Cà phê sữa tươi hạt đác","price"=>28000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>5,"name"=>"Cà phê sữa tươi sương sáo","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>6,"name"=>"Cà phê sữa tươi thốt nốt","price"=>28000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>7,"name"=>"Milo sữa","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>8,"name"=>"Sữa chua trái cây","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>9,"name"=>"Tàu hũ matcha latte","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>10,"name"=>"Trà sữa gạo","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>11,"name"=>"Trà sữa truyền thống","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>12,"name"=>"Sinh tố bơ","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>13,"name"=>"Sinh tố dâu","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>14,"name"=>"Sinh tố mãng cầu","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>15,"name"=>"Sinh tố sa bô","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>16,"name"=>"Trà cốc","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>17,"name"=>"Trà dâu tằm","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>18,"name"=>"Trà dâu tằm hạt đác","price"=>28000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>19,"name"=>"Trà dứa","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>20,"name"=>"Trà dứa hạt đác","price"=>28000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>21,"name"=>"Trà dứa lưới","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>22,"name"=>"Trà dứa thốt nốt","price"=>28000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>23,"name"=>"Trà mãng cầu","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>24,"name"=>"Trà trái cây","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>25,"name"=>"Trà vải","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>26,"name"=>"Trà đào","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>27,"name"=>"Cà rốt","price"=>15000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>28,"name"=>"Cam","price"=>15000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>29,"name"=>"Cam-cà rốt","price"=>18000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>30,"name"=>"Dưa hấu","price"=>15000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>31,"name"=>"Khóm","price"=>18000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>32,"name"=>"Khóm-cà rốt","price"=>18000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>33,"name"=>"Khóm-cam","price"=>18000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>34,"name"=>"Khóm-dưa hấu","price"=>18000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>35,"name"=>"Khóm-ổi","price"=>18000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>36,"name"=>"Khóm-sơ ri","price"=>18000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>37,"name"=>"Mix 2 vị","price"=>18000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>38,"name"=>"Mix 2 vị (có táo)","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>39,"name"=>"Ổi","price"=>15000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>40,"name"=>"Sơ ri","price"=>15000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>41,"name"=>"Sơ ri-cà chua","price"=>18000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>42,"name"=>"Sơ ri-ổi","price"=>18000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>43,"name"=>"Táo","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>44,"name"=>"Táo-cà rốt","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>45,"name"=>"Táo-dưa hấu","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>46,"name"=>"Táo-khóm","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>47,"name"=>"Táo-ổi","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>48,"name"=>"Táo-sơ ri","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>49,"name"=>"Cà rốt (chai)","price"=>20000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>50,"name"=>"Cam (chai)","price"=>20000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>51,"name"=>"Dưa hấu (chai)","price"=>20000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>52,"name"=>"Khóm (chai)","price"=>23000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>53,"name"=>"Ổi (chai)","price"=>20000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>54,"name"=>"Sơ ri (chai)","price"=>20000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>55,"name"=>"Táo (chai)","price"=>27000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>56,"name"=>"Bạc xỉu","price"=>17000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>57,"name"=>"Trà đá","price"=>3000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>58,"name"=>"Trà đường","price"=>5000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>59,"name"=>"Yaourt đá","price"=>17000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>60,"name"=>"Yaourt đá hạt đác","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>61,"name"=>"Bánh tráng","price"=>13000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>62,"name"=>"Nước đá","price"=>1000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>63,"name"=>"Sữa chua chai","price"=>7000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>64,"name"=>"Sữa chua chai mix trái cây","price"=>8000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>1,"name"=>"CÀ PHÊ","price"=>15000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>2,"name"=>"CÀ PHÊ HẠNH NHÂN","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>3,"name"=>"CÀ PHÊ SỮA","price"=>20000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>4,"name"=>"CÀ PHÊ SỮA TƯƠI HẠT ĐÁC","price"=>28000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>5,"name"=>"CÀ PHÊ SỮA TƯƠI SƯƠNG SÁO","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>6,"name"=>"CÀ PHÊ SỮA TƯƠI THỐT NỐT","price"=>28000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>7,"name"=>"MILO SỮA","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>8,"name"=>"SỮA CHUA TRÁI CÂY","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>9,"name"=>"TÀU HŨ MATCHA LATTE","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>10,"name"=>"TRÀ SỮA GẠO","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>11,"name"=>"TRÀ SỮA TRUYỀN THỐNG","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>12,"name"=>"SINH TỐ BƠ","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>13,"name"=>"SINH TỐ DÂU","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>14,"name"=>"SINH TỐ MÃNG CẦU","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>15,"name"=>"SINH TỐ SA BÔ","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>16,"name"=>"TRÀ CỐC","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>17,"name"=>"TRÀ DÂU TẰM","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>18,"name"=>"TRÀ DÂU TẰM HẠT ĐÁC","price"=>28000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>19,"name"=>"TRÀ DỨA","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>20,"name"=>"TRÀ DỨA HẠT ĐÁC","price"=>28000,"img"=>"https://via.placeholder.com/150"],
     ];
 
     foreach ($items as $item): ?>
@@ -137,13 +94,13 @@
           <img src="<?= $item['img'] ?>" class="card-img-top" alt="<?= $item['name'] ?>">
           <div class="card-body text-center">
             <h6 class="card-title"><?= $item['name'] ?></h6>
-            <p class="text-muted"><?= number_format($item['price'],0,",",".") ?>đ</p>
+            <p class="text-muted">Size M: <?= number_format($item['price'],0,",",".") ?>đ<br>Size L: <?= number_format($item['price']+5000,0,",",".") ?>đ</p>
 
             <!-- Size chọn -->
             <div class="size-group mb-2">
-              <input type="radio" class="btn-check" name="size<?= $item['id'] ?>" id="m<?= $item['id'] ?>" autocomplete="off" checked>
+              <input type="radio" class="btn-check" name="size<?= $item['id'] ?>" id="m<?= $item['id'] ?>" data-price="<?= $item['price'] ?>" autocomplete="off" checked>
               <label class="btn btn-outline-secondary btn-sm" for="m<?= $item['id'] ?>">M</label>
-              <input type="radio" class="btn-check" name="size<?= $item['id'] ?>" id="l<?= $item['id'] ?>" autocomplete="off">
+              <input type="radio" class="btn-check" name="size<?= $item['id'] ?>" id="l<?= $item['id'] ?>" data-price="<?= $item['price']+5000 ?>" autocomplete="off">
               <label class="btn btn-outline-secondary btn-sm" for="l<?= $item['id'] ?>">L</label>
             </div>
 
@@ -154,11 +111,27 @@
               <button class="btn btn-sm btn-outline-secondary btn-plus">+</button>
             </div>
 
+            <!-- Ghi chú -->
+            <input type="text" class="form-control form-control-sm mb-1 note-input" placeholder="Ghi chú món...">
+            <div class="d-flex flex-wrap justify-content-center mb-2">
+              <div class="form-check me-2">
+                <input class="form-check-input quick-note" type="checkbox" value="Ít ngọt">
+                <label class="form-check-label">Ít ngọt</label>
+              </div>
+              <div class="form-check me-2">
+                <input class="form-check-input quick-note" type="checkbox" value="Không đá">
+                <label class="form-check-label">Không đá</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input quick-note" type="checkbox" value="Nhiều cafe">
+                <label class="form-check-label">Nhiều cafe</label>
+              </div>
+            </div>
+
             <!-- Nút thêm -->
             <button class="btn btn-sm btn-outline-success w-100 btn-addcart"
                     data-id="<?= $item['id'] ?>"
-                    data-name="<?= $item['name'] ?>"
-                    data-price="<?= $item['price'] ?>">+ Giỏ</button>
+                    data-name="<?= $item['name'] ?>">+ Thêm Món</button>
           </div>
         </div>
       </div>
@@ -212,12 +185,19 @@ document.querySelectorAll('.btn-addcart').forEach(btn=>{
     if(qty<=0){alert("Chọn số lượng > 0");return;}
     let id = btn.dataset.id;
     let name = btn.dataset.name;
-    let price = parseInt(btn.dataset.price);
-    let size = card.querySelector('input[name="size'+id+'"]:checked').nextElementSibling.textContent;
+    let sizeRadio = card.querySelector('input[name="size'+id+'"]:checked');
+    let size = sizeRadio.nextElementSibling.textContent;
+    let price = parseInt(sizeRadio.dataset.price);
+    let note = card.querySelector('.note-input').value;
+    let quickNotes = [];
+    card.querySelectorAll('.quick-note:checked').forEach(c=>quickNotes.push(c.value));
+    if(quickNotes.length>0) note += (note? ', ':'')+quickNotes.join(', ');
 
-    cart.items.push({id,name,qty,price,size});
+    cart.items.push({id,name,qty,price,size,note});
     renderCart();
     card.querySelector('.qty-input').value=0;
+    card.querySelector('.note-input').value='';
+    card.querySelectorAll('.quick-note').forEach(c=>c.checked=false);
   });
 });
 
@@ -230,7 +210,10 @@ function renderCart(){
     cartItems.innerHTML=cart.items.map((item,i)=>{
       total+=item.price*item.qty;
       return `<div class="border-bottom py-2 d-flex justify-content-between align-items-start">
-        <div><strong>${item.name}</strong> (${item.size}) x${item.qty} - ${item.price*item.qty}đ</div>
+        <div>
+          <strong>${item.name}</strong> (${item.size}) x${item.qty} - ${item.price*item.qty}đ
+          <br><small>${item.note}</small>
+        </div>
         <button class="btn btn-sm btn-outline-danger" onclick="removeItem(${i})">✕</button>
       </div>`;
     }).join('')+`<div class="mt-2 fw-bold">Tổng: ${total}đ</div>`;
