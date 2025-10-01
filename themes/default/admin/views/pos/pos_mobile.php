@@ -7,16 +7,16 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body { background-color: #f8f9fa; }
-    .group-title { font-weight:700; margin:15px 0 10px; }
     .product-card { border-radius:10px; overflow:hidden; margin-bottom:15px; }
     .product-card img { max-height:120px; object-fit:cover; width:100%; }
-    .qty-box { display:flex; align-items:center; justify-content:center; gap:6px; }
-    .qty-box input { width:56px; text-align:center; }
+    .qty-box { display:flex; align-items:center; justify-content:center; gap:8px; }
+    .qty-box input { width:64px; text-align:center; font-size:1.1rem; }
+    .qty-box button { width:40px; height:40px; font-size:1.2rem; }
     .note-display { font-size:0.85rem; color:#444; min-height:18px; margin-top:6px; }
     .cart-badge { position:absolute; top:0; right:0; transform:translate(50%,-50%); }
-    .btn-group-size .btn { font-size:0.8rem; padding:4px 8px; }
+    .btn-group-size .btn { font-size:0.9rem; padding:8px 14px; } /* size button lớn hơn */
     .product-card .card-body { padding:10px; }
-    .product-title { font-size:0.95rem; font-weight:600; margin-bottom:4px; }
+    .product-title { font-size:1rem; font-weight:600; margin-bottom:4px; }
   </style>
 </head>
 <body>
@@ -32,6 +32,7 @@
 </nav>
 
 <div class="container my-3">
+  <div class="row">
   <?php
   function card($id, $name, $price, $img) {
     $m_price = (int)$price;
@@ -42,17 +43,17 @@
         <img src="'.$img.'" alt="'.$name.'">
         <div class="card-body text-center p-2">
           <div class="product-title">'.$name.'</div>
-          <div class="btn-group btn-group-size mb-1" role="group">
+          <div class="btn-group btn-group-size mb-2" role="group">
             <input type="radio" class="btn-check" name="size-'.$id.'" id="sizeM-'.$id.'" value="M" data-price="'.$m_price.'" checked>
-            <label class="btn btn-outline-secondary btn-sm" for="sizeM-'.$id.'">M '.number_format($m_price,0,',','.').'đ</label>
+            <label class="btn btn-outline-secondary" for="sizeM-'.$id.'">M '.number_format($m_price,0,',','.').'đ</label>
             <input type="radio" class="btn-check" name="size-'.$id.'" id="sizeL-'.$id.'" value="L" data-price="'.$l_price.'">
-            <label class="btn btn-outline-success btn-sm" for="sizeL-'.$id.'">L '.number_format($l_price,0,',','.').'đ</label>
+            <label class="btn btn-outline-success" for="sizeL-'.$id.'">L '.number_format($l_price,0,',','.').'đ</label>
           </div>
           <div class="note-display" id="note-display-'.$id.'"></div>
           <div class="qty-box mb-2">
-            <button class="btn btn-sm btn-outline-secondary btn-minus">-</button>
-            <input type="number" class="form-control form-control-sm qty-input" value="0" min="0">
-            <button class="btn btn-sm btn-outline-secondary btn-plus">+</button>
+            <button class="btn btn-outline-secondary btn-minus">-</button>
+            <input type="number" class="form-control qty-input" value="0" min="0">
+            <button class="btn btn-outline-secondary btn-plus">+</button>
           </div>
           <button class="btn btn-sm btn-info w-100 mb-1 btn-note" data-bs-toggle="modal" data-bs-target="#noteModal"
                   data-id="'.$id.'" data-product="'.$name.'">Ghi chú</button>
@@ -63,42 +64,29 @@
   }
 
   $id = 1;
-  $groups = [
-    "🍵 Trà Trái Cây" => [
-      ['Trà Trái Cây',22000,'https://cdn.pixabay.com/photo/2017/05/23/22/36/tea-2345504_1280.jpg'],
-      ['Trà Dâu Tằm',22000,'https://cdn.pixabay.com/photo/2017/01/20/15/06/raspberry-tea-1999582_1280.jpg'],
-      ['Trà Dứa',22000,'https://cdn.pixabay.com/photo/2017/03/27/14/56/pineapple-2178786_1280.jpg'],
-      ['Trà Dứa Hạt Đác',25000,'https://cdn.pixabay.com/photo/2016/03/05/19/02/pineapple-1239426_1280.jpg'],
-      ['Trà Dứa Thốt Nốt',25000,'https://cdn.pixabay.com/photo/2017/06/10/07/18/iced-tea-2384772_1280.jpg'],
-    ],
-    "☕ Cà Phê Phin" => [
-      ['Cà Phê',20000,'https://cdn.pixabay.com/photo/2016/11/29/03/14/beverage-1869598_1280.jpg'],
-      ['Cà Phê Sữa',25000,'https://cdn.pixabay.com/photo/2017/06/30/18/49/coffee-2463278_1280.jpg'],
-      ['Cà Phê Hạnh Nhân',30000,'https://cdn.pixabay.com/photo/2015/05/31/12/14/coffee-791045_1280.jpg'],
-      ['Cà Phê Sữa Tươi Sương Sáo',28000,'https://cdn.pixabay.com/photo/2017/06/30/20/13/iced-coffee-2464529_1280.jpg'],
-    ],
-    "🍊 Nước ép" => [
-      ['Khóm',20000,'https://cdn.pixabay.com/photo/2015/03/26/09/54/pineapple-690582_1280.jpg'],
-      ['Táo',25000,'https://cdn.pixabay.com/photo/2014/02/01/17/28/apple-256262_1280.jpg'],
-      ['Sơ Ri',25000,'https://cdn.pixabay.com/photo/2017/04/04/20/56/cherry-2202305_1280.jpg'],
-      ['Cà Rốt',22000,'https://cdn.pixabay.com/photo/2016/04/13/20/11/carrots-1327457_1280.jpg'],
-      ['Cam',25000,'https://cdn.pixabay.com/photo/2017/01/20/15/06/oranges-1995056_1280.jpg'],
-    ],
-    "🥤 Sinh Tố" => [
-      ['Sinh Tố Bơ',30000,'https://cdn.pixabay.com/photo/2017/01/31/20/32/avocado-2026009_1280.jpg'],
-      ['Sinh Tố Mãng Cầu',30000,'https://cdn.pixabay.com/photo/2019/09/12/12/18/soursop-4471235_1280.jpg'],
-      ['Sinh Tố Sa Bô',28000,'https://cdn.pixabay.com/photo/2019/08/15/12/26/sapodilla-4407536_1280.jpg'],
-      ['Sinh Tố Dâu',30000,'https://cdn.pixabay.com/photo/2017/01/12/14/34/strawberry-smoothie-1971552_1280.jpg'],
-    ]
+  $items = [
+    ['Trà Trái Cây',22000,'https://cdn.pixabay.com/photo/2017/05/23/22/36/tea-2345504_1280.jpg'],
+    ['Trà Dâu Tằm',22000,'https://cdn.pixabay.com/photo/2017/01/20/15/06/raspberry-tea-1999582_1280.jpg'],
+    ['Trà Dứa',22000,'https://cdn.pixabay.com/photo/2017/03/27/14/56/pineapple-2178786_1280.jpg'],
+    ['Trà Dứa Hạt Đác',25000,'https://cdn.pixabay.com/photo/2016/03/05/19/02/pineapple-1239426_1280.jpg'],
+    ['Trà Dứa Thốt Nốt',25000,'https://cdn.pixabay.com/photo/2017/06/10/07/18/iced-tea-2384772_1280.jpg'],
+    ['Cà Phê',20000,'https://cdn.pixabay.com/photo/2016/11/29/03/14/beverage-1869598_1280.jpg'],
+    ['Cà Phê Sữa',25000,'https://cdn.pixabay.com/photo/2017/06/30/18/49/coffee-2463278_1280.jpg'],
+    ['Cà Phê Hạnh Nhân',30000,'https://cdn.pixabay.com/photo/2015/05/31/12/14/coffee-791045_1280.jpg'],
+    ['Cà Phê Sữa Tươi Sương Sáo',28000,'https://cdn.pixabay.com/photo/2017/06/30/20/13/iced-coffee-2464529_1280.jpg'],
+    ['Khóm',20000,'https://cdn.pixabay.com/photo/2015/03/26/09/54/pineapple-690582_1280.jpg'],
+    ['Táo',25000,'https://cdn.pixabay.com/photo/2014/02/01/17/28/apple-256262_1280.jpg'],
+    ['Sơ Ri',25000,'https://cdn.pixabay.com/photo/2017/04/04/20/56/cherry-2202305_1280.jpg'],
+    ['Cà Rốt',22000,'https://cdn.pixabay.com/photo/2016/04/13/20/11/carrots-1327457_1280.jpg'],
+    ['Cam',25000,'https://cdn.pixabay.com/photo/2017/01/20/15/06/oranges-1995056_1280.jpg'],
+    ['Sinh Tố Bơ',30000,'https://cdn.pixabay.com/photo/2017/01/31/20/32/avocado-2026009_1280.jpg'],
+    ['Sinh Tố Mãng Cầu',30000,'https://cdn.pixabay.com/photo/2019/09/12/12/18/soursop-4471235_1280.jpg'],
+    ['Sinh Tố Sa Bô',28000,'https://cdn.pixabay.com/photo/2019/08/15/12/26/sapodilla-4407536_1280.jpg'],
+    ['Sinh Tố Dâu',30000,'https://cdn.pixabay.com/photo/2017/01/12/14/34/strawberry-smoothie-1971552_1280.jpg'],
   ];
-
-  foreach ($groups as $gname => $items) {
-    echo '<h4 class="group-title">'.$gname.'</h4>';
-    echo '<div class="row">';
-    foreach ($items as $it) { echo card($id++, $it[0], $it[1], $it[2]); }
-    echo '</div>';
-  }
+  foreach ($items as $it) { echo card($id++, $it[0], $it[1], $it[2]); }
   ?>
+  </div>
 </div>
 
 <!-- Modal Ghi chú -->
