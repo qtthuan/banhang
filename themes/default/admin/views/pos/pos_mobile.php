@@ -1,123 +1,185 @@
 <!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>POS Mobile</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body { background-color: #f8f9fa; }
-    .product-card { border-radius:10px; overflow:hidden; margin-bottom:15px; }
-    .product-card img { max-height:120px; object-fit:cover; width:100%; }
-    .qty-box { display:flex; align-items:center; justify-content:center; gap:8px; }
-    .qty-box input { width:64px; text-align:center; font-size:1.1rem; }
-    .qty-box button { width:40px; height:40px; font-size:1.2rem; }
-    .note-display { font-size:0.85rem; color:#444; min-height:18px; margin-top:6px; }
-    .cart-badge { position:absolute; top:0; right:0; transform:translate(50%,-50%); }
-    .btn-group-size .btn { font-size:0.9rem; padding:8px 14px; } /* size button lớn hơn */
-    .product-card .card-body { padding:10px; }
-    .product-title { font-size:1rem; font-weight:600; margin-bottom:4px; }
+    .qty-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qty-box input {
+      width: 50px;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+    .qty-box button {
+      width: 40px;
+      height: 40px;
+      font-size: 1.5rem;
+    }
+    .note-display {
+      font-size: 0.8rem;
+      color: #555;
+      margin-top: 5px;
+      min-height: 18px;
+    }
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -10px;
+    }
+    .size-group .btn {
+      margin: 2px;
+    }
+    .size-group .btn-check:checked + .btn {
+      background-color: #198754;
+      color: #fff;
+    }
+    .product-card img {
+      max-height: 100px;
+      object-fit: cover;
+    }
   </style>
 </head>
-<body>
+<body class="bg-light">
 
 <!-- Header -->
-<nav class="navbar navbar-dark bg-success">
+<nav class="navbar navbar-dark bg-success mb-3">
   <div class="container-fluid">
-    <a class="navbar-brand">🍹 POS Mobile</a>
-    <button class="btn btn-light position-relative" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
-      🛒 <span class="badge bg-danger cart-badge" id="cartCount">0</span>
-    </button>
+    <span class="navbar-brand mb-0 h1">🍹 POS Mobile</span>
+    <div class="cart-icon" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
+      <button class="btn btn-light position-relative">
+        🛒
+        <span class="badge bg-danger cart-badge" id="cartCount">0</span>
+      </button>
+    </div>
   </div>
 </nav>
 
-<div class="container my-3">
-  <div class="row">
-  <?php
-  function card($id, $name, $price, $img) {
-    $m_price = (int)$price;
-    $l_price = $m_price + 5000;
-    return '
-    <div class="col-6">
-      <div class="card product-card">
-        <img src="'.$img.'" alt="'.$name.'">
-        <div class="card-body text-center p-2">
-          <div class="product-title">'.$name.'</div>
-          <div class="btn-group btn-group-size mb-2" role="group">
-            <input type="radio" class="btn-check" name="size-'.$id.'" id="sizeM-'.$id.'" value="M" data-price="'.$m_price.'" checked>
-            <label class="btn btn-outline-secondary" for="sizeM-'.$id.'">M '.number_format($m_price,0,',','.').'đ</label>
-            <input type="radio" class="btn-check" name="size-'.$id.'" id="sizeL-'.$id.'" value="L" data-price="'.$l_price.'">
-            <label class="btn btn-outline-success" for="sizeL-'.$id.'">L '.number_format($l_price,0,',','.').'đ</label>
+<div class="container">
+
+  <div class="row g-2">
+    <?php
+    $items = [
+      ["id"=>1,"name"=>"Cà phê","price"=>15000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>2,"name"=>"Cà phê hạnh nhân","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>3,"name"=>"Cà phê sữa","price"=>20000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>4,"name"=>"Cà phê sữa tươi hạt đác","price"=>28000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>5,"name"=>"Cà phê sữa tươi sương sáo","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>6,"name"=>"Cà phê sữa tươi thốt nốt","price"=>28000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>7,"name"=>"Milo sữa","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>8,"name"=>"Sữa chua trái cây","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>9,"name"=>"Tàu hũ matcha latte","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>10,"name"=>"Trà sữa gạo","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>11,"name"=>"Trà sữa truyền thống","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>12,"name"=>"Sinh tố bơ","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>13,"name"=>"Sinh tố dâu","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>14,"name"=>"Sinh tố mãng cầu","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>15,"name"=>"Sinh tố sa bô","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>16,"name"=>"Trà cốc","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>17,"name"=>"Trà dâu tằm","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>18,"name"=>"Trà dâu tằm hạt đác","price"=>28000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>19,"name"=>"Trà dứa","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>20,"name"=>"Trà dứa hạt đác","price"=>28000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>21,"name"=>"Trà dứa lưới","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>22,"name"=>"Trà dứa thốt nốt","price"=>28000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>23,"name"=>"Trà mãng cầu","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>24,"name"=>"Trà trái cây","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>25,"name"=>"Trà vải","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>26,"name"=>"Trà đào","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>27,"name"=>"Cà rốt","price"=>15000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>28,"name"=>"Cam","price"=>15000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>29,"name"=>"Cam-cà rốt","price"=>18000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>30,"name"=>"Dưa hấu","price"=>15000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>31,"name"=>"Khóm","price"=>18000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>32,"name"=>"Khóm-cà rốt","price"=>18000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>33,"name"=>"Khóm-cam","price"=>18000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>34,"name"=>"Khóm-dưa hấu","price"=>18000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>35,"name"=>"Khóm-ổi","price"=>18000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>36,"name"=>"Khóm-sơ ri","price"=>18000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>37,"name"=>"Mix 2 vị","price"=>18000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>38,"name"=>"Mix 2 vị (có táo)","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>39,"name"=>"Ổi","price"=>15000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>40,"name"=>"Sơ ri","price"=>15000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>41,"name"=>"Sơ ri-cà chua","price"=>18000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>42,"name"=>"Sơ ri-ổi","price"=>18000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>43,"name"=>"Táo","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>44,"name"=>"Táo-cà rốt","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>45,"name"=>"Táo-dưa hấu","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>46,"name"=>"Táo-khóm","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>47,"name"=>"Táo-ổi","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>48,"name"=>"Táo-sơ ri","price"=>22000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>49,"name"=>"Cà rốt (chai)","price"=>20000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>50,"name"=>"Cam (chai)","price"=>20000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>51,"name"=>"Dưa hấu (chai)","price"=>20000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>52,"name"=>"Khóm (chai)","price"=>23000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>53,"name"=>"Ổi (chai)","price"=>20000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>54,"name"=>"Sơ ri (chai)","price"=>20000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>55,"name"=>"Táo (chai)","price"=>27000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>56,"name"=>"Bạc xỉu","price"=>17000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>57,"name"=>"Trà đá","price"=>3000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>58,"name"=>"Trà đường","price"=>5000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>59,"name"=>"Yaourt đá","price"=>17000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>60,"name"=>"Yaourt đá hạt đác","price"=>25000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>61,"name"=>"Bánh tráng","price"=>13000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>62,"name"=>"Nước đá","price"=>1000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>63,"name"=>"Sữa chua chai","price"=>7000,"img"=>"https://via.placeholder.com/150"],
+      ["id"=>64,"name"=>"Sữa chua chai mix trái cây","price"=>8000,"img"=>"https://via.placeholder.com/150"],
+    ];
+
+    foreach ($items as $item): ?>
+      <div class="col-6">
+        <div class="card h-100 product-card">
+          <img src="<?= $item['img'] ?>" class="card-img-top" alt="<?= $item['name'] ?>">
+          <div class="card-body text-center">
+            <h6 class="card-title"><?= $item['name'] ?></h6>
+            <p class="text-muted"><?= number_format($item['price'],0,",",".") ?>đ</p>
+
+            <!-- Size chọn -->
+            <div class="size-group mb-2">
+              <input type="radio" class="btn-check" name="size<?= $item['id'] ?>" id="m<?= $item['id'] ?>" autocomplete="off" checked>
+              <label class="btn btn-outline-secondary btn-sm" for="m<?= $item['id'] ?>">M</label>
+              <input type="radio" class="btn-check" name="size<?= $item['id'] ?>" id="l<?= $item['id'] ?>" autocomplete="off">
+              <label class="btn btn-outline-secondary btn-sm" for="l<?= $item['id'] ?>">L</label>
+            </div>
+
+            <!-- Số lượng -->
+            <div class="qty-box mb-2">
+              <button class="btn btn-sm btn-outline-secondary btn-minus">-</button>
+              <input type="number" class="form-control form-control-sm mx-1 qty-input" value="0" min="0">
+              <button class="btn btn-sm btn-outline-secondary btn-plus">+</button>
+            </div>
+
+            <!-- Nút thêm -->
+            <button class="btn btn-sm btn-outline-success w-100 btn-addcart"
+                    data-id="<?= $item['id'] ?>"
+                    data-name="<?= $item['name'] ?>"
+                    data-price="<?= $item['price'] ?>">+ Giỏ</button>
           </div>
-          <div class="note-display" id="note-display-'.$id.'"></div>
-          <div class="qty-box mb-2">
-            <button class="btn btn-outline-secondary btn-minus">-</button>
-            <input type="number" class="form-control qty-input" value="0" min="0">
-            <button class="btn btn-outline-secondary btn-plus">+</button>
-          </div>
-          <button class="btn btn-sm btn-info w-100 mb-1 btn-note" data-bs-toggle="modal" data-bs-target="#noteModal"
-                  data-id="'.$id.'" data-product="'.$name.'">Ghi chú</button>
-          <button class="btn btn-sm btn-success w-100 btn-addcart" data-id="'.$id.'" data-name="'.$name.'">+ Giỏ</button>
         </div>
       </div>
-    </div>';
-  }
-
-  $id = 1;
-  $items = [
-    ['Trà Trái Cây',22000,'https://cdn.pixabay.com/photo/2017/05/23/22/36/tea-2345504_1280.jpg'],
-    ['Trà Dâu Tằm',22000,'https://cdn.pixabay.com/photo/2017/01/20/15/06/raspberry-tea-1999582_1280.jpg'],
-    ['Trà Dứa',22000,'https://cdn.pixabay.com/photo/2017/03/27/14/56/pineapple-2178786_1280.jpg'],
-    ['Trà Dứa Hạt Đác',25000,'https://cdn.pixabay.com/photo/2016/03/05/19/02/pineapple-1239426_1280.jpg'],
-    ['Trà Dứa Thốt Nốt',25000,'https://cdn.pixabay.com/photo/2017/06/10/07/18/iced-tea-2384772_1280.jpg'],
-    ['Cà Phê',20000,'https://cdn.pixabay.com/photo/2016/11/29/03/14/beverage-1869598_1280.jpg'],
-    ['Cà Phê Sữa',25000,'https://cdn.pixabay.com/photo/2017/06/30/18/49/coffee-2463278_1280.jpg'],
-    ['Cà Phê Hạnh Nhân',30000,'https://cdn.pixabay.com/photo/2015/05/31/12/14/coffee-791045_1280.jpg'],
-    ['Cà Phê Sữa Tươi Sương Sáo',28000,'https://cdn.pixabay.com/photo/2017/06/30/20/13/iced-coffee-2464529_1280.jpg'],
-    ['Khóm',20000,'https://cdn.pixabay.com/photo/2015/03/26/09/54/pineapple-690582_1280.jpg'],
-    ['Táo',25000,'https://cdn.pixabay.com/photo/2014/02/01/17/28/apple-256262_1280.jpg'],
-    ['Sơ Ri',25000,'https://cdn.pixabay.com/photo/2017/04/04/20/56/cherry-2202305_1280.jpg'],
-    ['Cà Rốt',22000,'https://cdn.pixabay.com/photo/2016/04/13/20/11/carrots-1327457_1280.jpg'],
-    ['Cam',25000,'https://cdn.pixabay.com/photo/2017/01/20/15/06/oranges-1995056_1280.jpg'],
-    ['Sinh Tố Bơ',30000,'https://cdn.pixabay.com/photo/2017/01/31/20/32/avocado-2026009_1280.jpg'],
-    ['Sinh Tố Mãng Cầu',30000,'https://cdn.pixabay.com/photo/2019/09/12/12/18/soursop-4471235_1280.jpg'],
-    ['Sinh Tố Sa Bô',28000,'https://cdn.pixabay.com/photo/2019/08/15/12/26/sapodilla-4407536_1280.jpg'],
-    ['Sinh Tố Dâu',30000,'https://cdn.pixabay.com/photo/2017/01/12/14/34/strawberry-smoothie-1971552_1280.jpg'],
-  ];
-  foreach ($items as $it) { echo card($id++, $it[0], $it[1], $it[2]); }
-  ?>
+    <?php endforeach; ?>
   </div>
+
 </div>
 
-<!-- Modal Ghi chú -->
-<div class="modal fade" id="noteModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header"><h5 class="modal-title">Ghi chú món</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-      <div class="modal-body">
-        <input type="hidden" id="currentProductId">
-        <input type="text" class="form-control mb-2" id="nameInput" placeholder="Tên (A, B...)">
-        <input type="text" class="form-control mb-2" id="noteInput" placeholder="Nhập ghi chú...">
-        <div class="form-check"><input class="form-check-input note-check" type="checkbox" value="Ít ngọt" id="n1"><label class="form-check-label" for="n1"> Ít ngọt</label></div>
-        <div class="form-check"><input class="form-check-input note-check" type="checkbox" value="Không đá" id="n2"><label class="form-check-label" for="n2"> Không đá</label></div>
-        <div class="form-check"><input class="form-check-input note-check" type="checkbox" value="Nhiều cafe" id="n3"><label class="form-check-label" for="n3"> Nhiều cafe</label></div>
-      </div>
-      <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button><button class="btn btn-success" id="saveNoteBtn" data-bs-dismiss="modal">Lưu</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- Offcanvas Giỏ hàng -->
+<!-- Offcanvas giỏ hàng -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="cartCanvas">
   <div class="offcanvas-header">
     <h5 class="offcanvas-title">🛒 Giỏ hàng</h5>
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
   </div>
   <div class="offcanvas-body d-flex flex-column">
-    <div id="cartItems" class="mb-3"><p class="text-muted">Chưa có món</p></div>
+    <div id="cartItems" class="mb-3">
+      <p class="text-muted">Chưa có món nào</p>
+    </div>
     <div class="mb-3">
-      <input class="form-control mb-2" id="customerName" placeholder="Tên khách">
-      <input class="form-control mb-2" id="customerPhone" placeholder="SĐT">
+      <input type="text" class="form-control mb-2" id="customerName" placeholder="Tên khách">
+      <input type="tel" class="form-control mb-2" id="customerPhone" placeholder="Số điện thoại">
       <textarea class="form-control" id="orderNote" rows="2" placeholder="Ghi chú đơn..."></textarea>
     </div>
     <button class="btn btn-success mt-auto" id="placeOrderBtn">Đặt hàng</button>
@@ -126,90 +188,69 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-let cart = [];
+let cart = {items: []};
 
-// Tăng giảm số lượng
-document.addEventListener('click', e=>{
-  if(e.target.classList.contains('btn-plus')){
-    let input=e.target.closest('.qty-box').querySelector('.qty-input');
-    input.value=parseInt(input.value)+1;
-  }
-  if(e.target.classList.contains('btn-minus')){
-    let input=e.target.closest('.qty-box').querySelector('.qty-input');
-    if(parseInt(input.value)>0) input.value=parseInt(input.value)-1;
-  }
-});
-
-// Modal ghi chú
-document.getElementById('noteModal').addEventListener('show.bs.modal', ev=>{
-  document.getElementById('currentProductId').value = ev.relatedTarget.dataset.id;
-  document.getElementById('nameInput').value='';
-  document.getElementById('noteInput').value='';
-  document.querySelectorAll('.note-check').forEach(c=>c.checked=false);
-});
-document.querySelectorAll('.note-check').forEach(chk=>{
-  chk.addEventListener('change', ()=>{
-    let arr=[];document.querySelectorAll('.note-check:checked').forEach(c=>arr.push(c.value));
-    document.getElementById('noteInput').value=arr.join(', ');
+// Tăng giảm
+document.querySelectorAll('.btn-plus').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    let input = btn.closest('.qty-box').querySelector('.qty-input');
+    input.value = parseInt(input.value)+1;
   });
 });
-document.getElementById('saveNoteBtn').addEventListener('click', ()=>{
-  let id=document.getElementById('currentProductId').value;
-  let name=document.getElementById('nameInput').value.trim();
-  let note=document.getElementById('noteInput').value.trim();
-  let txt=(name?'Người: '+name:'')+(note?(name?' | ':'')+'Ghi chú: '+note:'');
-  document.getElementById('note-display-'+id).textContent=txt;
+document.querySelectorAll('.btn-minus').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    let input = btn.closest('.qty-box').querySelector('.qty-input');
+    if(parseInt(input.value)>0) input.value = parseInt(input.value)-1;
+  });
 });
 
-// Add to cart
-document.addEventListener('click', e=>{
-  if(!e.target.classList.contains('btn-addcart')) return;
-  let btn=e.target;
-  let card=btn.closest('.card-body');
-  let qty=parseInt(card.querySelector('.qty-input').value);
-  if(qty<=0){alert('Chọn số lượng >0');return;}
-  let id=btn.dataset.id, name=btn.dataset.name;
-  let sizeEl=card.querySelector('input[name="size-'+id+'"]:checked');
-  let size=sizeEl.value, price=parseInt(sizeEl.dataset.price);
-  let note=document.getElementById('note-display-'+id).textContent;
-  cart.push({id,name,qty,price,size,note});
-  renderCart();
-  card.querySelector('.qty-input').value=0;
-  document.getElementById('note-display-'+id).textContent='';
+// Thêm giỏ
+document.querySelectorAll('.btn-addcart').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    let card = btn.closest('.card-body');
+    let qty = parseInt(card.querySelector('.qty-input').value);
+    if(qty<=0){alert("Chọn số lượng > 0");return;}
+    let id = btn.dataset.id;
+    let name = btn.dataset.name;
+    let price = parseInt(btn.dataset.price);
+    let size = card.querySelector('input[name="size'+id+'"]:checked').nextElementSibling.textContent;
+
+    cart.items.push({id,name,qty,price,size});
+    renderCart();
+    card.querySelector('.qty-input').value=0;
+  });
 });
 
-// Render cart
+// Render giỏ
 function renderCart(){
-  let el=document.getElementById('cartItems');
-  if(!cart.length){el.innerHTML='<p class="text-muted">Chưa có món</p>';}
+  const cartItems=document.getElementById('cartItems');
+  if(cart.items.length===0){cartItems.innerHTML='<p class="text-muted">Chưa có món nào</p>';}
   else{
     let total=0;
-    el.innerHTML=cart.map((it,i)=>{
-      total+=it.price*it.qty;
-      return `<div class="border-bottom py-1 d-flex justify-content-between">
-        <div><strong>${it.name} (${it.size})</strong> x${it.qty} - ${format(it.price*it.qty)}<br><small>${it.note}</small></div>
+    cartItems.innerHTML=cart.items.map((item,i)=>{
+      total+=item.price*item.qty;
+      return `<div class="border-bottom py-2 d-flex justify-content-between align-items-start">
+        <div><strong>${item.name}</strong> (${item.size}) x${item.qty} - ${item.price*item.qty}đ</div>
         <button class="btn btn-sm btn-outline-danger" onclick="removeItem(${i})">✕</button>
       </div>`;
-    }).join('')+`<div class="fw-bold mt-2">Tổng: ${format(total)}</div>`;
+    }).join('')+`<div class="mt-2 fw-bold">Tổng: ${total}đ</div>`;
   }
-  document.getElementById('cartCount').textContent=cart.reduce((s,it)=>s+it.qty,0);
+  document.getElementById('cartCount').textContent=cart.items.reduce((s,it)=>s+it.qty,0);
 }
-function removeItem(i){cart.splice(i,1);renderCart();}
-function format(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,".")+'đ';}
+function removeItem(i){
+  cart.items.splice(i,1);
+  renderCart();
+}
 
-// Place order
+// Đặt hàng
 document.getElementById('placeOrderBtn').addEventListener('click',()=>{
-  if(!cart.length){alert('Giỏ hàng trống!');return;}
-  let name=document.getElementById('customerName').value.trim();
+  if(cart.items.length===0){alert("Giỏ hàng trống!");return;}
+  let customer=document.getElementById('customerName').value.trim();
   let phone=document.getElementById('customerPhone').value.trim();
-  if(!name||!phone){alert('Nhập tên và SĐT');return;}
-  console.log({name,phone,note:document.getElementById('orderNote').value.trim(),items:cart});
-  alert('Đặt hàng thành công!');
-  cart=[];renderCart();
-  document.getElementById('customerName').value='';
-  document.getElementById('customerPhone').value='';
-  document.getElementById('orderNote').value='';
-  bootstrap.Offcanvas.getInstance(document.getElementById('cartCanvas')).hide();
+  if(!customer||!phone){alert("Nhập tên và số điện thoại!");return;}
+  console.log({customer,phone,note:document.getElementById('orderNote').value.trim(),items:cart.items});
+  alert("Đặt hàng thành công!");
+  cart={items:[]};renderCart();
 });
 </script>
 </body>
