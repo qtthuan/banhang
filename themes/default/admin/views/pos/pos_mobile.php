@@ -101,11 +101,11 @@
 <script>
 const imgDefault = "https://banicantho.com/assets/uploads/thumbs/no_image.png";
 const products = [
-  {name:"CÀ PHÊ", price:15000}, {name:"CÀ PHÊ HẠNH NHÂN", price:25000}, {name:"CÀ PHÊ SỮA", price:20000}
-  // 👉 Bạn thêm đủ list 60 món giống bản trước ở đây
+  {name:"CÀ PHÊ", price:15000}, {name:"CÀ PHÊ SỮA", price:20000}, {name:"TRÀ ĐÀO", price:22000}
+  // 👉 thêm danh sách đầy đủ ở đây
 ];
 let cart = [];
-let notes = {}; // lưu ghi chú từng món
+let notes = {};
 let currentIndex = null;
 
 // Render sản phẩm
@@ -157,7 +157,9 @@ function openNote(i){
   document.getElementById('noteName').value='';
   document.getElementById('noteText').value='';
   document.querySelectorAll('.note-check').forEach(c=>c.checked=false);
-  new bootstrap.Modal(document.getElementById('noteModal')).show();
+  let modal=new bootstrap.Modal(document.getElementById('noteModal'));
+  modal.show();
+  setTimeout(()=>document.getElementById('noteName').focus(),300);
 }
 
 // Checkbox append vào textbox
@@ -203,6 +205,12 @@ function addToCart(i){
   let note=notes[i]||'';
   cart.push({name:products[i].name, qty, size, price, note});
   updateCart();
+
+  // reset sản phẩm
+  document.getElementById('qty'+i).innerText=1;
+  document.getElementById('m'+i).checked=true;
+  notes[i]='';
+  document.getElementById('note-display-'+i).innerText='';
 }
 function updateCart(){
   document.getElementById('cartCount').innerText=cart.length;
