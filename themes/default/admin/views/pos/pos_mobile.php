@@ -14,35 +14,34 @@
     .qty-box input {
       width: 60px;
       text-align: center;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
     }
     .qty-box button {
-      width: 45px;
-      height: 45px;
-      font-size: 1.5rem;
+      width: 40px;
+      height: 40px;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    .note-display {
+      font-size: 0.8rem;
+      color: #555;
+      margin-top: 5px;
+      min-height: 18px;
     }
     .cart-badge {
       position: absolute;
       top: -5px;
       right: -10px;
     }
-    .size-group .btn {
-      margin: 2px;
-      padding: 6px 16px;
-      font-size: 1rem;
-    }
-    .size-group .btn-check:checked + .btn {
-      background-color: #198754;
-      color: #fff;
-    }
-    .product-card img {
-      max-height: 100px;
+    .product-img {
+      width: 100px;
+      height: 100px;
       object-fit: cover;
+      margin: 0 auto 8px auto;
+      display: block;
     }
-    .note-display {
-      font-size: 0.85rem;
-      color: #555;
-      min-height: 20px;
+    .size-options .btn {
+      min-width: 60px;
     }
   </style>
 </head>
@@ -51,7 +50,7 @@
 <!-- Header -->
 <nav class="navbar navbar-dark bg-success mb-3">
   <div class="container-fluid">
-    <span class="navbar-brand mb-0 h1">🥤 TIỆM NƯỚC MINI</span>
+    <span class="navbar-brand mb-0 h1">🍹 TIỆM NƯỚC MINI</span>
     <div class="cart-icon" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
       <button class="btn btn-light position-relative">
         🛒
@@ -62,82 +61,42 @@
 </nav>
 
 <div class="container">
+  <div class="row g-2" id="productList">
+    <!-- Danh sách sản phẩm render ở đây -->
+  </div>
+</div>
 
-  <div class="row g-2">
-    <?php
-    $items = [
-      ["id"=>1,"name"=>"CÀ PHÊ","price"=>15000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>2,"name"=>"CÀ PHÊ HẠNH NHÂN","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>3,"name"=>"CÀ PHÊ SỮA","price"=>20000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>4,"name"=>"CÀ PHÊ SỮA TƯƠI HẠT ĐÁC","price"=>28000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>5,"name"=>"CÀ PHÊ SỮA TƯƠI SƯƠNG SÁO","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>6,"name"=>"CÀ PHÊ SỮA TƯƠI THỐT NỐT","price"=>28000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>7,"name"=>"MILO SỮA","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>8,"name"=>"SỮA CHUA TRÁI CÂY","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>9,"name"=>"TÀU HŨ MATCHA LATTE","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>10,"name"=>"TRÀ SỮA GẠO","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>11,"name"=>"TRÀ SỮA TRUYỀN THỐNG","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>12,"name"=>"SINH TỐ BƠ","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>13,"name"=>"SINH TỐ DÂU","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>14,"name"=>"SINH TỐ MÃNG CẦU","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>15,"name"=>"SINH TỐ SA BÔ","price"=>22000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>16,"name"=>"TRÀ CỐC","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>17,"name"=>"TRÀ DÂU TẰM","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>18,"name"=>"TRÀ DÂU TẰM HẠT ĐÁC","price"=>28000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>19,"name"=>"TRÀ DỨA","price"=>25000,"img"=>"https://via.placeholder.com/150"],
-      ["id"=>20,"name"=>"TRÀ DỨA HẠT ĐÁC","price"=>28000,"img"=>"https://via.placeholder.com/150"],
-    ];
-
-    foreach ($items as $item): ?>
-      <div class="col-6">
-        <div class="card h-100 product-card">
-          <img src="<?= $item['img'] ?>" class="card-img-top" alt="<?= $item['name'] ?>">
-          <div class="card-body text-center">
-            <h6 class="card-title"><?= $item['name'] ?></h6>
-            <p class="text-muted">Size M: <?= number_format($item['price'],0,",",".") ?>đ<br>Size L: <?= number_format($item['price']+5000,0,",",".") ?>đ</p>
-
-            <!-- Size chọn -->
-            <div class="size-group mb-2">
-              <input type="radio" class="btn-check" name="size<?= $item['id'] ?>" id="m<?= $item['id'] ?>" data-price="<?= $item['price'] ?>" autocomplete="off" checked>
-              <label class="btn btn-outline-secondary btn-sm" for="m<?= $item['id'] ?>">M</label>
-              <input type="radio" class="btn-check" name="size<?= $item['id'] ?>" id="l<?= $item['id'] ?>" data-price="<?= $item['price']+5000 ?>" autocomplete="off">
-              <label class="btn btn-outline-secondary btn-sm" for="l<?= $item['id'] ?>">L</label>
-            </div>
-
-            <!-- Số lượng -->
-            <div class="qty-box mb-2">
-              <button class="btn btn-sm btn-outline-secondary btn-minus">-</button>
-              <input type="number" class="form-control form-control-sm mx-1 qty-input" value="0" min="0">
-              <button class="btn btn-sm btn-outline-secondary btn-plus">+</button>
-            </div>
-
-            <!-- Ghi chú -->
-            <input type="text" class="form-control form-control-sm mb-1 note-input" placeholder="Ghi chú món...">
-            <div class="d-flex flex-wrap justify-content-center mb-2">
-              <div class="form-check me-2">
-                <input class="form-check-input quick-note" type="checkbox" value="Ít ngọt">
-                <label class="form-check-label">Ít ngọt</label>
-              </div>
-              <div class="form-check me-2">
-                <input class="form-check-input quick-note" type="checkbox" value="Không đá">
-                <label class="form-check-label">Không đá</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input quick-note" type="checkbox" value="Nhiều cafe">
-                <label class="form-check-label">Nhiều cafe</label>
-              </div>
-            </div>
-
-            <!-- Nút thêm -->
-            <button class="btn btn-sm btn-outline-success w-100 btn-addcart"
-                    data-id="<?= $item['id'] ?>"
-                    data-name="<?= $item['name'] ?>">+ Thêm Món</button>
-          </div>
+<!-- Modal Ghi chú -->
+<div class="modal fade" id="noteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ghi chú món</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="currentProductId">
+        <input type="text" class="form-control mb-2" id="nameInput" placeholder="Tên (A, B...)">
+        <textarea class="form-control mb-2" id="noteInput" placeholder="Nhập ghi chú..."></textarea>
+        <div class="form-check">
+          <input class="form-check-input note-check" type="checkbox" value="Ít ngọt" id="note1">
+          <label class="form-check-label" for="note1">Ít ngọt</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input note-check" type="checkbox" value="Không đá" id="note2">
+          <label class="form-check-label" for="note2">Không đá</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input note-check" type="checkbox" value="Nhiều cafe" id="note3">
+          <label class="form-check-label" for="note3">Nhiều cafe</label>
         </div>
       </div>
-    <?php endforeach; ?>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        <button type="button" class="btn btn-success" id="saveNoteBtn" data-bs-dismiss="modal">Lưu</button>
+      </div>
+    </div>
   </div>
-
 </div>
 
 <!-- Offcanvas giỏ hàng -->
@@ -150,90 +109,181 @@
     <div id="cartItems" class="mb-3">
       <p class="text-muted">Chưa có món nào</p>
     </div>
+    <!-- Thông tin khách -->
     <div class="mb-3">
       <input type="text" class="form-control mb-2" id="customerName" placeholder="Tên khách">
       <input type="tel" class="form-control mb-2" id="customerPhone" placeholder="Số điện thoại">
       <textarea class="form-control" id="orderNote" rows="2" placeholder="Ghi chú đơn..."></textarea>
     </div>
+    <!-- Nút đặt hàng -->
     <button class="btn btn-success mt-auto" id="placeOrderBtn">Đặt hàng</button>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-let cart = {items: []};
+const products = [];
+for (let i = 1; i <= 60; i++) {
+  products.push({
+    id: i,
+    name: "SẢN PHẨM " + i,
+    priceM: 20000,
+    priceL: 25000,
+    img: "https://via.placeholder.com/100x100.png?text=Fruit+"+i
+  });
+}
 
-// Tăng giảm
-document.querySelectorAll('.btn-plus').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    let input = btn.closest('.qty-box').querySelector('.qty-input');
-    input.value = parseInt(input.value)+1;
+let cart = JSON.parse(localStorage.getItem('cart')) || {items: []};
+renderCart();
+
+// render sản phẩm
+function renderProducts() {
+  const list = document.getElementById('productList');
+  list.innerHTML = products.map(p => `
+    <div class="col-6">
+      <div class="card h-100 text-center p-2">
+        <img src="${p.img}" class="product-img" alt="${p.name}">
+        <h6 class="card-title">${p.name}</h6>
+        <div class="size-options btn-group mb-2" role="group" data-id="${p.id}">
+          <input type="radio" class="btn-check" name="size-${p.id}" id="sizeM-${p.id}" value="M" checked>
+          <label class="btn btn-outline-primary btn-sm" for="sizeM-${p.id}">Size M</label>
+          <input type="radio" class="btn-check" name="size-${p.id}" id="sizeL-${p.id}" value="L">
+          <label class="btn btn-outline-primary btn-sm" for="sizeL-${p.id}">Size L</label>
+        </div>
+        <p class="text-muted">M: ${p.priceM}đ - L: ${p.priceL}đ</p>
+        <div class="note-display" id="note-display-${p.id}"></div>
+        <div class="qty-box mb-2">
+          <button class="btn btn-sm btn-outline-secondary btn-minus">-</button>
+          <input type="number" class="form-control form-control-sm mx-1 qty-input" value="0" min="0">
+          <button class="btn btn-sm btn-outline-secondary btn-plus">+</button>
+        </div>
+        <button class="btn btn-sm btn-outline-info w-100 mb-2 btn-note"
+                data-bs-toggle="modal" data-bs-target="#noteModal"
+                data-id="${p.id}">Ghi chú món</button>
+        <button class="btn btn-sm btn-outline-success w-100 btn-addcart"
+                data-id="${p.id}" data-name="${p.name}"
+                data-priceM="${p.priceM}" data-priceL="${p.priceL}">+ Thêm Món</button>
+      </div>
+    </div>
+  `).join('');
+}
+renderProducts();
+
+// Tăng giảm số lượng
+document.addEventListener('click', function(e){
+  if(e.target.classList.contains('btn-plus')){
+    let input = e.target.closest('.qty-box').querySelector('.qty-input');
+    input.value = parseInt(input.value) + 1;
+  }
+  if(e.target.classList.contains('btn-minus')){
+    let input = e.target.closest('.qty-box').querySelector('.qty-input');
+    if(parseInt(input.value) > 0) input.value = parseInt(input.value) - 1;
+  }
+});
+
+// Modal ghi chú
+const noteModal = document.getElementById('noteModal');
+noteModal.addEventListener('show.bs.modal', function (event) {
+  const button = event.relatedTarget;
+  const productId = button.getAttribute('data-id');
+  document.getElementById('currentProductId').value = productId;
+  document.getElementById('nameInput').value = '';
+  document.getElementById('noteInput').value = '';
+  document.querySelectorAll('.note-check').forEach(c => c.checked = false);
+});
+
+// Checkbox update text
+const noteInput = document.getElementById('noteInput');
+document.querySelectorAll('.note-check').forEach(chk => {
+  chk.addEventListener('change', () => {
+    let selected = [];
+    document.querySelectorAll('.note-check:checked').forEach(c => selected.push(c.value));
+    noteInput.value = selected.join(', ');
   });
 });
-document.querySelectorAll('.btn-minus').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    let input = btn.closest('.qty-box').querySelector('.qty-input');
-    if(parseInt(input.value)>0) input.value = parseInt(input.value)-1;
-  });
+
+// Lưu ghi chú
+document.getElementById('saveNoteBtn').addEventListener('click', () => {
+  const productId = document.getElementById('currentProductId').value;
+  const displayTarget = document.getElementById('note-display-' + productId);
+  let name = document.getElementById('nameInput').value.trim();
+  let note = noteInput.value.trim();
+  let displayText = '';
+  if (name) displayText += 'Người: ' + name;
+  if (note) displayText += (name ? ' | ' : '') + 'Ghi chú: ' + note;
+  displayTarget.textContent = displayText;
 });
 
-// Thêm giỏ
-document.querySelectorAll('.btn-addcart').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    let card = btn.closest('.card-body');
+// Thêm vào giỏ
+document.addEventListener('click', function(e){
+  if(e.target.classList.contains('btn-addcart')){
+    let card = e.target.closest('.card');
     let qty = parseInt(card.querySelector('.qty-input').value);
-    if(qty<=0){alert("Chọn số lượng > 0");return;}
-    let id = btn.dataset.id;
-    let name = btn.dataset.name;
-    let sizeRadio = card.querySelector('input[name="size'+id+'"]:checked');
-    let size = sizeRadio.nextElementSibling.textContent;
-    let price = parseInt(sizeRadio.dataset.price);
-    let note = card.querySelector('.note-input').value;
-    let quickNotes = [];
-    card.querySelectorAll('.quick-note:checked').forEach(c=>quickNotes.push(c.value));
-    if(quickNotes.length>0) note += (note? ', ':'')+quickNotes.join(', ');
-
-    cart.items.push({id,name,qty,price,size,note});
+    if (qty <= 0) { alert("Vui lòng chọn số lượng > 0"); return; }
+    let id = e.target.dataset.id;
+    let name = e.target.dataset.name;
+    let priceM = parseInt(e.target.dataset.pricem);
+    let priceL = parseInt(e.target.dataset.pricel);
+    let size = card.querySelector('input[name="size-'+id+'"]:checked').value;
+    let price = (size === 'M') ? priceM : priceL;
+    let noteText = document.getElementById('note-display-' + id).textContent;
+    cart.items.push({id, name, qty, size, price, note: noteText});
+    localStorage.setItem('cart', JSON.stringify(cart));
     renderCart();
-    card.querySelector('.qty-input').value=0;
-    card.querySelector('.note-input').value='';
-    card.querySelectorAll('.quick-note').forEach(c=>c.checked=false);
-  });
+    card.querySelector('.qty-input').value = 0;
+    document.getElementById('note-display-' + id).textContent = '';
+  }
 });
 
 // Render giỏ
-function renderCart(){
-  const cartItems=document.getElementById('cartItems');
-  if(cart.items.length===0){cartItems.innerHTML='<p class="text-muted">Chưa có món nào</p>';}
-  else{
-    let total=0;
-    cartItems.innerHTML=cart.items.map((item,i)=>{
-      total+=item.price*item.qty;
+function renderCart() {
+  const cartItems = document.getElementById('cartItems');
+  if (cart.items.length === 0) {
+    cartItems.innerHTML = '<p class="text-muted">Chưa có món nào</p>';
+  } else {
+    let total = 0;
+    cartItems.innerHTML = cart.items.map((item, i) => {
+      total += item.price * item.qty;
       return `<div class="border-bottom py-2 d-flex justify-content-between align-items-start">
-        <div>
-          <strong>${item.name}</strong> (${item.size}) x${item.qty} - ${item.price*item.qty}đ
-          <br><small>${item.note}</small>
-        </div>
-        <button class="btn btn-sm btn-outline-danger" onclick="removeItem(${i})">✕</button>
-      </div>`;
-    }).join('')+`<div class="mt-2 fw-bold">Tổng: ${total}đ</div>`;
+         <div>
+           <strong>${item.name}</strong> (${item.size}) x${item.qty} - ${item.price * item.qty}đ
+           <br><small>${item.note}</small>
+         </div>
+         <button class="btn btn-sm btn-outline-danger btn-remove" data-index="${i}">✕</button>
+       </div>`;
+    }).join('') + `<div class="mt-2 fw-bold">Tổng: ${total}đ</div>`;
   }
-  document.getElementById('cartCount').textContent=cart.items.reduce((s,it)=>s+it.qty,0);
-}
-function removeItem(i){
-  cart.items.splice(i,1);
-  renderCart();
+  let totalQty = cart.items.reduce((sum, it) => sum + it.qty, 0);
+  document.getElementById('cartCount').textContent = totalQty;
+  document.querySelectorAll('.btn-remove').forEach(btn => {
+    btn.addEventListener('click', () => {
+      let index = btn.dataset.index;
+      cart.items.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCart();
+    });
+  });
 }
 
 // Đặt hàng
-document.getElementById('placeOrderBtn').addEventListener('click',()=>{
-  if(cart.items.length===0){alert("Giỏ hàng trống!");return;}
-  let customer=document.getElementById('customerName').value.trim();
-  let phone=document.getElementById('customerPhone').value.trim();
-  if(!customer||!phone){alert("Nhập tên và số điện thoại!");return;}
-  console.log({customer,phone,note:document.getElementById('orderNote').value.trim(),items:cart.items});
-  alert("Đặt hàng thành công!");
-  cart={items:[]};renderCart();
+document.getElementById('placeOrderBtn').addEventListener('click', () => {
+  if (cart.items.length === 0) {
+    alert("Giỏ hàng trống!"); return;
+  }
+  let customer = document.getElementById('customerName').value.trim();
+  let phone = document.getElementById('customerPhone').value.trim();
+  let orderNote = document.getElementById('orderNote').value.trim();
+  if (!customer || !phone) {
+    alert("Vui lòng nhập Tên khách và Số điện thoại!"); return;
+  }
+  console.log({customer, phone, orderNote, items: cart.items});
+  alert("Đặt hàng thành công!\nCảm ơn " + customer);
+  cart = {items: []};
+  localStorage.setItem('cart', JSON.stringify(cart));
+  renderCart();
+  document.getElementById('customerName').value = '';
+  document.getElementById('customerPhone').value = '';
+  document.getElementById('orderNote').value = '';
 });
 </script>
 </body>
