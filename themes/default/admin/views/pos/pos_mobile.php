@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>TIỆM NƯỚC MINI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body { background:#f8f9fa; }
@@ -13,7 +12,6 @@
     .cart-btn { position:relative; }
     .cart-btn .badge { position:absolute; top:-5px; right:-10px; }
 
-    /* Card sản phẩm */
     .product-card { border:1px solid #ddd; border-radius:8px; padding:10px; text-align:center; background:#fff; }
     .product-card img { width:100px; height:100px; object-fit:cover; margin-bottom:8px; }
     .product-card h6 { font-size:14px; font-weight:bold; }
@@ -21,18 +19,21 @@
     /* Size button toggle */
     .size-btn input { display:none; }
     .size-btn label {
-      margin:2px; padding:6px 10px;
+      margin:2px; padding:8px 12px;   /* to hơn 10% */
       border:1px solid #28a745; border-radius:4px;
-      cursor:pointer; font-size:12px;
+      cursor:pointer; font-size:13px;
     }
     .size-btn input:checked + label { background:#28a745; color:#fff; }
 
-    /* Qty */
+    /* Qty control */
     .qty-control button {
-      font-size:22px;
-      width:40px; height:40px;
+      font-size:24px;                 /* to hơn */
+      width:44px; height:44px;
     }
-    .qty-control span { font-size:18px; min-width:30px; display:inline-block; }
+    .qty-control span { font-size:18px; min-width:35px; display:inline-block; }
+
+    /* Buttons */
+    .btn-add { height:50px; font-size:15px; } /* +10% chiều cao */
   </style>
 </head>
 <body>
@@ -83,6 +84,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
+        <input type="hidden" id="noteIndex">
         <input type="text" id="noteTitle" class="form-control mb-2" placeholder="Tên (A, B...)">
         <textarea id="noteText" class="form-control mb-2" placeholder="Nhập ghi chú..."></textarea>
         <div class="form-check"><input class="form-check-input" type="checkbox" id="noteLessSugar"><label class="form-check-label">Ít ngọt</label></div>
@@ -103,42 +105,43 @@
 const imgDefault = "https://banicantho.com/assets/uploads/thumbs/no_image.png";
 
 const products = [
-  {name:"CÀ PHÊ", price:15000},{name:"CÀ PHÊ HẠNH NHÂN", price:25000},
-  {name:"CÀ PHÊ SỮA", price:20000},{name:"CÀ PHÊ SỮA TƯƠI HẠT ĐÁC", price:28000},
-  {name:"CÀ PHÊ SỮA TƯƠI SƯƠNG SÁO", price:22000},{name:"CÀ PHÊ SỮA TƯƠI THỐT NỐT", price:28000},
-  {name:"MILO SỮA", price:22000},{name:"SỮA CHUA TRÁI CÂY", price:22000},
-  {name:"TÀU HŨ MATCHA LATTE", price:25000},{name:"TRÀ SỮA GẠO", price:25000},
-  {name:"TRÀ SỮA TRUYỀN THỐNG", price:25000},{name:"SINH TỐ BƠ", price:25000},
-  {name:"SINH TỐ DÂU", price:25000},{name:"SINH TỐ MÃNG CẦU", price:22000},
-  {name:"SINH TỐ SA BÔ", price:22000},{name:"TRÀ CỐC", price:25000},
-  {name:"TRÀ DÂU TẰM", price:25000},{name:"TRÀ DÂU TẰM HẠT ĐÁC", price:28000},
-  {name:"TRÀ DỨA", price:25000},{name:"TRÀ DỨA HẠT ĐÁC", price:28000},
-  {name:"TRÀ DỨA LƯỚI", price:25000},{name:"TRÀ DỨA THỐT NỐT", price:28000},
-  {name:"TRÀ MÃNG CẦU", price:25000},{name:"TRÀ TRÁI CÂY", price:25000},
-  {name:"TRÀ VẢI", price:22000},{name:"TRÀ ĐÀO", price:22000},
-  {name:"CÀ RỐT", price:15000},{name:"CAM", price:15000},
-  {name:"CAM-CÀ RỐT", price:18000},{name:"DƯA HẤU", price:15000},
-  {name:"KHÓM", price:18000},{name:"KHÓM-CÀ RỐT", price:18000},
-  {name:"KHÓM-CAM", price:18000},{name:"KHÓM-DƯA HẤU", price:18000},
-  {name:"KHÓM-ỔI", price:18000},{name:"KHÓM-SƠ RI", price:18000},
-  {name:"MIX 2 VỊ", price:18000},{name:"MIX 2 VỊ (CÓ TÁO)", price:22000},
-  {name:"ỔI", price:15000},{name:"SƠ RI", price:15000},
-  {name:"SƠ RI-CÀ CHUA", price:18000},{name:"SƠ RI-ỔI", price:18000},
-  {name:"TÁO", price:22000},{name:"TÁO-CÀ RỐT", price:22000},
-  {name:"TÁO-DƯA HẤU", price:22000},{name:"TÁO-KHÓM", price:22000},
-  {name:"TÁO-ỔI", price:22000},{name:"TÁO-SƠ RI", price:22000},
-  {name:"CÀ RỐT (CHAI)", price:20000},{name:"CAM (CHAI)", price:20000},
-  {name:"DƯA HẤU (CHAI)", price:20000},{name:"KHÓM (CHAI)", price:23000},
-  {name:"ỔI (CHAI)", price:20000},{name:"SƠ RI (CHAI)", price:20000},
-  {name:"TÁO (CHAI)", price:27000},{name:"BẠC XỈU", price:17000},
-  {name:"TRÀ ĐÁ", price:3000},{name:"TRÀ ĐƯỜNG", price:5000},
-  {name:"YAOURT ĐÁ", price:17000},{name:"YAOURT ĐÁ HẠT ĐÁC", price:25000},
-  {name:"BÁNH TRÁNG", price:13000},{name:"NƯỚC ĐÁ", price:1000},
-  {name:"SỮA CHUA CHAI", price:7000},{name:"SỮA CHUA CHAI MIX TRÁI CÂY", price:8000}
+  {name:"CÀ PHÊ", price:15000}, {name:"CÀ PHÊ HẠNH NHÂN", price:25000},
+  {name:"CÀ PHÊ SỮA", price:20000}, {name:"CÀ PHÊ SỮA TƯƠI HẠT ĐÁC", price:28000},
+  {name:"CÀ PHÊ SỮA TƯƠI SƯƠNG SÁO", price:22000}, {name:"CÀ PHÊ SỮA TƯƠI THỐT NỐT", price:28000},
+  {name:"MILO SỮA", price:22000}, {name:"SỮA CHUA TRÁI CÂY", price:22000},
+  {name:"TÀU HŨ MATCHA LATTE", price:25000}, {name:"TRÀ SỮA GẠO", price:25000},
+  {name:"TRÀ SỮA TRUYỀN THỐNG", price:25000}, {name:"SINH TỐ BƠ", price:25000},
+  {name:"SINH TỐ DÂU", price:25000}, {name:"SINH TỐ MÃNG CẦU", price:22000},
+  {name:"SINH TỐ SA BÔ", price:22000}, {name:"TRÀ CỐC", price:25000},
+  {name:"TRÀ DÂU TẰM", price:25000}, {name:"TRÀ DÂU TẰM HẠT ĐÁC", price:28000},
+  {name:"TRÀ DỨA", price:25000}, {name:"TRÀ DỨA HẠT ĐÁC", price:28000},
+  {name:"TRÀ DỨA LƯỚI", price:25000}, {name:"TRÀ DỨA THỐT NỐT", price:28000},
+  {name:"TRÀ MÃNG CẦU", price:25000}, {name:"TRÀ TRÁI CÂY", price:25000},
+  {name:"TRÀ VẢI", price:22000}, {name:"TRÀ ĐÀO", price:22000},
+  {name:"CÀ RỐT", price:15000}, {name:"CAM", price:15000},
+  {name:"CAM-CÀ RỐT", price:18000}, {name:"DƯA HẤU", price:15000},
+  {name:"KHÓM", price:18000}, {name:"KHÓM-CÀ RỐT", price:18000},
+  {name:"KHÓM-CAM", price:18000}, {name:"KHÓM-DƯA HẤU", price:18000},
+  {name:"KHÓM-ỔI", price:18000}, {name:"KHÓM-SƠ RI", price:18000},
+  {name:"MIX 2 VỊ", price:18000}, {name:"MIX 2 VỊ (CÓ TÁO)", price:22000},
+  {name:"ỔI", price:15000}, {name:"SƠ RI", price:15000},
+  {name:"SƠ RI-CÀ CHUA", price:18000}, {name:"SƠ RI-ỔI", price:18000},
+  {name:"TÁO", price:22000}, {name:"TÁO-CÀ RỐT", price:22000},
+  {name:"TÁO-DƯA HẤU", price:22000}, {name:"TÁO-KHÓM", price:22000},
+  {name:"TÁO-ỔI", price:22000}, {name:"TÁO-SƠ RI", price:22000},
+  {name:"CÀ RỐT (CHAI)", price:20000}, {name:"CAM (CHAI)", price:20000},
+  {name:"DƯA HẤU (CHAI)", price:20000}, {name:"KHÓM (CHAI)", price:23000},
+  {name:"ỔI (CHAI)", price:20000}, {name:"SƠ RI (CHAI)", price:20000},
+  {name:"TÁO (CHAI)", price:27000}, {name:"BẠC XỈU", price:17000},
+  {name:"TRÀ ĐÁ", price:3000}, {name:"TRÀ ĐƯỜNG", price:5000},
+  {name:"YAOURT ĐÁ", price:17000}, {name:"YAOURT ĐÁ HẠT ĐÁC", price:25000},
+  {name:"BÁNH TRÁNG", price:13000}, {name:"NƯỚC ĐÁ", price:1000},
+  {name:"SỮA CHUA CHAI", price:7000}, {name:"SỮA CHUA CHAI MIX TRÁI CÂY", price:8000}
 ];
 
 let cart = [];
-let currentNoteIndex = null;
+let tempNote = {};
+let currentIndex = null;
 
 // Render sản phẩm
 function renderProducts(list) {
@@ -162,7 +165,10 @@ function renderProducts(list) {
             <span id="qty${index}" class="mx-2">1</span>
             <button class="btn btn-outline-secondary" onclick="changeQty(${index}, 1)">+</button>
           </div>
-          <button class="btn btn-success btn-sm w-100 mt-2" onclick="openNote(${index})">+ Thêm Món</button>
+          <div class="d-flex mt-2">
+            <button class="btn btn-info btn-sm flex-fill me-1" onclick="openNote(${index})">Ghi chú</button>
+            <button class="btn btn-success btn-sm flex-fill btn-add" onclick="addToCart(${index})">+ Thêm Món</button>
+          </div>
         </div>
       </div>
     `;
@@ -170,77 +176,67 @@ function renderProducts(list) {
 }
 renderProducts(products);
 
-// Thay đổi số lượng
+// Qty
 function changeQty(i, delta) {
-  let qtyEl = document.getElementById('qty'+i);
-  let qty = parseInt(qtyEl.innerText) + delta;
-  if(qty < 1) qty = 1;
-  qtyEl.innerText = qty;
+  let el = document.getElementById('qty'+i);
+  let qty = parseInt(el.innerText)+delta;
+  if(qty<1) qty=1;
+  el.innerText = qty;
 }
 
-// Mở modal ghi chú
-function openNote(i) {
-  currentNoteIndex = i;
-  document.getElementById('noteTitle').value = products[i].name;
-  document.getElementById('noteText').value = '';
-  document.getElementById('noteLessSugar').checked = false;
-  document.getElementById('noteNoIce').checked = false;
-  document.getElementById('noteMoreCoffee').checked = false;
+// Ghi chú
+function openNote(i){
+  currentIndex=i;
+  document.getElementById('noteIndex').value=i;
+  document.getElementById('noteTitle').value=products[i].name;
+  document.getElementById('noteText').value='';
+  document.getElementById('noteLessSugar').checked=false;
+  document.getElementById('noteNoIce').checked=false;
+  document.getElementById('noteMoreCoffee').checked=false;
   new bootstrap.Modal(document.getElementById('noteModal')).show();
 }
 
-// Lưu ghi chú
-document.getElementById('saveNoteBtn').addEventListener('click', () => {
-  let note = document.getElementById('noteText').value;
-  if(document.getElementById('noteLessSugar').checked) note += " | Ít ngọt";
-  if(document.getElementById('noteNoIce').checked) note += " | Không đá";
-  if(document.getElementById('noteMoreCoffee').checked) note += " | Nhiều cafe";
-
-  let qty = parseInt(document.getElementById('qty'+currentNoteIndex).innerText);
-  let size = document.querySelector('input[name="size'+currentNoteIndex+'"]:checked').value;
-  let price = products[currentNoteIndex].price + (size=="L"?5000:0);
-
-  cart.push({name:products[currentNoteIndex].name, size:size, qty:qty, price:price, note:note});
-  updateCart();
-
+document.getElementById('saveNoteBtn').addEventListener('click',()=>{
+  let i=document.getElementById('noteIndex').value;
+  let note=document.getElementById('noteText').value;
+  if(document.getElementById('noteLessSugar').checked) note+=" | Ít ngọt";
+  if(document.getElementById('noteNoIce').checked) note+=" | Không đá";
+  if(document.getElementById('noteMoreCoffee').checked) note+=" | Nhiều cafe";
+  tempNote[i]=note;
   bootstrap.Modal.getInstance(document.getElementById('noteModal')).hide();
 });
 
-// Update giỏ hàng
-function updateCart() {
-  document.getElementById('cartCount').innerText = cart.length;
-  let cartList = document.getElementById('cartItems');
-  cartList.innerHTML = '';
-  let total = 0;
-  cart.forEach((c, idx) => {
-    let sub = c.price * c.qty;
-    total += sub;
-    cartList.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-start">
-      <div>
-        <strong>${c.name}</strong> (${c.size}) x${c.qty}<br><small>${c.note||''}</small>
-      </div>
-      <div>
-        <span>${sub.toLocaleString()}đ</span><br>
-        <button class="btn btn-sm btn-danger" onclick="removeItem(${idx})">X</button>
-      </div>
-    </li>`;
-  });
-  document.getElementById('cartTotal').innerText = total.toLocaleString();
-}
-
-// Xóa món
-function removeItem(i) {
-  cart.splice(i,1);
+// Add giỏ
+function addToCart(i){
+  let qty=parseInt(document.getElementById('qty'+i).innerText);
+  let size=document.querySelector('input[name="size'+i+'"]:checked').value;
+  let price=products[i].price+(size=="L"?5000:0);
+  let note=tempNote[i]||'';
+  cart.push({name:products[i].name, qty:qty, size:size, price:price, note:note});
   updateCart();
 }
 
+// Update giỏ
+function updateCart(){
+  document.getElementById('cartCount').innerText=cart.length;
+  let ul=document.getElementById('cartItems'); ul.innerHTML='';
+  let total=0;
+  cart.forEach((c,idx)=>{
+    let sub=c.price*c.qty; total+=sub;
+    ul.innerHTML+=`<li class="list-group-item d-flex justify-content-between">
+      <div><strong>${c.name}</strong> (${c.size}) x${c.qty}<br><small>${c.note}</small></div>
+      <div><span>${sub.toLocaleString()}đ</span><br><button class="btn btn-sm btn-danger" onclick="removeItem(${idx})">X</button></div>
+    </li>`;
+  });
+  document.getElementById('cartTotal').innerText=total.toLocaleString();
+}
+function removeItem(i){cart.splice(i,1);updateCart();}
+
 // Search filter
-document.getElementById('searchInput').addEventListener('input', e => {
-  let val = e.target.value.toLowerCase();
-  let filtered = products.filter(p => p.name.toLowerCase().includes(val));
-  renderProducts(filtered);
+document.getElementById('searchInput').addEventListener('input',e=>{
+  let v=e.target.value.toLowerCase();
+  renderProducts(products.filter(p=>p.name.toLowerCase().includes(v)));
 });
 </script>
-
 </body>
 </html>
