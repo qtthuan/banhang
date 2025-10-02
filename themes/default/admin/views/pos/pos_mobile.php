@@ -10,16 +10,36 @@
     .navbar-brand { font-weight:bold; }
     .product-card img { max-height:100px; width:auto; margin-bottom:10px; }
     .product-card h6 { font-size:0.95rem; font-weight:bold; min-height:40px; }
-    .qty-box { display:flex; justify-content:center; align-items:center; }
-    .qty-box input { width:50px; text-align:center; }
-    .btn-addcart, .btn-note {
-      font-size:1rem;
-      padding:10px;
-      height:52px;
-    }
-    .btn-plus, .btn-minus { font-size:1.2rem; padding:6px 12px; }
-    .size-options .btn { font-size:0.8rem; padding:4px 8px; }
     .note-display { font-size:0.75rem; color:#555; margin-bottom:4px; min-height:18px; }
+
+    /* Size buttons lớn hơn */
+    .size-options .btn {
+      font-size:0.9rem;
+      padding:10px 18px;
+    }
+
+    /* Qty buttons lớn hơn */
+    .btn-plus, .btn-minus {
+      font-size:1.4rem;
+      padding:12px 18px;
+    }
+    .qty-box input {
+      width:60px;
+      text-align:center;
+      height:100%; /* cao bằng nút +- */
+      font-size:1.1rem;
+    }
+    .qty-box { display:flex; justify-content:center; align-items:center; gap:5px; }
+
+    /* Buttons Ghi chú và Thêm món */
+    .btn-note { width:40%; font-size:1rem; padding:12px; }
+    .btn-addcart { width:60%; font-size:1rem; padding:12px; }
+
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -10px;
+    }
   </style>
 </head>
 <body>
@@ -28,10 +48,10 @@
 <nav class="navbar navbar-dark bg-success sticky-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">🥤 TIỆM NƯỚC MINI</a>
-    <form class="d-flex">
-      <input class="form-control me-2" id="searchInput" type="search" placeholder="Tìm món..." aria-label="Search">
+    <form class="d-flex me-2">
+      <input class="form-control" id="searchInput" type="search" placeholder="Tìm món..." aria-label="Search">
     </form>
-    <button class="btn btn-outline-light position-relative ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
+    <button class="btn btn-outline-light position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
       🛒
       <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">0</span>
     </button>
@@ -71,20 +91,20 @@
 
           <!-- QTY -->
           <div class="qty-box my-2">
-            <button class="btn btn-sm btn-outline-secondary btn-minus">-</button>
-            <input type="number" class="form-control form-control-sm mx-1 qty-input" value="0" min="0">
-            <button class="btn btn-sm btn-outline-secondary btn-plus">+</button>
+            <button class="btn btn-outline-secondary btn-minus">-</button>
+            <input type="number" class="form-control qty-input" value="0" min="0">
+            <button class="btn btn-outline-secondary btn-plus">+</button>
           </div>
 
           <!-- NÚT -->
           <div class="d-flex gap-2">
-            <button class="btn btn-info flex-fill btn-note"
+            <button class="btn btn-info btn-note"
                     data-bs-toggle="modal"
                     data-bs-target="#noteModal"
                     data-id="<?= $p->id ?>">
               📝 Ghi chú
             </button>
-            <button class="btn btn-success flex-fill btn-addcart"
+            <button class="btn btn-success btn-addcart"
                     data-id="<?= $p->id ?>"
                     data-name="<?= $cleanName ?>"
                     data-price="<?= $p->price ?>">
@@ -99,166 +119,210 @@
   </div>
 </div>
 
-<!-- MODAL GHI CHÚ -->
+<!-- Modal Ghi chú -->
 <div class="modal fade" id="noteModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header"><h5 class="modal-title">Ghi chú món</h5>
+      <div class="modal-header">
+        <h5 class="modal-title">Ghi chú món</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <input type="hidden" id="noteProductId">
-        <div class="mb-2">
-          <label class="form-label">Tên khách</label>
-          <input type="text" class="form-control" id="noteCustomerName">
+        <input type="hidden" id="currentProductId">
+        <input type="text" class="form-control mb-2" id="nameInput" placeholder="Tên (ví dụ: A, B...)">
+        <textarea class="form-control mb-2" id="noteInput" placeholder="Nhập ghi chú..."></textarea>
+
+        <div class="form-check">
+          <input class="form-check-input note-check" type="checkbox" value="Ít ngọt" id="note1">
+          <label class="form-check-label" for="note1">Ít ngọt</label>
         </div>
-        <div class="mb-2">
-          <label class="form-label">Ghi chú</label>
-          <textarea id="noteText" class="form-control" rows="2"></textarea>
+        <div class="form-check">
+          <input class="form-check-input note-check" type="checkbox" value="Không đá" id="note2">
+          <label class="form-check-label" for="note2">Không đá</label>
         </div>
-        <div class="d-flex flex-wrap gap-2">
-          <div><input type="checkbox" class="form-check-input note-check" value="Ít ngọt"> Ít ngọt</div>
-          <div><input type="checkbox" class="form-check-input note-check" value="Không đá"> Không đá</div>
-          <div><input type="checkbox" class="form-check-input note-check" value="Nhiều cafe"> Nhiều cafe</div>
+        <div class="form-check">
+          <input class="form-check-input note-check" type="checkbox" value="Nhiều cafe" id="note3">
+          <label class="form-check-label" for="note3">Nhiều cafe</label>
         </div>
+
       </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-        <button class="btn btn-primary" id="saveNote">Lưu</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        <button type="button" class="btn btn-success" id="saveNoteBtn" data-bs-dismiss="modal">Lưu</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- OFFCANVAS GIỎ HÀNG -->
+<!-- Offcanvas giỏ hàng -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="cartCanvas">
   <div class="offcanvas-header">
-    <h5 class="offcanvas-title">Giỏ hàng</h5>
+    <h5 class="offcanvas-title">🛒 Giỏ hàng</h5>
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
   </div>
-  <div class="offcanvas-body">
-    <div id="cartItems"></div>
-    <hr>
-    <div class="mb-2">
-      <label>Tên KH</label>
-      <input type="text" class="form-control" id="orderName">
+  <div class="offcanvas-body d-flex flex-column">
+    <div id="cartItems" class="mb-3">
+      <p class="text-muted">Chưa có món nào</p>
     </div>
-    <div class="mb-2">
-      <label>Điện thoại</label>
-      <input type="text" class="form-control" id="orderPhone">
+
+    <!-- Thông tin khách -->
+    <div class="mb-3">
+      <input type="text" class="form-control mb-2" id="customerName" placeholder="Tên khách">
+      <input type="tel" class="form-control mb-2" id="customerPhone" placeholder="Số điện thoại">
+      <textarea class="form-control" id="orderNote" rows="2" placeholder="Ghi chú đơn..."></textarea>
     </div>
-    <div class="mb-2">
-      <label>Ghi chú đơn</label>
-      <textarea class="form-control" id="orderNote"></textarea>
-    </div>
-    <button class="btn btn-success w-100" id="placeOrder">Đặt hàng</button>
+
+    <!-- Nút đặt hàng -->
+    <button class="btn btn-success mt-auto" id="placeOrderBtn">Đặt hàng</button>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-let cart = JSON.parse(localStorage.getItem("cart")||"[]");
+let cart = JSON.parse(localStorage.getItem('cart')) || {items: []};
+renderCart();
 
-// search filter
-document.getElementById("searchInput").addEventListener("keyup", function(){
-  let val = this.value.toLowerCase();
-  document.querySelectorAll("#productList .product-card").forEach(el=>{
-    el.style.display = el.dataset.name.toLowerCase().includes(val) ? "block" : "none";
+// Tăng giảm số lượng
+document.querySelectorAll('.btn-plus').forEach(btn => {
+  btn.addEventListener('click', () => {
+    let input = btn.closest('.qty-box').querySelector('.qty-input');
+    input.value = parseInt(input.value) + 1;
   });
 });
-
-// qty buttons
-document.querySelectorAll(".btn-plus").forEach(btn=>{
-  btn.addEventListener("click",function(){
-    let input=this.parentElement.querySelector(".qty-input");
-    input.value=parseInt(input.value)+1;
-  });
-});
-document.querySelectorAll(".btn-minus").forEach(btn=>{
-  btn.addEventListener("click",function(){
-    let input=this.parentElement.querySelector(".qty-input");
-    input.value=Math.max(0,parseInt(input.value)-1);
-  });
-});
-
-// note modal
-let currentNoteId=null;
-document.querySelectorAll(".btn-note").forEach(btn=>{
-  btn.addEventListener("click",function(){
-    currentNoteId=this.dataset.id;
-    document.getElementById("noteProductId").value=currentNoteId;
-    document.getElementById("noteCustomerName").focus();
-  });
-});
-document.querySelectorAll(".note-check").forEach(ch=>{
-  ch.addEventListener("change",function(){
-    let txt=document.getElementById("noteText");
-    if(this.checked){
-      txt.value += (txt.value?", ":"")+this.value;
+document.querySelectorAll('.btn-minus').forEach(btn => {
+  btn.addEventListener('click', () => {
+    let input = btn.closest('.qty-box').querySelector('.qty-input');
+    if (parseInt(input.value) > 0) {
+      input.value = parseInt(input.value) - 1;
     }
-    txt.focus();
   });
 });
-document.getElementById("noteText").addEventListener("keypress",function(e){
-  if(e.key==="Enter"){
-    e.preventDefault();
-    document.getElementById("saveNote").click();
+
+// Ghi chú modal
+const noteModal = document.getElementById('noteModal');
+noteModal.addEventListener('show.bs.modal', function (event) {
+  const button = event.relatedTarget;
+  const productId = button.getAttribute('data-id');
+  document.getElementById('currentProductId').value = productId;
+  document.getElementById('nameInput').value = '';
+  document.getElementById('noteInput').value = '';
+  document.querySelectorAll('.note-check').forEach(c => c.checked = false);
+  setTimeout(()=>document.getElementById('nameInput').focus(),300);
+});
+
+// Checkbox update text
+const noteInput = document.getElementById('noteInput');
+document.querySelectorAll('.note-check').forEach(chk => {
+  chk.addEventListener('change', () => {
+    let selected = [];
+    document.querySelectorAll('.note-check:checked').forEach(c => selected.push(c.value));
+    noteInput.value = selected.join(', ');
+    noteInput.focus();
+  });
+});
+
+// Lưu ghi chú tạm
+document.getElementById('saveNoteBtn').addEventListener('click', () => {
+  const productId = document.getElementById('currentProductId').value;
+  const displayTarget = document.getElementById('note-display-' + productId);
+  let name = document.getElementById('nameInput').value.trim();
+  let note = noteInput.value.trim();
+  let displayText = '';
+  if (name) displayText += 'Người: ' + name;
+  if (note) displayText += (name ? ' | ' : '') + 'Ghi chú: ' + note;
+  displayTarget.textContent = displayText;
+});
+
+// Thêm vào giỏ
+document.querySelectorAll('.btn-addcart').forEach(btn => {
+  btn.addEventListener('click', () => {
+    let card = btn.closest('.card-body');
+    let qty = parseInt(card.querySelector('.qty-input').value);
+    if (qty <= 0) {
+      alert("Vui lòng chọn số lượng > 0");
+      return;
+    }
+    let id = btn.dataset.id;
+    let name = btn.dataset.name;
+    let price = parseInt(btn.dataset.price);
+    let sizeEl = card.querySelector('.size-radio:checked');
+    let sizeText = sizeEl ? sizeEl.value.split('|')[0] : '';
+    let sizePrice = sizeEl ? parseInt(sizeEl.value.split('|')[1]) : price;
+    let noteText = document.getElementById('note-display-' + id).textContent;
+
+    cart.items.push({id, name, qty, price:sizePrice, size:sizeText, note: noteText});
+    localStorage.setItem('cart', JSON.stringify(cart));
+    renderCart();
+
+    // Reset
+    card.querySelector('.qty-input').value = 0;
+    document.getElementById('note-display-' + id).textContent = '';
+  });
+});
+
+// Render giỏ
+function renderCart() {
+  const cartItems = document.getElementById('cartItems');
+  if (cart.items.length === 0) {
+    cartItems.innerHTML = '<p class="text-muted">Chưa có món nào</p>';
+  } else {
+    let total = 0;
+    cartItems.innerHTML = cart.items.map((item, i) => {
+      total += item.price * item.qty;
+      return `<div class="border-bottom py-2 d-flex justify-content-between align-items-start">
+         <div>
+           <strong>${item.name}</strong> ${item.size?`(${item.size})`:''} x${item.qty} - ${item.price * item.qty}đ
+           <br><small>${item.note}</small>
+         </div>
+         <button class="btn btn-sm btn-outline-danger btn-remove" data-index="${i}">✕</button>
+       </div>`;
+    }).join('') + `<div class="mt-2 fw-bold">Tổng: ${total}đ</div>`;
   }
-});
-document.getElementById("saveNote").addEventListener("click",function(){
-  let id=document.getElementById("noteProductId").value;
-  let name=document.getElementById("noteCustomerName").value;
-  let note=document.getElementById("noteText").value;
-  document.getElementById("note-display-"+id).innerText = name?name+": "+note:note;
-  bootstrap.Modal.getInstance(document.getElementById("noteModal")).hide();
-});
 
-// add cart
-document.querySelectorAll(".btn-addcart").forEach(btn=>{
-  btn.addEventListener("click",function(){
-    let card=this.closest(".card-body");
-    let qty=parseInt(card.querySelector(".qty-input").value);
-    if(qty<=0) return;
-    let id=this.dataset.id;
-    let name=this.dataset.name;
-    let basePrice=parseInt(this.dataset.price);
-    let sizeOpt=card.querySelector(".size-radio:checked");
-    let size=sizeOpt?sizeOpt.value.split("|")[0]:"";
-    let price=sizeOpt?parseInt(sizeOpt.value.split("|")[1]):basePrice;
-    let note=card.querySelector(".note-display").innerText;
+  let totalQty = cart.items.reduce((sum, it) => sum + it.qty, 0);
+  document.getElementById('cartCount').textContent = totalQty;
 
-    cart.push({id,name,qty,size,price,note});
-    localStorage.setItem("cart",JSON.stringify(cart));
-    updateCart();
-    card.querySelector(".qty-input").value=0;
-    card.querySelector(".note-display").innerText="";
+  document.querySelectorAll('.btn-remove').forEach(btn => {
+    btn.addEventListener('click', () => {
+      let index = btn.dataset.index;
+      cart.items.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCart();
+    });
   });
+}
+
+// Đặt hàng
+document.getElementById('placeOrderBtn').addEventListener('click', () => {
+  if (cart.items.length === 0) {
+    alert("Giỏ hàng trống!");
+    return;
+  }
+  let customer = document.getElementById('customerName').value.trim();
+  let phone = document.getElementById('customerPhone').value.trim();
+  let orderNote = document.getElementById('orderNote').value.trim();
+  if (!customer || !phone) {
+    alert("Vui lòng nhập Tên khách và Số điện thoại!");
+    return;
+  }
+  console.log({ customer, phone, orderNote, items: cart.items });
+  alert("Đặt hàng thành công!\nCảm ơn " + customer);
+
+  cart = {items: []};
+  localStorage.setItem('cart', JSON.stringify(cart));
+  renderCart();
+  document.getElementById('customerName').value = '';
+  document.getElementById('customerPhone').value = '';
+  document.getElementById('orderNote').value = '';
 });
 
-function updateCart(){
-  document.getElementById("cartCount").innerText=cart.length;
-  let html="";
-  cart.forEach((item,i)=>{
-    html+=`<div class="border p-2 mb-2">
-      <div><b>${item.name}</b> x ${item.qty} (${item.size}) - ${item.price*item.qty}đ</div>
-      <div><small>${item.note||""}</small></div>
-      <button class="btn btn-sm btn-danger mt-1" onclick="removeItem(${i})">Xóa</button>
-    </div>`;
+// Search filter
+document.getElementById('searchInput').addEventListener('keyup', () => {
+  let val = document.getElementById('searchInput').value.toLowerCase();
+  document.querySelectorAll('#productList .product-card').forEach(card => {
+    let name = card.getAttribute('data-name').toLowerCase();
+    card.style.display = name.includes(val) ? 'block' : 'none';
   });
-  document.getElementById("cartItems").innerHTML=html;
-}
-function removeItem(i){
-  cart.splice(i,1);
-  localStorage.setItem("cart",JSON.stringify(cart));
-  updateCart();
-}
-updateCart();
-
-document.getElementById("placeOrder").addEventListener("click",function(){
-  alert("Đặt hàng thành công!");
-  cart=[];
-  localStorage.removeItem("cart");
-  updateCart();
 });
 </script>
 </body>
