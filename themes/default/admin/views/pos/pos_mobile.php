@@ -12,34 +12,14 @@
     .product-card h6 { font-size:0.95rem; font-weight:bold; min-height:40px; }
     .note-display { font-size:0.75rem; color:#555; margin-bottom:4px; min-height:18px; }
 
-    /* Size buttons lớn hơn */
-    .size-options .btn {
-      font-size:0.9rem;
-      padding:10px 18px;
-    }
-
-    /* Qty buttons lớn hơn */
-    .btn-plus, .btn-minus {
-      font-size:1.4rem;
-      padding:12px 18px;
-    }
-    .qty-box input {
-      width:60px;
-      text-align:center;
-      height:100%; /* cao bằng nút +- */
-      font-size:1.1rem;
-    }
+    .size-options .btn { font-size:0.9rem; padding:12px 20px; }
+    .btn-plus, .btn-minus { font-size:1.5rem; padding:14px 20px; }
+    .qty-box input { width:65px; text-align:center; height:100%; font-size:1.1rem; }
     .qty-box { display:flex; justify-content:center; align-items:center; gap:5px; }
 
-    /* Buttons Ghi chú và Thêm món */
-    .btn-note { width:40%; font-size:1rem; padding:12px; }
-    .btn-addcart { width:60%; font-size:1rem; padding:12px; }
-
-    .cart-badge {
-      position: absolute;
-      top: -5px;
-      right: -10px;
-    }
+    .btn-note { width:40%; font-size:1rem; padding:14px; }
+    .btn-addcart { width:60%; font-size:1rem; padding:14px; }
+    .cart-badge { position: absolute; top: -5px; right: -10px; }
   </style>
 </head>
 <body>
@@ -58,6 +38,11 @@
   </div>
 </nav>
 
+<!-- FORM POST -->
+<form id="pos-sale-form" method="post" action="<?= admin_url('pos/add'); ?>">
+  <div id="posTable"></div>
+</form>
+
 <!-- DANH SÁCH SẢN PHẨM -->
 <div class="container py-3">
   <div class="row g-2" id="productList">
@@ -72,7 +57,6 @@
           <h6 class="card-title"><?= $cleanName ?></h6>
           <p class="text-muted mb-1"><?= number_format($p->price,0,',','.') ?>đ</p>
 
-          <!-- SIZE -->
           <?php if (!empty($p->variants)): ?>
           <div class="btn-group size-options mb-2" role="group">
             <?php foreach ($p->variants as $i => $v): ?>
@@ -86,17 +70,14 @@
           </div>
           <?php endif; ?>
 
-          <!-- GHI CHÚ -->
           <div class="note-display" id="note-display-<?= $p->id ?>"></div>
 
-          <!-- QTY -->
           <div class="qty-box my-2">
             <button class="btn btn-outline-secondary btn-minus">-</button>
             <input type="number" class="form-control qty-input" value="0" min="0">
             <button class="btn btn-outline-secondary btn-plus">+</button>
           </div>
 
-          <!-- NÚT -->
           <div class="d-flex gap-2">
             <button class="btn btn-info btn-note"
                     data-bs-toggle="modal"
@@ -165,22 +146,21 @@
       <p class="text-muted">Chưa có món nào</p>
     </div>
 
-    <!-- Thông tin khách -->
     <div class="mb-3">
       <input type="text" class="form-control mb-2" id="customerName" placeholder="Tên khách">
       <input type="tel" class="form-control mb-2" id="customerPhone" placeholder="Số điện thoại">
       <textarea class="form-control" id="orderNote" rows="2" placeholder="Ghi chú đơn..."></textarea>
     </div>
 
-    <!-- Nút đặt hàng -->
     <button class="btn btn-success mt-auto" id="placeOrderBtn">Đặt hàng</button>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="<?= $assets ?>pos/js/pos.mobile.js"></script>
 <script>
-let cart = JSON.parse(localStorage.getItem('cart')) || {items: []};
-renderCart();
+let currentNotes = {}; // lưu note tạm theo productId
+let cartCount = 0;
 
 // Tăng giảm số lượng
 document.querySelectorAll('.btn-plus').forEach(btn => {
@@ -192,13 +172,11 @@ document.querySelectorAll('.btn-plus').forEach(btn => {
 document.querySelectorAll('.btn-minus').forEach(btn => {
   btn.addEventListener('click', () => {
     let input = btn.closest('.qty-box').querySelector('.qty-input');
-    if (parseInt(input.value) > 0) {
-      input.value = parseInt(input.value) - 1;
-    }
+    if (parseInt(input.value) > 0) input.value = parseInt(input.value) - 1;
   });
 });
 
-// Ghi chú modal
+// Modal ghi chú
 const noteModal = document.getElementById('noteModal');
 noteModal.addEventListener('show.bs.modal', function (event) {
   const button = event.relatedTarget;
@@ -209,28 +187,25 @@ noteModal.addEventListener('show.bs.modal', function (event) {
   document.querySelectorAll('.note-check').forEach(c => c.checked = false);
   setTimeout(()=>document.getElementById('nameInput').focus(),300);
 });
-
-// Checkbox update text
-const noteInput = document.getElementById('noteInput');
 document.querySelectorAll('.note-check').forEach(chk => {
   chk.addEventListener('change', () => {
     let selected = [];
     document.querySelectorAll('.note-check:checked').forEach(c => selected.push(c.value));
+    let noteInput = document.getElementById('noteInput');
     noteInput.value = selected.join(', ');
     noteInput.focus();
   });
 });
-
-// Lưu ghi chú tạm
 document.getElementById('saveNoteBtn').addEventListener('click', () => {
   const productId = document.getElementById('currentProductId').value;
   const displayTarget = document.getElementById('note-display-' + productId);
   let name = document.getElementById('nameInput').value.trim();
-  let note = noteInput.value.trim();
+  let note = document.getElementById('noteInput').value.trim();
   let displayText = '';
   if (name) displayText += 'Người: ' + name;
   if (note) displayText += (name ? ' | ' : '') + 'Ghi chú: ' + note;
   displayTarget.textContent = displayText;
+  currentNotes[productId] = displayText;
 });
 
 // Thêm vào giỏ
@@ -246,58 +221,46 @@ document.querySelectorAll('.btn-addcart').forEach(btn => {
     let name = btn.dataset.name;
     let price = parseInt(btn.dataset.price);
     let sizeEl = card.querySelector('.size-radio:checked');
-    let sizeText = sizeEl ? sizeEl.value.split('|')[0] : '';
-    let sizePrice = sizeEl ? parseInt(sizeEl.value.split('|')[1]) : price;
-    let noteText = document.getElementById('note-display-' + id).textContent;
+    let option = sizeEl ? sizeEl.value : '';
+    let noteText = currentNotes[id] || '';
 
-    cart.items.push({id, name, qty, price:sizePrice, size:sizeText, note: noteText});
-    localStorage.setItem('cart', JSON.stringify(cart));
-    renderCart();
+    mobileAddItem(id, name, price, qty, option, noteText);
 
-    // Reset
     card.querySelector('.qty-input').value = 0;
     document.getElementById('note-display-' + id).textContent = '';
+    currentNotes[id] = '';
+
+    cartCount++;
+    document.getElementById('cartCount').textContent = cartCount;
+    renderCart();
   });
 });
 
-// Render giỏ
+// Render giỏ hàng (đơn giản từ positems)
 function renderCart() {
   const cartItems = document.getElementById('cartItems');
-  if (cart.items.length === 0) {
+  let items = JSON.parse(localStorage.getItem('positems')) || {};
+  if (Object.keys(items).length === 0) {
     cartItems.innerHTML = '<p class="text-muted">Chưa có món nào</p>';
-  } else {
-    let total = 0;
-    cartItems.innerHTML = cart.items.map((item, i) => {
-      total += item.price * item.qty;
-      return `<div class="border-bottom py-2 d-flex justify-content-between align-items-start">
-         <div>
-           <strong>${item.name}</strong> ${item.size?`(${item.size})`:''} x${item.qty} - ${item.price * item.qty}đ
-           <br><small>${item.note}</small>
-         </div>
-         <button class="btn btn-sm btn-outline-danger btn-remove" data-index="${i}">✕</button>
-       </div>`;
-    }).join('') + `<div class="mt-2 fw-bold">Tổng: ${total}đ</div>`;
-  }
-
-  let totalQty = cart.items.reduce((sum, it) => sum + it.qty, 0);
-  document.getElementById('cartCount').textContent = totalQty;
-
-  document.querySelectorAll('.btn-remove').forEach(btn => {
-    btn.addEventListener('click', () => {
-      let index = btn.dataset.index;
-      cart.items.splice(index, 1);
-      localStorage.setItem('cart', JSON.stringify(cart));
-      renderCart();
-    });
-  });
-}
-
-// Đặt hàng
-document.getElementById('placeOrderBtn').addEventListener('click', () => {
-  if (cart.items.length === 0) {
-    alert("Giỏ hàng trống!");
     return;
   }
+  let total = 0;
+  let html = '';
+  Object.values(items).forEach((item, i) => {
+    total += item.row.price * item.row.quantity;
+    html += `<div class="border-bottom py-2 d-flex justify-content-between align-items-start">
+        <div><strong>${item.row.name}</strong> ${item.row.option?`(${item.row.option})`:''} 
+        x${item.row.quantity} - ${item.row.price * item.row.quantity}đ<br>
+        <small>${item.row.comment||''}</small></div>
+        <button class="btn btn-sm btn-outline-danger" onclick="mobileRemoveItem(${item.id});renderCart();">✕</button>
+      </div>`;
+  });
+  html += `<div class="mt-2 fw-bold">Tổng: ${total}đ</div>`;
+  cartItems.innerHTML = html;
+}
+
+// Submit đơn
+document.getElementById('placeOrderBtn').addEventListener('click', () => {
   let customer = document.getElementById('customerName').value.trim();
   let phone = document.getElementById('customerPhone').value.trim();
   let orderNote = document.getElementById('orderNote').value.trim();
@@ -305,15 +268,14 @@ document.getElementById('placeOrderBtn').addEventListener('click', () => {
     alert("Vui lòng nhập Tên khách và Số điện thoại!");
     return;
   }
-  console.log({ customer, phone, orderNote, items: cart.items });
-  alert("Đặt hàng thành công!\nCảm ơn " + customer);
+  // thêm info vào form
+  let hf = document.getElementById('posTable');
+  hf.innerHTML += `<input type="hidden" name="customer_name" value="${customer}">`;
+  hf.innerHTML += `<input type="hidden" name="customer_phone" value="${phone}">`;
+  hf.innerHTML += `<input type="hidden" name="order_note" value="${orderNote}">`;
 
-  cart = {items: []};
-  localStorage.setItem('cart', JSON.stringify(cart));
-  renderCart();
-  document.getElementById('customerName').value = '';
-  document.getElementById('customerPhone').value = '';
-  document.getElementById('orderNote').value = '';
+  mobileLoadItems();
+  document.getElementById('pos-sale-form').submit();
 });
 
 // Search filter
@@ -324,6 +286,9 @@ document.getElementById('searchInput').addEventListener('keyup', () => {
     card.style.display = name.includes(val) ? 'block' : 'none';
   });
 });
+
+// Load lại giỏ khi refresh
+renderCart();
 </script>
 </body>
 </html>
