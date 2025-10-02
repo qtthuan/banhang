@@ -6,51 +6,71 @@
   <title>TIỆM NƯỚC MINI</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .product-card img {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-      margin-bottom: 5px;
-    }
-    .qty-box {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .qty-box input {
-      width: 60px;
-      text-align: center;
-      font-size: 1.1rem;
-    }
-    .qty-box button {
-      width: 36px;
-      height: 36px;
-      font-size: 1.2rem;
-    }
-    .size-options .btn {
-      margin: 2px;
-      min-width: 60px;
-      font-size: 0.9rem;
-      height: 42px;
-    }
-    .btn-add {
-      margin-top: 5px;
-      font-size: 1rem;
-      padding: 8px;
-      height: 48px;
-    }
-    .note-display {
-      font-size: 0.8rem;
-      color: #555;
-      min-height: 18px;
-      margin-top: 5px;
-    }
-    .cart-badge {
-      position: absolute;
-      top: -5px;
-      right: -10px;
-    }
-  </style>
+  .product-card img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-bottom: 5px;
+  }
+  .qty-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .qty-box input {
+    width: 60px;
+    text-align: center;
+    font-size: 1.1rem;
+  }
+  .qty-box button {
+    width: 40px;
+    height: 40px;
+    font-size: 1.4rem;
+  }
+  .size-options .btn {
+    margin: 2px;
+    min-width: 70px;
+    font-size: 1rem;
+    height: 46px;
+  }
+  .btn-add {
+    margin-top: 5px;
+    font-size: 1.1rem;
+    padding: 10px;
+    height: 52px;
+  }
+  .note-display {
+    font-size: 0.85rem;
+    color: #555;
+    min-height: 18px;
+    margin-top: 5px;
+  }
+  .cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+  }
+
+  /* Responsive grid */
+  #productList .product-card {
+    display: block;
+  }
+  @media (max-width: 576px) {
+    #productList .col-6 { flex: 0 0 100%; max-width: 100%; }
+    .product-card img { width: 120px; height: 120px; }
+    .qty-box input { font-size: 1.2rem; width: 70px; }
+    .qty-box button { width: 44px; height: 44px; font-size: 1.5rem; }
+    .btn-add { font-size: 1.2rem; height: 56px; }
+    .size-options .btn { font-size: 1.1rem; height: 50px; }
+  }
+  @media (min-width: 768px) and (max-width: 991px) {
+    #productList .col-6 { flex: 0 0 50%; max-width: 50%; }
+  }
+  @media (min-width: 992px) {
+    #productList .col-6 { flex: 0 0 33.3333%; max-width: 33.3333%; }
+  }
+</style>
+
 </head>
 <body class="bg-light">
 
