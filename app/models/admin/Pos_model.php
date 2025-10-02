@@ -474,6 +474,35 @@ class Pos_model extends CI_Model
         }
     }
 
+    public function getAllMiniProducts()
+    {
+        $this->db->select('id, code, name, price, image, category_id');
+        $this->db->from('products');
+        $this->db->where('category_id', 38);  // Chỉ lấy sản phẩm thuộc nhóm mini
+        $this->db->where('hide_pos', 0);        // Chỉ lấy sp POS
+        $this->db->order_by('name', 'ASC');
+        $q = $this->db->get();
+
+        $products = [];
+        if ($q->num_rows() > 0) {
+            foreach ($q->result() as $row) {
+                // Lấy variants (size)
+                $variants = $this->db->select('id, name, price')
+                    ->from('sma_product_variants')
+                    ->where('product_id', $row->id)
+                    ->order_by('id', 'ASC')
+                    ->get()
+                    ->result();
+
+                $row->variants = $variants; // gắn variants vào sản phẩm
+                $products[] = $row;
+            }
+        }
+
+        return $products;
+    }
+
+
     public function getProductByID($id)
     {
 

@@ -674,6 +674,8 @@ class Pos extends MY_Controller
             //$this->load->view($this->theme . 'pos/add', $this->data);
             if ($this->agent->is_mobile()) {
                 // Mobile view (BS5)
+                //$this->sma->print_arrays($this->data);
+                $this->data['products'] = $this->pos_model->getAllMiniProducts();
                 $this->load->view($this->theme . 'pos/pos_mobile', $this->data);
             } else {
                 // PC view (BS3)

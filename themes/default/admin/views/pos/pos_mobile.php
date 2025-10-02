@@ -6,53 +6,49 @@
   <title>TIỆM NƯỚC MINI</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .product-card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      padding: 10px;
-      text-align: center;
-      margin-bottom: 15px;
-    }
     .product-card img {
       width: 100px;
       height: 100px;
       object-fit: cover;
-      margin-bottom: 8px;
+      margin-bottom: 5px;
     }
-    .size-btn input { display:none; }
-    .size-btn label {
-      border:1px solid #ccc;
-      padding:5px 10px;
-      border-radius:6px;
-      margin:0 3px;
-      cursor:pointer;
+    .qty-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .size-btn input:checked + label {
-      background:#198754;
-      color:#fff;
-      border-color:#198754;
+    .qty-box input {
+      width: 60px;
+      text-align: center;
+      font-size: 1.1rem;
     }
-    .qty-control button {
-      width:40px;
-      height:40px;
-      font-size:20px;
+    .qty-box button {
+      width: 36px;
+      height: 36px;
+      font-size: 1.2rem;
     }
-    .qty-control span {
-      min-width:30px;
-      display:inline-block;
-      font-size:18px;
+    .size-options .btn {
+      margin: 2px;
+      min-width: 60px;
+      font-size: 0.9rem;
+      height: 42px;
+    }
+    .btn-add {
+      margin-top: 5px;
+      font-size: 1rem;
+      padding: 8px;
+      height: 48px;
     }
     .note-display {
-      font-size:0.85rem;
-      color:#555;
-      margin-top:5px;
-      min-height:18px;
+      font-size: 0.8rem;
+      color: #555;
+      min-height: 18px;
+      margin-top: 5px;
     }
     .cart-badge {
-      position:absolute;
-      top:-5px;
-      right:-10px;
+      position: absolute;
+      top: -5px;
+      right: -10px;
     }
   </style>
 </head>
@@ -75,46 +71,58 @@
 
   <!-- Search -->
   <div class="mb-3">
-    <input type="text" id="searchInput" class="form-control" placeholder="Tìm sản phẩm...">
+    <input type="text" id="searchInput" class="form-control" placeholder="🔍 Tìm sản phẩm...">
   </div>
 
-  <!-- Danh sách sản phẩm -->
+  <!-- Products -->
   <div class="row g-2" id="productList">
-    <?php if (!empty($products)): ?>
-      <?php foreach ($products as $i => $p): ?>
-        <div class="col-6 product-col">
-          <div class="product-card">
-            <img src="<?= base_url('assets/uploads/thumbs/no_image.png') ?>" alt="<?= $p->name ?>">
-            <h6><?= strtoupper($p->name) ?></h6>
-            <p><?= number_format($p->price) ?>đ</p>
 
-            <!-- Size -->
-            <div class="size-btn mb-2">
-              <input type="radio" name="size<?= $i ?>" id="m<?= $i ?>" value="M" checked>
-              <label for="m<?= $i ?>">Size M</label>
-              <input type="radio" name="size<?= $i ?>" id="l<?= $i ?>" value="L">
-              <label for="l<?= $i ?>">Size L (+5k)</label>
-            </div>
+    <?php foreach ($products as $p): 
+      $img = !empty($p->image) ? base_url('assets/uploads/thumbs/'.$p->image) : 'https://banicantho.com/assets/uploads/thumbs/no_image.png';
+    ?>
+    <div class="col-6 product-card" data-name="<?= strtoupper($p->name) ?>">
+      <div class="card h-100">
+        <div class="card-body text-center">
+          <img src="<?= $img ?>" alt="<?= $p->name ?>">
+          <h6 class="card-title"><?= strtoupper($p->name) ?></h6>
+          <p class="text-muted mb-1"><?= number_format($p->price,0,',','.') ?>đ</p>
 
-            <!-- Qty -->
-            <div class="qty-control d-flex justify-content-center align-items-center mb-2">
-              <button class="btn btn-outline-secondary" onclick="changeQty(<?= $i ?>,-1)">-</button>
-              <span id="qty<?= $i ?>" class="mx-2">1</span>
-              <button class="btn btn-outline-secondary" onclick="changeQty(<?= $i ?>,1)">+</button>
-            </div>
-
-            <!-- Buttons -->
-            <div class="d-flex">
-              <button class="btn btn-info btn-sm flex-fill me-1" onclick="openNote(<?= $i ?>,'<?= htmlspecialchars($p->name) ?>')">Ghi chú</button>
-              <button class="btn btn-success btn-sm flex-fill" onclick="addToCart(<?= $i ?>,'<?= htmlspecialchars($p->name) ?>',<?= $p->price ?>)">+ Thêm Món</button>
-            </div>
-            <div class="note-display" id="note-display-<?= $i ?>"></div>
+          <!-- size nếu có -->
+          <?php if (!empty($p->variants)): ?>
+          <div class="btn-group size-options" role="group" aria-label="Size">
+            <?php foreach ($p->variants as $i => $v): ?>
+              <input type="radio" class="btn-check size-radio" name="size-<?= $p->id ?>" id="size-<?= $p->id ?>-<?= $i ?>" 
+                     autocomplete="off" value="<?= $v->name ?>|<?= $v->price ?>" <?= $i==0?'checked':'' ?>>
+              <label class="btn btn-outline-primary" for="size-<?= $p->id ?>-<?= $i ?>"><?= $v->name ?></label>
+            <?php endforeach; ?>
           </div>
-        </div>
-      <?php endforeach; ?>
-    <?php endif; ?>
-  </div>
+          <?php endif; ?>
 
+          <div class="note-display" id="note-display-<?= $p->id ?>"></div>
+
+          <div class="qty-box my-2">
+            <button class="btn btn-sm btn-outline-secondary btn-minus">-</button>
+            <input type="number" class="form-control form-control-sm mx-1 qty-input" value="0" min="0">
+            <button class="btn btn-sm btn-outline-secondary btn-plus">+</button>
+          </div>
+
+          <button class="btn btn-sm btn-outline-info w-100 mb-2 btn-note"
+                  data-bs-toggle="modal"
+                  data-bs-target="#noteModal"
+                  data-id="<?= $p->id ?>">
+            Ghi chú món
+          </button>
+
+          <button class="btn btn-sm btn-success w-100 btn-add btn-addcart"
+                  data-id="<?= $p->id ?>"
+                  data-name="<?= strtoupper($p->name) ?>"
+                  data-price="<?= $p->price ?>">+ Thêm Món</button>
+        </div>
+      </div>
+    </div>
+    <?php endforeach; ?>
+
+  </div>
 </div>
 
 <!-- Modal Ghi chú -->
@@ -145,7 +153,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-        <button type="button" class="btn btn-success" id="saveNoteBtn" data-bs-dismiss="modal">Lưu ghi chú</button>
+        <button type="button" class="btn btn-success" id="saveNoteBtn" data-bs-dismiss="modal">Lưu</button>
       </div>
     </div>
   </div>
@@ -162,7 +170,6 @@
       <p class="text-muted">Chưa có món nào</p>
     </div>
 
-    <!-- Thông tin khách -->
     <div class="mb-3">
       <input type="text" class="form-control mb-2" id="customerName" placeholder="Tên khách">
       <input type="tel" class="form-control mb-2" id="customerPhone" placeholder="Số điện thoại">
@@ -175,126 +182,131 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+// Cart lưu ở localStorage
 let cart = JSON.parse(localStorage.getItem('cart')) || {items: []};
-let notes = {};
 renderCart();
 
-// Thay đổi số lượng
-function changeQty(i, delta){
-  let el = document.getElementById('qty'+i);
-  let val = parseInt(el.innerText) + delta;
-  if(val<1) val=1;
-  el.innerText = val;
-}
-
-// Ghi chú modal
-let currentIndex=null;
-function openNote(i, productName){
-  currentIndex=i;
-  document.getElementById('currentProductId').value=i;
-  document.getElementById('nameInput').value='';
-  document.getElementById('noteInput').value='';
-  document.querySelectorAll('.note-check').forEach(c=>c.checked=false);
-  new bootstrap.Modal(document.getElementById('noteModal')).show();
-  setTimeout(()=>{ document.getElementById('nameInput').focus(); },500);
-}
-
-// Checkbox ghi chú -> append vào textbox
-document.querySelectorAll('.note-check').forEach(chk=>{
-  chk.addEventListener('change',()=>{
-    let noteInput=document.getElementById('noteInput');
-    let cursorPos = noteInput.value.length;
-    let val = chk.value;
-    if(chk.checked){
-      noteInput.value += (noteInput.value ? ', ' : '') + val;
-    } else {
-      let arr = noteInput.value.split(',').map(s=>s.trim()).filter(s=>s && s!=val);
-      noteInput.value=arr.join(', ');
-    }
-    noteInput.focus();
-    noteInput.setSelectionRange(cursorPos+val.length+2,cursorPos+val.length+2);
+// Tăng giảm qty
+document.querySelectorAll('.btn-plus').forEach(btn => {
+  btn.addEventListener('click', () => {
+    let input = btn.closest('.qty-box').querySelector('.qty-input');
+    input.value = parseInt(input.value) + 1;
+  });
+});
+document.querySelectorAll('.btn-minus').forEach(btn => {
+  btn.addEventListener('click', () => {
+    let input = btn.closest('.qty-box').querySelector('.qty-input');
+    if (parseInt(input.value) > 0) input.value = parseInt(input.value) - 1;
   });
 });
 
-// Enter trong noteInput = lưu
-document.getElementById('noteInput').addEventListener('keydown',(e)=>{
-  if(e.key==='Enter'){
-    e.preventDefault();
-    document.getElementById('saveNoteBtn').click();
-  }
+// Modal ghi chú
+const noteModal = document.getElementById('noteModal');
+noteModal.addEventListener('show.bs.modal', function (event) {
+  const button = event.relatedTarget;
+  const productId = button.getAttribute('data-id');
+  document.getElementById('currentProductId').value = productId;
+  document.getElementById('nameInput').value = '';
+  document.getElementById('noteInput').value = '';
+  document.querySelectorAll('.note-check').forEach(c => c.checked = false);
+  setTimeout(() => document.getElementById('nameInput').focus(), 300);
 });
 
-// Lưu ghi chú
-document.getElementById('saveNoteBtn').addEventListener('click',()=>{
-  let i=currentIndex;
-  let name=document.getElementById('nameInput').value.trim();
-  let note=document.getElementById('noteInput').value.trim();
-  let txt='';
-  if(name) txt+='Người: '+name;
-  if(note) txt+=(name?' | ':'')+'Ghi chú: '+note;
-  document.getElementById('note-display-'+i).innerText=txt;
-  notes[i]=txt;
+// Checkbox auto append note
+const noteInput = document.getElementById('noteInput');
+document.querySelectorAll('.note-check').forEach(chk => {
+  chk.addEventListener('change', () => {
+    let selected = [];
+    document.querySelectorAll('.note-check:checked').forEach(c => selected.push(c.value));
+    noteInput.value = selected.join(', ');
+    noteInput.focus();
+  });
+});
+
+// Lưu ghi chú hiển thị
+document.getElementById('saveNoteBtn').addEventListener('click', () => {
+  const productId = document.getElementById('currentProductId').value;
+  const displayTarget = document.getElementById('note-display-' + productId);
+  let name = document.getElementById('nameInput').value.trim();
+  let note = noteInput.value.trim();
+  let displayText = '';
+  if (name) displayText += 'Người: ' + name;
+  if (note) displayText += (name ? ' | ' : '') + 'Ghi chú: ' + note;
+  displayTarget.textContent = displayText;
 });
 
 // Thêm vào giỏ
-function addToCart(i,name,basePrice){
-  let qty=parseInt(document.getElementById('qty'+i).innerText);
-  let size=document.querySelector('input[name="size'+i+'"]:checked').value;
-  let price=basePrice+(size=="L"?5000:0);
-  let note=notes[i]||'';
-  cart.items.push({id:i,name,qty,price,size,note});
-  localStorage.setItem('cart',JSON.stringify(cart));
-  renderCart();
+document.querySelectorAll('.btn-addcart').forEach(btn => {
+  btn.addEventListener('click', () => {
+    let card = btn.closest('.card-body');
+    let qty = parseInt(card.querySelector('.qty-input').value);
+    if (qty <= 0) { alert("Vui lòng chọn số lượng > 0"); return; }
+    let id = btn.dataset.id;
+    let name = btn.dataset.name;
+    let basePrice = parseInt(btn.dataset.price);
 
-  // reset
-  document.getElementById('qty'+i).innerText=1;
-  document.getElementById('m'+i).checked=true;
-  notes[i]='';
-  document.getElementById('note-display-'+i).innerText='';
-}
+    // check size
+    let sizeOption = card.querySelector('.size-radio:checked');
+    let price = basePrice;
+    let size = '';
+    if (sizeOption) {
+      let [sname, sprice] = sizeOption.value.split('|');
+      size = sname;
+      price = parseInt(sprice);
+    }
+
+    let noteText = document.getElementById('note-display-' + id).textContent;
+    cart.items.push({id, name, qty, price, size, note: noteText});
+    localStorage.setItem('cart', JSON.stringify(cart));
+    renderCart();
+
+    // reset
+    card.querySelector('.qty-input').value = 0;
+    document.getElementById('note-display-' + id).textContent = '';
+  });
+});
 
 // Render giỏ
-function renderCart(){
-  const cartItems=document.getElementById('cartItems');
-  if(cart.items.length===0){
-    cartItems.innerHTML='<p class="text-muted">Chưa có món nào</p>';
+function renderCart() {
+  const cartItems = document.getElementById('cartItems');
+  if (cart.items.length === 0) {
+    cartItems.innerHTML = '<p class="text-muted">Chưa có món nào</p>';
   } else {
-    let total=0;
-    cartItems.innerHTML=cart.items.map((item,i)=>{
-      total+=item.price*item.qty;
+    let total = 0;
+    cartItems.innerHTML = cart.items.map((item,i) => {
+      total += item.price * item.qty;
       return `<div class="border-bottom py-2 d-flex justify-content-between align-items-start">
         <div>
-          <strong>${item.name}</strong> (${item.size}) x${item.qty} - ${item.price*item.qty}đ
+          <strong>${item.name}</strong> ${item.size? '('+item.size+')':''} x${item.qty} - ${item.price*item.qty}đ
           <br><small>${item.note}</small>
         </div>
         <button class="btn btn-sm btn-outline-danger btn-remove" data-index="${i}">✕</button>
       </div>`;
-    }).join('')+`<div class="mt-2 fw-bold">Tổng: ${total}đ</div>`;
+    }).join('') + `<div class="mt-2 fw-bold">Tổng: ${total}đ</div>`;
   }
-  let totalQty=cart.items.reduce((sum,it)=>sum+it.qty,0);
-  document.getElementById('cartCount').textContent=totalQty;
+  let totalQty = cart.items.reduce((sum,it)=>sum+it.qty,0);
+  document.getElementById('cartCount').textContent = totalQty;
 
-  document.querySelectorAll('.btn-remove').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      let idx=btn.dataset.index;
-      cart.items.splice(idx,1);
-      localStorage.setItem('cart',JSON.stringify(cart));
+  document.querySelectorAll('.btn-remove').forEach(btn => {
+    btn.addEventListener('click', () => {
+      let index = btn.dataset.index;
+      cart.items.splice(index,1);
+      localStorage.setItem('cart', JSON.stringify(cart));
       renderCart();
     });
   });
 }
 
 // Đặt hàng
-document.getElementById('placeOrderBtn').addEventListener('click',()=>{
-  if(cart.items.length===0){alert("Giỏ hàng trống!");return;}
-  let customer=document.getElementById('customerName').value.trim();
-  let phone=document.getElementById('customerPhone').value.trim();
-  let orderNote=document.getElementById('orderNote').value.trim();
-  if(!customer||!phone){alert("Vui lòng nhập Tên khách và SĐT");return;}
-  console.log({customer,phone,orderNote,items:cart.items});
-  alert("Đặt hàng thành công! Cảm ơn "+customer);
-  cart={items:[]};
-  localStorage.setItem('cart',JSON.stringify(cart));
+document.getElementById('placeOrderBtn').addEventListener('click', () => {
+  if (cart.items.length===0) { alert("Giỏ hàng trống!"); return; }
+  let customer = document.getElementById('customerName').value.trim();
+  let phone = document.getElementById('customerPhone').value.trim();
+  if (!customer || !phone) { alert("Vui lòng nhập Tên khách và Số điện thoại!"); return; }
+  console.log({customer,phone,orderNote:document.getElementById('orderNote').value.trim(),items:cart.items});
+  alert("Đặt hàng thành công!");
+  cart = {items:[]};
+  localStorage.setItem('cart', JSON.stringify(cart));
   renderCart();
   document.getElementById('customerName').value='';
   document.getElementById('customerPhone').value='';
@@ -302,11 +314,11 @@ document.getElementById('placeOrderBtn').addEventListener('click',()=>{
 });
 
 // Search filter
-document.getElementById('searchInput').addEventListener('input',function(){
-  let val=this.value.toLowerCase();
-  document.querySelectorAll('#productList .product-col').forEach(col=>{
-    let name=col.querySelector('h6').innerText.toLowerCase();
-    col.style.display=name.includes(val)?'block':'none';
+document.getElementById('searchInput').addEventListener('input', function(){
+  let q = this.value.toLowerCase();
+  document.querySelectorAll('#productList .product-card').forEach(card=>{
+    let name = card.getAttribute('data-name').toLowerCase();
+    card.style.display = name.includes(q)?'block':'none';
   });
 });
 </script>
