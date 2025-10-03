@@ -41,9 +41,12 @@
 </nav>
 
 <!-- FORM POST: posTable will be filled by mobileLoadItems() -->
-<form id="pos-sale-form" method="post" action="<?= admin_url('pos/add'); ?>">
+<form id="pos-sale-form" method="post" action="<?= admin_url('pos'); ?>">
+  <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" 
+         value="<?= $this->security->get_csrf_hash(); ?>">
   <div id="posTable"></div>
 </form>
+
 
 <div class="container py-3">
   <div class="row g-2" id="productList">
@@ -148,18 +151,27 @@
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
   </div>
   <div class="offcanvas-body d-flex flex-column">
+
     <div id="cartItems" class="mb-3"><p class="text-muted">Chưa có món nào</p></div>
 
-    <div class="mb-2">
-      <input type="text" class="form-control mb-2" id="customerName" placeholder="Tên khách">
-      <input type="tel" class="form-control mb-2" id="customerPhone" placeholder="Số điện thoại">
-      <textarea class="form-control" id="orderNote" rows="2" placeholder="Ghi chú đơn..."></textarea>
-    </div>
+    <!-- Hidden fixed fields -->
+    <input type="hidden" name="warehouse" value="3">
+    <input type="hidden" name="biller" value="7283">
+
+    <!-- Customer select2 -->
+    <label class="form-label">Khách hàng</label>
+    <select id="poscustomer" name="customer" class="form-control"></select>
+
+    <!-- Customer info -->
+    <input type="text" class="form-control my-2" id="customer_name" name="customer_name" placeholder="Tên khách">
+    <input type="tel" class="form-control mb-2" id="customerPhone" name="customer_phone" placeholder="Số điện thoại">
+    <textarea class="form-control" id="sale_note" name="sale_note" rows="2" placeholder="Ghi chú đơn..."></textarea>
 
     <button class="btn btn-success mt-auto" id="placeOrderBtn">Đặt hàng</button>
   </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="<?= $assets ?>pos/js/pos.mobile.js"></script>
 <script>
@@ -351,7 +363,7 @@ document.getElementById('placeOrderBtn').addEventListener('click', function(){
   mobileLoadItems();
 
   // submit
-  //document.getElementById('pos-sale-form').submit();
+  document.getElementById('pos-sale-form').submit();
 });
 
 /* search filter */
@@ -367,5 +379,31 @@ document.getElementById('searchInput').addEventListener('input', function(){
 renderCart();
 updateCartCount();
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
+
+<script>
+$(document).ready(function(){
+  $('#poscustomer').select2({
+    minimumInputLength: 1,
+    ajax: {
+      url: "<?= admin_url('customers/suggestions'); ?>",
+      dataType: 'json',
+      delay: 250,
+      data: function (params) {
+        return { term: params.term, limit: 10 };
+      },
+      processResults: function (data) {
+        if (data.results) {
+          return { results: data.results };
+        } else {
+          return { results: [] };
+        }
+      }
+    }
+  });
+});
+</script>
+
 </body>
 </html>

@@ -124,6 +124,7 @@ class Pos extends MY_Controller
 
     public function index($sid = NULL)
     {
+        
         $this->sma->checkPermissions();
 
         if (!$this->pos_settings->default_biller || !$this->pos_settings->default_customer || !$this->pos_settings->default_category) {
@@ -137,6 +138,7 @@ class Pos extends MY_Controller
             $this->session->set_flashdata('error', lang('register_not_open'));
             admin_redirect('pos/open_register');
         }
+        
 
         $this->data['sid'] = $this->input->get('suspend_id') ? $this->input->get('suspend_id') : $sid;
         $did = $this->input->post('delete_id') ? $this->input->post('delete_id') : NULL;
@@ -149,8 +151,9 @@ class Pos extends MY_Controller
         $this->form_validation->set_rules('customer', $this->lang->line("customer"), 'trim|required');
         $this->form_validation->set_rules('warehouse', $this->lang->line("warehouse"), 'required');
         $this->form_validation->set_rules('biller', $this->lang->line("biller"), 'required');
-
+        //$this->sma->print_arrays($this->input->post);
         if ($this->form_validation->run() == TRUE) {
+            
             $date = date('Y-m-d H:i:s');
             $warehouse_id = $this->input->post('warehouse');
             $customer_id = $this->input->post('customer');
@@ -177,6 +180,8 @@ class Pos extends MY_Controller
             $note = $this->sma->clear_tags($this->input->post('pos_note'));
             $staff_note = $this->sma->clear_tags($this->input->post('staff_note'));
             $reference = $this->site->getReference('pos');
+            
+            //$this->sma->print_arrays($_POST);
 
             $total = 0;
             $total_extra = 0;
