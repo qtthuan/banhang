@@ -20,6 +20,15 @@
     .btn-note { width:40%; font-size:1rem; padding:12px; }
     .btn-addcart { width:60%; font-size:1rem; padding:12px; }
 
+    .select2-container .select2-search__field {
+        width: 100% !important;
+    }
+    .select2-container--default .select2-selection--single {
+        height: 38px;
+        padding: 5px 10px;
+    }
+
+
     @media (max-width:576px) {
       .col-6 { flex: 0 0 100%; max-width:100%; }
     }
@@ -384,24 +393,27 @@ updateCartCount();
 
 <script>
 $(document).ready(function(){
+ 
   $('#poscustomer').select2({
+    dropdownParent: $('#cartCanvas'),  // rất quan trọng khi select2 nằm trong offcanvas
+    placeholder: 'Chọn khách hàng',
     minimumInputLength: 1,
     ajax: {
-      url: "<?= admin_url('customers/suggestions'); ?>",
-      dataType: 'json',
-      delay: 250,
-      data: function (params) {
-        return { term: params.term, limit: 10 };
-      },
-      processResults: function (data) {
-        if (data.results) {
-          return { results: data.results };
-        } else {
-          return { results: [] };
+        url: "<?= admin_url('customers/suggestions'); ?>",
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
+            return {
+                term: params.term,
+                limit: 10
+            };
+        },
+        processResults: function (data) {
+            return { results: data.results };
         }
-      }
     }
-  });
+});
+
 });
 </script>
 
