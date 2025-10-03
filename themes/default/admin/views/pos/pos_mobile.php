@@ -184,6 +184,6 @@ $('#customerSelect').select2({
   document.querySelector('.select2-container--open .select2-search__field').focus();
 });
 </script>
-<script src="<?= $assets ?>pos/js/pos.mobile.ui.js"></script>
+<script src="<?= $assets ?>pos/js/pos.mobile.js"></script>
 </body>
 </html>
