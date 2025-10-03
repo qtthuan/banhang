@@ -1,5 +1,5 @@
 /*
- * pos.mobile.js
+ * pos.mobile.js v2.5
  * POS Mobile helper: positems (localStorage) + build hidden inputs for form submit
  * - mobileAddItem(productObj, qty, variantValue, note, noteName)
  *   variantValue format: "variant_id|variant_price|variant_name"
@@ -13,7 +13,7 @@ function savePosItems() {
   localStorage.setItem('lastItemId', lastItemId);
 }
 
-// productObj: {id, code, name, name_en, image, unit, price}
+// productObj: {id, code, name, name_en, image, unit, price, type}
 function mobileAddItem(productObj, qty, variantValue, note, noteName) {
   lastItemId++;
   var rowKey = lastItemId.toString();
@@ -31,7 +31,7 @@ function mobileAddItem(productObj, qty, variantValue, note, noteName) {
 
   // determine prices
   var unit_price = option_price ? parseFloat(option_price) : parseFloat(productObj.price || 0);
-  var real_unit_price = parseFloat(productObj.price || unit_price); // original product price
+  var real_unit_price = parseFloat(productObj.price || unit_price);
   var product_discount = 0;
   var is_promo = 0;
   var promo_original_price = '';
@@ -103,7 +103,6 @@ function mobileLoadItems() {
     hf.innerHTML += '<input type="hidden" name="product_image[]" value="' + escapeHtml(r.product_image || '') + '">';
     hf.innerHTML += '<input type="hidden" name="product_name[]" value="' + escapeHtml(r.product_name || '') + '">';
     hf.innerHTML += '<input type="hidden" name="product_name_en[]" value="' + escapeHtml(r.product_name_en || '') + '">';
-    // option must be variant_id
     hf.innerHTML += '<input type="hidden" name="product_option[]" value="' + escapeHtml(r.product_option || '') + '">';
     hf.innerHTML += '<input type="hidden" name="product_comment[]" value="' + escapeHtml(r.product_comment || '') + '">';
     hf.innerHTML += '<input type="hidden" name="product_comment_name[]" value="' + escapeHtml(r.product_comment_name || '') + '">';
@@ -121,6 +120,16 @@ function mobileLoadItems() {
   });
 
   hf.innerHTML += '<input type="hidden" name="total_items" value="' + totalQty + '">';
+
+  // add fixed values: warehouse + biller
+  hf.innerHTML += '<input type="hidden" name="warehouse" value="3">';
+  hf.innerHTML += '<input type="hidden" name="biller" value="7283">';
+
+  // attach customer id if chosen
+  var custSel = document.getElementById('customerSelect');
+  if (custSel && $(custSel).val()) {
+    hf.innerHTML += '<input type="hidden" name="customer" value="' + escapeHtml($(custSel).val()) + '">';
+  }
 }
 
 // small helper
