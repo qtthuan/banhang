@@ -1,10 +1,8 @@
 /*
- pos.mobile.js v2.8
- - Delegation for + / - / add
- - Size selection uses variant price (variant_price) if present, otherwise product base
- - Add to cart sets product_option = variant_id
- - After add: reset card (size->first, price->base, qty->0, clear note)
- - Render cart + remove item + mobileLoadItems (build hidden inputs)
+ pos.mobile.js v2.9
+ - Variant price = base + extra
+ - Cart badge update after add
+ - Notes save and show correctly
 */
 
 var positems = JSON.parse(localStorage.getItem('positems') || '{}');
@@ -30,18 +28,17 @@ function mobileAddItem(productObj, qty, variantValue, note, noteName){
   var rowKey = String(lastItemId);
 
   var option_id = '';
-  var option_price = '';
+  var option_extra = 0;
   var option_name = '';
   if (variantValue) {
     var parts = variantValue.split('|');
     option_id = parts[0] || '';
-    option_price = parts[1] || '';
+    option_extra = parseFloat(parts[1]||0);
     option_name = parts[2] || '';
   }
 
   var base_price = parseFloat(productObj.price || 0) || 0;
-  // use variant price directly if present, otherwise use base_price
-  var unit_price = (option_price && !isNaN(parseFloat(option_price))) ? parseFloat(option_price) : base_price;
+  var unit_price = base_price + (option_extra || 0);
   var real_unit_price = base_price;
 
   positems[rowKey] = {
@@ -55,7 +52,7 @@ function mobileAddItem(productObj, qty, variantValue, note, noteName){
       product_name_en: productObj.name_en || '',
       product_option: option_id || '',
       product_option_name: option_name || '',
-      product_option_price: option_price || '',
+      product_option_price: option_extra || 0,
       product_comment: note || '',
       product_comment_name: noteName || '',
       product_discount: 0,
@@ -99,7 +96,6 @@ function mobileResetCart(){
 function mobileLoadItems(){
   var hf = document.getElementById('posTable');
   if (!hf) return;
-  // Keep existing children that are not our generated inputs? For simplicity, clear and rebuild.
   hf.innerHTML = '';
 
   var totalQty = 0;
@@ -116,22 +112,11 @@ function mobileLoadItems(){
     hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_option[]" value="'+escapeHtml(r.product_option||'')+'">');
     hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_comment[]" value="'+escapeHtml(r.product_comment||'')+'">');
     hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_comment_name[]" value="'+escapeHtml(r.product_comment_name||'')+'">');
-    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_discount[]" value="'+escapeHtml(r.product_discount||0)+'">');
-    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="is_promo[]" value="'+escapeHtml(r.is_promo||0)+'">');
-    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="promo_original_price[]" value="'+escapeHtml(r.promo_original_price||'')+'">');
-    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="promo_original_price_for_suspend[]" value="'+escapeHtml(r.promo_original_price_for_suspend||'')+'">');
-    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="net_price[]" value="'+escapeHtml(r.net_price||0)+'">');
     hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="unit_price[]" value="'+escapeHtml(r.unit_price||0)+'">');
-    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="real_unit_price[]" value="'+escapeHtml(r.real_unit_price||0)+'">');
-    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="no_points[]" value="'+escapeHtml(r.no_points||1)+'">');
     hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="quantity[]" value="'+escapeHtml(r.quantity||1)+'">');
-    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_unit[]" value="'+escapeHtml(r.product_unit||'undefined')+'">');
-    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_base_quantity[]" value="'+escapeHtml(r.product_base_quantity||r.quantity||1)+'">');
   });
 
   hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="total_items" value="'+escapeHtml(totalQty)+'">');
-
-  // fixed defaults
   hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="warehouse" value="3">');
   hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="biller" value="7283">');
 }
@@ -166,8 +151,7 @@ function renderCart(){
   html += '<div class="mt-2 fw-bold">Tổng: '+fmtVND(total)+'</div>';
   container.innerHTML = html;
 
-  // attach remove handlers
-  Array.prototype.slice.call(container.querySelectorAll('.btn-remove-item')).forEach(function(b){
+  container.querySelectorAll('.btn-remove-item').forEach(function(b){
     b.addEventListener('click', function(){
       var rk = this.getAttribute('data-row');
       if (rk) mobileRemoveItem(rk);
@@ -184,185 +168,24 @@ function updateCartCount(){
   badge.textContent = totalQty;
 }
 
-/* UI wiring (delegation) */
+/* Notes */
 document.addEventListener('DOMContentLoaded', function(){
-
-  // delegated clicks for plus/minus/add
-  document.body.addEventListener('click', function(e){
-    // plus
-    var plus = e.target.closest && e.target.closest('.btn-plus');
-    if (plus) {
-      var input = plus.closest('.qty-box') ? plus.closest('.qty-box').querySelector('.qty-input') : null;
-      if (input) input.value = (parseInt(input.value || 0) + 1);
-      return;
-    }
-    // minus
-    var minus = e.target.closest && e.target.closest('.btn-minus');
-    if (minus) {
-      var input = minus.closest('.qty-box') ? minus.closest('.qty-box').querySelector('.qty-input') : null;
-      if (input) input.value = Math.max(0, (parseInt(input.value || 0) - 1));
-      return;
-    }
-    // add cart
-    var addBtn = e.target.closest && e.target.closest('.btn-addcart');
-    if (addBtn) {
-      e.preventDefault();
-      var card = addBtn.closest('.card-body') || addBtn.closest('.card');
-      if (!card) return;
-      var qtyInput = card.querySelector('.qty-input');
-      var qty = parseInt(qtyInput && qtyInput.value ? qtyInput.value : 0) || 0;
-      if (qty <= 0) { alert('Vui lòng chọn số lượng > 0'); return; }
-
-      var pid = addBtn.getAttribute('data-id');
-      var pcode = addBtn.getAttribute('data-code') || '';
-      var pname = addBtn.getAttribute('data-name') || '';
-      var pname_en = addBtn.getAttribute('data-name-en') || addBtn.getAttribute('data-name_en') || '';
-      var basePrice = parseFloat(addBtn.getAttribute('data-price') || 0) || 0;
-      var image = addBtn.getAttribute('data-image') || 'no_image.png';
-      var unit = addBtn.getAttribute('data-unit') || '';
-
-      // selected variant
-      var selected = card.querySelector('.size-radio:checked');
-      var variantValue = selected ? (selected.value||'') : '';
-
-      // notes from localStorage (mobile_current_notes) or visible
-      var noteDisplay = document.getElementById('note-display-'+pid);
-      var note = '';
-      var noteName = '';
-      if (noteDisplay) {
-        note = noteDisplay.dataset.note || noteDisplay.textContent || '';
-        noteName = noteDisplay.dataset.name || '';
-      }
-      try {
-        var cur = JSON.parse(localStorage.getItem('mobile_current_notes') || '{}');
-        if (cur[pid]) { note = cur[pid].note || note; noteName = cur[pid].name || noteName; }
-      } catch(e){}
-
-      var productObj = {
-        id: pid,
-        code: pcode,
-        name: pname,
-        name_en: pname_en,
-        image: image,
-        unit: unit,
-        price: basePrice,
-        type: 'standard'
-      };
-
-      // add item
-      mobileAddItem(productObj, qty, variantValue, note, noteName);
-
-      // reset UI on this card:
-      // qty -> 0
-      if (qtyInput) qtyInput.value = 0;
-      // reset size to first radio
-      var firstRadio = card.querySelector('.size-radio');
-      if (firstRadio) {
-        // uncheck others and check first
-        var radios = card.querySelectorAll('.size-radio');
-        radios.forEach(function(r, idx){ r.checked = (idx===0); });
-        // update displayed price to base
-        var baseEl = card.querySelector('.base-price');
-        if (baseEl) baseEl.textContent = fmtVND(parseFloat(baseEl.getAttribute('data-base')||0));
-        // reset addBtn data-price to base original
-        addBtn.setAttribute('data-price', parseFloat(addBtn.getAttribute('data-price')||0));
-      }
-      // clear note display and stored note
-      if (noteDisplay) { noteDisplay.textContent = ''; noteDisplay.dataset.note=''; noteDisplay.dataset.name=''; }
-      try {
-        var cur2 = JSON.parse(localStorage.getItem('mobile_current_notes') || '{}');
-        if (cur2[pid]) { cur2[pid] = {name:'', note:''}; localStorage.setItem('mobile_current_notes', JSON.stringify(cur2)); }
-      } catch(e){}
-
-      return;
-    }
-  });
-
-  // delegated change for size radios -> update card price (use variant price if present, else base)
-  document.body.addEventListener('change', function(e){
-    if (!e.target) return;
-    if (e.target.matches && e.target.matches('.size-radio')) {
-      var input = e.target;
-      var card = input.closest('.card-body') || input.closest('.card');
-      if (!card) return;
-      var baseEl = card.querySelector('.base-price');
-      var base = baseEl ? (parseFloat(baseEl.getAttribute('data-base')||0)||0) : 0;
-      // parse variant
-      var parts = (input.value||'').split('|');
-      var vprice = parseFloat(parts[1]||'') || 0;
-      var newPrice = (vprice && !isNaN(vprice) && vprice>0) ? vprice : base;
-      if (baseEl) baseEl.textContent = fmtVND(newPrice);
-      // ensure add button data-price updated so add uses correct price
-      var addBtn = card.querySelector('.btn-addcart');
-      if (addBtn) addBtn.setAttribute('data-price', newPrice);
-    }
-  });
-
-  // note modal open populate and focus
-  var noteModalEl = document.getElementById('noteModal');
-  if (noteModalEl) {
-    noteModalEl.addEventListener('show.bs.modal', function(e){
-      var btn = e.relatedTarget;
-      if (!btn) return;
-      var pid = btn.getAttribute('data-id');
-      document.getElementById('currentProductId').value = pid;
-      var cur = {};
-      try { cur = JSON.parse(localStorage.getItem('mobile_current_notes') || '{}'); } catch(e){}
-      var nameIn = document.getElementById('noteNameInput');
-      var textIn = document.getElementById('noteTextInput');
-      // reset checkboxes
-      document.querySelectorAll('.note-check').forEach(function(c){ c.checked = false; });
-      if (cur[pid]) {
-        if (nameIn) nameIn.value = cur[pid].name || '';
-        if (textIn) textIn.value = cur[pid].note || '';
-        var parts = (cur[pid].note||'').split(',').map(function(s){return s.trim();}).filter(Boolean);
-        document.querySelectorAll('.note-check').forEach(function(c){ if (parts.indexOf(c.value)!==-1) c.checked = true; });
-      } else {
-        if (nameIn) nameIn.value = '';
-        if (textIn) textIn.value = '';
-      }
-      setTimeout(function(){ if (nameIn) nameIn.focus(); }, 200);
-    });
-  }
-
-  // note checkbox sync to text
-  document.body.addEventListener('change', function(e){
-    if (e.target && e.target.matches && e.target.matches('.note-check')) {
-      var txt = document.getElementById('noteTextInput');
-      if (!txt) return;
-      var arr = txt.value ? txt.value.split(',').map(function(s){return s.trim();}).filter(Boolean) : [];
-      if (e.target.checked) { if (arr.indexOf(e.target.value) === -1) arr.push(e.target.value); }
-      else arr = arr.filter(function(x){ return x !== e.target.value; });
-      txt.value = arr.join(', ');
-      txt.focus();
-      txt.setSelectionRange(txt.value.length, txt.value.length);
-    }
-  });
-
-  // Enter in noteText -> click save
-  var nt = document.getElementById('noteTextInput');
-  if (nt) {
-    nt.addEventListener('keydown', function(ev){ if (ev.key === 'Enter'){ ev.preventDefault(); var sb = document.getElementById('saveNoteBtn'); if (sb) sb.click(); }});
-  }
-
-  // save note
+  // Save note
   var saveBtn = document.getElementById('saveNoteBtn');
   if (saveBtn) {
     saveBtn.addEventListener('click', function(){
       var pid = document.getElementById('currentProductId').value;
-      if (!pid) return;
-      var n = (document.getElementById('noteNameInput')||{}).value || '';
-      var c = (document.getElementById('noteTextInput')||{}).value || '';
-      var cur = {};
-      try { cur = JSON.parse(localStorage.getItem('mobile_current_notes') || '{}'); } catch(e){}
-      cur[pid] = { name: n.trim(), note: c.trim() };
+      var n = document.getElementById('noteNameInput').value.trim();
+      var c = document.getElementById('noteTextInput').value.trim();
+      var cur = JSON.parse(localStorage.getItem('mobile_current_notes') || '{}');
+      cur[pid] = { name: n, note: c };
       localStorage.setItem('mobile_current_notes', JSON.stringify(cur));
-      // update display
+
       var disp = document.getElementById('note-display-'+pid);
       if (disp) {
         var out = '';
-        if (n) out += 'Người: ' + n;
-        if (c) out += (n ? ' | ' : '') + 'Ghi chú: ' + c;
+        if (n) out += 'Người: '+n;
+        if (c) out += (n? ' | ' : '')+'Ghi chú: '+c;
         disp.textContent = out;
         disp.dataset.note = c;
         disp.dataset.name = n;
@@ -370,36 +193,27 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 
-  // offcanvas show: try to open select2 or focus customer_name
-  var cartCanvas = document.getElementById('cartCanvas');
-  if (cartCanvas) {
-    cartCanvas.addEventListener('show.bs.offcanvas', function(){
-      setTimeout(function(){
-        try {
-          if ($('#customerSelect').data('select2')) {
-            $('#customerSelect').select2('open');
-            setTimeout(function(){
-              var sf = document.querySelector('.select2-container--open .select2-search__field');
-              if (sf) sf.focus();
-            },100);
-            return;
-          }
-        } catch(e){}
-        var cn = document.getElementById('customer_name'); if (cn) cn.focus();
-      }, 250);
+  // Checkbox sync
+  document.querySelectorAll('.note-check').forEach(function(chk){
+    chk.addEventListener('change', function(){
+      var txt = document.getElementById('noteTextInput');
+      var arr = txt.value ? txt.value.split(',').map(s=>s.trim()).filter(Boolean) : [];
+      if (this.checked) { if (!arr.includes(this.value)) arr.push(this.value); }
+      else arr = arr.filter(x=>x!==this.value);
+      txt.value = arr.join(', ');
     });
-  }
+  });
+});
 
-  // delegated remove button handled in renderCart; ensure events attached initially
+/* Init */
+document.addEventListener('DOMContentLoaded', function(){
   renderCart();
   updateCartCount();
-}); // DOMContentLoaded
+});
 
-// expose API
 window.mobileAddItem = mobileAddItem;
 window.mobileRemoveItem = mobileRemoveItem;
 window.mobileLoadItems = mobileLoadItems;
 window.mobileResetCart = mobileResetCart;
 window.renderCart = renderCart;
 window.updateCartCount = updateCartCount;
-    
