@@ -8,6 +8,8 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet"/>
   <style>
+    body { background:#f8f9fa; }
+    .navbar-brand { font-weight:bold; }
     .product-img {max-height:100px; width:auto; object-fit:contain;}
     .qty-box {display:flex; align-items:center; justify-content:center;}
     .qty-input {text-align:center; width:50px; height:40px; margin:0 5px;}
@@ -22,12 +24,22 @@
   </style>
 </head>
 <body>
-<div class="container py-2">
 
-  <!-- Search box -->
-  <div class="mb-3">
-    <input type="text" id="searchInput" class="form-control" placeholder="Tìm sản phẩm...">
+<!-- Header -->
+<nav class="navbar navbar-dark bg-success sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">🥤 TIỆM NƯỚC MINI</a>
+    <form class="d-flex me-2">
+      <input class="form-control" id="searchInput" type="search" placeholder="Tìm món..." aria-label="Search">
+    </form>
+    <button class="btn btn-outline-light position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
+      🛒
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">0</span>
+    </button>
   </div>
+</nav>
+
+<div class="container py-2">
 
   <!-- Product Grid -->
   <div class="row" id="productGrid">
@@ -39,17 +51,17 @@
           <img src="<?= base_url('assets/uploads/' . $p->image); ?>" class="card-img-top product-img" alt="">
           <div class="card-body d-flex flex-column">
             <h6 class="card-title text-uppercase"><?= $displayName; ?></h6>
-            <p class="text-muted mb-1"><?= number_format($p->price,0,',','.'); ?>đ</p>
+            <p class="text-muted mb-1 base-price" data-base="<?= $p->price; ?>"><?= number_format($p->price,0,',','.'); ?>đ</p>
 
             <!-- Size options -->
             <?php if (!empty($p->variants)): ?>
-            <div class="btn-group size-group" role="group">
-              <?php foreach ($p->variants as $v): ?>
+            <div class="btn-group size-group mb-2" role="group">
+              <?php foreach ($p->variants as $i => $v): ?>
                 <input type="radio" class="btn-check size-radio" 
                   name="size-<?= $p->id; ?>" 
-                  id="size<?= $v->id; ?>" 
-                  value="<?= $v->id . '|' . $v->price . '|' . $v->name; ?>">
-                <label class="btn btn-outline-primary" for="size<?= $v->id; ?>"><?= $v->name; ?></label>
+                  id="size<?= $p->id . '-' . $i; ?>" 
+                  value="<?= $v->id . '|' . $v->price . '|' . $v->name; ?>" <?= $i==0?'checked':''; ?>>
+                <label class="btn btn-outline-primary" for="size<?= $p->id . '-' . $i; ?>"><?= $v->name; ?></label>
               <?php endforeach; ?>
             </div>
             <?php endif; ?>
@@ -142,43 +154,44 @@
   </div>
 </div>
 
-<!-- Cart Button -->
-<button class="btn btn-primary position-fixed bottom-0 end-0 m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
-  Giỏ hàng <span class="badge bg-danger" id="cartCount">0</span>
-</button>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
-<script src="<?= $assets ?>pos/js/pos.mobile.js?v=2.6"></script>
+<script src="<?= $assets ?>pos/js/pos.mobile.js?v=2.7"></script>
 <script>
   // realtime filter
-  document.getElementById('searchInput').addEventListener('keyup', function(){
+  $('#searchInput').on('keyup', function(){
     var val = this.value.toLowerCase();
-    document.querySelectorAll('#productGrid .product-card').forEach(function(card){
-      var name = card.dataset.name.toLowerCase();
-      card.style.display = name.indexOf(val) !== -1 ? '' : 'none';
+    $('#productGrid .product-card').each(function(){
+      var name = $(this).data('name').toLowerCase();
+      $(this).toggle(name.indexOf(val) !== -1);
     });
   });
 
   // init select2 for customer
-  $(function(){
-    $('#customerSelect').select2({
-      placeholder: 'Chọn khách hàng',
-      minimumInputLength: 1,
-      ajax: {
-        url: "<?= admin_url('customers/suggestions'); ?>",
-        dataType: 'json',
-        delay: 200,
-        data: function (params) { return { term: params.term, limit: 10 }; },
-        processResults: function (data) { return { results: data.results }; }
-      }
-    });
+  $('#customerSelect').select2({
+    placeholder: 'Chọn khách hàng',
+    minimumInputLength: 1,
+    ajax: {
+      url: "<?= admin_url('customers/suggestions'); ?>",
+      dataType: 'json',
+      delay: 200,
+      data: function (params) { return { term: params.term, limit: 10 }; },
+      processResults: function (data) { return { results: data.results }; }
+    }
+  }).on('select2:open', function(){
+    document.querySelector('.select2-search__field').focus();
   });
 
-  // before submit -> build hidden inputs
-  document.getElementById('pos-sale-form').addEventListener('submit', function(){
-    mobileLoadItems();
+  // update price when size selected
+  $(document).on('change', '.size-radio', function(){
+    var card = $(this).closest('.card-body');
+    var base = parseFloat(card.find('.base-price').data('base'));
+    var parts = $(this).val().split('|');
+    var extra = parseFloat(parts[1] || 0);
+    var price = base + extra;
+    card.find('.base-price').text(price.toLocaleString('vi-VN') + 'đ');
+    card.find('.btn-addcart').attr('data-price', price);
   });
 </script>
 </body>
