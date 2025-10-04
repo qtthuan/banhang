@@ -1,31 +1,32 @@
-<?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>POS Mobile</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet"/>
+  <title>TIỆM NƯỚC MINI</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body { background:#f8f9fa; }
     .navbar-brand { font-weight:bold; }
-    .product-img {max-height:100px; width:auto; object-fit:contain;}
-    .qty-box {display:flex; align-items:center; justify-content:center;}
-    .qty-input {text-align:center; width:50px; height:40px; margin:0 5px;}
-    .btn-plus, .btn-minus {font-size:1.3rem; width:40px; height:40px;}
-    .btn-addcart {width:60%;}
-    .btn-note {width:40%;}
-    .note-display {font-size:0.85rem; color:#555;}
-    .size-group .btn {margin:2px; min-width:60px; font-size:1rem;}
-    .select2-container .select2-selection--single {height:45px !important;}
-    .select2-selection__rendered {line-height:45px !important;}
-    .select2-selection__arrow {height:45px !important;}
+    .product-card img { max-height:100px; width:auto; max-width:100%; margin-bottom:8px; object-fit:contain; }
+    .product-card h6 { font-size:0.95rem; font-weight:bold; min-height:40px; }
+    .note-display { font-size:0.8rem; color:#555; min-height:18px; margin-bottom:6px; }
+
+    .size-options .btn { font-size:0.95rem; padding:10px 14px; }
+    .btn-plus, .btn-minus { font-size:1.35rem; padding:10px 14px; }
+    .qty-box input { width:65px; text-align:center; height:100%; font-size:1.05rem; }
+    .qty-box { display:flex; justify-content:center; align-items:center; gap:6px; }
+
+    .btn-note { width:40%; font-size:1rem; padding:12px; }
+    .btn-addcart { width:60%; font-size:1rem; padding:12px; }
+
+    @media (max-width:576px) {
+      .col-6 { flex: 0 0 50%; max-width:50%; }
+    }
   </style>
 </head>
 <body>
 
-<!-- Header -->
 <nav class="navbar navbar-dark bg-success sticky-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">🥤 TIỆM NƯỚC MINI</a>
@@ -39,160 +40,161 @@
   </div>
 </nav>
 
-<div class="container py-2">
+<!-- FORM POST -->
+<form id="pos-sale-form" method="post" action="<?= admin_url('pos'); ?>">
+  <div id="posTable"></div>
+</form>
 
-  <!-- Product Grid -->
-  <div class="row" id="productGrid">
-    <?php foreach ($products as $p): 
-      $displayName = preg_replace('/^[A-Z]_\s*/', '', strtoupper($p->name));
-      ?>
-      <div class="col-6 mb-3 product-card" data-name="<?= htmlspecialchars($displayName); ?>">
-        <div class="card h-100">
-          <img src="<?= base_url('assets/uploads/' . $p->image); ?>" class="card-img-top product-img" alt="">
-          <div class="card-body d-flex flex-column">
-            <h6 class="card-title text-uppercase"><?= $displayName; ?></h6>
-            <p class="text-muted mb-1 base-price" data-base="<?= $p->price; ?>"><?= number_format($p->price,0,',','.'); ?>đ</p>
+<div class="container py-3">
+  <div class="row g-2" id="productList">
+    <?php foreach ($products as $p):
+      $img = !empty($p->image) ? base_url('assets/uploads/thumbs/'.$p->image) : 'https://banicantho.com/assets/uploads/thumbs/no_image.png';
+      $cleanName = preg_replace('/^[A-Z]_\s*/', '', strtoupper($p->name));
+      $code = $p->code ?? '';
+      $name_en = $p->name_en ?? '';
+      $unit = $p->unit ?? '';
+    ?>
+    <div class="col-6 product-card" data-name="<?= htmlspecialchars($cleanName) ?>">
+      <div class="card h-100">
+        <div class="card-body text-center">
+          <img src="<?= $img ?>" alt="<?= htmlspecialchars($p->name) ?>">
+          <h6 class="card-title"><?= htmlspecialchars($cleanName) ?></h6>
+          <p class="text-muted mb-1 base-price" data-base="<?= $p->price ?>"><?= number_format($p->price,0,',','.') ?>đ</p>
 
-            <!-- Size options -->
-            <?php if (!empty($p->variants)): ?>
-            <div class="btn-group size-group mb-2" role="group">
-              <?php foreach ($p->variants as $i => $v): ?>
-                <input type="radio" class="btn-check size-radio" 
-                  name="size-<?= $p->id; ?>" 
-                  id="size<?= $p->id . '-' . $i; ?>" 
-                  value="<?= $v->id . '|' . $v->price . '|' . $v->name; ?>" <?= $i==0?'checked':''; ?>>
-                <label class="btn btn-outline-primary" for="size<?= $p->id . '-' . $i; ?>"><?= $v->name; ?></label>
+          <?php if (!empty($p->variants)): ?>
+            <div class="btn-group size-options mb-2" role="group">
+              <?php foreach ($p->variants as $i => $v): 
+                // $v->price là phần extra (+5k) hoặc full price? Giả sử là extra
+              ?>
+                <input type="radio" class="btn-check size-radio"
+                       name="size-<?= $p->id ?>"
+                       id="size-<?= $p->id ?>-<?= $i ?>"
+                       value="<?= $v->id ?>|<?= $v->price ?>|<?= htmlspecialchars($v->name) ?>"
+                       <?= $i==0 ? 'checked' : '' ?>>
+                <label class="btn btn-outline-primary" for="size-<?= $p->id ?>-<?= $i ?>"><?= htmlspecialchars($v->name) ?></label>
               <?php endforeach; ?>
             </div>
-            <?php endif; ?>
+          <?php endif; ?>
 
-            <!-- Qty box -->
-            <div class="qty-box my-2">
-              <button type="button" class="btn btn-outline-secondary btn-minus">-</button>
-              <input type="text" class="form-control qty-input" value="0">
-              <button type="button" class="btn btn-outline-secondary btn-plus">+</button>
-            </div>
+          <div class="note-display" id="note-display-<?= $p->id ?>"></div>
 
-            <!-- Note + Add buttons -->
-            <div class="d-flex mb-1">
-              <button class="btn btn-warning btn-note me-1" data-bs-toggle="modal" data-bs-target="#noteModal" data-id="<?= $p->id; ?>">Ghi chú</button>
-              <button class="btn btn-success btn-addcart" 
-                data-id="<?= $p->id; ?>"
-                data-code="<?= $p->code; ?>"
-                data-name="<?= $displayName; ?>"
-                data-name-en="<?= $p->name_en; ?>"
-                data-price="<?= $p->price; ?>"
-                data-image="<?= $p->image; ?>"
-                data-unit="<?= $p->unit; ?>"
-              >+ Thêm món</button>
-            </div>
-            <div id="note-display-<?= $p->id; ?>" class="note-display"></div>
+          <div class="qty-box my-2">
+            <button class="btn btn-outline-secondary btn-minus" type="button">-</button>
+            <input type="number" class="form-control qty-input" value="0" min="0">
+            <button class="btn btn-outline-secondary btn-plus" type="button">+</button>
           </div>
+
+          <div class="d-flex gap-2">
+            <button class="btn btn-info btn-note"
+                    data-bs-toggle="modal"
+                    data-bs-target="#noteModal"
+                    data-id="<?= $p->id ?>">
+              📝 Ghi chú
+            </button>
+            <button class="btn btn-success btn-addcart"
+                    type="button"
+                    data-id="<?= $p->id ?>"
+                    data-code="<?= htmlspecialchars($code) ?>"
+                    data-name="<?= htmlspecialchars($cleanName) ?>"
+                    data-name-en="<?= htmlspecialchars($name_en) ?>"
+                    data-price="<?= $p->price ?>"
+                    data-image="<?= htmlspecialchars($p->image ?: 'no_image.png') ?>"
+                    data-unit="<?= htmlspecialchars($unit) ?>">
+              + Thêm Món
+            </button>
+          </div>
+
         </div>
       </div>
+    </div>
     <?php endforeach; ?>
   </div>
 </div>
 
-<!-- Cart Offcanvas -->
-<div class="offcanvas offcanvas-end" tabindex="-1" id="cartCanvas">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title">🛒 Giỏ hàng</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-  </div>
-  <div class="offcanvas-body">
-    <form id="pos-sale-form" method="post" action="<?= admin_url('pos'); ?>">
-      <div id="cartItems"></div>
-      <hr>
-      <div class="mb-2">
-        <label class="form-label">Khách hàng</label>
-        <select id="customerSelect" class="form-control" name="customer"></select>
-      </div>
-      <div class="mb-2">
-        <label class="form-label">Tên khách</label>
-        <input type="text" id="customer_name" name="customer_name" class="form-control">
-      </div>
-      <div class="mb-2">
-        <textarea id="pos_note" name="pos_note" class="form-control" placeholder="Ghi chú đơn..."></textarea>
-      </div>
-      <div id="posTable"></div>
-      <button type="submit" class="btn btn-success w-100">Đặt hàng</button>
-    </form>
-  </div>
-</div>
-
-<!-- Note Modal -->
+<!-- Modal Ghi chú -->
 <div class="modal fade" id="noteModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Ghi chú món</h5>
+      <div class="modal-header"><h5 class="modal-title">Ghi chú món</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="currentProductId">
         <div class="mb-2">
-          <label>Tên người ghi chú</label>
-          <input type="text" id="noteNameInput" class="form-control">
+          <label class="form-label">Tên (dán lên ly)</label>
+          <input type="text" id="noteNameInput" class="form-control" placeholder="Tên (ví dụ: A, B...)">
         </div>
         <div class="mb-2">
-          <label>Chi tiết</label>
-          <textarea id="noteTextInput" class="form-control"></textarea>
+          <label class="form-label">Ghi chú</label>
+          <input type="text" id="noteTextInput" class="form-control" placeholder="Nhập ghi chú...">
         </div>
-        <div class="mb-2">
-          <label>Chọn nhanh:</label><br>
-          <label><input type="checkbox" class="note-check" value="Ít đá"> Ít đá</label>
-          <label><input type="checkbox" class="note-check" value="Nhiều đá"> Nhiều đá</label>
-          <label><input type="checkbox" class="note-check" value="Ít đường"> Ít đường</label>
-          <label><input type="checkbox" class="note-check" value="Nhiều đường"> Nhiều đường</label>
+        <div class="d-flex flex-wrap gap-2">
+          <div><input type="checkbox" class="form-check-input note-check" value="Ít ngọt"> <small>Ít ngọt</small></div>
+          <div><input type="checkbox" class="form-check-input note-check" value="Không đá"> <small>Không đá</small></div>
+          <div><input type="checkbox" class="form-check-input note-check" value="Nhiều cafe"> <small>Nhiều cafe</small></div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" id="saveNoteBtn" class="btn btn-primary" data-bs-dismiss="modal">Lưu</button>
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        <button class="btn btn-success" id="saveNoteBtn">Lưu</button>
       </div>
     </div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
-<script src="<?= $assets ?>pos/js/pos.mobile.js?v=2.7"></script>
+<!-- Offcanvas giỏ hàng -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="cartCanvas">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">🛒 Giỏ hàng</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body d-flex flex-column">
+    <!-- Customer select -->
+    <div class="mb-2">
+      <label class="form-label">Khách hàng</label>
+      <select id="customerSelect" class="form-select">
+        <option value="">-- Chọn khách hàng --</option>
+        <?php foreach ($customers as $c): ?>
+          <option value="<?= $c->id ?>"><?= htmlspecialchars($c->name) ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+
+    <div id="cartItems" class="mb-3"><p class="text-muted">Chưa có món nào</p></div>
+
+    <div class="mb-2">
+      <input type="text" class="form-control mb-2" id="customer_name" placeholder="Tên khách">
+      <input type="tel" class="form-control mb-2" id="customerPhone" placeholder="Số điện thoại">
+      <textarea class="form-control" id="orderNote" rows="2" placeholder="Ghi chú đơn..."></textarea>
+    </div>
+
+    <button class="btn btn-success mt-auto" id="placeOrderBtn">Đặt hàng</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="<?= $assets ?>pos/js/pos.mobile.js"></script>
 <script>
-  // realtime filter
-  $('#searchInput').on('keyup', function(){
-    var val = this.value.toLowerCase();
-    $('#productGrid .product-card').each(function(){
-      var name = $(this).data('name').toLowerCase();
-      $(this).toggle(name.indexOf(val) !== -1);
-    });
+// search filter realtime
+document.getElementById('searchInput').addEventListener('input', function(){
+  var q = (this.value || '').toLowerCase();
+  document.querySelectorAll('#productList .product-card').forEach(function(card){
+    var nm = (card.getAttribute('data-name') || '').toLowerCase();
+    card.style.display = nm.indexOf(q) !== -1 ? 'block' : 'none';
   });
+});
 
-  // init select2 for customer
-  $('#customerSelect').select2({
-    placeholder: 'Chọn khách hàng',
-    minimumInputLength: 1,
-    ajax: {
-      url: "<?= admin_url('customers/suggestions'); ?>",
-      dataType: 'json',
-      delay: 200,
-      data: function (params) { return { term: params.term, limit: 10 }; },
-      processResults: function (data) { return { results: data.results }; }
-    }
-  }).on('select2:open', function(){
-    document.querySelector('.select2-search__field').focus();
-  });
-
-  // update price when size selected
-  $(document).on('change', '.size-radio', function(){
-    var card = $(this).closest('.card-body');
-    var base = parseFloat(card.find('.base-price').data('base'));
-    var parts = $(this).val().split('|');
-    var extra = parseFloat(parts[1] || 0);
-    var price = base + extra;
-    card.find('.base-price').text(price.toLocaleString('vi-VN') + 'đ');
-    card.find('.btn-addcart').attr('data-price', price);
-  });
+// place order
+document.getElementById('placeOrderBtn').addEventListener('click', function(){
+  var cname = document.getElementById('customer_name').value.trim();
+  var phone = document.getElementById('customerPhone').value.trim();
+  if (!cname || !phone) {
+    alert('Vui lòng nhập Tên khách và Số điện thoại!');
+    return;
+  }
+  mobileLoadItems();
+  document.getElementById('pos-sale-form').submit();
+});
 </script>
 </body>
 </html>
