@@ -1,59 +1,47 @@
 /*
- * pos.mobile.js  — version 2.6 (full)
- * POS Mobile helper: positems (localStorage) + build hidden inputs for form submit
- * - mobileAddItem(productObj, qty, variantValue, note, noteName)
- *   variantValue format: "variant_id|variant_extra_price|variant_name"
- *
- * Features:
- * - Delegated + / - buttons
- * - Size radio change updates shown price (new price = base + variant_extra)
- * - Add to cart uses chosen size price (variant extra added to base)
- * - Note modal: checkbox sync to text, Enter = save, Save shows note under product
- * - Cart render + update count, remove item
- * - mobileLoadItems builds hidden inputs for POST (includes customer, customer_name, customer_phone, pos_note, warehouse, biller)
- * - Works without jQuery; if select2 present it will try to open it on offcanvas show
- */
+ pos.mobile.js v2.8
+ - Delegation for + / - / add
+ - Size selection uses variant price (variant_price) if present, otherwise product base
+ - Add to cart sets product_option = variant_id
+ - After add: reset card (size->first, price->base, qty->0, clear note)
+ - Render cart + remove item + mobileLoadItems (build hidden inputs)
+*/
 
-var positems = JSON.parse(localStorage.getItem('positems') || '{}') || {};
+var positems = JSON.parse(localStorage.getItem('positems') || '{}');
 var lastItemId = localStorage.getItem('lastItemId') ? parseInt(localStorage.getItem('lastItemId')) : 0;
 
-function savePosItems() {
+function savePosItems(){
   localStorage.setItem('positems', JSON.stringify(positems));
   localStorage.setItem('lastItemId', lastItemId);
 }
 
-function fmtVND(n) {
-  var num = parseFloat(n || 0) || 0;
+function fmtVND(n){
+  var num = parseFloat(n||0)||0;
   return num.toLocaleString('vi-VN') + 'đ';
 }
-
-function escapeHtml(str) {
+function escapeHtml(str){
   if (str === null || str === undefined) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+  return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-/* PUBLIC: add item */
-function mobileAddItem(productObj, qty, variantValue, note, noteName) {
+/* Add item */
+function mobileAddItem(productObj, qty, variantValue, note, noteName){
   lastItemId++;
   var rowKey = String(lastItemId);
 
   var option_id = '';
-  var option_extra = 0;
+  var option_price = '';
   var option_name = '';
   if (variantValue) {
     var parts = variantValue.split('|');
     option_id = parts[0] || '';
-    option_extra = parseFloat(parts[1] || 0) || 0;
+    option_price = parts[1] || '';
     option_name = parts[2] || '';
   }
 
   var base_price = parseFloat(productObj.price || 0) || 0;
-  var unit_price = base_price + option_extra;
+  // use variant price directly if present, otherwise use base_price
+  var unit_price = (option_price && !isNaN(parseFloat(option_price))) ? parseFloat(option_price) : base_price;
   var real_unit_price = base_price;
 
   positems[rowKey] = {
@@ -67,7 +55,7 @@ function mobileAddItem(productObj, qty, variantValue, note, noteName) {
       product_name_en: productObj.name_en || '',
       product_option: option_id || '',
       product_option_name: option_name || '',
-      product_option_price: option_extra || '',
+      product_option_price: option_price || '',
       product_comment: note || '',
       product_comment_name: noteName || '',
       product_discount: 0,
@@ -85,12 +73,10 @@ function mobileAddItem(productObj, qty, variantValue, note, noteName) {
   };
 
   savePosItems();
-  renderCart();
-  updateCartCount();
 }
 
-/* PUBLIC: remove item */
-function mobileRemoveItem(rowKey) {
+/* Remove item */
+function mobileRemoveItem(rowKey){
   rowKey = String(rowKey);
   if (positems[rowKey]) {
     delete positems[rowKey];
@@ -100,8 +86,8 @@ function mobileRemoveItem(rowKey) {
   updateCartCount();
 }
 
-/* PUBLIC: reset cart */
-function mobileResetCart() {
+/* Reset cart */
+function mobileResetCart(){
   positems = {};
   lastItemId = 0;
   savePosItems();
@@ -109,10 +95,11 @@ function mobileResetCart() {
   updateCartCount();
 }
 
-/* Build hidden inputs for POST */
-function mobileLoadItems() {
+/* Build hidden inputs for form post */
+function mobileLoadItems(){
   var hf = document.getElementById('posTable');
   if (!hf) return;
+  // Keep existing children that are not our generated inputs? For simplicity, clear and rebuild.
   hf.innerHTML = '';
 
   var totalQty = 0;
@@ -120,53 +107,37 @@ function mobileLoadItems() {
     var r = positems[k].row;
     totalQty += parseFloat(r.quantity || 0);
 
-    hf.innerHTML += '<input type="hidden" name="product_id[]" value="' + escapeHtml(r.product_id) + '">';
-    hf.innerHTML += '<input type="hidden" name="product_type[]" value="' + escapeHtml(r.product_type || 'standard') + '">';
-    hf.innerHTML += '<input type="hidden" name="product_code[]" value="' + escapeHtml(r.product_code || '') + '">';
-    hf.innerHTML += '<input type="hidden" name="product_image[]" value="' + escapeHtml(r.product_image || '') + '">';
-    hf.innerHTML += '<input type="hidden" name="product_name[]" value="' + escapeHtml(r.product_name || '') + '">';
-    hf.innerHTML += '<input type="hidden" name="product_name_en[]" value="' + escapeHtml(r.product_name_en || '') + '">';
-    hf.innerHTML += '<input type="hidden" name="product_option[]" value="' + escapeHtml(r.product_option || '') + '">';
-    hf.innerHTML += '<input type="hidden" name="product_comment[]" value="' + escapeHtml(r.product_comment || '') + '">';
-    hf.innerHTML += '<input type="hidden" name="product_comment_name[]" value="' + escapeHtml(r.product_comment_name || '') + '">';
-    hf.innerHTML += '<input type="hidden" name="product_discount[]" value="' + escapeHtml(r.product_discount || 0) + '">';
-    hf.innerHTML += '<input type="hidden" name="is_promo[]" value="' + escapeHtml(r.is_promo || 0) + '">';
-    hf.innerHTML += '<input type="hidden" name="promo_original_price[]" value="' + escapeHtml(r.promo_original_price || '') + '">';
-    hf.innerHTML += '<input type="hidden" name="promo_original_price_for_suspend[]" value="' + escapeHtml(r.promo_original_price_for_suspend || '') + '">';
-    hf.innerHTML += '<input type="hidden" name="net_price[]" value="' + escapeHtml(r.net_price || 0) + '">';
-    hf.innerHTML += '<input type="hidden" name="unit_price[]" value="' + escapeHtml(r.unit_price || 0) + '">';
-    hf.innerHTML += '<input type="hidden" name="real_unit_price[]" value="' + escapeHtml(r.real_unit_price || 0) + '">';
-    hf.innerHTML += '<input type="hidden" name="no_points[]" value="' + escapeHtml(r.no_points || 1) + '">';
-    hf.innerHTML += '<input type="hidden" name="quantity[]" value="' + escapeHtml(r.quantity || 1) + '">';
-    hf.innerHTML += '<input type="hidden" name="product_unit[]" value="' + escapeHtml(r.product_unit || 'undefined') + '">';
-    hf.innerHTML += '<input type="hidden" name="product_base_quantity[]" value="' + escapeHtml(r.product_base_quantity || r.quantity || 1) + '">';
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_id[]" value="'+escapeHtml(r.product_id)+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_type[]" value="'+escapeHtml(r.product_type||'standard')+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_code[]" value="'+escapeHtml(r.product_code||'')+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_image[]" value="'+escapeHtml(r.product_image||'')+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_name[]" value="'+escapeHtml(r.product_name||'')+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_name_en[]" value="'+escapeHtml(r.product_name_en||'')+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_option[]" value="'+escapeHtml(r.product_option||'')+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_comment[]" value="'+escapeHtml(r.product_comment||'')+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_comment_name[]" value="'+escapeHtml(r.product_comment_name||'')+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_discount[]" value="'+escapeHtml(r.product_discount||0)+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="is_promo[]" value="'+escapeHtml(r.is_promo||0)+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="promo_original_price[]" value="'+escapeHtml(r.promo_original_price||'')+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="promo_original_price_for_suspend[]" value="'+escapeHtml(r.promo_original_price_for_suspend||'')+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="net_price[]" value="'+escapeHtml(r.net_price||0)+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="unit_price[]" value="'+escapeHtml(r.unit_price||0)+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="real_unit_price[]" value="'+escapeHtml(r.real_unit_price||0)+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="no_points[]" value="'+escapeHtml(r.no_points||1)+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="quantity[]" value="'+escapeHtml(r.quantity||1)+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_unit[]" value="'+escapeHtml(r.product_unit||'undefined')+'">');
+    hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="product_base_quantity[]" value="'+escapeHtml(r.product_base_quantity||r.quantity||1)+'">');
   });
 
-  hf.innerHTML += '<input type="hidden" name="total_items" value="' + escapeHtml(totalQty) + '">';
+  hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="total_items" value="'+escapeHtml(totalQty)+'">');
 
-  // fixed fields (as requested)
-  hf.innerHTML += '<input type="hidden" name="warehouse" value="3">';
-  hf.innerHTML += '<input type="hidden" name="biller" value="7283">';
-
-  // add customer id if present (select2 or plain select)
-  var cust = document.getElementById('customerSelect');
-  if (cust) {
-    var custVal = '';
-    try { custVal = (typeof $ !== 'undefined' && $(cust).val) ? $(cust).val() : cust.value; } catch(e) { custVal = cust.value; }
-    if (custVal) hf.innerHTML += '<input type="hidden" name="customer" value="' + escapeHtml(custVal) + '">';
-  }
-
-  // include customer_name, phone, pos_note if present
-  var cname = document.getElementById('customer_name');
-  if (cname && cname.value) hf.innerHTML += '<input type="hidden" name="customer_name" value="' + escapeHtml(cname.value) + '">';
-  var cphone = document.getElementById('customerPhone') || document.getElementById('customer_phone');
-  if (cphone && cphone.value) hf.innerHTML += '<input type="hidden" name="customer_phone" value="' + escapeHtml(cphone.value) + '">';
-  var pnote = document.getElementById('pos_note') || document.getElementById('orderNote');
-  if (pnote && pnote.value) hf.innerHTML += '<input type="hidden" name="pos_note" value="' + escapeHtml(pnote.value) + '">';
+  // fixed defaults
+  hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="warehouse" value="3">');
+  hf.insertAdjacentHTML('beforeend', '<input type="hidden" name="biller" value="7283">');
 }
 
 /* Render cart UI */
-function renderCart() {
+function renderCart(){
   var container = document.getElementById('cartItems');
   if (!container) return;
   var keys = Object.keys(positems);
@@ -178,25 +149,25 @@ function renderCart() {
   var html = '', total = 0;
   keys.forEach(function(k){
     var it = positems[k].row;
-    var qty = parseFloat(it.quantity || 0);
-    var unit = parseFloat(it.unit_price || 0);
+    var qty = parseFloat(it.quantity||0);
+    var unit = parseFloat(it.unit_price||0);
     var subtotal = qty * unit;
     total += subtotal;
-    var opt = it.product_option_name ? (' (' + escapeHtml(it.product_option_name) + ')') : '';
+    var opt = it.product_option_name ? (' ('+escapeHtml(it.product_option_name)+')') : '';
     html += '<div class="border-bottom py-2 d-flex justify-content-between align-items-start">';
-    html += '<div><strong>' + escapeHtml(it.product_name) + opt + '</strong> x' + qty + ' - ' + fmtVND(subtotal);
+    html += '<div><strong>'+escapeHtml(it.product_name)+opt+'</strong> x'+qty+' - '+fmtVND(subtotal);
     if (it.product_comment || it.product_comment_name) {
-      html += '<br><small>' + (it.product_comment ? escapeHtml(it.product_comment) : '') + (it.product_comment_name ? (' | ' + escapeHtml(it.product_comment_name)) : '') + '</small>';
+      html += '<br><small>' + (it.product_comment?escapeHtml(it.product_comment):'') + (it.product_comment_name?(' | '+escapeHtml(it.product_comment_name)):'') + '</small>';
     }
     html += '</div>';
     html += '<div><button class="btn btn-sm btn-outline-danger btn-remove-item" data-row="'+escapeHtml(k)+'">X</button></div>';
     html += '</div>';
   });
-  html += '<div class="mt-2 fw-bold">Tổng: ' + fmtVND(total) + '</div>';
+  html += '<div class="mt-2 fw-bold">Tổng: '+fmtVND(total)+'</div>';
   container.innerHTML = html;
 
-  // attach remove handlers (delegation also handles but ensure dynamic buttons)
-  container.querySelectorAll('.btn-remove-item').forEach(function(b){
+  // attach remove handlers
+  Array.prototype.slice.call(container.querySelectorAll('.btn-remove-item')).forEach(function(b){
     b.addEventListener('click', function(){
       var rk = this.getAttribute('data-row');
       if (rk) mobileRemoveItem(rk);
@@ -204,19 +175,19 @@ function renderCart() {
   });
 }
 
-/* Update cart badge count */
-function updateCartCount() {
-  var badge = document.getElementById('cartCount') || document.getElementById('cartCountTop') || document.getElementById('cartCountBadge');
+/* Update cart count */
+function updateCartCount(){
+  var badge = document.getElementById('cartCount');
   if (!badge) return;
   var totalQty = 0;
   Object.keys(positems).forEach(function(k){ totalQty += parseFloat(positems[k].row.quantity || 0); });
   badge.textContent = totalQty;
 }
 
-/* UI wiring: delegated event handlers */
+/* UI wiring (delegation) */
 document.addEventListener('DOMContentLoaded', function(){
 
-  // Delegated click for + / - / addcart
+  // delegated clicks for plus/minus/add
   document.body.addEventListener('click', function(e){
     // plus
     var plus = e.target.closest && e.target.closest('.btn-plus');
@@ -232,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function(){
       if (input) input.value = Math.max(0, (parseInt(input.value || 0) - 1));
       return;
     }
-    // add to cart
+    // add cart
     var addBtn = e.target.closest && e.target.closest('.btn-addcart');
     if (addBtn) {
       e.preventDefault();
@@ -250,12 +221,12 @@ document.addEventListener('DOMContentLoaded', function(){
       var image = addBtn.getAttribute('data-image') || 'no_image.png';
       var unit = addBtn.getAttribute('data-unit') || '';
 
-      // get selected size radio in this card
+      // selected variant
       var selected = card.querySelector('.size-radio:checked');
-      var variantValue = selected ? (selected.value || '') : '';
+      var variantValue = selected ? (selected.value||'') : '';
 
-      // get note stored in localStorage or displayed area
-      var noteDisplay = document.getElementById('note-display-' + pid);
+      // notes from localStorage (mobile_current_notes) or visible
+      var noteDisplay = document.getElementById('note-display-'+pid);
       var note = '';
       var noteName = '';
       if (noteDisplay) {
@@ -278,129 +249,123 @@ document.addEventListener('DOMContentLoaded', function(){
         type: 'standard'
       };
 
+      // add item
       mobileAddItem(productObj, qty, variantValue, note, noteName);
 
-      // reset UI for that product: qty -> 0, clear note display and stored note
+      // reset UI on this card:
+      // qty -> 0
       if (qtyInput) qtyInput.value = 0;
-      if (noteDisplay) { noteDisplay.textContent = ''; noteDisplay.dataset.note = ''; noteDisplay.dataset.name = ''; }
+      // reset size to first radio
+      var firstRadio = card.querySelector('.size-radio');
+      if (firstRadio) {
+        // uncheck others and check first
+        var radios = card.querySelectorAll('.size-radio');
+        radios.forEach(function(r, idx){ r.checked = (idx===0); });
+        // update displayed price to base
+        var baseEl = card.querySelector('.base-price');
+        if (baseEl) baseEl.textContent = fmtVND(parseFloat(baseEl.getAttribute('data-base')||0));
+        // reset addBtn data-price to base original
+        addBtn.setAttribute('data-price', parseFloat(addBtn.getAttribute('data-price')||0));
+      }
+      // clear note display and stored note
+      if (noteDisplay) { noteDisplay.textContent = ''; noteDisplay.dataset.note=''; noteDisplay.dataset.name=''; }
       try {
         var cur2 = JSON.parse(localStorage.getItem('mobile_current_notes') || '{}');
         if (cur2[pid]) { cur2[pid] = {name:'', note:''}; localStorage.setItem('mobile_current_notes', JSON.stringify(cur2)); }
       } catch(e){}
+
       return;
     }
-  }); // end body click delegation
+  });
 
-  // delegated change for size radios -> update price on card
+  // delegated change for size radios -> update card price (use variant price if present, else base)
   document.body.addEventListener('change', function(e){
     if (!e.target) return;
     if (e.target.matches && e.target.matches('.size-radio')) {
       var input = e.target;
       var card = input.closest('.card-body') || input.closest('.card');
       if (!card) return;
-      // try to find base price element: .base-price[data-base] or .text-muted
       var baseEl = card.querySelector('.base-price');
-      var base = baseEl ? (parseFloat(baseEl.getAttribute('data-base') || 0) || 0) : (parseFloat((card.querySelector('.text-muted') || {}).getAttribute && card.querySelector('.text-muted').textContent.replace(/[^\d]/g,'') || 0) || 0);
-      // safe fallback: read data-price from add button (original)
+      var base = baseEl ? (parseFloat(baseEl.getAttribute('data-base')||0)||0) : 0;
+      // parse variant
+      var parts = (input.value||'').split('|');
+      var vprice = parseFloat(parts[1]||'') || 0;
+      var newPrice = (vprice && !isNaN(vprice) && vprice>0) ? vprice : base;
+      if (baseEl) baseEl.textContent = fmtVND(newPrice);
+      // ensure add button data-price updated so add uses correct price
       var addBtn = card.querySelector('.btn-addcart');
-      var originalBase = addBtn ? (parseFloat(addBtn.getAttribute('data-price') || 0) || 0) : base;
-      if (!base) base = originalBase;
-
-      var parts = (input.value || '').split('|');
-      var extra = parseFloat(parts[1] || 0) || 0;
-      var newPrice = base + extra;
-      // update display: either .base-price or .text-muted
-      if (baseEl) {
-        baseEl.setAttribute('data-base', base); // keep base stored
-        baseEl.textContent = fmtVND(newPrice);
-      } else {
-        var txt = card.querySelector('.text-muted');
-        if (txt) txt.textContent = fmtVND(newPrice);
-      }
-      // update add button data-price so add uses computed price
       if (addBtn) addBtn.setAttribute('data-price', newPrice);
     }
   });
 
-  // Note modal open: populate fields from localStorage if exists, focus name input
-  var noteModal = document.getElementById('noteModal');
-  if (noteModal) {
-    noteModal.addEventListener('show.bs.modal', function(ev){
-      var btn = ev.relatedTarget;
+  // note modal open populate and focus
+  var noteModalEl = document.getElementById('noteModal');
+  if (noteModalEl) {
+    noteModalEl.addEventListener('show.bs.modal', function(e){
+      var btn = e.relatedTarget;
       if (!btn) return;
       var pid = btn.getAttribute('data-id');
+      document.getElementById('currentProductId').value = pid;
       var cur = {};
       try { cur = JSON.parse(localStorage.getItem('mobile_current_notes') || '{}'); } catch(e){}
       var nameIn = document.getElementById('noteNameInput');
-      var txtIn = document.getElementById('noteTextInput');
-      // clear checkboxes
-      var checks = document.querySelectorAll('.note-check');
-      checks.forEach(function(c){ c.checked = false; });
+      var textIn = document.getElementById('noteTextInput');
+      // reset checkboxes
+      document.querySelectorAll('.note-check').forEach(function(c){ c.checked = false; });
       if (cur[pid]) {
         if (nameIn) nameIn.value = cur[pid].name || '';
-        if (txtIn) txtIn.value = cur[pid].note || '';
+        if (textIn) textIn.value = cur[pid].note || '';
         var parts = (cur[pid].note||'').split(',').map(function(s){return s.trim();}).filter(Boolean);
-        checks.forEach(function(c){ if (parts.indexOf(c.value)!==-1) c.checked = true; });
+        document.querySelectorAll('.note-check').forEach(function(c){ if (parts.indexOf(c.value)!==-1) c.checked = true; });
       } else {
         if (nameIn) nameIn.value = '';
-        if (txtIn) txtIn.value = '';
+        if (textIn) textIn.value = '';
       }
-      document.getElementById('currentProductId').value = pid;
       setTimeout(function(){ if (nameIn) nameIn.focus(); }, 200);
     });
   }
 
-  // checkbox note sync
+  // note checkbox sync to text
   document.body.addEventListener('change', function(e){
     if (e.target && e.target.matches && e.target.matches('.note-check')) {
       var txt = document.getElementById('noteTextInput');
       if (!txt) return;
-      var arr = txt.value ? txt.value.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [];
-      var val = e.target.value;
-      if (e.target.checked) {
-        if (arr.indexOf(val) === -1) arr.push(val);
-      } else {
-        arr = arr.filter(function(x){ return x !== val; });
-      }
+      var arr = txt.value ? txt.value.split(',').map(function(s){return s.trim();}).filter(Boolean) : [];
+      if (e.target.checked) { if (arr.indexOf(e.target.value) === -1) arr.push(e.target.value); }
+      else arr = arr.filter(function(x){ return x !== e.target.value; });
       txt.value = arr.join(', ');
       txt.focus();
       txt.setSelectionRange(txt.value.length, txt.value.length);
     }
   });
 
-  // enter in noteTextInput => click save
-  var noteText = document.getElementById('noteTextInput');
-  if (noteText) {
-    noteText.addEventListener('keydown', function(ev){
-      if (ev.key === 'Enter') {
-        ev.preventDefault();
-        var sb = document.getElementById('saveNoteBtn');
-        if (sb) sb.click();
-      }
-    });
+  // Enter in noteText -> click save
+  var nt = document.getElementById('noteTextInput');
+  if (nt) {
+    nt.addEventListener('keydown', function(ev){ if (ev.key === 'Enter'){ ev.preventDefault(); var sb = document.getElementById('saveNoteBtn'); if (sb) sb.click(); }});
   }
 
-  // save note click
+  // save note
   var saveBtn = document.getElementById('saveNoteBtn');
   if (saveBtn) {
     saveBtn.addEventListener('click', function(){
       var pid = document.getElementById('currentProductId').value;
       if (!pid) return;
-      var nameVal = (document.getElementById('noteNameInput') || {}).value || '';
-      var noteVal = (document.getElementById('noteTextInput') || {}).value || '';
+      var n = (document.getElementById('noteNameInput')||{}).value || '';
+      var c = (document.getElementById('noteTextInput')||{}).value || '';
       var cur = {};
       try { cur = JSON.parse(localStorage.getItem('mobile_current_notes') || '{}'); } catch(e){}
-      cur[pid] = { name: nameVal.trim(), note: noteVal.trim() };
+      cur[pid] = { name: n.trim(), note: c.trim() };
       localStorage.setItem('mobile_current_notes', JSON.stringify(cur));
-      // update note display under product card
-      var disp = document.getElementById('note-display-' + pid);
+      // update display
+      var disp = document.getElementById('note-display-'+pid);
       if (disp) {
         var out = '';
-        if (nameVal) out += 'Người: ' + nameVal;
-        if (noteVal) out += (nameVal ? ' | ' : '') + 'Ghi chú: ' + noteVal;
+        if (n) out += 'Người: ' + n;
+        if (c) out += (n ? ' | ' : '') + 'Ghi chú: ' + c;
         disp.textContent = out;
-        disp.dataset.note = noteVal;
-        disp.dataset.name = nameVal;
+        disp.dataset.note = c;
+        disp.dataset.name = n;
       }
     });
   }
@@ -410,40 +375,31 @@ document.addEventListener('DOMContentLoaded', function(){
   if (cartCanvas) {
     cartCanvas.addEventListener('show.bs.offcanvas', function(){
       setTimeout(function(){
-        var cust = document.getElementById('customerSelect');
-        if (cust && typeof $ !== 'undefined' && $(cust).select2) {
-          try { $(cust).select2('open'); } catch(e){
-            var sf = document.querySelector('.select2-search__field');
-            if (sf) sf.focus();
-            else { var cn = document.getElementById('customer_name'); if (cn) cn.focus(); }
+        try {
+          if ($('#customerSelect').data('select2')) {
+            $('#customerSelect').select2('open');
+            setTimeout(function(){
+              var sf = document.querySelector('.select2-container--open .select2-search__field');
+              if (sf) sf.focus();
+            },100);
+            return;
           }
-        } else {
-          var cn2 = document.getElementById('customer_name');
-          if (cn2) cn2.focus();
-        }
+        } catch(e){}
+        var cn = document.getElementById('customer_name'); if (cn) cn.focus();
       }, 250);
     });
   }
 
-  // bind form submit to build hidden inputs
-  var posForm = document.getElementById('pos-sale-form') || document.querySelector('form#pos-sale-form');
-  if (posForm) {
-    posForm.addEventListener('submit', function(ev){
-      // before submit, build hidden inputs
-      mobileLoadItems();
-      // let default submit proceed
-    });
-  }
-
-  // initial render
+  // delegated remove button handled in renderCart; ensure events attached initially
   renderCart();
   updateCartCount();
 }); // DOMContentLoaded
 
-/* Expose API */
+// expose API
 window.mobileAddItem = mobileAddItem;
 window.mobileRemoveItem = mobileRemoveItem;
 window.mobileLoadItems = mobileLoadItems;
 window.mobileResetCart = mobileResetCart;
 window.renderCart = renderCart;
 window.updateCartCount = updateCartCount;
+    
