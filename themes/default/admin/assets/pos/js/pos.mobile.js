@@ -325,7 +325,7 @@ document.addEventListener('DOMContentLoaded', function(){
   // Note modal open: populate fields from localStorage if exists, focus name input
   var noteModal = document.getElementById('noteModal');
   if (noteModal) {
-    noteModal.addEventListener('show.bs.modal', function(ev){
+    noteModal.addEventListener('shown.bs.modal', function(ev){
       var btn = ev.relatedTarget;
       if (!btn) return;
       var pid = btn.getAttribute('data-id');
@@ -346,7 +346,8 @@ document.addEventListener('DOMContentLoaded', function(){
         if (txtIn) txtIn.value = '';
       }
       document.getElementById('currentProductId').value = pid;
-      setTimeout(function(){ if (nameIn) nameIn.focus(); }, 200);
+      setTimeout(function() { if (nameIn) { nameIn.focus();nameIn.select();} }, 200);
+
     });
   }
 
@@ -402,26 +403,14 @@ document.addEventListener('DOMContentLoaded', function(){
         disp.dataset.note = noteVal;
         disp.dataset.name = nameVal;
       }
-    });
-  }
+      var modalEl = document.getElementById('noteModal');
+      var modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
 
-  // offcanvas show: try to open select2 or focus customer_name
-  var cartCanvas = document.getElementById('cartCanvas');
-  if (cartCanvas) {
-    cartCanvas.addEventListener('show.bs.offcanvas', function(){
-      setTimeout(function(){
-        var cust = document.getElementById('customerSelect');
-        if (cust && typeof $ !== 'undefined' && $(cust).select2) {
-          try { $(cust).select2('open'); } catch(e){
-            var sf = document.querySelector('.select2-search__field');
-            if (sf) sf.focus();
-            else { var cn = document.getElementById('customer_name'); if (cn) cn.focus(); }
-          }
-        } else {
-          var cn2 = document.getElementById('customer_name');
-          if (cn2) cn2.focus();
-        }
-      }, 250);
+        // reset fields
+        (document.getElementById('noteNameInput')||{}).value = '';
+        (document.getElementById('noteTextInput')||{}).value = '';
+        document.querySelectorAll('.note-check').forEach(c=>c.checked=false);
     });
   }
 

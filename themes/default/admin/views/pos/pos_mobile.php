@@ -33,6 +33,10 @@
     .select2-container--default .select2-selection--single { height:44px; }
     .select2-selection__rendered { line-height:40px; }
     .select2-search__field { min-height:40px !important; }
+    .note-check {
+        transform: scale(1.5); /* tăng 20% ~ 7% theo yêu cầu */
+        margin-right: 6px;
+        }
 
     @media (max-width:576px) {
       .col-6 { flex: 0 0 50%; max-width:50%; }
@@ -143,9 +147,19 @@
           <input type="text" id="noteTextInput" class="form-control" placeholder="Nhập ghi chú...">
         </div>
         <div class="d-flex flex-wrap gap-2">
-          <div><input type="checkbox" class="form-check-input note-check" value="Ít ngọt"> <small>Ít ngọt</small></div>
-          <div><input type="checkbox" class="form-check-input note-check" value="Không đá"> <small>Không đá</small></div>
-          <div><input type="checkbox" class="form-check-input note-check" value="Nhiều cafe"> <small>Nhiều cafe</small></div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input note-check" type="checkbox" id="chk-1" value="Ít ngọt">
+                <label class="form-check-label" for="chk-1">Ít ngọt</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input note-check" type="checkbox" id="chk-2" value="Không đá">
+                <label class="form-check-label" for="chk-2">Không đá</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input note-check" type="checkbox" id="chk-3" value="Nhiều cafe">
+                <label class="form-check-label" for="chk-3">Nhiều cafe</label>
+            </div>
+
         </div>
       </div>
       <div class="modal-footer">
@@ -163,6 +177,9 @@
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
   </div>
   <div class="offcanvas-body d-flex flex-column">
+
+    <div id="cartItems" class="mb-3"><p class="text-muted">Chưa có món nào</p></div>
+
     <div class="mb-2">
       <label>Khách hàng</label>
       <select id="customerSelect" class="form-select" style="width:100%">
@@ -171,9 +188,7 @@
           <option value="<?= $c->id ?>"><?= htmlspecialchars($c->name) ?></option>
         <?php endforeach; endif; ?>
       </select>
-    </div>
-
-    <div id="cartItems" class="mb-3"><p class="text-muted">Chưa có món nào</p></div>
+    </div>   
 
     <div class="mb-2">
       <input type="text" id="customer_name" name="customer_name" class="form-control mb-2" placeholder="Tên khách">
@@ -221,24 +236,6 @@
       });
     } catch(e){ console.warn('select2 init failed', e); }
 
-    // when cart offcanvas opens, open select2 to show keyboard on mobile
-    var cartCanvasEl = document.getElementById('cartCanvas');
-    if (cartCanvasEl) {
-      cartCanvasEl.addEventListener('show.bs.offcanvas', function(){
-        setTimeout(function(){
-          try {
-            if ($('#customerSelect').data('select2')) {
-              $('#customerSelect').select2('open');
-            } else {
-              var cn = document.getElementById('customer_name');
-              if (cn) cn.focus();
-            }
-          } catch(e) {
-            var cn2 = document.getElementById('customer_name'); if (cn2) cn2.focus();
-          }
-        }, 250);
-      });
-    }
 
     // place order: validate, build hidden inputs and submit form
     document.getElementById('placeOrderBtn').addEventListener('click', function(){
