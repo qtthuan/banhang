@@ -233,36 +233,40 @@
   (function(){
     // initialize select2 (dropdownParent so it's inside offcanvas)
     try {
+      const $custSel = $('#customerSelect');
 
+      $custSel.on('mousedown touchend', function(e){
+        // chờ select2 mở dropdown rồi focus
+        setTimeout(() => {
+          const sf = document.querySelector('.select2-search__field');
+          if (sf) sf.focus({ preventScroll: true });
+        }, 150);
+      });
 
-
-      $('#customerSelect').select2({
+      $custSel.select2({
         dropdownParent: $('body'),
         placeholder: 'Chọn khách hàng',
         minimumInputLength: 1,
         allowClear: true,
-        language: {
-          inputTooShort: function () { return ""; }
-        },
+        language: { inputTooShort: () => "" },
         ajax: {
           url: "<?= admin_url('customers/suggestions'); ?>",
           dataType: 'json',
           delay: 250,
-          data: function(params){ return { term: params.term, limit: 10 }; },
-          processResults: function(data){ return { results: data.results }; }
+          data: params => ({ term: params.term, limit: 10 }),
+          processResults: data => ({ results: data.results })
         }
-      }).on('select2:open', function(){
-        // focus input inside select2 dropdown
-        let searchField = document.querySelector('.select2-search__field');
-        if (searchField) {
-          // Nhấn nhẹ ảo để kích hoạt bàn phím trên iOS
-          setTimeout(() => {
-            searchField.focus();
-            searchField.dispatchEvent(new Event('touchstart')); 
-          }, 250);
-        }
+      }).on('select2:open', function() {
+        // fallback nếu Safari vẫn chưa focus
+        setTimeout(() => {
+          const sf = document.querySelector('.select2-search__field');
+          if (sf && document.activeElement !== sf) {
+            sf.focus({ preventScroll: true });
+          }
+        }, 300);
       });
-    } catch(e){ console.warn('select2 init failed', e); }
+    } catch(e) { console.warn('select2 init failed', e); }
+
     
 
 
