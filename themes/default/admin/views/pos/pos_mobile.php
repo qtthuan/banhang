@@ -30,9 +30,9 @@
     .col-6 { flex: 0 0 50%; max-width:50%; }
 
     /* select2 sizing */
-    .select2-container--default .select2-selection--single { height:44px; }
-    .select2-selection__rendered { line-height:40px; }
-    .select2-search__field { min-height:40px !important; }
+    .select2-container--default .select2-selection--single { height:32px; }
+    .select2-selection__rendered { line-height:30px; }
+    .select2-search__field { min-height:30px !important; }
     .note-check {
         transform: scale(1.5); /* tăng 20% ~ 7% theo yêu cầu */
         margin-right: 6px;
