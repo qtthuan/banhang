@@ -15,7 +15,7 @@
     .navbar-brand { font-weight:bold; }
     .product-img { max-height:100px; width:auto; max-width:100%; object-fit:contain; margin:auto; display:block; }
     .card-body { padding: .9rem; }
-    .card-title { font-size:0.95rem; font-weight:600; min-height:40px; }
+    .card-title { font-size:0.95rem; font-weight:600; min-height:40px; margin-top: 5px; }
     .note-display { font-size:0.85rem; color:#444; min-height:18px; margin-bottom:6px; }
 
     .size-options .btn { font-size:0.95rem; padding:8px 10px; }
@@ -36,7 +36,20 @@
     .note-check {
         transform: scale(1.5); /* tăng 20% ~ 7% theo yêu cầu */
         margin-right: 6px;
-        }
+    }
+    /* Ẩn nút x mặc định trong input search (iOS & Safari) */
+    input[type="search"]::-webkit-search-cancel-button {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .select2-container {
+      z-index: 2000 !important;
+    }
+    .select2-dropdown {
+      z-index: 2100 !important;
+    }
+
 
     @media (max-width:576px) {
       .col-6 { flex: 0 0 50%; max-width:50%; }
@@ -47,16 +60,32 @@
 
 <!-- Header -->
 <nav class="navbar navbar-dark bg-success sticky-top">
+   
+
   <div class="container-fluid">
     <a class="navbar-brand" href="#">🥤 TIỆM NƯỚC MINI</a>
     <form class="d-flex me-2" onsubmit="return false;">
-      <input class="form-control" id="searchInput" type="search" placeholder="Tìm món..." aria-label="Search">
+      <div class="position-relative w-100 me-2">
+        <input class="form-control pe-5" id="searchInput" type="search" placeholder="Tìm món..." aria-label="Search">
+        <button type="button" id="clearSearchBtn" class="btn position-absolute end-0 top-0 bottom-0 me-1 px-2 text-muted" style="border:none; background:transparent;">✕</button>
+    </div>
+
     </form>
     <button class="btn btn-outline-light position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
       🛒
       <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">0</span>
     </button>
-  </div>
+  </div>  
+
+  <div class="w-100 mt-2">
+    <select id="customerSelect" class="form-select" style="width:100%">
+      <option value="">-- Chọn khách hàng --</option>
+      <?php if (!empty($customers)): foreach($customers as $c): ?>
+        <option value="<?= $c->id ?>"><?= htmlspecialchars($c->name) ?></option>
+      <?php endforeach; endif; ?>
+    </select>
+    <input type="text" id="customer_name" name="customer_name" class="form-control mb-2" placeholder="Tên khách">
+  </div>  
 </nav>
 
 <div class="container py-3">
@@ -108,7 +137,7 @@
           </div>
 
           <div class="d-flex gap-2">
-            <button class="btn btn-info btn-note" data-bs-toggle="modal" data-bs-target="#noteModal" data-id="<?= $p->id ?>">📝 Ghi chú</button>
+            <button class="btn btn-warning btn-note" data-bs-toggle="modal" data-bs-target="#noteModal" data-id="<?= $p->id ?>">Ghi chú</button>
             <button class="btn btn-success btn-addcart"
               type="button"
               data-id="<?= $p->id ?>"
@@ -179,19 +208,7 @@
   <div class="offcanvas-body d-flex flex-column">
 
     <div id="cartItems" class="mb-3"><p class="text-muted">Chưa có món nào</p></div>
-
     <div class="mb-2">
-      <label>Khách hàng</label>
-      <select id="customerSelect" class="form-select" style="width:100%">
-        <option value="">-- Chọn khách hàng --</option>
-        <?php if (!empty($customers)): foreach($customers as $c): ?>
-          <option value="<?= $c->id ?>"><?= htmlspecialchars($c->name) ?></option>
-        <?php endforeach; endif; ?>
-      </select>
-    </div>   
-
-    <div class="mb-2">
-      <input type="text" id="customer_name" name="customer_name" class="form-control mb-2" placeholder="Tên khách">
       <input type="tel" id="customerPhone" name="customer_phone" class="form-control mb-2" placeholder="Số điện thoại">
       <textarea id="orderNote" name="pos_note" class="form-control" rows="2" placeholder="Ghi chú đơn..."></textarea>
     </div>
@@ -216,10 +233,17 @@
   (function(){
     // initialize select2 (dropdownParent so it's inside offcanvas)
     try {
+
+
+
       $('#customerSelect').select2({
-        dropdownParent: $('#cartCanvas'),
+        dropdownParent: $('body'),
         placeholder: 'Chọn khách hàng',
         minimumInputLength: 1,
+        allowClear: true,
+        language: {
+          inputTooShort: function () { return ""; }
+        },
         ajax: {
           url: "<?= admin_url('customers/suggestions'); ?>",
           dataType: 'json',
@@ -229,12 +253,12 @@
         }
       }).on('select2:open', function(){
         // focus input inside select2 dropdown
-        setTimeout(function(){
-          var sf = document.querySelector('.select2-container--open .select2-search__field');
-          if (sf) sf.focus();
-        }, 100);
+        setTimeout(function() {
+          document.querySelector('.select2-search__field')?.focus();
+        }, 150);
       });
     } catch(e){ console.warn('select2 init failed', e); }
+    
 
 
     // place order: validate, build hidden inputs and submit form
@@ -261,6 +285,8 @@
           if (custVal) posTable.insertAdjacentHTML('beforeend', '<input type="hidden" name="customer" value="'+custVal+'">');
         } catch(e){}
       }
+
+
 
       // submit the form (the form element is at top)
       var form = document.getElementById('pos-sale-form');

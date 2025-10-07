@@ -40,21 +40,35 @@ function escapeHtml(str) {
 /* PUBLIC: add item */
 function mobileAddItem(productObj, qty, variantValue, note, noteName) {
   lastItemId++;
-  var rowKey = String(lastItemId);
+  var rowKey = lastItemId.toString();
 
+  // parse variantValue => format expected: variant_id|extra_price|variant_name
   var option_id = '';
-  var option_extra = 0;
+  var option_price = 0; // here option_price is the EXTRA (not absolute)
   var option_name = '';
   if (variantValue) {
     var parts = variantValue.split('|');
     option_id = parts[0] || '';
-    option_extra = parseFloat(parts[1] || 0) || 0;
+    option_price = parseFloat(parts[1]) || 0; // IMPORTANT: treat as extra add-on
     option_name = parts[2] || '';
   }
 
-  var base_price = parseFloat(productObj.price || 0) || 0;
-  var unit_price = base_price + option_extra;
+  // base price (size M)
+  var base_price = parseFloat(productObj.price || 0);
+
+  // unit_price is base + extra (option_price is *extra amount*)
+  var unit_price = base_price;
+
+  // real_unit_price: the original base product price (for reference)
   var real_unit_price = base_price;
+
+  var product_discount = 0;
+  var is_promo = 0;
+  var promo_original_price = '';
+  var promo_original_price_for_suspend = '';
+
+  // net_price = unit_price - discount
+  var net_price = unit_price - (product_discount || 0);
 
   positems[rowKey] = {
     id: rowKey,
@@ -65,16 +79,18 @@ function mobileAddItem(productObj, qty, variantValue, note, noteName) {
       product_image: productObj.image || 'no_image.png',
       product_name: productObj.name || '',
       product_name_en: productObj.name_en || '',
+      // option must be variant id
       product_option: option_id || '',
       product_option_name: option_name || '',
-      product_option_price: option_extra || '',
+      // store the extra as number
+      product_option_price: option_price || 0,
       product_comment: note || '',
       product_comment_name: noteName || '',
-      product_discount: 0,
-      is_promo: 0,
-      promo_original_price: '',
-      promo_original_price_for_suspend: '',
-      net_price: unit_price,
+      product_discount: product_discount || 0,
+      is_promo: is_promo || 0,
+      promo_original_price: promo_original_price,
+      promo_original_price_for_suspend: promo_original_price_for_suspend,
+      net_price: net_price,
       unit_price: unit_price,
       real_unit_price: real_unit_price,
       no_points: 1,
@@ -178,9 +194,11 @@ function renderCart() {
   var html = '', total = 0;
   keys.forEach(function(k){
     var it = positems[k].row;
+    console.log(it);
     var qty = parseFloat(it.quantity || 0);
     var unit = parseFloat(it.unit_price || 0);
-    var subtotal = qty * unit;
+    var subtotal = (parseFloat(it.unit_price) || 0) * (parseFloat(it.quantity) || 0);
+
     total += subtotal;
     var opt = it.product_option_name ? (' (' + escapeHtml(it.product_option_name) + ')') : '';
     html += '<div class="border-bottom py-2 d-flex justify-content-between align-items-start">';
@@ -253,6 +271,7 @@ document.addEventListener('DOMContentLoaded', function(){
       // get selected size radio in this card
       var selected = card.querySelector('.size-radio:checked');
       var variantValue = selected ? (selected.value || '') : '';
+      //console.log('size: ' + variantValue);
 
       // get note stored in localStorage or displayed area
       var noteDisplay = document.getElementById('note-display-' + pid);
@@ -423,6 +442,27 @@ document.addEventListener('DOMContentLoaded', function(){
       // let default submit proceed
     });
   }
+
+  /* search filter realtime + clear */
+  var searchInput = document.getElementById('searchInput');
+  var clearBtn = document.getElementById('clearSearchBtn');
+
+  function filterProducts() {
+    var q = (searchInput.value || '').toLowerCase();
+    document.querySelectorAll('#productList .product-card').forEach(function(card){
+      var nm = (card.getAttribute('data-name') || '').toLowerCase();
+      card.style.display = nm.indexOf(q) !== -1 ? 'block' : 'none';
+    });
+  }
+
+  searchInput.addEventListener('input', filterProducts);
+
+  clearBtn.addEventListener('click', function(){
+    searchInput.value = '';
+    filterProducts();
+    searchInput.focus();
+  });
+
 
   // initial render
   renderCart();

@@ -193,7 +193,8 @@ class Companies_model extends CI_Model
 
     public function getCustomerSuggestions($term, $limit = 10, $lbl_award_points)
     {
-        $this->db->select("id, (CASE WHEN customer_no = '' THEN name ELSE CONCAT(name, ': ', phone, ' # " . $lbl_award_points . ": ', award_points, '  (', customer_no, ')' ) END) as text, customer_group_name, customer_group_id", FALSE);
+        //$this->db->select("id, (CASE WHEN customer_no = '' THEN name ELSE CONCAT(name, ': ', phone, ' # " . $lbl_award_points . ": ', award_points, '  (', customer_no, ')' ) END) as text, customer_group_name, customer_group_id", FALSE);
+        $this->db->select("id, (CASE WHEN customer_no = '' THEN name ELSE CONCAT(name, ': ', phone ) END) as text, customer_group_name, customer_group_id", FALSE);
         $this->db->where(" (id LIKE '%" . $term . "%' OR name LIKE '%" . $term . "%' OR customer_no LIKE '%" . $term . "%' OR email LIKE '%" . $term . "%' OR phone LIKE '%" . $term . "%') ");
         $q = $this->db->get_where('companies', array('group_name' => 'customer'), $limit);
         if ($q->num_rows() > 0) {
