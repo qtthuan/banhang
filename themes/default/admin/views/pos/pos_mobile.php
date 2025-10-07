@@ -95,12 +95,15 @@
 
   <div class="customer-select-wrapper mb-2 d-flex align-items-center">
     <div class="flex-fill me-2 position-relative">
+      <!-- Input giả chỉ để kích bàn phím iOS -->
       <input id="iosTriggerInput" 
             type="text" 
             placeholder="-- Chọn khách hàng --" 
             class="form-control" 
-            autocomplete="off">
-      <select id="customerSelect" style="display:none;width:100%;"></select>
+            autocomplete="off"
+            style="position:absolute;opacity:0;pointer-events:none;">
+      <!-- Select thật dùng cho Select2 -->
+      <select id="customerSelect" style="width:100%;"></select>
     </div>
 
     <div style="width:45%;">
@@ -110,6 +113,7 @@
             class="form-control">
     </div>
   </div>
+
 
 
  
@@ -260,41 +264,48 @@
   (function(){
     // initialize select2 (dropdownParent so it's inside offcanvas)
     try {
-  const iosInput = document.getElementById('iosTriggerInput');
-  const $custSel = $('#customerSelect');
+      const iosInput = document.getElementById('iosTriggerInput');
+      const $custSel = $('#customerSelect');
 
-  $custSel.select2({
-    dropdownParent: $('body'),
-    placeholder: 'Chọn khách hàng',
-    minimumInputLength: 1,
-    allowClear: true,
-    language: { inputTooShort: () => "" },
-    ajax: {
-      url: "<?= admin_url('customers/suggestions'); ?>",
-      dataType: 'json',
-      delay: 250,
-      data: params => ({ term: params.term, limit: 10 }),
-      processResults: data => ({ results: data.results })
+      $custSel.select2({
+        dropdownParent: $('body'),
+        placeholder: 'Chọn khách hàng',
+        minimumInputLength: 1,
+        allowClear: true,
+        language: { inputTooShort: () => "" },
+        ajax: {
+          url: "<?= admin_url('customers/suggestions'); ?>",
+          dataType: 'json',
+          delay: 250,
+          data: params => ({ term: params.term, limit: 10 }),
+          processResults: data => ({ results: data.results })
+        }
+      });
+
+      // iOS trigger input: tap -> mở select2
+      iosInput.addEventListener('focus', function() {
+        setTimeout(() => {
+          $custSel.select2('open');
+          const sf = document.querySelector('.select2-search__field');
+          if (sf) sf.focus();
+        }, 200);
+      });
+
+      // Khi select2 render xong, ẩn input giả (nếu chưa ẩn)
+      $('#customerSelect').on('select2:open', function(){
+        const iosInput = document.getElementById('iosTriggerInput');
+        if (iosInput) iosInput.style.display = 'none';
+      });
+
+
+      // Khi chọn khách xong -> cập nhật lại input
+      $custSel.on('select2:select', function(e) {
+        iosInput.value = e.params.data.text || '';
+      });
+
+    } catch (e) {
+      console.warn('select2 init failed', e);
     }
-  });
-
-  // iOS trigger input: tap -> mở select2
-  iosInput.addEventListener('focus', function() {
-    setTimeout(() => {
-      $custSel.select2('open');
-      const sf = document.querySelector('.select2-search__field');
-      if (sf) sf.focus();
-    }, 200);
-  });
-
-  // Khi chọn khách xong -> cập nhật lại input
-  $custSel.on('select2:select', function(e) {
-    iosInput.value = e.params.data.text || '';
-  });
-
-} catch (e) {
-  console.warn('select2 init failed', e);
-}
 
 
     
