@@ -137,7 +137,7 @@
   </div>
   <div class="customer-toggle-row d-flex align-items-center justify-content-between mt-2 mb-2">
       <button id="toggleCustomerMode" type="button" class="btn btn-sm btn-outline-light toggle-btn">
-        <i class="fa fa-user"></i> Chọn khách hàng
+        <i class="fa fa-user"></i> Nhập tên khách
       </button>
 
       <div class="flex-grow-1 ms-2">
