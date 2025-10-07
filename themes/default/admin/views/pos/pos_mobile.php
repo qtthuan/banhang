@@ -108,26 +108,15 @@
     </button>
   </div>  
 
-  <div class="customer-select-wrapper mb-2 d-flex align-items-center">
-    <div class="flex-fill me-2 position-relative">
-      <!-- Input giả chỉ để kích bàn phím iOS -->
-      <input id="iosTriggerInput" 
-            type="text" 
-            placeholder="-- Chọn khách hàng --" 
-            class="form-control" 
-            autocomplete="off"
-            style="position:absolute;opacity:0;pointer-events:none;">
-      <!-- Select thật dùng cho Select2 -->
-      <select id="customerSelect" style="width:100%;"></select>
-    </div>
-
-    <div style="width:45%;">
-      <input id="customer_name" 
-            type="text" 
-            placeholder="Tên khách" 
-            class="form-control">
-    </div>
+  <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap" id="customerRow">
+  <div class="flex-fill me-2" style="min-width: 55%;">
+    <select id="customerSelect" style="width:100%;" class="form-control"></select>
   </div>
+  <div class="flex-fill" style="min-width: 40%;">
+    <input type="text" id="customer_name" class="form-control" placeholder="Tên khách">
+  </div>
+</div>
+
 
 
 
