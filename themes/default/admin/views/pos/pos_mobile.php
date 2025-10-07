@@ -79,6 +79,35 @@
       }
     }
 
+    .customer-toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toggle-btn {
+      background-color: #1e7e34;
+      color: #fff;
+      border: none;
+      font-weight: 500;
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+
+    .toggle-btn i {
+      margin-right: 4px;
+    }
+
+    .toggle-btn:active {
+      opacity: 0.85;
+    }
+
+    @media (min-width: 768px) {
+      .customer-toggle-row {
+        justify-content: flex-start;
+      }
+    }
+
 
 
 
@@ -99,28 +128,30 @@
       <div class="position-relative w-100 me-2">
         <input class="form-control pe-5" id="searchInput" type="search" placeholder="Tìm món..." aria-label="Search">
         <button type="button" id="clearSearchBtn" class="btn position-absolute end-0 top-0 bottom-0 me-1 px-2 text-muted" style="border:none; background:transparent;">✕</button>
-    </div>
-
+      </div>
     </form>
     <button class="btn btn-outline-light position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
       🛒
       <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">0</span>
     </button>
-  </div>  
-
-  <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap" id="customerRow">
-  <div class="flex-fill me-2" style="min-width: 55%;">
-    <select id="customerSelect" style="width:100%;" class="form-control"></select>
   </div>
-  <div class="flex-fill" style="min-width: 40%;">
-    <input type="text" id="customer_name" class="form-control" placeholder="Tên khách">
-  </div>
-</div>
+  <div class="customer-toggle-row d-flex align-items-center justify-content-between mt-2 mb-2">
+      <button id="toggleCustomerMode" type="button" class="btn btn-sm btn-outline-light toggle-btn">
+        <i class="fa fa-user"></i> Nhập KH
+      </button>
 
+      <div class="flex-grow-1 ms-2">
+        <!-- Select khách hàng -->
+        <div id="selectCustomerWrap">
+          <select id="customerSelect" class="form-control form-control-sm" style="width:100%;"></select>
+        </div>
 
-
-
- 
+        <!-- Input tên khách -->
+        <div id="inputCustomerWrap" class="d-none">
+          <input type="text" id="customer_name" class="form-control form-control-sm" placeholder="Nhập tên khách...">
+        </div>
+      </div>
+    </div>  
 </nav>
 
 <div class="container py-3">
@@ -285,6 +316,29 @@
           processResults: data => ({ results: data.results })
         }
       });
+
+      // Toggle giữa chọn KH và nhập KH
+      document.getElementById('toggleCustomerMode').addEventListener('click', function() {
+        const btn = this;
+        const selectWrap = document.getElementById('selectCustomerWrap');
+        const inputWrap = document.getElementById('inputCustomerWrap');
+        
+        const isSelectVisible = !selectWrap.classList.contains('d-none');
+
+        if (isSelectVisible) {
+          // Đang là chọn khách → chuyển sang nhập tên
+          selectWrap.classList.add('d-none');
+          inputWrap.classList.remove('d-none');
+          btn.innerHTML = '<i class="fa fa-sync-alt"></i> Nhập KH';
+          document.getElementById('customer_name').focus();
+        } else {
+          // Đang là nhập tên → chuyển sang chọn khách
+          inputWrap.classList.add('d-none');
+          selectWrap.classList.remove('d-none');
+          btn.innerHTML = '<i class="fa fa-sync-alt"></i> Chọn KH';
+        }
+      });
+
 
       // iOS trigger input: tap -> mở select2
       iosInput.addEventListener('focus', function() {
