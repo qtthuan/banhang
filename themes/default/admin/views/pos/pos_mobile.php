@@ -48,9 +48,15 @@
 
 
     .customer-select-wrapper {
-      position: relative;
-      z-index: 1000;
+      display: flex;
+      gap: 6px;
+      align-items: center;
     }
+    .customer-select-wrapper .form-control {
+      height: 38px;
+      font-size: 15px;
+    }
+
     .select2-container {
       width: 100% !important;
       z-index: 2000 !important;
@@ -87,21 +93,25 @@
     </button>
   </div>  
 
-  <div class="customer-select-wrapper mb-2">
-  <input id="iosTriggerInput" 
-         type="text" 
-         placeholder="-- Chọn khách hàng --" 
-         class="form-control mb-1" 
-         autocomplete="off">
+  <div class="customer-select-wrapper mb-2 d-flex align-items-center">
+    <div class="flex-fill me-2 position-relative">
+      <input id="iosTriggerInput" 
+            type="text" 
+            placeholder="-- Chọn khách hàng --" 
+            class="form-control" 
+            autocomplete="off">
+      <select id="customerSelect" style="display:none;width:100%;"></select>
+    </div>
 
-  <select id="customerSelect" 
-          style="display:none;width:100%;"></select>
+    <div style="width:45%;">
+      <input id="customer_name" 
+            type="text" 
+            placeholder="Tên khách" 
+            class="form-control">
+    </div>
+  </div>
 
-  <input id="customer_name" 
-         type="text" 
-         placeholder="Tên khách" 
-         class="form-control mt-1">
-</div>
+
  
 </nav>
 
