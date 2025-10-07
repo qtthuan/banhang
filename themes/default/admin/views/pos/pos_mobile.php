@@ -253,9 +253,14 @@
         }
       }).on('select2:open', function(){
         // focus input inside select2 dropdown
-        setTimeout(function() {
-          document.querySelector('.select2-search__field')?.focus();
-        }, 150);
+        let searchField = document.querySelector('.select2-search__field');
+        if (searchField) {
+          // Nhấn nhẹ ảo để kích hoạt bàn phím trên iOS
+          setTimeout(() => {
+            searchField.focus();
+            searchField.dispatchEvent(new Event('touchstart')); 
+          }, 250);
+        }
       });
     } catch(e){ console.warn('select2 init failed', e); }
     
