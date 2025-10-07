@@ -137,7 +137,7 @@
   </div>
   <div class="customer-toggle-row d-flex align-items-center justify-content-between mt-2 mb-2">
       <button id="toggleCustomerMode" type="button" class="btn btn-sm btn-outline-light toggle-btn">
-        <i class="fa fa-user"></i> Nhập KH
+        <i class="fa fa-user"></i> Chọn khách hàng
       </button>
 
       <div class="flex-grow-1 ms-2">
@@ -329,13 +329,13 @@
           // Đang là chọn khách → chuyển sang nhập tên
           selectWrap.classList.add('d-none');
           inputWrap.classList.remove('d-none');
-          btn.innerHTML = '<i class="fa fa-sync-alt"></i> Nhập KH';
+          btn.innerHTML = '<i class="fa fa-sync-alt"></i> Chọn Khách hàng';
           document.getElementById('customer_name').focus();
         } else {
           // Đang là nhập tên → chuyển sang chọn khách
           inputWrap.classList.add('d-none');
           selectWrap.classList.remove('d-none');
-          btn.innerHTML = '<i class="fa fa-sync-alt"></i> Chọn KH';
+          btn.innerHTML = '<i class="fa fa-sync-alt"></i> Nhập Tên Khách';
         }
       });
 
