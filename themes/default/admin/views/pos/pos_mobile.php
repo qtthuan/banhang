@@ -64,6 +64,21 @@
     .select2-dropdown {
       z-index: 2100 !important;
     }
+    
+
+    #customerRow {
+      gap: 8px;
+    }
+    @media (min-width: 768px) { /* iPad trở lên */
+      #customerRow {
+        justify-content: space-between;
+      }
+      #customerRow select,
+      #customerRow input {
+        max-width: 48%;
+      }
+    }
+
 
 
 
@@ -290,13 +305,6 @@
           if (sf) sf.focus();
         }, 200);
       });
-
-      // Khi select2 render xong, ẩn input giả (nếu chưa ẩn)
-      $('#customerSelect').on('select2:open', function(){
-        const iosInput = document.getElementById('iosTriggerInput');
-        if (iosInput) iosInput.style.display = 'none';
-      });
-
 
       // Khi chọn khách xong -> cập nhật lại input
       $custSel.on('select2:select', function(e) {
