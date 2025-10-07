@@ -30,9 +30,9 @@
     .col-6 { flex: 0 0 50%; max-width:50%; }
 
     /* select2 sizing */
-    .select2-container--default .select2-selection--single { height:32px; }
-    .select2-selection__rendered { line-height:30px; }
-    .select2-search__field { min-height:30px !important; }
+    .select2-container--default .select2-selection--single { height:35px; width: 200px; }
+    .select2-selection__rendered { line-height:33px; }
+    .select2-search__field { min-height:33px !important; }
     .note-check {
         transform: scale(1.5); /* tăng 20% ~ 7% theo yêu cầu */
         margin-right: 6px;
@@ -86,7 +86,7 @@
     }
 
     .toggle-btn {
-      background-color: #1e7e34;
+      background-color: #4bcfdbff;
       color: #fff;
       border: none;
       font-weight: 500;
