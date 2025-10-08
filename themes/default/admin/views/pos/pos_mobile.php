@@ -112,7 +112,7 @@
 <nav class="navbar navbar-dark bg-success sticky-top">
 
   <div class="container-fluid align-items-center">
-    <a class="navbar-brand fw-bold" href="#">🥤 TIỆM NƯỚC MINI</a>
+    <a class="navbar-brand fw-bold" href="#"><img src="<?= base_url('assets/uploads/logos/logo3.png') ?>" alt="" class=""> TIỆM NƯỚC MINI</a>
     <div class="d-flex align-items-center flex-grow-1">
       <div class="position-relative flex-grow-1 me-2">
         <input class="form-control pe-5" id="searchInput" type="search" placeholder="Tìm món..." aria-label="Search">
@@ -158,7 +158,7 @@
   <!-- Product grid -->
   <div class="row g-2" id="productList">
     <?php foreach ($products as $p):
-      $img = !empty($p->image) ? base_url('assets/uploads/thumbs/'.$p->image) : 'https://banicantho.com/assets/uploads/thumbs/no_image.png';
+      $img = !empty($p->image) ? base_url('assets/uploads/thumbs/'.$p->image) : base_url('assets/uploads/thumbs/no_image.png');
       $cleanName = preg_replace('/^[A-Z]_\s*/', '', strtoupper($p->name));
       $code = isset($p->code) ? $p->code : '';
       $name_en = isset($p->name_en) ? $p->name_en : '';
