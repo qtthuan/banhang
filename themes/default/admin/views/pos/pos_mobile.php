@@ -78,8 +78,25 @@
       transform: translateY(-1px);
     }
 
+    .modal-header {
+      background-color: #198754; /* cùng màu bg-success */
+      color: #fff;
+      font-weight: 600;
+    }
 
-/
+    .modal-header .btn-close {
+      filter: invert(1) grayscale(100%) brightness(200%);
+    }
+    .offcanvas-header {
+      background-color: #198754;
+      color: #fff;
+      font-weight: 600;
+    }
+
+
+
+
+
 
 
 
