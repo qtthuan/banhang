@@ -65,7 +65,7 @@
 /* canh chiều rộng ô KH và nhập tên bằng ô tìm món */
 .customer-toggle-row #selectCustomerWrap,
 .customer-toggle-row #inputCustomerWrap {
-  width: calc(100% - 80px); /* chừa chỗ cho nút toggle bên cạnh */
+  width: calc(100%); /* chừa chỗ cho nút toggle bên cạnh */
 }
 
 .customer-toggle-row .toggle-btn {
