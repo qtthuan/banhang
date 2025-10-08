@@ -44,77 +44,58 @@
 
    
 
-    .select2-container {
-      width: 100% !important;
-      z-index: 2000 !important;
-    }
-    .select2-dropdown {
-      z-index: 2100 !important;
-    }
-    
-
-    /* --- Căn chỉnh tổng thể header --- */
+    /* Giúp ô tìm món, select KH, input KH đồng bộ chiều cao */
 .navbar .form-control,
-#customerSelect,
-#customer_name {
-  height: 42px;              /* Chiều cao đồng nhất */
-  font-size: 15px;
-  border-radius: 6px;
+.navbar .select2-container .select2-selection--single {
+  height: 40px !important;              /* cùng chiều cao */
+  border-radius: 6px;                   /* bo góc mềm */
+  font-size: 16px;
+  line-height: 40px !important;
 }
 
-/* Căn cho ô tìm món và ô KH có cùng chiều ngang */
-.navbar .d-flex .position-relative.w-100 {
-  min-width: 230px;
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  line-height: 38px !important;         /* canh chữ giữa */
 }
 
-/* Nút X trong ô tìm món */
-#clearSearchBtn {
-  font-size: 18px;
-  color: #555;
-}
-#clearSearchBtn:hover {
-  color: #000;
+.select2-container--default .select2-selection--single {
+  border: 1px solid #ccc !important;
+  padding: 0 8px;
 }
 
-/* --- Toggle hàng khách hàng --- */
-.customer-toggle-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 4px 10px 8px 5px;
+/* canh chiều rộng ô KH và nhập tên bằng ô tìm món */
+.customer-toggle-row #selectCustomerWrap,
+.customer-toggle-row #inputCustomerWrap {
+  width: calc(100% - 80px); /* chừa chỗ cho nút toggle bên cạnh */
 }
 
-.customer-toggle-row .flex-grow-1 {
-  flex-grow: 1;
-}
-
-.toggle-btn {
-  background-color: #2e29c9ff;
+.customer-toggle-row .toggle-btn {
+  width: 70px;
+  margin-left: 5px;
+  height: 40px;
+  font-size: 14px;
+  background: #0d6efd;
   color: #fff;
-  border: 1px solid #fff;
-  font-weight: 500;
-  padding: 7px 10px;
-  border-radius: 6px;
-  white-space: nowrap;
-}
-
-.toggle-btn:hover {
-  opacity: 0.9;
-}
-
-/* --- Icon giỏ hàng to và rõ hơn --- */
-.navbar button.btn-outline-light {
   border: none;
-  font-size: 22px;           /* tăng kích thước icon 🛒 */
-  padding: 6px 10px;
-  position: relative;
+  border-radius: 6px;
 }
 
-#cartCount {
-  font-size: 12px;
-  font-weight: bold;
-  padding: 3px 6px;
+/* Trên iPad, dàn 2 ô ra 2 bên cho cân đối */
+@media (min-width: 768px) {
+  .customer-toggle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #selectCustomerWrap, #inputCustomerWrap {
+    flex: 1;
+    max-width: 48%;
+  }
+  .toggle-btn {
+    flex: 0 0 auto;
+    margin-left: 10px;
+  }
 }
+
 
 
 
