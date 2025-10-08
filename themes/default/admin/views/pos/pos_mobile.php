@@ -92,6 +92,14 @@
       color: #fff;
       font-weight: 600;
     }
+    .select2-container {
+      z-index: 9999 !important;
+    }
+
+    .select2-dropdown {
+      z-index: 10000 !important;
+    }
+
 
 
 
@@ -319,7 +327,7 @@
       const $custSel = $('#customerSelect');
 
       $custSel.select2({
-        dropdownParent: $('body'),
+        dropdownParent: $('#orderInfoModal'),
         placeholder: 'Chọn khách hàng',
         minimumInputLength: 1,
         allowClear: true,
