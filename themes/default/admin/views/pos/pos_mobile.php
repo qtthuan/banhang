@@ -95,10 +95,6 @@
 
   <div class="container-fluid align-items-center">
     <a class="navbar-brand fw-bold" href="#"><img src="<?= base_url('assets/uploads/logos/logo3.png') ?>" alt="" class=""> TIỆM NƯỚC MINI</a>
-    <button class="btn btn-outline-light position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
-        🛒
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">0</span>
-      </button>
     <div class="d-flex align-items-center flex-grow-1">
       <div class="position-relative flex-grow-1 me-2">
         <input class="form-control pe-5" id="searchInput" type="search" placeholder="Tìm món..." aria-label="Search">
@@ -108,7 +104,10 @@
         🧾 Thông Tin KH
       </button>
 
-      
+      <button class="btn btn-outline-light position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
+        🛒
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">0</span>
+      </button>
       
 
     </div>
