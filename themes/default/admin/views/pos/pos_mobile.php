@@ -45,38 +45,38 @@
    
 
     /* Giúp ô tìm món, select KH, input KH đồng bộ chiều cao */
-.navbar .form-control,
-.navbar .select2-container .select2-selection--single {
-  height: 40px !important;              /* cùng chiều cao */
-  border-radius: 6px;                   /* bo góc mềm */
-  font-size: 16px;
-  line-height: 40px !important;
-}
+    .navbar .form-control,
+    .navbar .select2-container .select2-selection--single {
+      height: 40px !important;              /* cùng chiều cao */
+      border-radius: 6px;                   /* bo góc mềm */
+      font-size: 16px;
+      line-height: 40px !important;
+    }
 
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-  line-height: 38px !important;         /* canh chữ giữa */
-}
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      line-height: 38px !important;         /* canh chữ giữa */
+    }
 
-.select2-container--default .select2-selection--single {
-  border: 1px solid #ccc !important;
-  padding: 0 8px;
-}
+    .select2-container--default .select2-selection--single {
+      border: 1px solid #ccc !important;
+      padding: 0 8px;
+    }
 
-.btn-info-order {
-  background-color: #ffc107; /* vàng giống nút Ghi chú */
-  color: #000;
-  font-weight: 600;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 8px 12px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-  transition: all 0.2s ease;
-}
+    .btn-info-order {
+      background-color: #ffc107; /* vàng giống nút Ghi chú */
+      color: #000;
+      font-weight: 600;
+      border: none;
+      border-radius: 0.5rem;
+      padding: 8px 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      transition: all 0.2s ease;
+    }
 
-.btn-info-order:hover {
-  background-color: #ffb300;
-  transform: translateY(-1px);
-}
+    .btn-info-order:hover {
+      background-color: #ffb300;
+      transform: translateY(-1px);
+    }
 
 
 /
@@ -225,6 +225,45 @@
   </div>
 </div>
 
+ <!-- Modal Thông Tin Đơn Hàng -->
+<div class="modal fade" id="orderInfoModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">🧾 Thông Tin Đơn Hàng</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Select khách hàng -->
+        <div class="mb-2">
+          <label class="form-label">Khách hàng</label>
+          <select id="customerSelect" class="form-control" style="width:100%;"></select>
+        </div>
+        <!-- Nhập tên khách -->
+        <div class="mb-2">
+          <label class="form-label">Tên khách</label>
+          <input type="text" id="customer_name" class="form-control" placeholder="Nhập tên khách...">
+        </div>
+        <!-- Nhập SĐT -->
+        <div class="mb-2">
+          <label class="form-label">Số điện thoại</label>
+          <input type="tel" id="customer_phone" class="form-control" placeholder="Nhập số điện thoại...">
+        </div>
+        <!-- Ghi chú -->
+        <div class="mb-2">
+          <label class="form-label">Ghi chú đơn</label>
+          <textarea id="order_note" class="form-control" rows="2" placeholder="Nhập ghi chú..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        <button class="btn btn-success" id="saveOrderInfo">Lưu</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <!-- Cart offcanvas -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="cartCanvas">
   <div class="offcanvas-header">
@@ -359,6 +398,48 @@
       }
     });
   })();
+
+  // ---- Lưu & Load thông tin đơn hàng ----
+  const orderInfoKey = 'pos_order_info';
+
+  // Khi mở modal, load lại thông tin đã lưu
+  document.getElementById('orderInfoModal').addEventListener('shown.bs.modal', function() {
+    const data = JSON.parse(localStorage.getItem(orderInfoKey) || '{}');
+    if (data.customer_id) $('#customerSelect').val(data.customer_id).trigger('change');
+    if (data.customer_name) document.getElementById('customer_name').value = data.customer_name;
+    if (data.customer_phone) document.getElementById('customer_phone').value = data.customer_phone;
+    if (data.order_note) document.getElementById('order_note').value = data.order_note;
+  });
+
+  // Khi nhấn “Lưu”
+  document.getElementById('saveOrderInfo').addEventListener('click', function() {
+    const data = {
+      customer_id: $('#customerSelect').val(),
+      customer_name: document.getElementById('customer_name').value.trim(),
+      customer_phone: document.getElementById('customer_phone').value.trim(),
+      order_note: document.getElementById('order_note').value.trim()
+    };
+    localStorage.setItem(orderInfoKey, JSON.stringify(data));
+    alert('Đã lưu thông tin đơn hàng!');
+    const modal = bootstrap.Modal.getInstance(document.getElementById('orderInfoModal'));
+    modal.hide();
+  });
+
+  // Khi mở giỏ hàng, hiển thị thông tin khách hàng trong phần tóm tắt
+  document.getElementById('cartCanvas').addEventListener('show.bs.offcanvas', function() {
+    const data = JSON.parse(localStorage.getItem(orderInfoKey) || '{}');
+    const container = document.getElementById('cartItems');
+    if (data.customer_name || data.customer_phone) {
+      const info = `
+        <div class="mb-2 p-2 border rounded bg-light">
+          <strong>${data.customer_name || 'Không tên'}</strong><br>
+          📞 ${data.customer_phone || ''}<br>
+          🗒️ ${data.order_note || ''}
+        </div>`;
+      container.insertAdjacentHTML('afterbegin', info);
+    }
+  });
+
 </script>
 </body>
 </html>
