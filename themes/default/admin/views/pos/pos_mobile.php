@@ -30,9 +30,7 @@
     .col-6 { flex: 0 0 50%; max-width:50%; }
 
     /* select2 sizing */
-    .select2-container--default .select2-selection--single { height:35px; width: 200px; }
-    .select2-selection__rendered { line-height:33px; }
-    .select2-search__field { min-height:33px !important; }
+    
     .note-check {
         transform: scale(1.5); /* tăng 20% ~ 7% theo yêu cầu */
         margin-right: 6px;
@@ -44,18 +42,7 @@
     }
 
 
-    
-
-
-    .customer-select-wrapper {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-    .customer-select-wrapper .form-control {
-      height: 38px;
-      font-size: 15px;
-    }
+   
 
     .select2-container {
       width: 100% !important;
@@ -66,47 +53,69 @@
     }
     
 
-    #customerRow {
-      gap: 8px;
-    }
-    @media (min-width: 768px) { /* iPad trở lên */
-      #customerRow {
-        justify-content: space-between;
-      }
-      #customerRow select,
-      #customerRow input {
-        max-width: 48%;
-      }
-    }
+    /* --- Căn chỉnh tổng thể header --- */
+.navbar .form-control,
+#customerSelect,
+#customer_name {
+  height: 42px;              /* Chiều cao đồng nhất */
+  font-size: 15px;
+  border-radius: 6px;
+}
 
-    .customer-toggle-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+/* Căn cho ô tìm món và ô KH có cùng chiều ngang */
+.navbar .d-flex .position-relative.w-100 {
+  min-width: 230px;
+}
 
-    .toggle-btn {
-      background-color: #4bcfdbff;
-      color: #fff;
-      border: none;
-      font-weight: 500;
-      padding: 6px 10px;
-      border-radius: 6px;
-    }
+/* Nút X trong ô tìm món */
+#clearSearchBtn {
+  font-size: 18px;
+  color: #555;
+}
+#clearSearchBtn:hover {
+  color: #000;
+}
 
-    .toggle-btn i {
-      margin-right: 4px;
-    }
+/* --- Toggle hàng khách hàng --- */
+.customer-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 10px 8px 5px;
+}
 
-    .toggle-btn:active {
-      opacity: 0.85;
-    }
+.customer-toggle-row .flex-grow-1 {
+  flex-grow: 1;
+}
 
-    @media (min-width: 768px) {
-      .customer-toggle-row {
-        justify-content: flex-start;
-      }
-    }
+.toggle-btn {
+  background-color: #2e29c9ff;
+  color: #fff;
+  border: 1px solid #fff;
+  font-weight: 500;
+  padding: 7px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.toggle-btn:hover {
+  opacity: 0.9;
+}
+
+/* --- Icon giỏ hàng to và rõ hơn --- */
+.navbar button.btn-outline-light {
+  border: none;
+  font-size: 22px;           /* tăng kích thước icon 🛒 */
+  padding: 6px 10px;
+  position: relative;
+}
+
+#cartCount {
+  font-size: 12px;
+  font-weight: bold;
+  padding: 3px 6px;
+}
+
 
 
 
@@ -120,26 +129,22 @@
 
 <!-- Header -->
 <nav class="navbar navbar-dark bg-success sticky-top">
-   
 
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">🥤 TIỆM NƯỚC MINI</a>
-    <form class="d-flex me-2" onsubmit="return false;">
-      <div class="position-relative w-100 me-2">
+  <div class="container-fluid align-items-center">
+    <a class="navbar-brand fw-bold" href="#">🥤 TIỆM NƯỚC MINI</a>
+    <div class="d-flex align-items-center flex-grow-1">
+      <div class="position-relative flex-grow-1 me-2">
         <input class="form-control pe-5" id="searchInput" type="search" placeholder="Tìm món..." aria-label="Search">
-        <button type="button" id="clearSearchBtn" class="btn position-absolute end-0 top-0 bottom-0 me-1 px-2 text-muted" style="border:none; background:transparent;">✕</button>
+        <button type="button" id="clearSearchBtn" class="btn position-absolute end-0 top-0 bottom-0 me-1 px-2 text-muted" style="border:none;background:transparent;">✕</button>
       </div>
-    </form>
-    <button class="btn btn-outline-light position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
-      🛒
-      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">0</span>
-    </button>
-  </div>
-  <div class="customer-toggle-row d-flex align-items-center justify-content-between mt-2 mb-2">
-      <button id="toggleCustomerMode" type="button" class="btn btn-sm btn-outline-light toggle-btn">
-        <i class="fa fa-user"></i> Nhập tên khách
+      <button class="btn btn-outline-light position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
+        🛒
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">0</span>
       </button>
+    </div>
+  </div>
 
+  <div class="customer-toggle-row d-flex align-items-center justify-content-between mt-2 mb-2">
       <div class="flex-grow-1 ms-2">
         <!-- Select khách hàng -->
         <div id="selectCustomerWrap">
@@ -151,6 +156,9 @@
           <input type="text" id="customer_name" class="form-control form-control-sm" placeholder="Nhập tên khách...">
         </div>
       </div>
+      <button id="toggleCustomerMode" type="button" class="btn btn-sm btn-outline-light toggle-btn">
+        <i class="fa fa-user"></i> Nhập
+      </button>
     </div>  
 </nav>
 
@@ -329,13 +337,13 @@
           // Đang là chọn khách → chuyển sang nhập tên
           selectWrap.classList.add('d-none');
           inputWrap.classList.remove('d-none');
-          btn.innerHTML = '<i class="fa fa-sync-alt"></i> Chọn Khách hàng';
+          btn.innerHTML = '<i class="fa fa-sync-alt"></i> Chọn';
           document.getElementById('customer_name').focus();
         } else {
           // Đang là nhập tên → chuyển sang chọn khách
           inputWrap.classList.add('d-none');
           selectWrap.classList.remove('d-none');
-          btn.innerHTML = '<i class="fa fa-sync-alt"></i> Nhập Tên Khách';
+          btn.innerHTML = '<i class="fa fa-sync-alt"></i> Nhập';
         }
       });
 
