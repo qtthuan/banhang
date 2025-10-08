@@ -62,42 +62,24 @@
   padding: 0 8px;
 }
 
-/* canh chiều rộng ô KH và nhập tên bằng ô tìm món */
-.customer-toggle-row #selectCustomerWrap,
-.customer-toggle-row #inputCustomerWrap {
-  width: calc(100% + 50px); /* chừa chỗ cho nút toggle bên cạnh */
-}
-
-.customer-toggle-row .toggle-btn {
-  width: 70px;
-  margin-left: 5px;
-  height: 40px;
-  font-size: 14px;
-  background: #0d6efd;
-  color: #fff;
+.btn-info-order {
+  background-color: #ffc107; /* vàng giống nút Ghi chú */
+  color: #000;
+  font-weight: 600;
   border: none;
-  border-radius: 6px;
+  border-radius: 0.5rem;
+  padding: 8px 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  transition: all 0.2s ease;
 }
 
-/* Trên iPad, dàn 2 ô ra 2 bên cho cân đối */
-@media (min-width: 768px) {
-  .customer-toggle-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  #selectCustomerWrap, #inputCustomerWrap {
-    flex: 1;
-    max-width: 48%;
-  }
-  .toggle-btn {
-    flex: 0 0 auto;
-    margin-left: 10px;
-  }
+.btn-info-order:hover {
+  background-color: #ffb300;
+  transform: translateY(-1px);
 }
 
 
-
+/
 
 
 
@@ -118,29 +100,18 @@
         <input class="form-control pe-5" id="searchInput" type="search" placeholder="Tìm món..." aria-label="Search">
         <button type="button" id="clearSearchBtn" class="btn position-absolute end-0 top-0 bottom-0 me-1 px-2 text-muted" style="border:none;background:transparent;">✕</button>
       </div>
+      <button class="btn btn-light ms-2 btn-info-order" type="button" data-bs-toggle="modal" data-bs-target="#orderInfoModal">
+        🧾 Thông Tin KH
+      </button>
+
       <button class="btn btn-outline-light position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
         🛒
         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">0</span>
       </button>
+      
+
     </div>
   </div>
-
-  <div class="customer-toggle-row d-flex align-items-center justify-content-between mt-2 mb-2">
-      <div class="flex-grow-1 ms-2">
-        <!-- Select khách hàng -->
-        <div id="selectCustomerWrap">
-          <select id="customerSelect" class="form-control form-control-sm" style="width:100%;"></select>
-        </div>
-
-        <!-- Input tên khách -->
-        <div id="inputCustomerWrap" class="d-none">
-          <input type="text" id="customer_name" class="form-control form-control-sm" placeholder="Nhập tên khách...">
-        </div>
-      </div>
-      <button id="toggleCustomerMode" type="button" class="btn btn-sm btn-outline-light toggle-btn">
-        <i class="fa fa-user"></i> Nhập
-      </button>
-    </div>  
 </nav>
 
 <div class="container py-3">
