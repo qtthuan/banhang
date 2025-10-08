@@ -109,7 +109,7 @@
 <body>
 
 <!-- Header -->
-<nav class="navbar navbar-dark bg-success sticky-top">
+<nav class="navbar sticky-top">
 
   <div class="container-fluid align-items-center">
     <a class="navbar-brand fw-bold" href="#"><img src="<?= base_url('assets/uploads/logos/logo3.png') ?>" alt="" class=""> TIỆM NƯỚC MINI</a>
