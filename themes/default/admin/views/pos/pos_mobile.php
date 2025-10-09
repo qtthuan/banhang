@@ -423,6 +423,7 @@
 
     // place order: validate, build hidden inputs and submit form
     document.getElementById('placeOrderBtn').addEventListener('click', function(){
+      var cid = document.getElementById('customer_id').value.trim();
       var cname = document.getElementById('customer_name').value.trim();
       var phone = document.getElementById('customerPhone').value.trim();
       if (!cname || !phone) {
@@ -437,6 +438,7 @@
       // ensure we don't duplicate
       if (posTable) {
         // add customer_name/customer_phone inputs (they will be posted)
+        posTable.insertAdjacentHTML('beforeend', '<input type="hidden" name="customer_id" value="'+(cid.replace(/"/g,'&quot;'))+'">');
         posTable.insertAdjacentHTML('beforeend', '<input type="hidden" name="customer_name" value="'+(cname.replace(/"/g,'&quot;'))+'">');
         posTable.insertAdjacentHTML('beforeend', '<input type="hidden" name="customer_phone" value="'+(phone.replace(/"/g,'&quot;'))+'">');
         // add customer id if selected
@@ -464,11 +466,18 @@
 
   // Khi mở modal, load lại thông tin đã lưu
   document.getElementById('orderInfoModal').addEventListener('shown.bs.modal', function() {
-    const data = JSON.parse(localStorage.getItem(orderInfoKey) || '{}');
-    if (data.customer_id) $('#customerSelect').val(data.customer_id).trigger('change');
-    if (data.customer_name) document.getElementById('customer_name').value = data.customer_name;
-    if (data.customer_phone) document.getElementById('customer_phone').value = data.customer_phone;
-    if (data.order_note) document.getElementById('order_note').value = data.order_note;
+    // load lại thông tin từ localStorage
+    const savedInfo = JSON.parse(localStorage.getItem('customer_info') || '{}');
+    if (savedInfo.customer_name) document.getElementById('customer_name').value = savedInfo.customer_name;
+    if (savedInfo.customer_phone) document.getElementById('customer_phone').value = savedInfo.customer_phone;
+    if (savedInfo.order_note) document.getElementById('order_note').value = savedInfo.order_note;
+
+    // load lại khách hàng đã chọn
+    if (savedInfo.customer_id && savedInfo.customer_text) {
+      const option = new Option(savedInfo.customer_text, savedInfo.customer_id, true, true);
+      $('#customerSelect').append(option).trigger('change');
+    }
+
   });
 
   // Khi nhấn “Lưu”
@@ -487,6 +496,20 @@
   document.getElementById('saveOrderInfo').addEventListener('click', function() {
     const statusBox = document.getElementById('saveStatus');
     const modal = document.getElementById('orderInfoModal');
+
+    const customerId = $('#customerSelect').val();
+    const customerText = $('#customerSelect').find('option:selected').text();
+
+    const data = {
+      customer_id: customerId,
+      customer_text: customerText,
+      customer_name: document.getElementById('customer_name').value.trim(),
+      customer_phone: document.getElementById('customer_phone').value.trim(),
+      order_note: document.getElementById('order_note').value.trim()
+    };
+
+    localStorage.setItem('customer_info', JSON.stringify(data));
+
 
     // hiện "Đang lưu..."
     statusBox.textContent = 'Đang lưu...';
