@@ -358,7 +358,7 @@
       }).on('select2:open', function(){
         // focus input inside select2 dropdown
         setTimeout(function(){
-          var sf = document.querySelector('.select2-container--open .select2-search__field');
+          var sf = document.querySelector('.select2-container .select2-search__field');
           if (sf) sf.focus();
         }, 100);
       });
