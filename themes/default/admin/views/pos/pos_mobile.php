@@ -372,16 +372,24 @@
           processResults: data => ({ results: data.results })
         }
       }).on('select2:open', function () {
-        // Focus vào ô nhập khi mở dropdown
-        setTimeout(() => {
-          const input = document.querySelector('.select2-search__field');
-          if (input) {
-            input.focus();
-            // Thêm sự kiện ảo để kích hoạt bàn phím iOS
-            input.dispatchEvent(new Event('touchstart', { bubbles: true }));
-            input.dispatchEvent(new Event('mousedown', { bubbles: true }));
-          }
-        }, 300);
+        const searchInput = document.querySelector('.select2-search__field');
+
+        if (searchInput) {
+          // Tạo click ảo kích hoạt iOS
+          const triggerFocus = () => {
+            searchInput.focus();
+            searchInput.dispatchEvent(new Event('touchstart', { bubbles: true }));
+            searchInput.dispatchEvent(new Event('touchend', { bubbles: true }));
+            searchInput.dispatchEvent(new Event('mousedown', { bubbles: true }));
+            searchInput.dispatchEvent(new Event('mouseup', { bubbles: true }));
+          };
+
+          // Nếu người dùng vừa tap mở select, iOS cho phép focus trong ~300ms
+          setTimeout(triggerFocus, 150);
+
+          // Dự phòng: nếu vẫn chưa bật bàn phím, bắt thêm sự kiện tap thật của user
+          searchInput.addEventListener('touchstart', triggerFocus, { once: true });
+        }
       });
 
       // Toggle giữa chọn KH và nhập KH
