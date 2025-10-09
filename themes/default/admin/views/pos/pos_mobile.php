@@ -359,7 +359,7 @@
         // focus input inside select2 dropdown
         setTimeout(function(){
           var sf = document.querySelector('.select2-container .select2-search__field');
-          alert('ccccc');
+          alert('ccccc: ' + sf);
           if (sf) sf.focus();
         }, 100);
       });
