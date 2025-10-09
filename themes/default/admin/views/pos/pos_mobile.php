@@ -64,22 +64,6 @@
       padding: 0 8px;
     }
 
-    .btn-info-order {
-      background-color: #ffc107; /* vàng giống nút Ghi chú */
-      color: #000;
-      font-weight: 600;
-      border: none;
-      border-radius: 0.5rem;
-      padding: 8px 12px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-      transition: all 0.2s ease;
-    }
-
-    .btn-info-order:hover {
-      background-color: #ffb300;
-      transform: translateY(-1px);
-    }
-
     .modal-header {
       background-color: #198754; /* cùng màu bg-success */
       color: #fff;
@@ -375,6 +359,7 @@
         const searchInput = document.querySelector('.select2-search__field');
 
         if (searchInput) {
+          console.log('vvvvvvv');
           // Tạo click ảo kích hoạt iOS
           const triggerFocus = () => {
             searchInput.focus();
@@ -392,27 +377,7 @@
         }
       });
 
-      // Toggle giữa chọn KH và nhập KH
-      document.getElementById('toggleCustomerMode').addEventListener('click', function() {
-        const btn = this;
-        const selectWrap = document.getElementById('selectCustomerWrap');
-        const inputWrap = document.getElementById('inputCustomerWrap');
-        
-        const isSelectVisible = !selectWrap.classList.contains('d-none');
 
-        if (isSelectVisible) {
-          // Đang là chọn khách → chuyển sang nhập tên
-          selectWrap.classList.add('d-none');
-          inputWrap.classList.remove('d-none');
-          btn.innerHTML = '<i class="fa fa-sync-alt"></i> Chọn';
-          document.getElementById('customer_name').focus();
-        } else {
-          // Đang là nhập tên → chuyển sang chọn khách
-          inputWrap.classList.add('d-none');
-          selectWrap.classList.remove('d-none');
-          btn.innerHTML = '<i class="fa fa-sync-alt"></i> Nhập';
-        }
-      });
 
 
       // iOS trigger input: tap -> mở select2
