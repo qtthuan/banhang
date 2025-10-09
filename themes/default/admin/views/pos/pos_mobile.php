@@ -385,19 +385,9 @@
 
 
 
-      // iOS trigger input: tap -> mở select2
-      iosInput.addEventListener('focus', function() {
-        setTimeout(() => {
-          $custSel.select2('open');
-          const sf = document.querySelector('.select2-search__field');
-          if (sf) sf.focus();
-        }, 200);
-      });
+      
 
-      // Khi chọn khách xong -> cập nhật lại input
-      $custSel.on('select2:select', function(e) {
-        iosInput.value = e.params.data.text || '';
-      });
+      
 
     } catch (e) {
       console.warn('select2 init failed', e);
