@@ -363,6 +363,25 @@
         }, 100);
       });
 
+      // when cart offcanvas opens, open select2 to show keyboard on mobile
+    var cartCanvasEl = document.getElementById('cartCanvas');
+    if (cartCanvasEl) {
+      cartCanvasEl.addEventListener('show.bs.offcanvas', function(){
+        setTimeout(function(){
+          try {
+            if ($('#customerSelect').data('select2')) {
+              $('#customerSelect').select2('open');
+            } else {
+              var cn = document.getElementById('customer_name');
+              if (cn) cn.focus();
+            }
+          } catch(e) {
+            var cn2 = document.getElementById('customer_name'); if (cn2) cn2.focus();
+          }
+        }, 250);
+      });
+    }
+
 
 
 
