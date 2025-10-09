@@ -10,6 +10,8 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 
 
   <style>
@@ -114,6 +116,37 @@
     font-size: 12px;
   }
 
+  /* Đảm bảo select2 cùng chiều cao với input */
+.select2-container--bootstrap5 .select2-selection--single,
+.select2-container .select2-selection--single {
+  height: calc(2.25rem + 2px) !important; /* ~ chiều cao .form-control */
+  padding: 0.375rem 0.75rem !important;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+}
+
+/* Căn giữa text và mũi tên */
+.select2-selection__rendered {
+  line-height: normal !important;
+  padding-left: 0 !important;
+}
+
+.select2-selection__arrow {
+  height: 100% !important;
+}
+
+/* Giúp select2 và input nằm thẳng hàng hoàn hảo */
+.select2-container {
+  width: 100% !important;
+}
+
+
+.modal-footer .btn {
+  font-size: 1.15rem;
+  padding: 10px 20px;
+}
 
 
 
@@ -258,6 +291,8 @@
 
         </div>
       </div>
+      
+
       <div class="modal-footer">
         <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
         <button class="btn btn-success" id="saveNoteBtn">Lưu</button>
@@ -276,25 +311,32 @@
       </div>
       <div class="modal-body">
         <!-- Select khách hàng -->
-        <div class="mb-2">
-          <label class="form-label">Khách hàng</label>
+        <div class="mb-3">
+          <label class="form-label"><i class="fa fa-user text-primary me-1"></i> Khách hàng</label>
           <select id="customerSelect" class="form-control" style="width:100%;"></select>
         </div>
         <!-- Nhập tên khách -->
-        <div class="mb-2">
-          <label class="form-label">Tên khách</label>
+        <div class="mb-3">
+          <label class="form-label"><i class="fa fa-id-badge text-success me-1"></i> Tên khách</label>
           <input type="text" id="customer_name" class="form-control" placeholder="Nhập tên khách...">
         </div>
         <!-- Nhập SĐT -->
-        <div class="mb-2">
-          <label class="form-label">Số điện thoại</label>
+        <div class="mb-3">
+          <label class="form-label"><i class="fa fa-phone text-warning me-1"></i> Số điện thoại</label>
           <input type="tel" id="customer_phone" class="form-control" placeholder="Nhập số điện thoại...">
         </div>
         <!-- Ghi chú -->
-        <div class="mb-2">
-          <label class="form-label">Ghi chú đơn</label>
+        <div class="mb-3">
+          <label class="form-label"><i class="fa fa-sticky-note text-info me-1"></i> Ghi chú đơn</label>
           <textarea id="order_note" class="form-control" rows="2" placeholder="Nhập ghi chú..."></textarea>
         </div>
+      </div>
+      <!-- Hiển thị trạng thái lưu -->
+      <div id="saveStatus"
+          style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+                  background:rgba(0,0,0,0.75); color:#fff; padding:10px 20px;
+                  border-radius:8px; font-weight:500; z-index:2000;">
+        Đang lưu...
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
@@ -359,34 +401,12 @@
         // focus input inside select2 dropdown
         setTimeout(function(){
           var sf = document.querySelector('.select2-container .select2-search__field');
-          alert('ccccc: ' + sf);
           if (sf) sf.click();
         }, 100);
       });
 
-      // when cart offcanvas opens, open select2 to show keyboard on mobile
-    var cartCanvasEl = document.getElementById('cartCanvas');
-    if (cartCanvasEl) {
-      cartCanvasEl.addEventListener('shown.bs.offcanvas', function(){
-        setTimeout(function(){
-          try {
-            if ($('#customerSelect').data('select2')) {
-              $('#customerSelect').select2('open');
-            } else {
-              var cn = document.getElementById('customer_name');
-              if (cn) cn.focus();
-            }
-          } catch(e) {
-            var cn2 = document.getElementById('customer_name'); if (cn2) cn2.focus();
-          }
-        }, 250);
-      });
-    }
+    
 
-
-
-
-      
 
       // Khi chọn khách xong -> cập nhật lại input
       $custSel.on('select2:select', function(e) {
@@ -452,18 +472,41 @@
   });
 
   // Khi nhấn “Lưu”
+  // document.getElementById('saveOrderInfo').addEventListener('click', function() {
+  //   const data = {
+  //     customer_id: $('#customerSelect').val(),
+  //     customer_name: document.getElementById('customer_name').value.trim(),
+  //     customer_phone: document.getElementById('customer_phone').value.trim(),
+  //     order_note: document.getElementById('order_note').value.trim()
+  //   };
+  //   localStorage.setItem(orderInfoKey, JSON.stringify(data));
+  //   alert('Đã lưu thông tin đơn hàng!');
+  //   const modal = bootstrap.Modal.getInstance(document.getElementById('orderInfoModal'));
+  //   modal.hide();
+  // });
   document.getElementById('saveOrderInfo').addEventListener('click', function() {
-    const data = {
-      customer_id: $('#customerSelect').val(),
-      customer_name: document.getElementById('customer_name').value.trim(),
-      customer_phone: document.getElementById('customer_phone').value.trim(),
-      order_note: document.getElementById('order_note').value.trim()
-    };
-    localStorage.setItem(orderInfoKey, JSON.stringify(data));
-    alert('Đã lưu thông tin đơn hàng!');
-    const modal = bootstrap.Modal.getInstance(document.getElementById('orderInfoModal'));
-    modal.hide();
+    const statusBox = document.getElementById('saveStatus');
+    const modal = document.getElementById('orderInfoModal');
+
+    // hiện "Đang lưu..."
+    statusBox.textContent = 'Đang lưu...';
+    statusBox.style.display = 'block';
+
+    // Giả lập xử lý lưu ajax (có thể thay bằng thật)
+    setTimeout(() => {
+      // hiển thị "Đã lưu"
+      statusBox.textContent = '✅ Đã lưu';
+      
+      // ẩn sau 800ms và đóng modal
+      setTimeout(() => {
+        statusBox.style.display = 'none';
+        const modalInstance = bootstrap.Modal.getInstance(modal);
+        if (modalInstance) modalInstance.hide();
+      }, 800);
+
+    }, 1000); // giả lập thời gian ajax
   });
+
 
   // Khi mở giỏ hàng, hiển thị thông tin khách hàng trong phần tóm tắt
   document.getElementById('cartCanvas').addEventListener('show.bs.offcanvas', function() {
