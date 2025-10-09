@@ -371,6 +371,17 @@
           data: params => ({ term: params.term, limit: 10 }),
           processResults: data => ({ results: data.results })
         }
+      }).on('select2:open', function () {
+        // Focus vào ô nhập khi mở dropdown
+        setTimeout(() => {
+          const input = document.querySelector('.select2-search__field');
+          if (input) {
+            input.focus();
+            // Thêm sự kiện ảo để kích hoạt bàn phím iOS
+            input.dispatchEvent(new Event('touchstart', { bubbles: true }));
+            input.dispatchEvent(new Event('mousedown', { bubbles: true }));
+          }
+        }, 300);
       });
 
       // Toggle giữa chọn KH và nhập KH
