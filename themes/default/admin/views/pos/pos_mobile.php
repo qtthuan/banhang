@@ -360,7 +360,7 @@
         setTimeout(function(){
           var sf = document.querySelector('.select2-container .select2-search__field');
           alert('ccccc: ' + sf);
-          if (sf) sf.focus();
+          if (sf) sf.click();
         }, 100);
       });
 
