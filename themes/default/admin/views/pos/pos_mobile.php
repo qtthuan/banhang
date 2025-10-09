@@ -339,43 +339,53 @@
   (function(){
     // initialize select2 (dropdownParent so it's inside offcanvas)
     try {
-      const iosInput = document.getElementById('iosTriggerInput');
-      const $custSel = $('#customerSelect');
+      
 
-      $custSel.select2({
-        dropdownParent: $('#orderInfoModal'),
-        placeholder: 'Chọn khách hàng',
-        minimumInputLength: 1,
-        allowClear: true,
-        language: { inputTooShort: () => "" },
-        ajax: {
-          url: "<?= admin_url('customers/suggestions'); ?>",
-          dataType: 'json',
-          delay: 250,
-          data: params => ({ term: params.term, limit: 10 }),
-          processResults: data => ({ results: data.results })
-        }
-      }).on('select2:open', function () {
-        const searchInput = document.querySelector('.select2-search__field');
 
-        if (searchInput) {
-          alert('vvvvvvv');
-          // Tạo click ảo kích hoạt iOS
-          const triggerFocus = () => {
+
+
+
+
+      // Khi modal thông tin KH mở xong
+      $('#orderInfoModal').on('shown.bs.modal', function () {
+        const selectEl = $('#customerSelect');
+
+        // Nếu chưa khởi tạo select2 thì khởi tạo ở đây
+        //if (!selectEl.hasClass("select2-hidden-accessible")) {
+          selectEl.select2({
+            dropdownParent: $('#orderInfoModal'),
+            placeholder: 'Chọn khách hàng',
+            minimumInputLength: 1,
+            allowClear: true,
+            language: {
+              inputTooShort: function () { return ""; }
+            },
+            ajax: {
+              url: "<?= admin_url('customers/suggestions'); ?>",
+              dataType: 'json',
+              delay: 250,
+              data: function (params) {
+                return { term: params.term, limit: 10 };
+              },
+              processResults: function (data) {
+                return { results: data.results };
+              }
+            }
+          });
+        //}
+
+        // Đợi animation xong 1 chút rồi focus search
+        setTimeout(() => {
+          let searchInput = document.querySelector('.select2-search__field');
+          if (searchInput) {
             searchInput.focus();
+            // trick để iOS bật bàn phím
             searchInput.dispatchEvent(new Event('touchstart', { bubbles: true }));
             searchInput.dispatchEvent(new Event('touchend', { bubbles: true }));
-            searchInput.dispatchEvent(new Event('mousedown', { bubbles: true }));
-            searchInput.dispatchEvent(new Event('mouseup', { bubbles: true }));
-          };
-
-          // Nếu người dùng vừa tap mở select, iOS cho phép focus trong ~300ms
-          setTimeout(triggerFocus, 150);
-
-          // Dự phòng: nếu vẫn chưa bật bàn phím, bắt thêm sự kiện tap thật của user
-          searchInput.addEventListener('touchstart', triggerFocus, { once: true });
-        }
+          }
+        }, 300);
       });
+
 
 
 
