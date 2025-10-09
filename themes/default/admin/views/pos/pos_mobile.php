@@ -359,7 +359,7 @@
         const searchInput = document.querySelector('.select2-search__field');
 
         if (searchInput) {
-          console.log('vvvvvvv');
+          alert('vvvvvvv');
           // Tạo click ảo kích hoạt iOS
           const triggerFocus = () => {
             searchInput.focus();
