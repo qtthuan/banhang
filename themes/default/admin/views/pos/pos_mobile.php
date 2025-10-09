@@ -366,7 +366,7 @@
       // when cart offcanvas opens, open select2 to show keyboard on mobile
     var cartCanvasEl = document.getElementById('cartCanvas');
     if (cartCanvasEl) {
-      cartCanvasEl.addEventListener('show.bs.offcanvas', function(){
+      cartCanvasEl.addEventListener('shown.bs.offcanvas', function(){
         setTimeout(function(){
           try {
             if ($('#customerSelect').data('select2')) {
@@ -387,7 +387,10 @@
 
       
 
-      
+      // Khi chọn khách xong -> cập nhật lại input
+      $custSel.on('select2:select', function(e) {
+        iosInput.value = e.params.data.text || '';
+      });
 
     } catch (e) {
       console.warn('select2 init failed', e);
