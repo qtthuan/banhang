@@ -9,6 +9,8 @@
   <!-- CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 
   <style>
     body { background:#f8f9fa; }
@@ -101,6 +103,32 @@
     }
 
 
+    #btnOrderInfo {
+      background-color: #007bff !important; /* xanh sáng như ảnh */
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 42px;
+    }
+    #btnOrderInfo i {
+      font-size: 22px;
+    }
+
+
+
+  .btn[data-bs-target="#cartCanvas"] {
+    font-size: 26px !important;
+    line-height: 1;
+    padding: 6px 10px;
+  }
+
+  #cartCount {
+    font-size: 12px;
+  }
 
 
 
@@ -125,15 +153,19 @@
         <input class="form-control pe-5" id="searchInput" type="search" placeholder="Tìm món..." aria-label="Search">
         <button type="button" id="clearSearchBtn" class="btn position-absolute end-0 top-0 bottom-0 me-1 px-2 text-muted" style="border:none;background:transparent;">✕</button>
       </div>
-      <button class="btn btn-light ms-2 btn-info-order" type="button" data-bs-toggle="modal" data-bs-target="#orderInfoModal">
-        🧾 Thông Tin KH
       </button>
 
-      <button class="btn btn-outline-light position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartCanvas">
-        🛒
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">0</span>
+      <button id="btnOrderInfo" class="btn text-white d-flex align-items-center justify-content-center px-3 py-2" style="border:none; border-radius:8px; font-weight: 600;" data-bs-toggle="modal" data-bs-target="#orderInfoModal">
+        <i class="fa-solid fa-circle-info me-2"></i> KH
       </button>
-      
+
+      <button class="btn btn-outline-light position-relative p-2" type="button"
+        data-bs-toggle="offcanvas" data-bs-target="#cartCanvas"
+        style="font-size: 26px; line-height: 1;">
+        🛒
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+              id="cartCount" style="font-size: 12px;">0</span>
+      </button>
 
     </div>
   </div>
