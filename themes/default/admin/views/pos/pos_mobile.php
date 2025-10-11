@@ -90,7 +90,7 @@
 
 
     #btnOrderInfo {
-      background-color: #007bff !important; /* xanh sáng như ảnh */
+      background-color: #35b9bb !important; /* xanh sáng như ảnh */
       border: none;
       border-radius: 6px;
       font-weight: 600;
@@ -291,8 +291,6 @@
 
         </div>
       </div>
-      
-
       <div class="modal-footer">
         <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
         <button class="btn btn-success" id="saveNoteBtn">Lưu</button>
@@ -306,7 +304,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">🧾 Thông Tin Đơn Hàng</h5>
+        <h5 class="modal-title">🧾 Thông Tin Khách Hàng</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
@@ -338,8 +336,10 @@
                   border-radius:8px; font-weight:500; z-index:2000;">
         Đang lưu...
       </div>
+      
       <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        <button type="button" class="btn btn-secondary" id="resetOrderInfoBtn">Reset</button>
+        <button class="btn btn-danger" data-bs-dismiss="modal">Đóng</button>
         <button class="btn btn-success" id="saveOrderInfo">Lưu</button>
       </div>
     </div>
@@ -355,12 +355,9 @@
   </div>
   <div class="offcanvas-body d-flex flex-column">
 
-    <div id="cartItems" class="mb-3"><p class="text-muted">Chưa có món nào</p></div>
-    <div class="mb-2">
-      <input type="tel" id="customerPhone" name="customer_phone" class="form-control mb-2" placeholder="Số điện thoại">
-      <textarea id="orderNote" name="pos_note" class="form-control" rows="2" placeholder="Ghi chú đơn..."></textarea>
-    </div>
+    <div id="cartCustomerInfo" class="mb-3 border-bottom pb-2"></div>
 
+    <div id="cartItems" class="mb-3"><p class="text-muted">Chưa có món nào</p></div>
     <div id="submitArea">
       <!-- Submit button inside the form: we submit the form after mobileLoadItems -->
       <button id="placeOrderBtn" class="btn btn-success w-100">Đặt hàng</button>
@@ -405,6 +402,27 @@
         }, 100);
       });
 
+      // ✅ Gán khách hàng mặc định ID=1
+      setTimeout(function(){
+        $.ajax({
+          url: "<?= admin_url('customers/suggestions'); ?>",
+          data: { term: 'a' },
+          dataType: 'json',
+          success: function(data) {
+            //console.log('xxxxx');
+            if (data && data.results) {
+              const defaultCustomer = data.results.find(c => c.id == 1);
+              //console.log('defaultCustomer: ' + defaultCustomer )
+              if (defaultCustomer) {
+                const option = new Option(defaultCustomer.text, defaultCustomer.id, true, true);
+                $('#customerSelect').append(option).trigger('change');
+              }
+            }
+          }
+        });
+      }, 500);
+
+
     
 
 
@@ -418,35 +436,48 @@
     }
 
 
-    
+    // === Nút Reset form Thông tin đơn hàng ===
+    document.getElementById('resetOrderInfoBtn').addEventListener('click', function() {
+      try {
+        // Xóa chọn trong select2
+        if ($('#customerSelect').data('select2')) {
+          $('#customerSelect').val(1).trigger('change');
+        } else {
+          const sel = document.getElementById('customerSelect');
+          if (sel) sel.selectedIndex = -1;
+        }
+
+        // Reset input text
+        document.getElementById('customer_name').value = '';
+        document.getElementById('customer_phone').value = '';
+        document.getElementById('order_note').value = '';
+
+        // Xóa dữ liệu localStorage
+        localStorage.removeItem('customer_info');
+        
+      } catch (err) {
+        console.error('Reset error', err);
+      }
+    });
+
 
 
     // place order: validate, build hidden inputs and submit form
     document.getElementById('placeOrderBtn').addEventListener('click', function(){
-      var cid = document.getElementById('customer_id').value.trim();
-      var cname = document.getElementById('customer_name').value.trim();
-      var phone = document.getElementById('customerPhone').value.trim();
-      if (!cname || !phone) {
-        alert('Vui lòng nhập Tên khách và Số điện thoại!');
-        return;
-      }
+      
       // build hidden inputs
       if (typeof mobileLoadItems === 'function') mobileLoadItems();
 
       // add customer_name and customer_phone into the existing form (posTable already created by mobileLoadItems)
       var posTable = document.getElementById('posTable');
       // ensure we don't duplicate
-      if (posTable) {
-        // add customer_name/customer_phone inputs (they will be posted)
-        posTable.insertAdjacentHTML('beforeend', '<input type="hidden" name="customer_id" value="'+(cid.replace(/"/g,'&quot;'))+'">');
-        posTable.insertAdjacentHTML('beforeend', '<input type="hidden" name="customer_name" value="'+(cname.replace(/"/g,'&quot;'))+'">');
-        posTable.insertAdjacentHTML('beforeend', '<input type="hidden" name="customer_phone" value="'+(phone.replace(/"/g,'&quot;'))+'">');
-        // add customer id if selected
-        try {
-          var custVal = $('#customerSelect').val();
-          if (custVal) posTable.insertAdjacentHTML('beforeend', '<input type="hidden" name="customer" value="'+custVal+'">');
-        } catch(e){}
-      }
+      const info = JSON.parse(localStorage.getItem('customer_info') || '{}');
+      if (info.customer_id) posTable.innerHTML += '<input type="hidden" name="customer" value="'+escapeHtml(info.customer_id)+'">';
+      posTable.innerHTML += '<input type="hidden" name="customer_name" value="'+escapeHtml(info.customer_name || info.customer_text || '')+'">';
+      posTable.innerHTML += '<input type="hidden" name="customer_phone" value="'+escapeHtml(info.customer_phone || '')+'">';
+      posTable.innerHTML += '<input type="hidden" name="pos_note" value="'+escapeHtml(info.order_note || '')+'">';
+      posTable.innerHTML += '<input type="hidden" name="warehouse" value="3">';
+      posTable.innerHTML += '<input type="hidden" name="biller" value="7283">';
 
 
 
@@ -454,7 +485,7 @@
       var form = document.getElementById('pos-sale-form');
       if (form) {
         // set action to admin/pos (already set) then submit
-        form.submit();
+        //form.submit();
       } else {
         alert('Không tìm thấy form để submit.');
       }

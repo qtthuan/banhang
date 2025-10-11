@@ -136,6 +136,8 @@ function mobileLoadItems() {
     var r = positems[k].row;
     totalQty += parseFloat(r.quantity || 0);
 
+
+
     hf.innerHTML += '<input type="hidden" name="product_id[]" value="' + escapeHtml(r.product_id) + '">';
     hf.innerHTML += '<input type="hidden" name="product_type[]" value="' + escapeHtml(r.product_type || 'standard') + '">';
     hf.innerHTML += '<input type="hidden" name="product_code[]" value="' + escapeHtml(r.product_code || '') + '">';
@@ -184,6 +186,24 @@ function mobileLoadItems() {
 /* Render cart UI */
 function renderCart() {
   var container = document.getElementById('cartItems');
+  // Khi mở giỏ hàng: hiển thị thông tin khách đã nhập
+  var offcanvasEl = document.getElementById('cartCanvas');
+  if (offcanvasEl) {
+    offcanvasEl.addEventListener('show.bs.offcanvas', function() {
+      const info = JSON.parse(localStorage.getItem('customer_info') || '{}');
+      let customerHtml = '';
+
+      if (info.customer_text && info.customer_id != 1) customerHtml += '<div><strong>Khách hàng:</strong> ' + info.customer_text + '</div>';
+      else if (info.customer_name) customerHtml += '<div><strong>Tên khách:</strong> ' + info.customer_name + '</div>';
+
+      if (info.customer_phone) customerHtml += '<div><strong>Điện thoại:</strong> ' + info.customer_phone + '</div>';
+      if (info.order_note) customerHtml += '<div><strong>Ghi chú:</strong> ' + info.order_note + '</div>';
+
+      document.getElementById('cartCustomerInfo').innerHTML =
+        customerHtml ? customerHtml : '';
+    });
+  }
+
   if (!container) return;
   var keys = Object.keys(positems);
   if (keys.length === 0) {
