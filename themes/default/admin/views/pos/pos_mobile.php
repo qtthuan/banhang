@@ -527,7 +527,7 @@
         if (modalInstance) modalInstance.hide();
       }, 800);
 
-    }, 1000); // giả lập thời gian ajax
+    }, 800); // giả lập thời gian ajax
   });
 
 
