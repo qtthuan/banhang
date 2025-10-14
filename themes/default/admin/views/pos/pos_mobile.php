@@ -216,7 +216,10 @@
           <h6 class="card-title text-uppercase"><?= htmlspecialchars($cleanName) ?></h6>
 
           <!-- Base price element stores base in data-base -->
-          <p class="text-muted mb-1 base-price" data-base="<?= (float)$p->price ?>"><?= number_format($p->price,0,',','.') ?>đ</p>
+          <p class="text-muted mb-1 product-price" id="price-<?= $p->id ?>" data-base="<?= (float)$p->price ?>">
+            <?= number_format($p->price,0,',','.') ?>đ
+          </p>
+
 
           <!-- Size radios: value = variant_id|variant_price|variant_name -->
           <?php if (!empty($p->variants)): ?>
@@ -371,6 +374,11 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- pos.mobile.js external (we also include the version below) -->
+ <script>
+  var currentCustomer = JSON.parse(localStorage.getItem('customer_info') || '{}');
+  var base_url = "<?= base_url(); ?>"; // thêm nếu chưa có
+  var admin_url = "<?= admin_url(); ?>";
+</script>
 <script src="<?= $assets ?>pos/js/pos.mobile.js?v=2.8"></script>
 
 <!-- Inline initialization (safe, small) -->
@@ -423,12 +431,23 @@
       }, 500);
 
 
-    
+      //let currentCustomer = null;
+      let priceGroups = {}; // cache nhóm giá để đỡ gọi lại
 
+      // Khi chọn khách hàng trong modal Thông tin KH
+      $('#customerSelect').on('select2:select', function (e) {
+        const data = e.params.data;
+        const customerId = data.id;
 
-      // Khi chọn khách xong -> cập nhật lại input
-      $custSel.on('select2:select', function(e) {
-        iosInput.value = e.params.data.text || '';
+        fetch(`${admin_url}/pos/get_customer_info/${customerId}`)
+          .then(res => res.json())
+          .then(info => {
+            //console.log('Customer info:', info);
+            localStorage.setItem('customer_info', JSON.stringify(currentCustomer));
+
+            //currentCustomer = info;
+            updateProductPrices();
+          });
       });
 
     } catch (e) {

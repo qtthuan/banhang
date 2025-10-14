@@ -120,6 +120,22 @@ class Pos extends MY_Controller
         echo $this->datatables->generate();
     }
 
+    public function get_customer_info($id)
+    {
+        echo json_encode($this->pos_model->get_customer_info($id));
+    }
+
+    public function get_price_group($pg_id, $product_id)
+    {
+        echo json_encode($this->pos_model->get_price_group($pg_id, $product_id));
+    }
+
+    public function check_promo($product_id)
+    {
+        echo json_encode($this->pos_model->check_promo($product_id));
+    }
+
+
     /* ---------------------------------------------------------------------------------------------------- */
 
     public function index($sid = NULL)

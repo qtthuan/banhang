@@ -749,6 +749,30 @@ class Pos_model extends CI_Model
         return FALSE;
     }
 
+    public function get_customer_info($id) {
+        return $this->db->get_where('companies', ['id' => $id])->row();
+    }
+
+    public function get_price_group($pg_id, $product_id) {
+        return $this->db->get_where('product_prices', [
+            'price_group_id' => $pg_id,
+            'product_id' => $product_id
+        ])->row();
+    }
+
+    public function check_promo($product_id) {
+        $p = $this->db->get_where('products', ['id' => $product_id])->row();
+        $today = date('Y-m-d');
+        $is_promo = ($p->promotion == 1 && $p->start_date <= $today && $p->end_date >= $today);
+        return [
+            'is_promo' => $is_promo,
+            'promo_price' => $is_promo ? (float)$p->promo_price : (float)$p->price,
+            'original_price' => (float)$p->price,
+            'big_size_price' => (float)$p->big_size_price
+        ];
+    }
+
+
     public function bills_count()
     {
         if (!$this->Owner && !$this->Admin) {

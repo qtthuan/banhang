@@ -214,7 +214,7 @@ function renderCart() {
   var html = '', total = 0;
   keys.forEach(function(k){
     var it = positems[k].row;
-    console.log(it);
+    //console.log(it);
     var qty = parseFloat(it.quantity || 0);
     var unit = parseFloat(it.unit_price || 0);
     var subtotal = (parseFloat(it.unit_price) || 0) * (parseFloat(it.quantity) || 0);
@@ -250,6 +250,60 @@ function updateCartCount() {
   Object.keys(positems).forEach(function(k){ totalQty += parseFloat(positems[k].row.quantity || 0); });
   badge.textContent = totalQty;
 }
+
+function updateProductPrices() {
+
+  const info = JSON.parse(localStorage.getItem('customer_info') || '{}');
+  const isShopeeOrGrab = info && info.customer_group_id == 4;
+  const priceGroupId = info ? info.price_group_id : null;
+  const today = new Date();
+
+  document.querySelectorAll('.product-card').forEach(card => {
+    const productId = card.getAttribute('data-product-id');
+    const basePriceEl = card.querySelector('.product-price');
+    let basePrice = parseFloat(card.getAttribute('data-base-price')) || 0;
+
+    if (isShopeeOrGrab && priceGroupId) {
+      // Lấy giá nhóm riêng (Shopee/Grab)
+      fetch(`${admin_url}/pos/get_price_group/${priceGroupId}/${productId}`)
+        .then(res => res.json())
+        .then(p => {
+          console.log(res.json);
+          if (p) {
+            const priceM = parseFloat(p.price || basePrice);
+            const priceL = parseFloat(p.big_size_price || 0);
+            card.setAttribute('data-price-m', priceM);
+            card.setAttribute('data-price-l', priceM + priceL);
+            basePriceEl.innerHTML = formatMoney(priceM) + ' ₫';
+          }
+        });
+    } else {
+      // Check khuyến mãi
+      fetch(`${base_url}admin/pos/check_promo/${productId}`)
+        .then(res => res.json())
+        .then(promo => {
+          if (promo.is_promo) {
+            card.setAttribute('data-price-m', promo.promo_price);
+            card.setAttribute('data-price-l', promo.promo_price + (parseFloat(promo.big_size_price) || 0));
+            basePriceEl.innerHTML = `<span class="text-danger">${formatMoney(promo.promo_price)} ₫</span> 
+              <small class="text-muted text-decoration-line-through">${formatMoney(promo.original_price)} ₫</small>`;
+          } else {
+            card.setAttribute('data-price-m', basePrice);
+            card.setAttribute('data-price-l', basePrice + (parseFloat(promo.big_size_price) || 0));
+            basePriceEl.textContent = formatMoney(basePrice) + ' ₫';
+          }
+        });
+    }
+  });
+}
+
+function formatMoney(x, symbol = '') {
+  if (x === null || x === undefined || x === '') return symbol + '0';
+  const num = parseFloat(x);
+  if (isNaN(num)) return symbol + '0';
+  return symbol + num.toLocaleString('vi-VN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
 
 /* UI wiring: delegated event handlers */
 document.addEventListener('DOMContentLoaded', function(){
@@ -337,8 +391,8 @@ document.addEventListener('DOMContentLoaded', function(){
       var input = e.target;
       var card = input.closest('.card-body') || input.closest('.card');
       if (!card) return;
-      // try to find base price element: .base-price[data-base] or .text-muted
-      var baseEl = card.querySelector('.base-price');
+      // try to find base price element: .product-price[data-base] or .text-muted
+      var baseEl = card.querySelector('.product-price');
       var base = baseEl ? (parseFloat(baseEl.getAttribute('data-base') || 0) || 0) : (parseFloat((card.querySelector('.text-muted') || {}).getAttribute && card.querySelector('.text-muted').textContent.replace(/[^\d]/g,'') || 0) || 0);
       // safe fallback: read data-price from add button (original)
       var addBtn = card.querySelector('.btn-addcart');
@@ -348,7 +402,7 @@ document.addEventListener('DOMContentLoaded', function(){
       var parts = (input.value || '').split('|');
       var extra = parseFloat(parts[1] || 0) || 0;
       var newPrice = base + extra;
-      // update display: either .base-price or .text-muted
+      // update display: either .product-price or .text-muted
       if (baseEl) {
         baseEl.setAttribute('data-base', base); // keep base stored
         baseEl.textContent = fmtVND(newPrice);
