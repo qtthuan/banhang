@@ -343,7 +343,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" id="resetOrderInfoBtn">Reset</button>
         <button class="btn btn-danger" data-bs-dismiss="modal">Đóng</button>
-        <button class="btn btn-success" id="saveOrderInfo">Lưu</button>
+        <button class="btn btn-success" id="saveCustomerInfoBtn">Lưu</button>
       </div>
     </div>
   </div>
@@ -531,23 +531,11 @@
   });
 
   // Khi nhấn “Lưu”
-  // document.getElementById('saveOrderInfo').addEventListener('click', function() {
-  //   const data = {
-  //     customer_id: $('#customerSelect').val(),
-  //     customer_name: document.getElementById('customer_name').value.trim(),
-  //     customer_phone: document.getElementById('customer_phone').value.trim(),
-  //     order_note: document.getElementById('order_note').value.trim()
-  //   };
-  //   localStorage.setItem(orderInfoKey, JSON.stringify(data));
-  //   alert('Đã lưu thông tin đơn hàng!');
-  //   const modal = bootstrap.Modal.getInstance(document.getElementById('orderInfoModal'));
-  //   modal.hide();
-  // });
-  document.getElementById('saveOrderInfo').addEventListener('click', function() {
+  document.getElementById('saveCustomerInfoBtn').addEventListener('click', function() {
     const statusBox = document.getElementById('saveStatus');
     const modal = document.getElementById('orderInfoModal');
 
-    const customerId = $('#customerSelect').val();
+    const customerId = $('#customerSelect').val();  
     const customerText = $('#customerSelect').find('option:selected').text();
 
     const data = {
@@ -579,6 +567,39 @@
 
     }, 800); // giả lập thời gian ajax
   });
+
+
+  // document.getElementById('saveCustomerInfoBtn').addEventListener('click', async function() {
+  //   const id = document.getElementById('customerSelect').value || '';
+  //   const name = document.getElementById('customer_name').value.trim();
+  //   const phone = document.getElementById('customer_phone').value.trim();
+  //   const note = document.getElementById('order_note').value.trim();
+
+  //   const info = { id, name, phone, note };
+  //   localStorage.setItem('customer_info', JSON.stringify(info));
+
+  //   // gọi hàm cập nhật giá sau khi bấm Lưu
+  //   try {
+  //     await updateProductPrices();
+  //   } catch (e) {
+  //     console.warn('Không thể cập nhật giá:', e);
+  //   }
+
+  //   // hiện thông báo nhỏ rồi đóng modal
+  //   showMiniAlert('Đã lưu thông tin khách hàng');
+  //   const modal = bootstrap.Modal.getInstance(document.getElementById('customerInfoModal'));
+  //   if (modal) modal.hide();
+  // });
+
+  // function showMiniAlert(msg) {
+  //   const alert = document.createElement('div');
+  //   alert.className = 'statusBox';
+  //   alert.textContent = msg;
+  //   document.body.appendChild(alert);
+  //   setTimeout(() => alert.remove(), 1000);
+  // }
+
+
 
 
   // Khi mở giỏ hàng, hiển thị thông tin khách hàng trong phần tóm tắt

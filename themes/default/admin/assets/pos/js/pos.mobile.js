@@ -262,13 +262,14 @@ function updateProductPrices() {
     const productId = card.getAttribute('data-product-id');
     const basePriceEl = card.querySelector('.product-price');
     let basePrice = parseFloat(card.getAttribute('data-base-price')) || 0;
-
+console.log(info);
     if (isShopeeOrGrab && priceGroupId) {
+      console.log('xxx');
       // Lấy giá nhóm riêng (Shopee/Grab)
       fetch(`${admin_url}/pos/get_price_group/${priceGroupId}/${productId}`)
         .then(res => res.json())
         .then(p => {
-          console.log(res.json);
+          console.log('ppp ' + p);
           if (p) {
             const priceM = parseFloat(p.price || basePrice);
             const priceL = parseFloat(p.big_size_price || 0);
