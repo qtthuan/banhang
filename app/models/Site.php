@@ -1141,6 +1141,18 @@ class Site extends CI_Model
         return FALSE;
     }
 
+    public function check_promo($product_id) {
+        $p = $this->db->get_where('sma_products', ['id' => $product_id])->row();
+        $today = date('Y-m-d');
+        $is_promo = ($p->promotion == 1 && $p->start_date <= $today && $p->end_date >= $today);
+        return [
+            'is_promo' => $is_promo,
+            'promo_price' => $is_promo ? (float)$p->promo_price : (float)$p->price,
+            'original_price' => (float)$p->price,
+            'big_size_price' => (float)$p->big_size_price
+        ];
+    }
+
     public function getAllBrands()
     {
         $q = $this->db->get("brands");
