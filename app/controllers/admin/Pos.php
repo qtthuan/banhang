@@ -125,10 +125,23 @@ class Pos extends MY_Controller
         echo json_encode($this->pos_model->get_customer_info($id));
     }
 
-    public function get_price_group($pg_id, $product_id)
+    // public function get_price_group($pg_id, $product_id)
+    // {
+    //     echo json_encode($this->pos_model->get_price_group($pg_id, $product_id));
+    // }
+
+    public function get_price_group($price_group_id, $product_id)
     {
-        echo json_encode($this->pos_model->get_price_group($pg_id, $product_id));
+        $data = $this->pos_model->get_price_group($price_group_id, $product_id);
+        if ($data) {
+            header('Content-Type: application/json');
+            echo json_encode($data);
+        } else {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'not found', 'price_group_id' => $price_group_id, 'product_id' => $product_id]);
+        }
     }
+
 
     public function check_promo($product_id)
     {

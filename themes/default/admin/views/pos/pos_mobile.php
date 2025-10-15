@@ -159,6 +159,11 @@
   </style>
 </head>
 <body>
+  <script>
+    ///var currentCustomer = JSON.parse(localStorage.getItem('customer_info') || '{}');
+    var base_url = "<?= base_url(); ?>"; // thêm nếu chưa có
+    var admin_url = "<?= admin_url(); ?>";
+  </script>
 
 <!-- Header -->
 <nav class="navbar navbar-light bg-white sticky-top">
@@ -374,11 +379,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- pos.mobile.js external (we also include the version below) -->
- <script>
-  var currentCustomer = JSON.parse(localStorage.getItem('customer_info') || '{}');
-  var base_url = "<?= base_url(); ?>"; // thêm nếu chưa có
-  var admin_url = "<?= admin_url(); ?>";
-</script>
+ 
 <script src="<?= $assets ?>pos/js/pos.mobile.js?v=2.8"></script>
 
 <!-- Inline initialization (safe, small) -->
@@ -443,7 +444,7 @@
           .then(res => res.json())
           .then(info => {
             //console.log('Customer info:', info);
-            localStorage.setItem('customer_info', JSON.stringify(currentCustomer));
+            localStorage.setItem('customer_info', JSON.stringify(info));
 
             //currentCustomer = info;
             updateProductPrices();

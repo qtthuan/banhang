@@ -754,10 +754,17 @@ class Pos_model extends CI_Model
     }
 
     public function get_price_group($pg_id, $product_id) {
-        return $this->db->get_where('product_prices', [
+        
+        $q = $this->db->get_where('product_prices', [
             'price_group_id' => $pg_id,
             'product_id' => $product_id
-        ])->row();
+        ]);
+        // Log câu query
+        log_message('debug', 'SQL get_price_group: ' . $this->db->last_query());
+        echo '<pre>'.$this->db->last_query().'</pre>'; // in thẳng ra
+
+        $res = $q->row();
+        log_message('debug', 'getProductPriceByGroup result: ' . print_r($res, true));
     }
 
     public function check_promo($product_id) {
