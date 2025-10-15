@@ -262,7 +262,7 @@ function updateProductPrices() {
     const productId = card.getAttribute('data-product-id');
     const basePriceEl = card.querySelector('.product-price');
     let basePrice = parseFloat(card.getAttribute('data-base-price')) || 0;
-console.log(info);
+    console.log(info);
     if (isShopeeOrGrab && priceGroupId) {
       console.log('xxx');
       // Lấy giá nhóm riêng (Shopee/Grab)
