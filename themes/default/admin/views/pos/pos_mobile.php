@@ -214,16 +214,27 @@
       $name_en = isset($p->name_en) ? $p->name_en : '';
       $unit = isset($p->unit) ? $p->unit : '';
     ?>
-    <div class="col-6 product-card" data-name="<?= htmlspecialchars($cleanName) ?>">
+    <div class="col-6 product-card"
+     data-product-id="<?= $p->id ?>"
+     data-name="<?= htmlspecialchars($cleanName) ?>"
+     data-base-price="<?= (float)$p->price ?>">
+    
       <div class="card h-100">
         <div class="card-body text-center">
           <img src="<?= $img ?>" alt="<?= htmlspecialchars($p->name) ?>" class="product-img">
           <h6 class="card-title text-uppercase"><?= htmlspecialchars($cleanName) ?></h6>
 
           <!-- Base price element stores base in data-base -->
-          <p class="text-muted mb-1 product-price" id="price-<?= $p->id ?>" data-base="<?= (float)$p->price ?>">
+
+
+          <p class="text-muted mb-1 product-price"
+            id="price-<?= $p->id ?>"
+            data-base="<?= (float)$p->price ?>"
+            data-price-m="<?= (float)$p->price ?>"
+            data-price-l="<?= (float)$p->price + 5000 ?>">
             <?= number_format($p->price,0,',','.') ?>đ
           </p>
+
 
 
           <!-- Size radios: value = variant_id|variant_price|variant_name -->

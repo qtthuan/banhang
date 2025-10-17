@@ -760,8 +760,8 @@ class Pos_model extends CI_Model
             'product_id' => $product_id
         ]);
         // Log câu query
-        log_message('debug', 'SQL get_price_group: ' . $this->db->last_query());
-        echo '<pre>'.$this->db->last_query().'</pre>'; // in thẳng ra
+        //log_message('debug', 'SQL get_price_group: ' . $this->db->last_query());
+        //echo '<pre>'.$this->db->last_query().'</pre>'; // in thẳng ra
 
         $res = $q->row();
         log_message('debug', 'getProductPriceByGroup result: ' . print_r($res, true));

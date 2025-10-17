@@ -264,7 +264,7 @@ function updateProductPrices() {
     let basePrice = parseFloat(card.getAttribute('data-base-price')) || 0;
     console.log(info);
     if (isShopeeOrGrab && priceGroupId) {
-      //console.log('xxx');
+      console.log('priceGroupId: ' + priceGroupId + ' - Pro_id: ' + productId);
       // Lấy giá nhóm riêng (Shopee/Grab)
       fetch(`${admin_url}/pos/get_price_group/${priceGroupId}/${productId}`)
         .then(res => res.json())
