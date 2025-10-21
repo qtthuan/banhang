@@ -26,11 +26,20 @@
                         $i = 0;
                         foreach ($sales as $sale) {
                            
+                            $customer_name = trim($sale->customer); // bỏ khoảng trắng đầu/cuối
+                            if (mb_strlen($customer_name, 'UTF-8') > 15) {
+                                // cắt đúng 15 ký tự và nối 3 dấu chấm sát chữ cuối
+                                $customer_name = rtrim(mb_substr($customer_name, 0, 15, 'UTF-8')) . '..';
+                            }
+                        
+
                             echo '<button type="button" class="btn btn-danger bills" id="'.$sale->id.'" style="height:58px; width: 210px; font-size: 17px; line-height: 16px; margin-top: 10px">';
                             echo '<span id="reference_'.$sale->id.'">#' . substr($sale->reference_no, -3) . '<span>';
+
                             echo '<br /><span style="font-size: 13px">'. $sale->customer.'</span>';
                             echo '<br /><span style="font-size: 13px">'. $this->sma->formatMoney($sale->grand_total).'</span>';
                             echo '<input type="hidden" class="hidd_customer_id" value="'.$sale->customer_id.'">';
+                            echo '<input type="hidden" class="hidd_customer_name" value="'.htmlspecialchars($customer_name).'">';
                             echo '<input type="hidden" class="hidd_sale_id" value="'.$sale->id.'">';
                             echo '<input type="hidden" class="hidd_sale_language" value="'.$sale->sale_language.'">';
                             echo '<input type="hidden" class="hidd_reference_no" value="#'.substr($sale->reference_no, -3).'">';
@@ -109,12 +118,12 @@
                                             }
 
                                             echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
-                                            echo '<span style="font-size: 17px; font-weight: bold" class="reference_no">';   
+                                            echo '<span style="font-size: 12px; font-weight: bold" class="reference_no">';   
                                             echo '</span>';
-                                            //if ($item->customer_id != 6533) { // Không in giá Cô Ngọc LQĐ
-                                                echo '<span class="text_price">'.$this->sma->formatMoney($item->unit_price);
-                                                echo '</span>';
-                                            //}
+                                            
+                                            echo '<span class="text_price">'.$this->sma->formatK($item->unit_price);
+                                            echo '</span>';
+                                            
                                             echo '</h4>';
 
                                             echo '</div>';
@@ -166,10 +175,10 @@
                                         }
 
                                         echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
-                                        echo '<span style="font-size: 17px; font-weight: bold" class="reference_no ">';   
+                                        echo '<span style="font-size: 11px; font-weight: bold" class="reference_no ">';   
                                         echo '</span>';
                                         //if ($item->customer_id != 6533) { // Không in giá Cô Ngọc LQĐ
-                                            echo '<span class="text_price">'.$this->sma->formatMoney($item->unit_price);
+                                            echo '<span class="text_price">'.$this->sma->formatK($item->unit_price);
                                             echo '</span>';
                                         //}
                                         echo '</h4>';
@@ -230,10 +239,8 @@
         
         // Enable first button
         $('.bills:first').removeClass('btn-danger').addClass('btn-success');
-        $('.reference_no').text($('.hidd_reference_no:first').val());
-        // if ($('.hidd_customer_id:first').val() == 6533) {
-        //     $('.text_price').hide();
-        // }
+        //$('.reference_no').text($('.hidd_reference_no:first').val());
+        $('.reference_no').text($('.hidd_customer_name:first').val());
         if($(".bills:first .hidd_sale_language").val() == 1) {
             $('.barcode:first .label_product_name_en').removeAttr('style');
             $('.barcode:first .style10_1' ).each(function( index ) {
@@ -267,7 +274,8 @@
                 $(this).removeClass('btn-danger');
                 $('.div' + div_id).show();
                 $(this).addClass('btn-success');
-                $('.reference_no').text($('#' + div_id).find('.hidd_reference_no').val());
+                //$('.reference_no').text($('#' + div_id).find('.hidd_reference_no').val());
+                $('.reference_no').text($('#' + div_id).find('.hidd_customer_name').val());
                 //console.log('vvv' + sale_language);
                 if(sale_language == 1) {
                     //console.log('vvv');

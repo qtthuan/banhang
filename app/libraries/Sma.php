@@ -70,6 +70,17 @@ class Sma
             ($this->Settings->display_symbol == 2 && $number != 0 ? $symbol : '');
     }
 
+    
+    public function formatK($number) {
+        if ($number >= 1000) {
+            $formatted = round($number / 1000, 1); // chia cho 1000 và làm tròn 1 chữ số thập phân
+            return rtrim(rtrim($formatted, '0'), '.') . 'K'; // bỏ .0 nếu có
+        }
+        return $number; // nhỏ hơn 1000 thì giữ nguyên
+    }
+
+
+
     public function formatQuantity($number, $decimals = null)
     {
         if (!$decimals) {
