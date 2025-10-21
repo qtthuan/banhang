@@ -27,9 +27,9 @@
                         foreach ($sales as $sale) {
                            
                             $customer_name = trim($sale->customer); // bỏ khoảng trắng đầu/cuối
-                            if (mb_strlen($customer_name, 'UTF-8') > 15) {
+                            if (mb_strlen($customer_name, 'UTF-8') > 16) {
                                 // cắt đúng 15 ký tự và nối 3 dấu chấm sát chữ cuối
-                                $customer_name = rtrim(mb_substr($customer_name, 0, 15, 'UTF-8')) . '..';
+                                $customer_name = rtrim(mb_substr($customer_name, 0, 16, 'UTF-8')) . '..';
                             }
                         
 
@@ -175,7 +175,7 @@
                                         }
 
                                         echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
-                                        echo '<span style="font-size: 11px; font-weight: bold" class="reference_no ">';   
+                                        echo '<span style="font-size: 10px; font-weight: bold" class="reference_no ">';   
                                         echo '</span>';
                                         //if ($item->customer_id != 6533) { // Không in giá Cô Ngọc LQĐ
                                             echo '<span class="text_price">'.$this->sma->formatK($item->unit_price);
