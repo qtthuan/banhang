@@ -765,6 +765,7 @@ class Pos_model extends CI_Model
 
         $res = $q->row();
         log_message('debug', 'getProductPriceByGroup result: ' . print_r($res, true));
+        return $res;
     }
 
     public function check_promo($product_id) {

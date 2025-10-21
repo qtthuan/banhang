@@ -269,7 +269,7 @@ function updateProductPrices() {
       fetch(`${admin_url}/pos/get_price_group/${priceGroupId}/${productId}`)
         .then(res => res.json())
         .then(p => {
-          console.log('ppp ' + p);
+          console.log('Test URL: ' + `${admin_url}` + '/pos/get_price_group/' + `${priceGroupId}` + '/' + `${productId}` + JSON.stringify(p));
           if (p) {
             const priceM = parseFloat(p.price || basePrice);
             const priceL = parseFloat(p.big_size_price || 0);

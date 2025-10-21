@@ -214,10 +214,11 @@
       $name_en = isset($p->name_en) ? $p->name_en : '';
       $unit = isset($p->unit) ? $p->unit : '';
     ?>
-    <div class="col-6 product-card"
+    
+<div class="col-6 col-md-4 mb-3 product-card"
      data-product-id="<?= $p->id ?>"
-     data-name="<?= htmlspecialchars($cleanName) ?>"
-     data-base-price="<?= (float)$p->price ?>">
+     data-name="<?= $p->name ?>"
+     data-base-price="<?= (float)$p->price ?>">    
     
       <div class="card h-100">
         <div class="card-body text-center">
@@ -272,6 +273,7 @@
         </div>
       </div>
     </div>
+    
     <?php endforeach; ?>
   </div>
 </div>
