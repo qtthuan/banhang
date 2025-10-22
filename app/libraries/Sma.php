@@ -72,6 +72,10 @@ class Sma
 
     
     public function formatK($number) {
+        // Nếu là 0 hoặc null thì trả về "0"
+        if (empty($number) || $number == 0) {
+            return '0';
+        }
         if ($number >= 1000) {
             $formatted = round($number / 1000, 1); // chia cho 1000 và làm tròn 1 chữ số thập phân
             return rtrim(rtrim($formatted, '0'), '.') . 'K'; // bỏ .0 nếu có
