@@ -577,9 +577,9 @@
         statusBox.style.display = 'none';
         const modalInstance = bootstrap.Modal.getInstance(modal);
         if (modalInstance) modalInstance.hide();
-      }, 800);
+      }, 400);
 
-    }, 800); // giả lập thời gian ajax
+    }, 400); // giả lập thời gian ajax
   });
 
 

@@ -402,7 +402,13 @@ document.addEventListener('DOMContentLoaded', function(){
 
       var parts = (input.value || '').split('|');
       var extra = parseFloat(parts[1] || 0) || 0;
-      var newPrice = base + extra;
+      let newPrice;
+      if (parts[2] && parts[2].toLowerCase().includes('l')) {
+        newPrice = parseFloat(card.getAttribute('data-price-l')) || base + extra;
+      } else {
+        newPrice = parseFloat(card.getAttribute('data-price-m')) || base;
+      }
+
       // update display: either .product-price or .text-muted
       if (baseEl) {
         baseEl.setAttribute('data-base', base); // keep base stored
@@ -542,6 +548,13 @@ document.addEventListener('DOMContentLoaded', function(){
   // initial render
   renderCart();
   updateCartCount();
+
+  // Khi load trang, nếu trong localStorage đã có customer_info thì cập nhật giá
+  const savedInfo = JSON.parse(localStorage.getItem('customer_info') || '{}');
+  if (savedInfo && savedInfo.customer_id && savedInfo.customer_id != 1) {
+    updateProductPrices();
+  }
+
 }); // DOMContentLoaded
 
 /* Expose API */
