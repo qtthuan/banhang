@@ -263,37 +263,38 @@ function updateProductPrices() {
     const basePriceEl = card.querySelector('.product-price');
     let basePrice = parseFloat(card.getAttribute('data-base-price')) || 0;
     console.log(info);
+
+
     if (isShopeeOrGrab && priceGroupId) {
-      console.log('priceGroupId: ' + priceGroupId + ' - Pro_id: ' + productId);
-      // Lấy giá nhóm riêng (Shopee/Grab)
       fetch(`${admin_url}/pos/get_price_group/${priceGroupId}/${productId}`)
         .then(res => res.json())
         .then(p => {
-          console.log('Test URL: ' + `${admin_url}` + '/pos/get_price_group/' + `${priceGroupId}` + '/' + `${productId}` + JSON.stringify(p));
-          if (p) {
-            const priceM = parseFloat(p.price || basePrice);
-            const priceL = parseFloat(p.big_size_price || 0);
-            card.setAttribute('data-price-m', priceM);
-            card.setAttribute('data-price-l', priceM + priceL);
-            basePriceEl.innerHTML = formatMoney(priceM) + ' ₫';
+          if (p && p.price) {
+            const priceM = parseFloat(p.price);
+            const priceL = priceM + (parseFloat(p.big_size_price) || 0);
+            card.dataset.priceM = priceM;
+            card.dataset.priceL = priceL;
+            basePriceEl.innerHTML = `<span class="text-success">${formatMoney(priceM)} ₫</span>`;
           }
-        });
+        })
+        .catch(err => console.error('Price group fetch error:', err));
     } else {
       // Check khuyến mãi
-      fetch(`${base_url}admin/pos/check_promo/${productId}`)
-        .then(res => res.json())
-        .then(promo => {
-          if (promo.is_promo) {
-            card.setAttribute('data-price-m', promo.promo_price);
-            card.setAttribute('data-price-l', promo.promo_price + (parseFloat(promo.big_size_price) || 0));
-            basePriceEl.innerHTML = `<span class="text-danger">${formatMoney(promo.promo_price)} ₫</span> 
-              <small class="text-muted text-decoration-line-through">${formatMoney(promo.original_price)} ₫</small>`;
-          } else {
-            card.setAttribute('data-price-m', basePrice);
-            card.setAttribute('data-price-l', basePrice + (parseFloat(promo.big_size_price) || 0));
-            basePriceEl.textContent = formatMoney(basePrice) + ' ₫';
-          }
-        });
+      fetch(`${admin_url}/pos/check_promo/${productId}`)
+      .then(res => res.json())
+      .then(promo => {
+        if (promo && promo.is_promo == 1) {
+          const promoPrice = parseFloat(promo.promo_price);
+          const originalPrice = parseFloat(promo.original_price);
+          const bigSizeExtra = parseFloat(promo.big_size_price || 0);
+
+          card.dataset.priceM = promoPrice;
+          card.dataset.priceL = promoPrice + bigSizeExtra;
+          basePriceEl.innerHTML = `
+            <span class="text-danger fw-bold">${formatMoney(promoPrice)} ₫</span>
+            <small class="text-muted text-decoration-line-through">${formatMoney(originalPrice)} ₫</small>`;
+        }
+      });
     }
   });
 }
@@ -550,10 +551,13 @@ document.addEventListener('DOMContentLoaded', function(){
   updateCartCount();
 
   // Khi load trang, nếu trong localStorage đã có customer_info thì cập nhật giá
-  const savedInfo = JSON.parse(localStorage.getItem('customer_info') || '{}');
-  if (savedInfo && savedInfo.customer_id && savedInfo.customer_id != 1) {
+
+  const savedCustomer = JSON.parse(localStorage.getItem('customer_info') || '{}');
+  if (savedCustomer && savedCustomer.customer_group_id) {
     updateProductPrices();
   }
+
+
 
 }); // DOMContentLoaded
 

@@ -227,15 +227,17 @@
 
           <!-- Base price element stores base in data-base -->
 
-
           <p class="text-muted mb-1 product-price"
             id="price-<?= $p->id ?>"
-            data-base="<?= (float)$p->price ?>"
+            data-product-id="<?= $p->id ?>"
+            data-base-price="<?= (float)$p->price ?>"
             data-price-m="<?= (float)$p->price ?>"
-            data-price-l="<?= (float)$p->price + 5000 ?>">
-            <?= number_format($p->price,0,',','.') ?>đ
+            data-price-l="<?= (float)$p->price ?>">
+            <?= number_format($p->price, 0, ',', '.') ?>₫
           </p>
 
+
+          
 
 
           <!-- Size radios: value = variant_id|variant_price|variant_name -->
