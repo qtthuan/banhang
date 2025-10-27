@@ -487,6 +487,9 @@
         document.getElementById('customer_phone').value = '';
         document.getElementById('order_note').value = '';
 
+        // Gọi lại cập nhật giá mặc định (giá gốc)
+        updateProductPrices();
+
         // Xóa dữ liệu localStorage
         localStorage.removeItem('customer_info');
         
