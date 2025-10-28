@@ -94,7 +94,7 @@
 .barcode .barcode_price, .barcode .barcode_unit, .barcode .barcode_category { display: inline-block; font-size: 16px; }
 .barcode .text_code { font-weight: bold; display: inline-block; font-size: 15px; }
 .barcode .text_size { font-weight: bold; display: table-cell; font-size: 15px; text-align: left; }
-.barcode .text_price { font-weight: bold; display: table-cell; font-size: 17px; text-align: right; padding-right: 9px; }
+.barcode .text_price { font-weight: bold; display: table-cell; font-size: 16px; text-align: right; padding-right: 9px; }
 .barcode .text_suppliers { font-size: 12px; }
 .barcode .product_image { width: 0.8in; float: left; margin: 5px; }
 .barcode .style10 .product_image { width: 1in; }
