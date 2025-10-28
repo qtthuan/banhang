@@ -118,7 +118,7 @@
                                             }
 
                                             echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
-                                            echo '<span style="font-size: 12px; font-weight: bold" class="reference_no">';   
+                                            echo '<span style="font-size: 10px; font-weight: bold" class="reference_no">';   
                                             echo '</span>';
                                             
                                             echo '<span class="text_price">'.$this->sma->formatK($item->unit_price);
