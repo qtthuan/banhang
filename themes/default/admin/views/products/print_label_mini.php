@@ -102,7 +102,7 @@
                                             }                                            
                                             
                                             
-                                            $str_span_size = '<span class="circle_text" style="position: absolute; bottom: 16px; right: 3px; font-size: 16px; font-weight: bold">';
+                                            $str_span_size = '<span class="circle_text" style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold">';
                                             //$str_span_other = '<span class="circle_text1" style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold">';
                                             if($item->variant && $item->variant != '' && $item->variant != 'undefined') {
                                                 
@@ -159,7 +159,7 @@
                                         }
                                        
 
-                                        $str_span_size = '<span class="circle_text" style="position: absolute; bottom: 16px; right: 3px; font-size: 16px; font-weight: bold">';
+                                        $str_span_size = '<span class="circle_text" style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold">';
                                         $str_span_other = '<span class="circle_text1" style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold">';
                                         if($item->variant && $item->variant != '' && $item->variant != 'undefined') {
                                             
