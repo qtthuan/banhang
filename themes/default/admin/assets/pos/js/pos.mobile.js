@@ -263,9 +263,12 @@ function updateProductPrices() {
     const basePriceEl = card.querySelector('.product-price');
     let basePrice = parseFloat(card.getAttribute('data-base-price')) || 0;
     console.log(info);
+    console.log(`Updating price for product ${productId}`, {isShopeeOrGrab, priceGroupId});
+
 
 
     if (isShopeeOrGrab && priceGroupId) {
+      console.log('grab/shopee');
       fetch(`${admin_url}/pos/get_price_group/${priceGroupId}/${productId}`)
         .then(res => res.json())
         .then(p => {
@@ -549,6 +552,9 @@ document.addEventListener('DOMContentLoaded', function(){
   // initial render
   renderCart();
   updateCartCount();
+
+  // Luôn cập nhật giá ngay khi load trang
+  updateProductPrices();
 
   // Khi load trang, nếu trong localStorage đã có customer_info thì cập nhật giá
 

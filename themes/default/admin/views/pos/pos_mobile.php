@@ -458,7 +458,7 @@
         fetch(`${admin_url}/pos/get_customer_info/${customerId}`)
           .then(res => res.json())
           .then(info => {
-            //console.log('Customer info:', info);
+            console.log('Customer info:', info);
             localStorage.setItem('customer_info', JSON.stringify(info));
 
             //currentCustomer = info;
