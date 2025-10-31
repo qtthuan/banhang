@@ -207,6 +207,7 @@
 
   <!-- Product grid -->
   <div class="row g-2" id="productList">
+    <?php //$this->sma->print_arrays($products); ?>
     <?php foreach ($products as $p):
       $img = !empty($p->image) ? base_url('assets/uploads/thumbs/'.$p->image) : base_url('assets/uploads/thumbs/no_image.png');
       $cleanName = preg_replace('/^[A-Z]_\s*/', '', strtoupper($p->name));
@@ -460,6 +461,8 @@
           .then(info => {
             console.log('Customer info:', info);
             localStorage.setItem('customer_info', JSON.stringify(info));
+              console.log('Saved customer info:', info);
+
 
             //currentCustomer = info;
             updateProductPrices();
@@ -557,15 +560,31 @@
     const customerId = $('#customerSelect').val();  
     const customerText = $('#customerSelect').find('option:selected').text();
 
-    const data = {
+    // const data = {
+    //   customer_id: customerId,
+    //   customer_text: customerText,
+    //   customer_name: document.getElementById('customer_name').value.trim(),
+    //   customer_phone: document.getElementById('customer_phone').value.trim(),
+    //   order_note: document.getElementById('order_note').value.trim()
+    // };
+
+
+
+    const saved = JSON.parse(localStorage.getItem('customer_info') || '{}');
+    const updated = {
+      ...saved,
       customer_id: customerId,
       customer_text: customerText,
-      customer_name: document.getElementById('customer_name').value.trim(),
-      customer_phone: document.getElementById('customer_phone').value.trim(),
-      order_note: document.getElementById('order_note').value.trim()
+      customer_name: document.getElementById('customer_name').value || '',
+      customer_phone: document.getElementById('customer_phone').value || '',
+      order_note: document.getElementById('order_note').value || ''
     };
+    localStorage.setItem('customer_info', JSON.stringify(updated));
 
-    localStorage.setItem('customer_info', JSON.stringify(data));
+
+
+
+    //localStorage.setItem('customer_info', JSON.stringify(data));
 
 
     // hiện "Đang lưu..."
