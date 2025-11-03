@@ -228,18 +228,20 @@
 
           <!-- Base price element stores base in data-base -->
 
-          <p class="text-muted mb-1 product-price"
-            id="price-<?= $p->id ?>"
-            data-product-id="<?= $p->id ?>"
+
+          <p class="text-muted mb-1 product-price" 
+            id="price-<?= $p->id ?>" 
+            data-product-id="<?= $p->id ?>" 
             data-base-price="<?= (float)$p->price ?>"
             data-price-m="<?= (float)$p->price ?>"
             data-price-l="<?= (float)$p->price ?>">
-            <?= number_format($p->price, 0, ',', '.') ?>₫
+            <?php if (!empty($p->is_promo) && $p->is_promo): ?>
+              <span class="text-danger fw-bold"><?= number_format($p->price, 0, ',', '.') ?>đ</span>
+              <small class="text-muted text-decoration-line-through"><?= number_format($p->original_price, 0, ',', '.') ?>đ</small>
+            <?php else: ?>
+              <?= number_format($p->price, 0, ',', '.') ?>đ
+            <?php endif; ?>
           </p>
-
-
-          
-
 
           <!-- Size radios: value = variant_id|variant_price|variant_name -->
           <?php if (!empty($p->variants)): ?>

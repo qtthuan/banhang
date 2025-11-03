@@ -277,6 +277,9 @@ function updateProductPrices() {
             const priceL = priceM + (parseFloat(p.big_size_price) || 0);
             card.dataset.priceM = priceM;
             card.dataset.priceL = priceL;
+            card.querySelector('.btn-addcart')?.setAttribute('data-price', priceM);
+            card.querySelector('.product-price')?.setAttribute('data-base', priceM);
+
             basePriceEl.innerHTML = `<span class="text-success">${formatMoney(priceM)} ₫</span>`;
           }
         })
@@ -398,7 +401,9 @@ document.addEventListener('DOMContentLoaded', function(){
       if (!card) return;
       // try to find base price element: .product-price[data-base] or .text-muted
       var baseEl = card.querySelector('.product-price');
-      var base = baseEl ? (parseFloat(baseEl.getAttribute('data-base') || 0) || 0) : (parseFloat((card.querySelector('.text-muted') || {}).getAttribute && card.querySelector('.text-muted').textContent.replace(/[^\d]/g,'') || 0) || 0);
+      //var base = baseEl ? (parseFloat(baseEl.getAttribute('data-base') || 0) || 0) : (parseFloat((card.querySelector('.text-muted') || {}).getAttribute && card.querySelector('.text-muted').textContent.replace(/[^\d]/g,'') || 0) || 0);
+      var base = parseFloat(card.getAttribute('data-price-m')) || parseFloat(baseEl?.getAttribute('data-base') || 0) || 0;
+
       // safe fallback: read data-price from add button (original)
       var addBtn = card.querySelector('.btn-addcart');
       var originalBase = addBtn ? (parseFloat(addBtn.getAttribute('data-price') || 0) || 0) : base;
@@ -554,13 +559,13 @@ document.addEventListener('DOMContentLoaded', function(){
   updateCartCount();
 
   // Luôn cập nhật giá ngay khi load trang
-  updateProductPrices();
+  //updateProductPrices();
 
   // Khi load trang, nếu trong localStorage đã có customer_info thì cập nhật giá
 
   const savedCustomer = JSON.parse(localStorage.getItem('customer_info') || '{}');
   if (savedCustomer && savedCustomer.customer_group_id) {
-    updateProductPrices();
+    setTimeout(updateProductPrices, 300);
   }
 
 

@@ -476,31 +476,71 @@ class Pos_model extends CI_Model
 
     public function getAllMiniProducts()
     {
-        $this->db->select('id, code, name, price, image, category_id');
+        $today = date('Y-m-d');
+
+        $this->db->select('id, code, name, price, image, category_id, promotion, promo_price, start_date, end_date');
         $this->db->from('products');
         $this->db->where('category_id', 38);  // Chỉ lấy sản phẩm thuộc nhóm mini
         $this->db->where('hide_pos', 0);        // Chỉ lấy sp POS
         $this->db->order_by('name', 'ASC');
         $q = $this->db->get();
 
-        $products = [];
-        if ($q->num_rows() > 0) {
-            foreach ($q->result() as $row) {
-                // Lấy variants (size)
-                $variants = $this->db->select('id, name, price')
-                    ->from('sma_product_variants')
-                    ->where('product_id', $row->id)
-                    ->order_by('id', 'ASC')
-                    ->get()
-                    ->result();
 
-                $row->variants = $variants; // gắn variants vào sản phẩm
-                $products[] = $row;
+        $products = $q->result();
+
+        foreach ($products as &$p) {
+            // Check khuyến mãi
+            if ($p->promotion == 1 && $p->start_date <= $today && $p->end_date >= $today) {
+                $p->is_promo = true;
+                $p->original_price = $p->price;
+                $p->price = $p->promo_price; // thay giá gốc bằng giá khuyến mãi
+            } else {
+                $p->is_promo = false;
+                $p->original_price = $p->price;
             }
-        }
 
+            // Lấy variants (size)
+            $variants = $this->db->select('id, name, price')
+                ->from('sma_product_variants')
+                ->where('product_id', $p->id)
+                ->order_by('id', 'ASC')
+                ->get()
+                ->result();
+
+            $p->variants = $variants; // gắn variants vào sản phẩm
+            
+        }
         return $products;
     }
+
+
+    // public function getAllMiniProducts()
+    // {
+    //     $this->db->select('id, code, name, price, image, category_id');
+    //     $this->db->from('products');
+    //     $this->db->where('category_id', 38);  // Chỉ lấy sản phẩm thuộc nhóm mini
+    //     $this->db->where('hide_pos', 0);        // Chỉ lấy sp POS
+    //     $this->db->order_by('name', 'ASC');
+    //     $q = $this->db->get();
+
+    //     $products = [];
+    //     if ($q->num_rows() > 0) {
+    //         foreach ($q->result() as $row) {
+    //             // Lấy variants (size)
+    //             $variants = $this->db->select('id, name, price')
+    //                 ->from('sma_product_variants')
+    //                 ->where('product_id', $row->id)
+    //                 ->order_by('id', 'ASC')
+    //                 ->get()
+    //                 ->result();
+
+    //             $row->variants = $variants; // gắn variants vào sản phẩm
+    //             $products[] = $row;
+    //         }
+    //     }
+
+    //     return $products;
+    // }
 
 
     public function getProductByID($id)

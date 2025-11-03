@@ -72,16 +72,34 @@ class Sma
 
     
     public function formatK($number) {
-        // Nếu là 0 hoặc null thì trả về "0"
-        if (empty($number) || $number == 0) {
+        // null/empty/0 -> "0"
+        if ($number === null || $number === '' || floatval($number) == 0) {
             return '0';
         }
-        if ($number >= 1000) {
-            $formatted = round($number / 1000, 1); // chia cho 1000 và làm tròn 1 chữ số thập phân
-            return rtrim(rtrim($formatted, '0'), '.') . 'K'; // bỏ .0 nếu có
+
+        // ensure numeric
+        $n = floatval($number);
+
+        if ($n >= 1000) {
+            // divide by 1000 and round to 1 decimal place
+            $v = round($n / 1000, 1);
+
+            // if integer like 10.0 -> convert to "10"
+            if (floor($v) == $v) {
+                $s = (string) intval($v);
+            } else {
+                // keep one decimal place, but trim trailing zeros if any
+                $s = rtrim(rtrim(number_format($v, 1, '.', ''), '0'), '.');
+            }
+            return $s . 'K';
         }
-        return $number; // nhỏ hơn 1000 thì giữ nguyên
+
+        // <1000 -> show as integer (no decimals)
+        return (string) intval($n);
     }
+
+
+
 
 
 
