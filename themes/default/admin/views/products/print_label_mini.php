@@ -47,7 +47,7 @@
                         }
                         echo '</div>';
                         $j = 0;
-                        $total_items = 2;
+                        $total_items = 1;
                         foreach($items as $key => $values) {
                             //$total_items++;
                             $display_btn = '';
@@ -64,7 +64,7 @@
                                 && $item->product_id != 22153 && $item->product_id != 22154 && $item->product_id != 22178
                                 && $item->product_id != 22179 && $item->product_id != 22180
                                 && $item->product_id != 22181 && $item->product_id != 22185) {
-                                //$total_items++;
+                                $total_items++;
                                 //echo 'vv: '. $j.'<br />';
                                     $item_qty = $item->quantity;
                                     
@@ -86,9 +86,9 @@
                                                 $str_comment = '';
                                                 $str_comment_style = '';
                                                 if($item->comment && $item->comment != '' && $item->comment != 'undefined') {
-                                                    $str_comment = '<br /><span class="comment" style="font-size: 10px;"><strong>' . $item->comment . '</strong></span>';
+                                                    $str_comment = '<br /><span class="comment" style="font-size: 11px;"><strong>' . $item->comment . '</strong></span>';
                                                 }
-                                                echo '<span style="margin-top: 3px; position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
+                                                echo '<span style="position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
                                                 echo '<span class="label_product_name_en" style="display: none;"><br />' . $item->product_name_en . '</span>';
                                                 echo $str_comment;
                                                 echo '</span>';
@@ -96,13 +96,13 @@
 
                                             if ($item->comment_name) {
                                                 
-                                                echo '<span class="circle_text1" style="position: absolute; bottom: 18px; left: 3px; font-size: 12px; font-weight: bold">';
+                                                echo '<span class="circle_text1" style="position: absolute; bottom: 18px; left: 3px; font-size: 16px; font-weight: bold">';
                                                 echo ' <strong>' . $item->comment_name . '</strong>';
                                                 echo '</span>';
                                             }                                            
                                             
                                             
-                                            $str_span_size = '<span class="circle_text" style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold">';
+                                            $str_span_size = '<span class="circle_text" style="position: absolute; bottom: 22px; right: 3px; font-size: 16px; font-weight: bold">';
                                             //$str_span_other = '<span class="circle_text1" style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold">';
                                             if($item->variant && $item->variant != '' && $item->variant != 'undefined') {
                                                 
@@ -118,7 +118,7 @@
                                             }
 
                                             echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
-                                            echo '<span style="font-size: 10px; font-weight: bold" class="reference_no">';   
+                                            echo '<span style="font-size: 13px; font-weight: bold" class="reference_no">';   
                                             echo '</span>';
                                             
                                             echo '<span class="text_price">'.$this->sma->formatK($item->unit_price);
@@ -144,23 +144,23 @@
                                             $str_comment = '';
                                             $str_comment_style = '';
                                             if($item->comment && $item->comment != '' && $item->comment != 'undefined') {
-                                                $str_comment = '<br /><span class="comment" style="font-size: 10px;"><strong>' . $item->comment . '</strong></span>';
+                                                $str_comment = '<br /><span class="comment" style="font-size: 11px;"><strong>' . $item->comment . '</strong></span>';
                                             }
-                                            echo '<span style="margin-top: 3px; position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
+                                            echo '<span style="position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
                                             echo '<span class="label_product_name_en" style="display: none;"><br />' . $item->product_name_en . '</span>';
                                             echo $str_comment;
                                             echo '</span>';
                                         }
                                         if ($item->comment_name) {
                                                 
-                                            echo '<span class="circle_text1" style="position: absolute; bottom: 18px; left: 3px; font-size: 12px; font-weight: bold">';
+                                            echo '<span class="circle_text1" style="position: absolute; bottom: 22px; left: 3px; font-size: 16px; font-weight: bold">';
                                             echo ' <strong>' . $item->comment_name . '</strong>';
                                             echo '</span>';
                                         }
                                        
 
-                                        $str_span_size = '<span class="circle_text" style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold">';
-                                        $str_span_other = '<span class="circle_text1" style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold">';
+                                        $str_span_size = '<span class="circle_text" style="position: absolute; bottom: 22px; right: 3px; font-size: 16px; font-weight: bold">';
+                                        $str_span_other = '<span class="circle_text1" style="position: absolute; bottom: 22px; right: 3px; font-size: 16px; font-weight: bold">';
                                         if($item->variant && $item->variant != '' && $item->variant != 'undefined') {
                                             
                                             if (trim(strtolower($item->variant)) == 'size l') {
@@ -175,7 +175,7 @@
                                         }
 
                                         echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
-                                        echo '<span style="font-size: 10px; font-weight: bold" class="reference_no ">';   
+                                        echo '<span style="font-size: 13px; font-weight: bold" class="reference_no ">';   
                                         echo '</span>';
                                         //if ($item->customer_id != 6533) { // Không in giá Cô Ngọc LQĐ
                                             echo '<span class="text_price">'.$this->sma->formatK($item->unit_price);
@@ -192,7 +192,7 @@
                             
                             echo '</div>';  
                             $j++;
-                            $total_items++;
+                            
                         }
                         echo '<div class="no-print">&nbsp;&nbsp;
                                 <button type="button" class="btn btn-success" id="hide_price" style="height:37px; font-size: 18px;">
@@ -234,7 +234,7 @@
         });
 
         function fillTotalItems(total) {
-            $("#total_items").html("<h1><strong>(1-" + Math.round(total/2) + ")</strong></h1><h2>&#8220;Click vào tem để xóa&#8221;</h2>")
+            $("#total_items").html("<h1><strong>(1-" + Math.round(total) + ")</strong></h1><h2>&#8220;Click vào tem để xóa&#8221;</h2>")
         }
         
         // Enable first button
