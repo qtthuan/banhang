@@ -155,7 +155,7 @@ class Sales_model extends CI_Model
     {
 
         $query = "SELECT * FROM " . $this->db->dbprefix('sales') . " AS sales";
-        $query .= " WHERE warehouse_id = 3 ORDER BY id DESC LIMIT 16 ";
+        $query .= " WHERE warehouse_id = 3 ORDER BY id DESC LIMIT 21 ";
 
         //exit($query);
 
