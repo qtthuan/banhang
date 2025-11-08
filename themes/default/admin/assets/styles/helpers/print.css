@@ -79,7 +79,7 @@
 /*Please modify the styles below for barcode/label printing */
 .barcode { width: 2.1in; display: block; margin: 0px auto; page-break-after:always; }
 .barcode .item { display: block; overflow: hidden; text-align: center; border: 1px dotted #CCC; font-size: 12px; line-height: 14px; float: left; }
-.barcode .item_1 { display: block; overflow: hidden; border: 1px solid #000000; border-radius: 5px; padding: 4px 3px 0px 3px; margin: 1px 1px 0px 7px; font-size: 12px; line-height: 14px; float: left; }
+.barcode .item_1 { display: block; overflow: hidden; border: 1px solid #000000; border-radius: 5px; padding: 4px 3px 0px 3px; margin: 3px 1px 0px 10px; font-size: 12px; line-height: 14px; float: left; }
 .barcode .item_1 h4 { display: table; width: 100%; }
 .style50 { font-size: 10px; line-height: 12px; margin: 0 auto; display: block; text-align: center; border: 1px dotted #CCC; font-size: 12px; line-height: 14px; page-break-after:always; }
 .barcode .style30 { width: 2.625in; height: 1in; margin: 0 0.07in; padding-top: 0.05in; }
@@ -88,7 +88,7 @@
 .barcode .style14 { width: 4in; height: 1.33in; margin: 0 0.1in; padding-top: 0.1in; }
 /*.barcode .style10 { width: 1.83in; min-height: 1.08in; font-size: 11px; line-height: 15px; }*/
 .barcode .style10 { width: 1.74in; min-height: 0.98in; font-size: 11px; line-height: 14px; }
-.barcode .style10_1 { position: relative; width: 1.9in; min-height: 1.5in; font-size: 11px; line-height: 14px; }
+.barcode .style10_1 { position: relative; width: 1.94in; min-height: 1.5in; font-size: 11px; line-height: 14px; }
 .barcode .barcode_site, .barcode .barcode_name, .barcode .barcode_image, .barcode .variants { display: block; }
 /*.barcode .barcode_price, .barcode .barcode_unit, .barcode .barcode_category { display: inline-block; font-size: 15px; padding-top: 2px; }*/
 .barcode .barcode_price, .barcode .barcode_unit, .barcode .barcode_category { display: inline-block; font-size: 16px; }
