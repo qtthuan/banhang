@@ -19,6 +19,10 @@
             <div class="col-lg-12">
                      
                 <div id="barcode-con">
+                    <button id="printLeft" class="floating-print-btn left no-print">
+                    🖨️ In tem
+                    </button>
+
                     <?php                       
                         $style = '10_1';
                         echo '<button type="button" style="height: 46px; font-size: 22px" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print').'</button>';
@@ -314,4 +318,13 @@
         });
     });
 
+    
+
+</script>
+<script>
+document.querySelectorAll('.floating-print-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    window.print(); // hoặc gọi hàm in hiện tại nếu bạn có
+  });
+});
 </script>

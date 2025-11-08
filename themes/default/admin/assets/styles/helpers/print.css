@@ -137,6 +137,33 @@
 .barcodea5 .product_image { width: 1.15in; float: left; margin: 5px 0; }
 .barcodea5 .style55 { width: 1.9in; height: 1.3in; padding-top: 0.05in; }
 
+.floating-print-btn {
+  position: fixed;
+  top: 60%;
+  transform: translateY(-50%);
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 22px;
+  font-size: 25px;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+  z-index: 1000;
+  opacity: 0.9;
+  transition: all 0.3s ease;
+}
+.floating-print-btn:hover {
+  opacity: 1;
+  background-color: #0b5ed7;
+}
+.floating-print-btn.left {
+  left: 40%;
+}
+.floating-print-btn.right {
+  right: 20%;
+}
+
 @media print {
     .barcode, .barcodea4 .barcode5 { margin: 0; }
     .barcode, .barcode .item, .barcodea4, .barcodea4 .item, .barcodea5 .item, .style50, .div50 { border: none !important; }
