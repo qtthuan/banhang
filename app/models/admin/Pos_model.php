@@ -269,9 +269,41 @@ class Pos_model extends CI_Model
 
             foreach ($items as $item) {
 
+                // --- Lưu topping ra bảng riêng ---
+                $toppings = $item['toppings'];
+                $toppings_cost = $item['toppings_cost'];
+                $toppings_price = $item['toppings_price'];
+
+                // Loại bỏ topping khỏi $item trước khi insert vào sale_items
+                unset($item['toppings']);
+                unset($item['toppings_cost']);
+                unset($item['toppings_price']);
+
+                // Insert item chính
                 $item['sale_id'] = $sale_id;
                 $this->db->insert('sale_items', $item);
                 $sale_item_id = $this->db->insert_id();
+
+                // Nếu có topping, lưu sang bảng sma_item_topping
+                if (!empty($toppings)) {
+                    $toppings_arr = array_map('trim', explode(',', $toppings));
+                    $cost_arr = array_map('trim', explode(',', $toppings_cost));
+                    $price_arr = array_map('trim', explode(',', $toppings_price));
+
+                    for ($i = 0; $i < count($toppings_arr); $i++) {
+                        if ($toppings_arr[$i] !== '') {
+                            $this->db->insert('sma_item_topping', [
+                                'item_id' => $sale_item_id,
+                                'topping' => $toppings_arr[$i],
+                                'cost'    => isset($cost_arr[$i]) && is_numeric($cost_arr[$i]) ? $cost_arr[$i] : 0,
+                                'price'   => isset($price_arr[$i]) && is_numeric($price_arr[$i]) ? $price_arr[$i] : 0,
+                            ]);
+                        }
+                    }
+                }
+
+
+                
                 if ($data['sale_status'] == 'completed' && $this->site->getProductByID($item['product_id'])) {
 
                     $item_costs = $this->site->item_costing($item);
@@ -639,13 +671,29 @@ class Pos_model extends CI_Model
     }
 
     /**
-     * qtthuan: Danh sachs ghi chú món
+     * qtthuan: Danh sách ghi chú món
      */
     public function getOrderCommentList()
     {
         $this->db->order_by("order", "asc");
         $q = $this->db->get('order_comment_list');
         
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return FALSE;
+    }
+
+    /**
+     * qtthuan: Danh sách topping 
+     */
+    public function getToppingList($subcategory_id)
+    {
+
+        $q = $this->db->get_where('products', array('subcategory_id' => $subcategory_id));
         if ($q->num_rows() > 0) {
             foreach (($q->result()) as $row) {
                 $data[] = $row;

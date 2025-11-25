@@ -98,6 +98,13 @@ if (!empty($variants)) {
                         echo form_dropdown('category', $cat, (isset($_POST['category']) ? $_POST['category'] : ($product ? $product->category_id : '')), 'class="form-control select" id="category" placeholder="' . lang("select") . " " . lang("category") . '" required="required" style="width:100%"')
                         ?>
                     </div>
+                    <div class="form-group all">
+                        <?= lang('subcategory', 'subcategory') ?>
+                        <div class="controls" id="subcat_data"> <?php
+                            echo form_input('subcategory', ($product ? $product->subcategory_id : ''), 'class="form-control" id="subcategory"  placeholder="' . lang('select_category_to_load') . '"');
+                            ?>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <?= lang("product_code", "code") ?>
                         <div class="input-group">

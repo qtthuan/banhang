@@ -18,6 +18,47 @@ if (!empty($variants)) {
                 {id: '', text: '<?= lang('select_category_to_load') ?>'}
             ]
         });
+        $('#category').change(function () {
+            var v = $(this).val();
+            $('#modal-loading').show();
+            if (v) {
+                $.ajax({
+                    type: "get",
+                    async: false,
+                    url: "<?= admin_url('products/getSubCategories') ?>/" + v,
+                    dataType: "json",
+                    success: function (scdata) {
+                        console.log(JSON.stringify(scdata));
+                        if (scdata != null) {
+                            scdata.push({id: '', text: '<?= lang('select_subcategory') ?>'});
+                            $("#subcategory").select2("destroy").empty().attr("placeholder", "<?= lang('select_subcategory') ?>").select2({
+                                placeholder: "<?= lang('select_category_to_load') ?>",
+                                minimumResultsForSearch: 7,
+                                data: scdata
+                            });
+                        } else {
+                            $("#subcategory").select2("destroy").empty().attr("placeholder", "<?= lang('no_subcategory') ?>").select2({
+                                placeholder: "<?= lang('no_subcategory') ?>",
+                                minimumResultsForSearch: 7,
+                                data: [{id: '', text: '<?= lang('no_subcategory') ?>'}]
+                            });
+                        }
+                    },
+                    error: function () {
+                        bootbox.alert('<?= lang('ajax_error') ?>');
+                        $('#modal-loading').hide();
+                    }
+                });
+            } else {
+                $("#subcategory").select2("destroy").empty().attr("placeholder", "<?= lang('select_category_to_load') ?>").select2({
+                    placeholder: "<?= lang('select_category_to_load') ?>",
+                    minimumResultsForSearch: 7,
+                    data: [{id: '', text: '<?= lang('select_category_to_load') ?>'}]
+                });
+            }
+            $('#modal-loading').hide();
+        });
+        
 
         $('#code').bind('keypress', function (e) {
             if (e.keyCode == 13) {
@@ -62,6 +103,14 @@ if (!empty($variants)) {
                         }
                         echo form_dropdown('category', $cat, (isset($_POST['category']) ? $_POST['category'] : ($product ? $product->category_id : '')), 'class="form-control select" id="category" placeholder="' . lang("select") . " " . lang("category") . '" required="required" style="width:100%"')
                         ?>
+                    </div>
+                    
+                    <div class="form-group all">
+                        <?= lang("subcategory", "subcategory") ?>
+                        <div class="controls" id="subcat_data"> <?php
+                            echo form_input('subcategory', ($product ? $product->subcategory_id : ''), 'class="form-control" id="subcategory"  placeholder="' . lang("select_category_to_load") . '"');
+                            ?>
+                        </div>
                     </div>
                     <div class="form-group">
                         <input type="checkbox" class="checkbox" name="oldproduct"
@@ -147,13 +196,7 @@ if (!empty($variants)) {
                         </div>
                     </div>
                     
-                    <div class="form-group all" style="display: none;">
-                        <?= lang("subcategory", "subcategory") ?>
-                        <div class="controls" id="subcat_data"> <?php
-                            echo form_input('subcategory', ($product ? $product->subcategory_id : ''), 'class="form-control" id="subcategory"  placeholder="' . lang("select_category_to_load") . '"');
-                            ?>
-                        </div>
-                    </div>
+                    
 
                     <div class="form-group all">
                         <?= lang("product_image", "product_image") ?>
@@ -1126,6 +1169,7 @@ if (!empty($variants)) {
             url: "<?= admin_url('products/getSubCategories') ?>/" + <?= $product->category_id ?>,
             dataType: "json",
             success: function (scdata) {
+                console.log(JSON.stringify(scdata));
                 if (scdata != null) {
                     $("#subcategory").select2("destroy").empty().attr("placeholder", "<?= lang('select_subcategory') ?>").select2({
                         placeholder: "<?= lang('select_category_to_load') ?>",

@@ -2078,8 +2078,11 @@ animation: blink 1s steps(2, start) infinite;
 
 .gallery-image { position: relative; display: inline-block; }
 .gallery-image .delimg { position: absolute; top: 0; right: 9px; }
-.sname { cursor: pointer; font-size: 16px; }
-.sname_en { font-size: 11px; }
+.sname { cursor: pointer; font-size: 16px; font-weight: bold; }
+.sname_en { font-size: 11px; font-weight: bold; }
+.stopping { padding-left: 30px; font-size: 13px;}
+.scomment { padding-left: 10px; font-size: 14px; font-weight: bold;}
+.scomment_name { font-size: 14px; font-weight: bold;}
 .sprice { font-size: 16px; }
 .ssubtotal { font-size: 16px; }
 .rquantity { font-size: 17px !important; }
@@ -2097,7 +2100,13 @@ animation: blink 1s steps(2, start) infinite;
     margin-left: 15px;
   }
 
-  #pr_popover_content .box_comment:after {
+  #pr_popover_content .box_topping {
+    margin-left: 15px;
+  }
+
+  #pr_popover_content .box_comment:after,
+  #pr_popover_content .box_topping:after,
+  #pr_popover_content .box_topping_selected:after {
     content: "";
     display: table;
     clear: both;
@@ -2107,7 +2116,14 @@ animation: blink 1s steps(2, start) infinite;
     width: 33%;
     padding-bottom: 10px;
   }
-  #pr_popover_content .box_comment .comment_col .chkComment {
+  
+  #pr_popover_content .box_topping .topping_col {
+    float: left;
+    width: 49%;
+    padding-bottom: 10px;
+  }
+  #pr_popover_content .box_comment .comment_col .chkComment,
+  #pr_popover_content .box_topping .topping_col .chkTopping {
     width: 28px; 
     height: 28px; 
     vertical-align: bottom;
@@ -2115,23 +2131,62 @@ animation: blink 1s steps(2, start) infinite;
     cursor: pointer;
   }
 
-  #pr_popover_content .box_comment .comment_col .lblComment {
+  #pr_popover_content .box_comment .comment_col .lblComment,
+  #pr_popover_content .box_topping .topping_col .lblTopping {
    margin-top: 5px;
    cursor: pointer;
   }
+  .mini_header_1 {
+    background-color: #6089aa;
+    font-size: 20px;
+    text-align: center;
+    padding: 2px;
+    color: white;
+    margin-bottom: 5px;
+  }
+
+  .mini_header_2 {
+    background-color: #6089aa;
+    font-size: 20px;
+    text-align: center;
+    padding: 2px;
+    color: white;
+    margin-bottom: 5px;
+  }
+
+  .box_topping_selected button {
+    border-radius: 12px !important;
+    font-size: 13px;
+    padding: 5px 8px;
+    margin: 5px 0 10px 10px;
+    background-color: #737144;
+    color: white;;
+}
+
+
+.topping-tag {
+    display: inline-flex;
+    align-items: center;
+    background: #737144;
+    color: white;
+    border-radius: 10px;
+    padding: 3px 8px;
+    font-size: 13px;
+    margin: 3px;
+}
+.topping-tag .remove-topping {
+    cursor: pointer;
+    margin-left: 6px;
+    color: #000;
+    font-weight: bold;
+    font-size: 22px;
+}
+.topping-tag .remove-topping:hover {
+    color: #ffb3b3;
+}
+
   
 
-  #pr_popover_content .box_comment .txtComment {
-    font: medium -moz-fixed;
-    font: -webkit-small-control;
-    height: 32px;
-    overflow: auto;
-    padding: 5px;
-    resize: both;
-    width: 100%;
-    font-size: 14px;
-    text-transform: uppercase;
-   }
    /* ========== Responsive cho Mobile Order ========== */
    /* Mặc định hiển thị PC */
 .layout-pc {

@@ -1276,7 +1276,7 @@ function loadItems() {
             if(item.options !== false) {
                 $.each(item.options, function () {
                     if(this.id == item.row.option && this.price != 0 && this.price != '' && this.price != null) {
-                        console.log('item.row.option_big_size: ' + item.row.option_big_size);
+                        //console.log('item.row.option_big_size: ' + item.row.option_big_size);
                         if (item.row.big_size_price && item.row.big_size_price != 0) {
                             item_price = parseFloat(item.row.big_size_price);
                         } else {

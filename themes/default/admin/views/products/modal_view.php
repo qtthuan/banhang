@@ -41,10 +41,10 @@
                                     <td><?= $category->name; ?></td>
                                 </tr>-->
                                 <?php if ($product->subcategory_id) { ?>
-                                    <tr>
+                                    <!-- <tr>
                                         <td><?= lang("subcategory"); ?></td>
                                         <td><?= $subcategory->name; ?></td>
-                                    </tr>
+                                    </tr> -->
                                     <?php } ?>
                                     <?php if ($Owner || $Admin || $this->session->userdata('show_cost')) {
                                         //if ($this->session->userdata('show_cost')) {

@@ -42,6 +42,7 @@ class Pos extends MY_Controller
 
     }
 
+
     public function sales($warehouse_id = NULL)
     {
         $this->sma->checkPermissions('index');
@@ -148,6 +149,19 @@ class Pos extends MY_Controller
         echo json_encode($this->pos_model->check_promo($product_id));
     }
 
+    
+    public function order()
+    {
+        
+        // Không yêu cầu đăng nhập (frontend)
+        $this->sma->checkPermissions(false, true); // Bỏ kiểm tra quyền
+
+        $this->data['products'] = $this->pos_model->getAllMiniProducts();
+
+        // Nạp view riêng (frontend version)
+        $this->load->view($this->theme . '/pos/order', $this->data);
+    }
+
 
     /* ---------------------------------------------------------------------------------------------------- */
 
@@ -210,7 +224,7 @@ class Pos extends MY_Controller
             $staff_note = $this->sma->clear_tags($this->input->post('staff_note'));
             $reference = $this->site->getReference('pos');
             
-            //$this->sma->print_arrays($_POST);
+           // $this->sma->print_arrays($_POST);
 
             $total = 0;
             $total_extra = 0;
@@ -232,6 +246,9 @@ class Pos extends MY_Controller
                 $item_name = $_POST['product_name'][$r];
                 $item_name_en = $_POST['product_name_en'][$r];
                 $item_comment = $_POST['product_comment'][$r];
+                $item_toppings = $_POST['product_toppings'][$r];
+                $item_toppings_cost = $_POST['product_toppings_cost'][$r];
+                $item_toppings_price = $_POST['product_toppings_price'][$r];
                 $item_comment_name = $_POST['product_comment_name'][$r];
                 $item_option = isset($_POST['product_option'][$r]) && $_POST['product_option'][$r] != 'false' ? $_POST['product_option'][$r] : NULL;
                 $real_unit_price = $this->sma->formatDecimal($_POST['real_unit_price'][$r]);
@@ -291,6 +308,8 @@ class Pos extends MY_Controller
                     $subtotal = (($item_net_price * $item_unit_quantity) + $pr_item_tax);
                     $unit = $this->site->getUnitByID($item_unit);
 
+                    
+
                     $products[] = array(
                         'product_id'      => $item_id,
                         'product_code'    => $item_code,
@@ -318,6 +337,9 @@ class Pos extends MY_Controller
                         'comment_name'    => $item_comment_name,
                         'is_promo'        => $is_promo,
                         'promo_original_price' => $suspend ? $promo_original_price_for_suspend : $promo_original_price,
+                        'toppings'   => $item_toppings,
+                        'toppings_cost'      => $item_toppings_cost,
+                        'toppings_price'     => $item_toppings_price,
                     );
 
                     if ($is_promo == 1) {
@@ -515,18 +537,13 @@ class Pos extends MY_Controller
         //$this->sma->print_arrays($products);
 
         if ($this->form_validation->run() == TRUE && !empty($products) && !empty($data)) {
-            //$this->sma->print_arrays($data, $payment, $customer_details, $suspend);
             if ($suspend) {
-//                $var = $this->pos_model->suspendSale($data, $products, $did);
-//                $this->sma->print_arrays($var);
-            //$this->sma->print_arrays($data, $products, $did);
                 if ($this->pos_model->suspendSale($data, $products, $did)) {
                     $this->session->set_userdata('remove_posls', 1);
                     $this->session->set_flashdata('message', $this->lang->line("sale_suspended"));
                     admin_redirect("pos");
                 }
             } else {
-                //$this->sma->print_arrays($this->site->item_costing($products[0]));
                 if ($sale = $this->pos_model->addSale($data, $products, $payment, $did)) {
                     $this->session->set_userdata('remove_posls', 1);
                     $msg = $this->lang->line("sale_added");
@@ -571,7 +588,6 @@ class Pos extends MY_Controller
                     $this->data['message'] = lang('suspended_sale_loaded');
                     $this->data['customer'] = $this->pos_model->getCompanyByID($suspended_sale->customer_id);
                     $this->data['reference_note'] = $suspended_sale->suspend_note;
-                    //$this->sma->print_arrays($suspended_sale, $this->data['customer'], $inv_items);
                 } else {
                     $this->session->set_flashdata('error', lang("bill_x_found"));
                     admin_redirect("pos");
@@ -676,6 +692,7 @@ class Pos extends MY_Controller
             $this->data['subcategories'] = $this->site->getSubCategories($this->pos_settings->default_category);
             $this->data['printer'] = $this->pos_model->getPrinterByID($this->pos_settings->printer);
             $this->data['order_comment_list'] = $this->pos_model->getOrderCommentList();
+            $this->data['topping_list'] = $this->pos_model->getToppingList(39);
             $order_printers = json_decode($this->pos_settings->order_printers);
             $printers = array();
             if (!empty($order_printers)) {
@@ -704,7 +721,7 @@ class Pos extends MY_Controller
                     $this->data['created_by'] = $this->site->getUser($inv->created_by);
                 }
             }
-
+            //$this->sma->print_arrays($this->data);
             //$this->load->view($this->theme . 'pos/add', $this->data);
             if ($this->agent->is_mobile()) {
                 // Mobile view (BS5)
