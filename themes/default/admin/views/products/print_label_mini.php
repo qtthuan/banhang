@@ -241,14 +241,19 @@
 
         $('#printRightTotal').on('click', function () {
             let txt = $('#total_items').text().trim();   // "Trang: 1-2"
-            let value = txt.split(':')[1].trim();        // "1-2"
 
-            navigator.clipboard.writeText(value).then(function () {
+            // Lấy phần sau dấu ":" → "1-2"
+            let value = txt.split(':')[1].trim();
+
+            // Copy vào clipboard
+           navigator.clipboard.writeText(value).then(function () {
                 showCopyToast("Đã copy: " + value);
             }).catch(function(){
                 showCopyToast("Không copy được!");
             });
         });
+
+       
 
         function showCopyToast(msg) {
             let t = $('#copyToast');
