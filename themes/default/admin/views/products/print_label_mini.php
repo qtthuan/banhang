@@ -211,7 +211,7 @@
                             position: fixed;
                             top: 53%;
                             right: 15%;
-                            background: rgba(235, 196, 112, 0.75);
+                            background: rgba(244, 229, 197, 0.75);
                             color: #3c1f1fff;
                             padding: 10px 16px;
                             border-radius: 6px;
