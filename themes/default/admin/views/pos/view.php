@@ -654,10 +654,14 @@
             </div>
             <div style="clear:both;"></div>
             <div style="font-size: 12px; text-align: center;margin-right: 25px">
-                
+            <?php if ($inv->warehouse_id == 3) { ?>
                 <img src="https://img.vietqr.io/image/vietcombank-NP82501394269214VCB-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Lu%20Nguyet%20Binh" style="width: 130px">
-                 <!-- <img src="https://img.vietqr.io/image/vietinbank-95956130QRVM886.jpg?amount=<?=$qr_pay?>&accountName=Lu%20Nguyet%20Binh" style="width: 115px"> -->
+                 
                 <br /><?=lang('bank_info_vcb')?>
+            <?php } else { ?>
+                <img src="https://img.vietqr.io/image/vietinbank-663614169999-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Lu%20Nguyet%20Binh" style="width: 130px">
+                <br /><?=lang('bank_info_vietin')?>
+            <?php } ?>
                 <!-- <img src="https://img.vietqr.io/image/techcombank-MS00P00000000605480-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Lu%20Nguyet%20Binh" style="width: 105px">
                 <br /><?=lang('bank_info_tech')?> -->
                 
