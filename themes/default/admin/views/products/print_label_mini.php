@@ -211,11 +211,11 @@
                             position: fixed;
                             bottom: 25%;
                             right: 25%;
-                            background: rgba(232, 186, 88, 0.75);
+                            background: rgba(235, 196, 112, 0.75);
                             color: #3c1f1fff;
                             padding: 10px 16px;
                             border-radius: 6px;
-                            font-size: 14px;
+                            font-size: 15px;
                             opacity: 0;
                             pointer-events: none;
                             transition: opacity 0.4s ease;
