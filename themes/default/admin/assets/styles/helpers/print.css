@@ -201,7 +201,7 @@
 }
 
 
-.floating-print-btn-green {
+.floating-print-btn-grey {
   position: fixed;
   top: 55%;
   transform: translateY(-50%);
@@ -209,7 +209,31 @@
   color: white;
   border: none;
   border-radius: 8px;
-  padding: 2px 10px;
+  padding: 2px 25px;
+  font-size: 25px;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+  z-index: 1000;
+  opacity: 0.9;
+  transition: all 0.3s ease;
+}
+.floating-print-btn-grey:hover {
+  opacity: 1;
+  background-color: #2e3632;
+}
+.floating-print-btn-grey.right {
+  right: 24%;
+}
+
+.floating-print-btn-green {
+  position: fixed;
+  top: 65%;
+  transform: translateY(-50%);
+  background-color: #34b44a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
   font-size: 25px;
   cursor: pointer;
   box-shadow: 0 3px 6px rgba(0,0,0,0.2);
@@ -219,33 +243,9 @@
 }
 .floating-print-btn-green:hover {
   opacity: 1;
-  background-color: #2e3632;
-}
-.floating-print-btn-green.right {
-  right: 24%;
-}
-
-.floating-print-btn-green1 {
-  position: fixed;
-  top: 65%;
-  transform: translateY(-50%);
-  background-color: #34b44a;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 2px 10px;
-  font-size: 25px;
-  cursor: pointer;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-  z-index: 1000;
-  opacity: 0.9;
-  transition: all 0.3s ease;
-}
-.floating-print-btn-green1:hover {
-  opacity: 1;
   background-color: #18854b;
 }
-.floating-print-btn-green1.right {
+.floating-print-btn-green.right {
   right: 24%;
 }
 

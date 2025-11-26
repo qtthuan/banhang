@@ -22,10 +22,10 @@
                     <button id="printLeft" class="floating-print-btn left no-print">
                     🖨️ In tem
                     </button>
-                    <button id="printRightTotal" class="floating-print-btn-green right no-print">
+                    <button id="printRightTotal" class="floating-print-btn-grey right no-print">
                     <div id="total_items" class="no-print" style="color: white;"></div>
                     </button>
-                    <button id="hide_price" class="floating-print-btn-green1 right no-print">
+                    <button id="hide_price" class="floating-print-btn-green right no-print">
                     Ẩn/Hiện giá
                     </button>
                     <?php                       
@@ -203,9 +203,27 @@
                             $j++;
                             
                         }
-                    
+                        
                         echo '<button type="button"style="height: 46px; font-size: 22px;" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print') . '</button>';
                     ?>
+                    <div id="copyToast" 
+                        style="
+                            position: fixed;
+                            bottom: 20px;
+                            right: 20px;
+                            background: rgba(0,0,0,0.75);
+                            color: #fff;
+                            padding: 10px 16px;
+                            border-radius: 6px;
+                            font-size: 14px;
+                            opacity: 0;
+                            pointer-events: none;
+                            transition: opacity 0.4s ease;
+                            z-index: 9999;
+                        ">
+                        Đã copy!
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -223,15 +241,25 @@
 
         $('#printRightTotal').on('click', function () {
             let txt = $('#total_items').text().trim();   // "Trang: 1-2"
+            let value = txt.split(':')[1].trim();        // "1-2"
 
-            // Lấy phần sau dấu ":" → "1-2"
-            let value = txt.split(':')[1].trim();
-
-            // Copy vào clipboard
             navigator.clipboard.writeText(value).then(function () {
-                console.log("Đã copy:", value);
+                showCopyToast("Đã copy: " + value);
+            }).catch(function(){
+                showCopyToast("Không copy được!");
             });
         });
+
+        function showCopyToast(msg) {
+            let t = $('#copyToast');
+            t.text(msg);
+            t.css('opacity', 1);
+
+            setTimeout(() => {
+                t.css('opacity', 0);
+            }, 1200);
+        }
+
 
         
         $(document).on('click', '.item_1', function () {
