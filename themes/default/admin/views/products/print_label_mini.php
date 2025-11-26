@@ -251,7 +251,7 @@
         });
 
         function fillTotalItems(total) {
-            $("#total_items").html("<span style='font-size: 40px;'><strong>Trang: 1-" + Math.round(total) + "<strong></span>")
+            $("#total_items").html("<span style='font-size: 40px;'><strong>1-" + Math.round(total) + "<strong></span>")
         }
         
         // Enable first button
