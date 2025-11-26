@@ -80,6 +80,11 @@
                                     if ($item->quantity > 1) {
                                         //echo '-';
                                         for ($i=0; $i < $item_qty; $i++) {
+                                            $names = [];
+                                            if ($item->comment_name) {
+                                                $names = array_map('trim', explode(',', $item->comment_name));
+                                            }
+
                                             //$total_items++;
                                             $increase_size = "increase_size";
                                             if ($item->comment) {
@@ -103,12 +108,23 @@
                                                 echo '</span>';
                                             }
 
-                                            if ($item->comment_name) {
-                                                
-                                                echo '<span class="circle_text1" style="position: absolute; bottom: 18px; left: 3px; font-size: 16px; font-weight: bold">';
-                                                echo ' <strong>' . $item->comment_name . '</strong>';
+                                            // Lấy tên cho vòng lặp hiện tại
+                                            $current_name = isset($names[$i]) ? $names[$i] : "";
+
+                                            // In tên nếu có
+                                            if ($current_name !== "") {
+                                                echo '<span class="circle_text1" style="position: absolute; bottom: 32px; left: 3px; font-size: 16px; font-weight: bold">';
+                                                echo '<strong>' . $current_name . '</strong>';
                                                 echo '</span>';
-                                            }                                            
+                                            }
+
+
+                                            // if ($item->comment_name) {
+                                                
+                                            //     echo '<span class="circle_text1" style="position: absolute; bottom: 18px; left: 3px; font-size: 16px; font-weight: bold">';
+                                            //     echo ' <strong>' . $item->comment_name . '</strong>';
+                                            //     echo '</span>';
+                                            // }                                            
                                             
                                             
                                             $str_span_size = '<span class="circle_text" style="position: absolute; bottom: 22px; right: 3px; font-size: 16px; font-weight: bold">';
