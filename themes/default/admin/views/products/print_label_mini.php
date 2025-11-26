@@ -22,11 +22,11 @@
                     <button id="printLeft" class="floating-print-btn left no-print">
                     🖨️ In tem
                     </button>
-                    <button id="printRight" class="floating-print-btn-green right no-print">
+                    <button id="printRightTotal" class="floating-print-btn-green right no-print">
                     <div id="total_items" class="no-print" style="color: white;"></div>
                     </button>
                     <button id="hide_price" class="floating-print-btn-green1 right no-print">
-                    Ẩn/Hiện giá                    
+                    Ẩn/Hiện giá
                     </button>
                     <?php                       
                         $style = '10_1';
@@ -204,8 +204,6 @@
                             
                         }
                     
-                               
-                        echo '<div id="total_items1" class="no-print" style="color: green;"></div>';
                         echo '<button type="button"style="height: 46px; font-size: 22px;" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print') . '</button>';
                     ?>
                 </div>
@@ -222,6 +220,19 @@
                 }, 1000);
             });
         <?php } ?>
+
+        $('#printRightTotal').on('click', function () {
+            let txt = $('#total_items').text().trim();   // "Trang: 1-2"
+
+            // Lấy phần sau dấu ":" → "1-2"
+            let value = txt.split(':')[1].trim();
+
+            // Copy vào clipboard
+            navigator.clipboard.writeText(value).then(function () {
+                console.log("Đã copy:", value);
+            });
+        });
+
         
         $(document).on('click', '.item_1', function () {
             var total_items = $(this).closest('.barcode').find('.item_1').length - 1;
@@ -229,7 +240,7 @@
             var id = $(this).attr('id');
             $(this).remove();
             //total_items = total_items -1;
-            //$("#total_items").html("<h1><strong>(1-" + Math.round(total_items/2) + ")</strong></h1><h2>&#8220;Click vào tem để xóa&#8221;</h2>")
+            //$("#total_items").html("<h1><strong>(1-" + Math.round(total_items/2) + ")</strong></h1><h2></h2>")
             fillTotalItems(total_items);
         });
         $('#hide_price').click(function(){
@@ -240,7 +251,7 @@
         });
 
         function fillTotalItems(total) {
-            $("#total_items").html("<span style='font-size: 46px;'><strong>(1-" + Math.round(total) + ")<strong></span><br><span style='font-size: 16px;'>&#8220;Click vào tem để xóa&#8221;</span>")
+            $("#total_items").html("<span style='font-size: 40px;'><strong>Trang: 1-" + Math.round(total) + "<strong></span>")
         }
         
         // Enable first button
