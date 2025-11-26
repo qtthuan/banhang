@@ -22,7 +22,12 @@
                     <button id="printLeft" class="floating-print-btn left no-print">
                     🖨️ In tem
                     </button>
-
+                    <button id="printRight" class="floating-print-btn-green right no-print">
+                    <div id="total_items" class="no-print" style="color: white;"></div>
+                    </button>
+                    <button id="hide_price" class="floating-print-btn-green1 right no-print">
+                    Ẩn/Hiện giá                    
+                    </button>
                     <?php                       
                         $style = '10_1';
                         echo '<button type="button" style="height: 46px; font-size: 22px" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print').'</button>';
@@ -31,9 +36,9 @@
                         foreach ($sales as $sale) {
                            
                             $customer_name = trim($sale->customer); // bỏ khoảng trắng đầu/cuối
-                            if (mb_strlen($customer_name, 'UTF-8') > 16) {
+                            if (mb_strlen($customer_name, 'UTF-8') > 25) {
                                 // cắt đúng 15 ký tự và nối 3 dấu chấm sát chữ cuối
-                                $customer_name = rtrim(mb_substr($customer_name, 0, 16, 'UTF-8')) . '..';
+                                $customer_name = rtrim(mb_substr($customer_name, 0, 25, 'UTF-8')) . '..';
                             }
                         
 
@@ -59,7 +64,7 @@
                                 $display_btn = ' style="display: none;"';
                             }
                             //$this->sma->print_arrays($values);
-                            echo '<div class="barcode div'.$key.'"'.$display_btn.'>';
+                            echo '<div class="barcode_mini div'.$key.'"'.$display_btn.'>';
                             
                             foreach ($values as $item) {
                                 
@@ -198,12 +203,9 @@
                             $j++;
                             
                         }
-                        echo '<div class="no-print">&nbsp;&nbsp;
-                                <button type="button" class="btn btn-success" id="hide_price" style="height:37px; font-size: 18px;">
-                                    <i class="fa"></i>Ẩn/Hiện giá
-                                </button></div>';
+                    
                                
-                        echo '<div id="total_items" class="no-print" style="color: green;"></div>';
+                        echo '<div id="total_items1" class="no-print" style="color: green;"></div>';
                         echo '<button type="button"style="height: 46px; font-size: 22px;" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print') . '</button>';
                     ?>
                 </div>
@@ -238,7 +240,7 @@
         });
 
         function fillTotalItems(total) {
-            $("#total_items").html("<h1><strong>(1-" + Math.round(total) + ")</strong></h1><h2>&#8220;Click vào tem để xóa&#8221;</h2>")
+            $("#total_items").html("<span style='font-size: 46px;'><strong>(1-" + Math.round(total) + ")<strong></span><br><span style='font-size: 16px;'>&#8220;Click vào tem để xóa&#8221;</span>")
         }
         
         // Enable first button
@@ -259,7 +261,7 @@
             });
             
         }
-        fillTotalItems($('.barcode:first>div').length);
+        fillTotalItems($('.barcode_mini:first>div').length);
 
 
         $('.bills').on('click',function() {
