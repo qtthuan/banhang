@@ -212,10 +212,10 @@
                             top: 53%;
                             right: 16%;
                             background: rgba(244, 229, 197, 0.75);
-                            color: #3c1f1fff;
+                            color: #000000ff;
                             padding: 10px 16px;
                             border-radius: 6px;
-                            font-size: 15px;
+                            font-size: 16px;
                             opacity: 0;
                             pointer-events: none;
                             transition: opacity 0.4s ease;
