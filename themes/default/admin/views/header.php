@@ -344,6 +344,7 @@
                                             <span class="text"> <?= lang('print_labels_menu'); ?></span>
                                         </a>
                                     </li>
+                                    
                                     <li id="products_quantity_adjustments">
                                         <a class="submenu" href="<?= admin_url('products/quantity_adjustments'); ?>">
                                             <i class="fa fa-filter"></i>
@@ -890,9 +891,11 @@
                                     </li>
                                     <?php } ?>
                                     <?php if ($GP['products-barcode']) { ?>
-                                    <li id="products_sheet">
-                                        <a class="submenu" href="<?= admin_url('products/print_barcodes'); ?>">
-                                            <i class="fa fa-tags"></i><span class="text"> <?= lang('print_barcode_label'); ?></span>
+                                    
+                                    <li id="products_print_label_mini">
+                                        <a class="submenu" href="<?= admin_url('products/print_label_mini'); ?>">
+                                            <i class="fa fa-tags"></i>
+                                            <span class="text"> <?= lang('print_labels_menu'); ?></span>
                                         </a>
                                     </li>
                                     <?php } ?>
