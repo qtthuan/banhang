@@ -210,7 +210,7 @@
                         style="
                             position: fixed;
                             top: 53%;
-                            right: 20%;
+                            right: 13%;
                             background: rgba(235, 196, 112, 0.75);
                             color: #3c1f1fff;
                             padding: 10px 16px;
