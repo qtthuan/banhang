@@ -209,7 +209,7 @@
                     <div id="copyToast" 
                         style="
                             position: fixed;
-                            bottom: 25%;
+                            top: 55%;
                             right: 25%;
                             background: rgba(235, 196, 112, 0.75);
                             color: #3c1f1fff;
