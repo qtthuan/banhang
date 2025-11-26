@@ -162,7 +162,7 @@
                                         }
                                         if ($item->comment_name) {
                                                 
-                                            echo '<span class="circle_text1" style="position: absolute; bottom: 22px; left: 3px; font-size: 16px; font-weight: bold">';
+                                            echo '<span class="circle_text1" style="position: absolute; bottom: 32px; left: 3px; font-size: 16px; font-weight: bold">';
                                             echo ' <strong>' . $item->comment_name . '</strong>';
                                             echo '</span>';
                                         }
