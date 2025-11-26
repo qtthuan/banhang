@@ -239,19 +239,29 @@
             });
         <?php } ?>
 
+        
+
         $('#printRightTotal').on('click', function () {
-            let txt = $('#total_items').text().trim();   // "Trang: 1-2"
+            let value = $('#total_items').text();   // "Trang: 1-2"
+            //let value = txt.split(':')[1].trim();        // "1-2"
 
-            // Lấy phần sau dấu ":" → "1-2"
-            let value = txt.split(':')[1].trim();
-
-            // Copy vào clipboard
             navigator.clipboard.writeText(value).then(function () {
-                console.log("Đã copy:", value);
+                showCopyToast("Đã copy: " + value);
+            }).catch(function(){
+                showCopyToast("Không copy được!");
             });
         });
 
-        
+        function showCopyToast(msg) {
+            let t = $('#copyToast');
+            t.text(msg);
+            t.css('opacity', 1);
+
+            setTimeout(() => {
+                t.css('opacity', 0);
+            }, 1200);
+        }
+
 
         
         $(document).on('click', '.item_1', function () {
