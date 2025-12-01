@@ -33,3 +33,10 @@ if ( ! function_exists('shop_redirect')) {
 		return redirect($uri, $method, $code);
 	}
 }
+
+// Add mini_url
+if ( ! function_exists('mini_url')) {
+	function mini_url($uri = '', $protocol = NULL) {
+		return get_instance()->config->site_url('mini/'.$uri, $protocol);
+	}
+}

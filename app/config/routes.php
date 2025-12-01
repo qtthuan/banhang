@@ -1,8 +1,9 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 // Order frontend
-$route['order.php'] = 'admin/pos/order';
-$route['order'] = 'admin/pos/order';
+$route['order'] = 'order';
+
+// $route['order'] = 'admin/pos/order';
 // Framework routes
 $route['default_controller'] = 'main';
 $route['404_override'] = 'notify/error_404';

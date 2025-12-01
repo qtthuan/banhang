@@ -21,10 +21,13 @@ class MY_Controller extends CI_Controller {
             $this->Settings->user_rtl = $this->Settings->rtl;
         }
         $this->theme = $this->Settings->theme.'/admin/views/';
+        $this->mini_theme = $this->Settings->theme.'/mini/views/';
         if(is_dir(VIEWPATH.$this->Settings->theme.DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR)) {
             $this->data['assets'] = base_url() . 'themes/' . $this->Settings->theme . '/assets/';
         } else {
             $this->data['assets'] = base_url() . 'themes/default/admin/assets/';
+            $this->data['mini_assets'] = base_url() . 'themes/default/mini/assets/';
+
         }
 
         $this->data['Settings'] = $this->Settings;

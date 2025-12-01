@@ -163,6 +163,7 @@
     ///var currentCustomer = JSON.parse(localStorage.getItem('customer_info') || '{}');
     var base_url = "<?= base_url(); ?>"; // thêm nếu chưa có
     var admin_url = "<?= admin_url(); ?>";
+    var mini_url = "<?= mini_url(); ?>";
   </script>
 
 <!-- Header -->
@@ -232,7 +233,7 @@
           <p class="text-muted mb-1 product-price" 
             id="price-<?= $p->id ?>" 
             data-product-id="<?= $p->id ?>" 
-            data-base-price="<?= (float)$p->price ?>"
+            data-base-price="<?= (float)$p->price ?>" 
             data-price-m="<?= (float)$p->price ?>"
             data-price-l="<?= (float)$p->price ?>">
             <?php if (!empty($p->is_promo) && $p->is_promo): ?>
@@ -272,7 +273,7 @@
               data-price="<?= (float)$p->price ?>"
               data-image="<?= htmlspecialchars($p->image ?: 'no_image.png') ?>"
               data-unit="<?= htmlspecialchars($unit) ?>"
-            >+ Thêm Món</button>
+            >+ Thêm Món1</button>
           </div>
 
         </div>
@@ -398,7 +399,7 @@
 
 <!-- pos.mobile.js external (we also include the version below) -->
  
-<script src="<?= $assets ?>pos/js/pos.mobile.js?v=2.8"></script>
+<script src="<?= $mini_assets ?>/js/mini.mobile.js"></script>
 
 <!-- Inline initialization (safe, small) -->
 <script>

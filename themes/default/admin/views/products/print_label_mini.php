@@ -236,7 +236,7 @@
                             pointer-events: none;
                             transition: opacity 0.4s ease;
                             z-index: 9999;
-                        ">
+                        " class="no-print">
                         Đã copy!
                     </div>
 

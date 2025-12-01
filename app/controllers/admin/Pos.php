@@ -150,18 +150,7 @@ class Pos extends MY_Controller
     }
 
     
-    public function order()
-    {
-        
-        // Không yêu cầu đăng nhập (frontend)
-        $this->sma->checkPermissions(false, true); // Bỏ kiểm tra quyền
-
-        $this->data['products'] = $this->pos_model->getAllMiniProducts();
-
-        // Nạp view riêng (frontend version)
-        $this->load->view($this->theme . '/pos/order', $this->data);
-    }
-
+   
 
     /* ---------------------------------------------------------------------------------------------------- */
 
