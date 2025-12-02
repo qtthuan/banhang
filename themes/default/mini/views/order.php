@@ -335,24 +335,71 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <!-- Select khách hàng -->
-        <div class="mb-3">
-          <label class="form-label"><i class="fa fa-user text-primary me-1"></i> Khách hàng</label>
-          <select id="customerSelect" class="form-control" style="width:100%;"></select>
-        </div>
-        <!-- Nhập tên khách -->
-        <div class="mb-3">
-          <label class="form-label"><i class="fa fa-id-badge text-success me-1"></i> Tên khách</label>
-          <input type="text" id="customer_name" class="form-control" placeholder="Nhập tên khách...">
-        </div>
         <!-- Nhập SĐT -->
         <div class="mb-3">
           <label class="form-label"><i class="fa fa-phone text-warning me-1"></i> Số điện thoại</label>
           <input type="tel" id="customer_phone" class="form-control" placeholder="Nhập số điện thoại...">
+
+          <div id="phone_suggestions" 
+              style="background:#fff; border:1px solid #ddd; display:none; position:absolute; z-index:9999; width: 92%; max-height:150px; overflow-y:auto;">
+          </div>
+
         </div>
+        <!-- Nhập tên khách -->
+        <div class="mb-3">
+          <label class="form-label"><i class="fa fa-id-badge text-success me-1"></i> Tên khách</label>
+          <input type="text" id="customer_name" class="form-control" placeholder="Nhập tên...">
+        </div>
+        <div class="mb-3">
+          <label class="form-label"><i class="fa fa-address-card text-info me-1"></i> Địa chỉ giao</label>
+          <input type="text" id="customer_address" class="form-control" placeholder="Nhập địa chỉ...">
+        </div>
+        <div class="form-group d-flex align-items-center" style="gap:10px; margin-bottom:10px;">
+        <!-- Chữ Đơn nhóm -->
+        <label class="mb-0" style="font-weight:600; font-size:15px; cursor:pointer;" 
+              for="group_order_toggle">
+            <i class="fa fa-users"></i> Đơn nhóm
+        </label>
+        <!-- Toggle -->
+        <label class="switch mb-0">
+            <input type="checkbox" id="group_order_toggle">
+            <span class="slider round"></span>
+        </label>
+
+        
+
+        <style>
+          .switch {
+            position: relative; display: inline-block;
+            width: 48px; height: 24px;
+          }
+          .switch input { display:none; }
+          .slider {
+            position: absolute; cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+          }
+          .slider:before {
+            position: absolute; content: "";
+            height: 18px; width: 18px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+          }
+          input:checked + .slider { background-color: #28a745; }
+          input:checked + .slider:before {
+            transform: translateX(24px);
+          }
+        </style>
+
+    </div>
+
         <!-- Ghi chú -->
         <div class="mb-3">
-          <label class="form-label"><i class="fa fa-sticky-note text-info me-1"></i> Ghi chú đơn</label>
+          <label class="form-label"><i class="fa fa-sticky-note text-danger me-1"></i> Ghi chú đơn</label>
           <textarea id="order_note" class="form-control" rows="2" placeholder="Nhập ghi chú..."></textarea>
         </div>
       </div>
@@ -404,79 +451,95 @@
 <!-- Inline initialization (safe, small) -->
 <script>
   (function(){
-    // initialize select2 (dropdownParent so it's inside offcanvas)
-    try {
-      const iosInput = document.getElementById('iosTriggerInput');
-      const $custSel = $('#customerSelect');
 
-      $custSel.select2({
-        dropdownParent: $('#orderInfoModal'),
-        placeholder: 'Chọn khách hàng',
-        minimumInputLength: 1,
-        allowClear: true,
-        language: { inputTooShort: () => "" },
-        ajax: {
-          url: "<?= admin_url('customers/suggestions'); ?>",
-          dataType: 'json',
-          delay: 250,
-          data: params => ({ term: params.term, limit: 10 }),
-          processResults: data => ({ results: data.results })
-        }
-      }).on('select2:open', function(){
-        // focus input inside select2 dropdown
-        setTimeout(function(){
-          var sf = document.querySelector('.select2-container .select2-search__field');
-          if (sf) sf.click();
-        }, 100);
-      });
 
-      // ✅ Gán khách hàng mặc định ID=1
-      setTimeout(function(){
-        $.ajax({
-          url: "<?= admin_url('customers/suggestions'); ?>",
-          data: { term: 'a' },
-          dataType: 'json',
-          success: function(data) {
-            //console.log('xxxxx');
-            if (data && data.results) {
-              const defaultCustomer = data.results.find(c => c.id == 1);
-              //console.log('defaultCustomer: ' + defaultCustomer )
-              if (defaultCustomer) {
-                const option = new Option(defaultCustomer.text, defaultCustomer.id, true, true);
-                $('#customerSelect').append(option).trigger('change');
-              }
+
+    $('#customer_phone').on('keyup', function () {
+      let phone = $(this).val().trim();
+
+      if (phone.length < 3) {
+          $('#phone_suggestions').hide();
+          return;
+      }
+
+      $.ajax({
+        url: admin_url + "customers/findCustomer",
+        type: "GET",
+        dataType: "json",
+        data: { term: phone },
+        success: function (res) {
+
+            let list = res.results || [];
+
+            if (!Array.isArray(list) || list.length === 0) {
+                $('#phone_suggestions').hide();
+                return;
             }
-          }
-        });
-      }, 500);
+
+            let html = '';
+
+            list.slice(0, 3).forEach(c => {
+                html += `
+                    <div class="suggest-item" 
+                        data-name="${c.name}" 
+                        data-address="${c.address}"
+                        data-phone="${c.phone}"
+                        style="padding:8px; cursor:pointer;">
+                        <strong>${c.name}</strong><br>
+                        <small>${c.phone} - ${c.address}</small>
+                    </div>`;
+            });
+
+            $('#phone_suggestions').html(html).show();
+        }
+    });
+
+  });
 
 
-      //let currentCustomer = null;
-      let priceGroups = {}; // cache nhóm giá để đỡ gọi lại
+$(document).on('click', '.suggest-item', function () {
 
-      // Khi chọn khách hàng trong modal Thông tin KH
-      $('#customerSelect').on('select2:select', function (e) {
-        const data = e.params.data;
-        const customerId = data.id;
+    let name = $(this).data('name');
+    let phone = $(this).data('phone');
+    let address = $(this).data('address');
 
-        fetch(`${admin_url}/pos/get_customer_info/${customerId}`)
-          .then(res => res.json())
-          .then(info => {
-            console.log('Customer info:', info);
-            localStorage.setItem('customer_info', JSON.stringify(info));
-              console.log('Saved customer info:', info);
+    $('#customer_phone').val(phone);
+    $('#customer_name').val(name);
+    $('#customer_address').val(address);
+
+    $('#phone_suggestions').hide();
+});
 
 
-            //currentCustomer = info;
-            updateProductPrices();
-          });
-      });
 
-    } catch (e) {
-      console.warn('select2 init failed', e);
-    }
+  //   $('#customer_phone').on('keyup', function () {
+  //     let phone = $(this).val().trim();
 
+  //     if (phone.length < 4) return; // gõ ít quá thì không tìm
+  //     console.log('1111: ' + phone);
 
+  //     $.ajax({
+  //         url: admin_url + "customers/findCustomer",
+  //         type: "GET",
+  //         dataType: "json",
+  //         data: { term: phone },    // POS đang dùng 'term'
+  //         success: function (res) {
+  //           console.log('222: ' + JSON.stringify(res));
+  //             if (res.length > 0) {
+  //                 let cus = res[0];  // lấy khách đầu tiên khớp nhất
+
+  //                 // Gán thông tin xuống form
+  //                 $('#customer_name').val(cus.name);
+  //                 $('#customer_address').val(cus.address);
+
+  //                 // Nếu bạn có lưu customer_id thì cho vào hidden
+  //                 $('#customer_id').val(cus.id);
+  //             }
+  //         }
+  //     });
+  // });
+
+     
     // === Nút Reset form Thông tin đơn hàng ===
     document.getElementById('resetOrderInfoBtn').addEventListener('click', function() {
       try {
