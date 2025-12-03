@@ -148,6 +148,15 @@
   padding: 10px 20px;
 }
 
+#phone_suggestions {
+    position: absolute;
+    background: #fff;
+    width: 100%;
+    z-index: 9999;
+    border: 1px solid #ddd;
+}
+
+
 
 
 
@@ -454,22 +463,67 @@
 
 
 
-    $('#customer_phone').on('keyup', function () {
-      let phone = $(this).val().trim();
+  //   $('#customer_phone').on('keyup', function () {
+  //     let phone = $(this).val().trim();
 
-      if (phone.length < 3) {
-          $('#phone_suggestions').hide();
-          return;
-      }
+  //     if (phone.length < 3) {
+  //         $('#phone_suggestions').hide();
+  //         return;
+  //     }
+  //     console.log('111');
 
-      $.ajax({
-        url: admin_url + "customers/findCustomer",
+  //     $.ajax({
+  //       url: admin_url + "customers/findCustomer",
+  //       type: "GET",
+  //       dataType: "json",
+  //       data: { term: phone },
+  //       success: function (res) {
+  //         console.log('222');
+
+  //           let list = res.results || [];
+
+  //           if (!Array.isArray(list) || list.length === 0) {
+  //               $('#phone_suggestions').hide();
+  //               return;
+  //           }
+
+  //           let html = '';
+
+  //           list.slice(0, 3).forEach(c => {
+  //               html += `
+  //                   <div class="suggest-item" 
+  //                       data-name="${c.name}" 
+  //                       data-address="${c.address}"
+  //                       data-phone="${c.phone}"
+  //                       style="padding:8px; cursor:pointer;">
+  //                       <strong>${c.name}</strong><br>
+  //                       <small>${c.phone} - ${c.address}</small>
+  //                   </div>`;
+  //           });
+
+  //           $('#phone_suggestions').html(html).show();
+  //       }
+  //   });
+
+  // });
+
+  $('#customer_phone').on('keyup', function () {
+    let phone = $(this).val().trim();
+
+    if (phone.length < 6) {
+        $('#phone_suggestions').hide();
+        return;
+    }
+    console.log('1111');
+
+    $.ajax({
+        url: base_url + "order/findCustomer",
         type: "GET",
         dataType: "json",
         data: { term: phone },
         success: function (res) {
-
-            let list = res.results || [];
+            console.log('2222');
+            let list = res.results || res || [];  // <--- quan trọng
 
             if (!Array.isArray(list) || list.length === 0) {
                 $('#phone_suggestions').hide();
@@ -478,13 +532,13 @@
 
             let html = '';
 
-            list.slice(0, 3).forEach(c => {
+            list.slice(0, 6).forEach(c => {
                 html += `
                     <div class="suggest-item" 
-                        data-name="${c.name}" 
-                        data-address="${c.address}"
-                        data-phone="${c.phone}"
-                        style="padding:8px; cursor:pointer;">
+                         data-name="${c.name}" 
+                         data-address="${c.address}"
+                         data-phone="${c.phone}"
+                         style="padding:8px; cursor:pointer;">
                         <strong>${c.name}</strong><br>
                         <small>${c.phone} - ${c.address}</small>
                     </div>`;
@@ -493,8 +547,8 @@
             $('#phone_suggestions').html(html).show();
         }
     });
+});
 
-  });
 
 
 $(document).on('click', '.suggest-item', function () {

@@ -385,20 +385,6 @@ class Customers extends MY_Controller
         $this->sma->send_json($rows);
     }
 
-    function findCustomer($term = NULL, $limit = NULL)
-    {
-        // $this->sma->checkPermissions('index');
-        if ($this->input->get('term')) {
-            $term = $this->input->get('term', TRUE);
-        }
-        if (strlen($term) < 1) {
-            return FALSE;
-        }
-        $limit = $this->input->get('limit', TRUE);
-        $rows['results'] = $this->companies_model->findCustomerSuggestions($term, $limit, lang('award_points_short'));
-        $this->sma->send_json($rows);
-    }
-
 //    function getCustomerGroupByID($id = NULL)
 //    {
 //        if ($rows = $this->site->getCustomerGroupByID($id)) {
