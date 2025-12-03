@@ -363,7 +363,7 @@
           <label class="form-label"><i class="fa fa-address-card text-info me-1"></i> Địa chỉ giao</label>
           <input type="text" id="customer_address" class="form-control" placeholder="Nhập địa chỉ...">
         </div>
-        <div class="form-group d-flex align-items-center" style="gap:10px; margin-bottom:10px;">
+        <div class="form-group d-flex align-items-center" style="gap:13px; margin-bottom:10px;">
         <!-- Chữ Đơn nhóm -->
         <label class="mb-0" style="font-weight:600; font-size:15px; cursor:pointer;" 
               for="group_order_toggle">
