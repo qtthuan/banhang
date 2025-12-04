@@ -1286,7 +1286,7 @@ class Pos_model extends CI_Model
             'created_by' => $this->session->userdata('user_id')
         );
         
-
+        
         if ($did) {
 
             if ($this->db->update('suspended_bills', $sData, array('id' => $did)) && $this->db->delete('suspended_items', array('suspend_id' => $did))) {
@@ -1297,7 +1297,7 @@ class Pos_model extends CI_Model
                     //unset($var['is_promo']);
                     //unset($var['promo_original_price']);
                     unset($var['product_name_en']);
-                    unset($var['comment_name']);
+                    //unset($var['comment_name']);
                 }
 
                 if ($this->db->insert_batch('suspended_items', $items)) {
@@ -1312,17 +1312,15 @@ class Pos_model extends CI_Model
                 $suspend_id = $this->db->insert_id();
                 $addOn = array('suspend_id' => $suspend_id);
                 end($addOn);
-                //$this->sma->print_arrays($sData, $addOn);
+                
                 foreach ($items as &$var) {
                     $var = array_merge($addOn, $var);
-                    //unset($var['is_promo']);
-                    //unset($var['promo_original_price']);
                     unset($var['product_name_en']);
-                    unset($var['comment_name']);
                 }
                 //return $var;
-                //$this->sma->print_arrays($var);
+                //$this->sma->print_arrays($items);
                 if ($this->db->insert_batch('suspended_items', $items)) {
+                    //$this->sma->print_arrays($items);
                     return TRUE;
                 }
             }

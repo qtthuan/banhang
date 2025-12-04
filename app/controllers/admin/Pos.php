@@ -149,8 +149,6 @@ class Pos extends MY_Controller
         echo json_encode($this->pos_model->check_promo($product_id));
     }
 
-    
-   
 
     /* ---------------------------------------------------------------------------------------------------- */
 
@@ -326,9 +324,7 @@ class Pos extends MY_Controller
                         'comment_name'    => $item_comment_name,
                         'is_promo'        => $is_promo,
                         'promo_original_price' => $suspend ? $promo_original_price_for_suspend : $promo_original_price,
-                        'toppings'   => $item_toppings,
-                        'toppings_cost'      => $item_toppings_cost,
-                        'toppings_price'     => $item_toppings_price,
+                        
                     );
 
                     if ($is_promo == 1) {
