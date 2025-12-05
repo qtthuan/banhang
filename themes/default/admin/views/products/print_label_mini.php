@@ -281,7 +281,7 @@
 
         
         $(document).on('click', '.item_1', function () {
-            var total_items = $(this).closest('.barcode').find('.item_1').length - 1;
+            var total_items = $(this).closest('.barcode_mini').find('.item_1').length - 1;
             //console.log('cccc: ' + $(this).closest('.barcode').find('.item_1').length);
             var id = $(this).attr('id');
             $(this).remove();
