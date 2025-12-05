@@ -641,6 +641,7 @@ class Pos extends MY_Controller
                         }
 
                         $row->comment = isset($item->comment) ? $item->comment : '';
+                        $row->comment_name = isset($item->comment_name) ? $item->comment_name : '';
                         $row->ordered = 1;
                         $combo_items = false;
                         if ($row->type == 'combo') {
