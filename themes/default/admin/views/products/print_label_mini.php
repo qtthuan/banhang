@@ -72,7 +72,7 @@
                                 && $item->product_id != 20357 && $item->product_id != 20358 && $item->product_id != 22133
                                 && $item->product_id != 22153 && $item->product_id != 22154 && $item->product_id != 22178
                                 && $item->product_id != 22179 && $item->product_id != 22180
-                                && $item->product_id != 22181 && $item->product_id != 22185) {
+                                && $item->product_id != 22181 && $item->product_id != 22185 && $item->product_id != 22188) {
                                 $total_items++;
                                 //echo 'vv: '. $j.'<br />';
                                     $item_qty = $item->quantity;
