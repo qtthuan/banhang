@@ -108,7 +108,7 @@
                     //$this->sma->print_arrays($best_sellers);
                         $exclude_products = array(20358, 20357, 21122, 21121, 20354, 22133, 22135,
                                             22136, 22137, 22138, 22139, 22140, 22141, 22142,
-                                            22143, 22144, 22185, 22181, 22183, 22184, 21789);
+                                            22143, 22144, 22185, 22181, 22183, 22184, 21789, 22288);
                         // 
                         foreach($best_sellers as $best) {
                             if (!in_array($best->product_id, $exclude_products)) {
