@@ -510,7 +510,7 @@
   $('#customer_phone').on('keyup', function () {
     let phone = $(this).val().trim();
 
-    if (phone.length < 6) {
+    if (phone.length < 3) {
         $('#phone_suggestions').hide();
         return;
     }
@@ -679,6 +679,7 @@ $(document).on('click', '.suggest-item', function () {
 
     const customerId = $('#customerSelect').val();  
     const customerText = $('#customerSelect').find('option:selected').text();
+    const isGroup = document.getElementById('group_order_toggle') && document.getElementById('group_order_toggle').checked;
 
     // const data = {
     //   customer_id: customerId,
@@ -698,32 +699,37 @@ $(document).on('click', '.suggest-item', function () {
       customer_name: document.getElementById('customer_name').value || '',
       customer_phone: document.getElementById('customer_phone').value || '',
       order_note: document.getElementById('order_note').value || ''
+      
     };
     localStorage.setItem('customer_info', JSON.stringify(updated));
 
+    if (!isGroup) {
+      // hiện "Đang lưu..."
+      statusBox.textContent = 'Đang lưu...';
+      statusBox.style.display = 'block';
+
+      // Giả lập xử lý lưu ajax (có thể thay bằng thật)
+      setTimeout(() => {
+        // hiển thị "Đã lưu"
+        statusBox.textContent = '✅ Đã lưu';
+        
+        // ẩn sau 800ms và đóng modal
+        setTimeout(() => {
+          statusBox.style.display = 'none';
+          const modalInstance = bootstrap.Modal.getInstance(modal);
+          if (modalInstance) modalInstance.hide();
+        }, 400);
+
+      }, 400); // giả lập thời gian ajax
+      return;
+    }
 
 
 
     //localStorage.setItem('customer_info', JSON.stringify(data));
 
 
-    // hiện "Đang lưu..."
-    statusBox.textContent = 'Đang lưu...';
-    statusBox.style.display = 'block';
-
-    // Giả lập xử lý lưu ajax (có thể thay bằng thật)
-    setTimeout(() => {
-      // hiển thị "Đã lưu"
-      statusBox.textContent = '✅ Đã lưu';
-      
-      // ẩn sau 800ms và đóng modal
-      setTimeout(() => {
-        statusBox.style.display = 'none';
-        const modalInstance = bootstrap.Modal.getInstance(modal);
-        if (modalInstance) modalInstance.hide();
-      }, 400);
-
-    }, 400); // giả lập thời gian ajax
+    
   });
 
 
