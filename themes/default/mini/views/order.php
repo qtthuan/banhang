@@ -463,67 +463,24 @@
 
 
 
-  //   $('#customer_phone').on('keyup', function () {
-  //     let phone = $(this).val().trim();
+    $('#customer_phone').on('keyup', function () {
+      let phone = $(this).val().trim();
 
-  //     if (phone.length < 3) {
-  //         $('#phone_suggestions').hide();
-  //         return;
-  //     }
-  //     console.log('111');
+      if (phone.length < 7) {
+          $('#phone_suggestions').hide();
+          return;
+      }
+      console.log('111: ' + base_url);
 
-  //     $.ajax({
-  //       url: admin_url + "customers/findCustomer",
-  //       type: "GET",
-  //       dataType: "json",
-  //       data: { term: phone },
-  //       success: function (res) {
-  //         console.log('222');
-
-  //           let list = res.results || [];
-
-  //           if (!Array.isArray(list) || list.length === 0) {
-  //               $('#phone_suggestions').hide();
-  //               return;
-  //           }
-
-  //           let html = '';
-
-  //           list.slice(0, 3).forEach(c => {
-  //               html += `
-  //                   <div class="suggest-item" 
-  //                       data-name="${c.name}" 
-  //                       data-address="${c.address}"
-  //                       data-phone="${c.phone}"
-  //                       style="padding:8px; cursor:pointer;">
-  //                       <strong>${c.name}</strong><br>
-  //                       <small>${c.phone} - ${c.address}</small>
-  //                   </div>`;
-  //           });
-
-  //           $('#phone_suggestions').html(html).show();
-  //       }
-  //   });
-
-  // });
-
-  $('#customer_phone').on('keyup', function () {
-    let phone = $(this).val().trim();
-
-    if (phone.length < 3) {
-        $('#phone_suggestions').hide();
-        return;
-    }
-    console.log('1111');
-
-    $.ajax({
+      $.ajax({
         url: base_url + "order/findCustomer",
         type: "GET",
         dataType: "json",
         data: { term: phone },
         success: function (res) {
-            console.log('2222');
-            let list = res.results || res || [];  // <--- quan trọng
+          console.log('222: ' + base_url);
+
+            let list = res.results || [];
 
             if (!Array.isArray(list) || list.length === 0) {
                 $('#phone_suggestions').hide();
@@ -532,13 +489,13 @@
 
             let html = '';
 
-            list.slice(0, 6).forEach(c => {
+            list.slice(0, 7).forEach(c => {
                 html += `
                     <div class="suggest-item" 
-                         data-name="${c.name}" 
-                         data-address="${c.address}"
-                         data-phone="${c.phone}"
-                         style="padding:8px; cursor:pointer;">
+                        data-name="${c.name}" 
+                        data-address="${c.address}"
+                        data-phone="${c.phone}"
+                        style="padding:8px; cursor:pointer;">
                         <strong>${c.name}</strong><br>
                         <small>${c.phone} - ${c.address}</small>
                     </div>`;
@@ -547,7 +504,10 @@
             $('#phone_suggestions').html(html).show();
         }
     });
-});
+
+  });
+
+  
 
 
 
@@ -723,6 +683,67 @@ $(document).on('click', '.suggest-item', function () {
       }, 400); // giả lập thời gian ajax
       return;
     }
+
+    // tạo group via AJAX
+    // fetch(base_url + 'order/create_group', {
+    //   method: 'POST',
+    //   headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    //   body: new URLSearchParams({
+    //     customer_name: customer_name,
+    //     customer_phone: customer_phone,
+    //     note: order_note
+    //   })
+    // }).then(r=>r.json()).then(json=>{
+    //   if (json && json.success && json.code) {
+    //     updated.group_code = json.code;
+    //     localStorage.setItem('customer_info', JSON.stringify(updated));
+    //     const link = json.link || (location.origin + '/order/' + json.code);
+    //     // copy to clipboard
+    //     navigator.clipboard && navigator.clipboard.writeText(link).then(function(){
+    //       alert('Mã nhóm đã tạo và đã copy vào clipboard:\n' + link);
+    //     }, function(){
+    //       // fallback
+    //       prompt('Copy link nhóm này cho khách:', link);
+    //     });
+    //   } else {
+    //     alert('Tạo mã nhóm thất bại.');
+    //   }
+    // }).catch(e=>{
+    //   console.error(e);
+    //   alert('Lỗi khi tạo mã nhóm');
+    // });
+    const csrfName = $('#csrf_token_input').attr('name');
+    const csrfHash = $('#csrf_token_input').val();
+
+    fetch(base_url + 'order/create_group', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: new URLSearchParams({
+            customer_name: customer_name,
+            customer_phone: customer_phone,
+            note: order_note,
+            [csrfName]: csrfHash       // 🚀 Gửi CSRF token
+        })
+    })
+    .then(r => r.json())
+    .then(json => {
+        if (json && json.success && json.code) {
+        updated.group_code = json.code;
+        localStorage.setItem('customer_info', JSON.stringify(updated));
+        const link = json.link || (location.origin + '/order/' + json.code);
+        // copy to clipboard
+        navigator.clipboard && navigator.clipboard.writeText(link).then(function(){
+          alert('Mã nhóm đã tạo và đã copy vào clipboard:\n' + link);
+        }, function(){
+          // fallback
+          prompt('Copy link nhóm này cho khách:', link);
+        });
+      } else {
+        alert('Tạo mã nhóm thất bại.');
+      }
+    })
+    .catch(err => console.error(err));
+
 
 
 

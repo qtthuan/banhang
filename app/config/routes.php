@@ -2,13 +2,12 @@
 
 // Order frontend
 $route['order'] = 'order';
+$route['order/findCustomer'] = 'order/findCustomer';
 $route['order/create_group'] = 'order/create_group';
 $route['order/group_add_item'] = 'order/group_add_item';
 $route['order/group_items/(:any)'] = 'order/group_items/$1';
 $route['order/(:any)'] = 'order/view_group/$1'; // đặt cuối cùng để không chặn index
 
-
-// $route['order'] = 'admin/pos/order';
 // Framework routes
 $route['default_controller'] = 'main';
 $route['404_override'] = 'notify/error_404';

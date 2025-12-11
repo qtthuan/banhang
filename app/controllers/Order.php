@@ -2,11 +2,16 @@
 
 class Order extends MY_Controller {
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->model('admin/pos_model', 'pos_model');
+        $this->load->model('admin/companies_model', 'companies_model');
+        $this->load->model('Group_model', 'group_model');
+    }
+
     public function index() {
-        // Load model trong thư mục admin
-        $this->load->model('admin/pos_model');
-        $this->load->model('admin/companies_model');
-        $this->load->model('group_model');
+        
 
         $this->data['products'] = $this->pos_model->getAllMiniProducts();
         $this->load->view($this->mini_theme . 'order', $this->data);
@@ -22,17 +27,32 @@ class Order extends MY_Controller {
             return FALSE;
         }
         $limit = $this->input->get('limit', TRUE);
-        $rows['results'] = $this->companies_model->findCustomerSuggestions($term, $limit, lang('award_points_short'));
+        $rows['results'] = $this->companies_model->findCustomerSuggestions($term);
         $this->sma->send_json($rows);
     }
-    // trong __construct hoặc method trước: $this->load->model('Group_model');
+
+    // public function findCustomer($term = NULL)
+    // {
+    //     $term = $this->input->get('term', TRUE);
+
+    //     log_message('error', "TERM INPUT: $term");
+
+    //     if (!$term || strlen($term) < 1) {
+    //         $this->sma->send_json(['results' => []]);
+    //     }
+
+    //     $rows['results'] = $this->companies_model->findCustomerSuggestions($term);
+
+    //     $this->sma->send_json($rows);
+    // }
 
     public function create_group()
     {
+        //die('OK CREATE'); // test trước
         // POST expected (AJAX)
         $name = $this->input->post('customer_name', TRUE);
         $phone = $this->input->post('customer_phone', TRUE);
-        $address = $this->input->post('customer_phone', TRUE);
+        $address = $this->input->post('customer_address', TRUE);
         $note = $this->input->post('note', TRUE);
         $group = $this->group_model->create_group([
         'customer_name' => $name,
@@ -71,7 +91,7 @@ class Order extends MY_Controller {
         // GET: return items JSON
         $code = $code ?: $this->input->get('code', TRUE);
         $since_id = (int)($this->input->get('since_id', TRUE) ?: 0);
-        $items = $this->Group_model->get_items($code, $since_id);
+        $items = $this->group_model->get_items($code, $since_id);
         $this->sma->send_json(['success'=>1, 'items'=>$items]);
     }
 
@@ -82,6 +102,5 @@ class Order extends MY_Controller {
         $this->data['group_code'] = $code;
         $this->load->view($this->mini_theme . 'order', $this->data);
     }
-
 }
 
