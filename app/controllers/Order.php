@@ -96,10 +96,23 @@ class Order extends MY_Controller {
     }
 
     // route: order/{code} -> open order page in group mode
-    public function view_group($code = NULL)
+    public function group($code = NULL)
     {
-        // load same view but pass group_code
-        $this->data['group_code'] = $code;
+        if (!$code) show_404();
+
+        // Tải sản phẩm
+        $this->data['products'] = $this->pos_model->getAllMiniProducts();
+
+        // Tìm group theo code
+        $group = $this->group_model->get_group_by_code($code);
+        if (!$group) {
+            show_error("Mã đơn nhóm không tồn tại");
+        }
+
+        // Truyền group info xuống view
+        $this->data['group'] = $group;
+
+        // Load view order bình thường
         $this->load->view($this->mini_theme . 'order', $this->data);
     }
 }

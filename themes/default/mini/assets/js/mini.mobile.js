@@ -103,6 +103,32 @@ function mobileAddItem(productObj, qty, variantValue, note, noteName) {
   savePosItems();
   renderCart();
   updateCartCount();
+  // at end of mobileAddItem, after renderCart()
+  try {
+    const info = JSON.parse(localStorage.getItem('customer_info') || '{}');
+    if (info && info.group_code) {
+      // prepare data
+      const payload = new URLSearchParams({
+        group_code: info.group_code,
+        product_id: productObj.id,
+        product_name: productObj.name,
+        product_option: option_id || '',
+        product_option_name: option_name || '',
+        quantity: qty,
+        price: unit_price,
+        customer_name: info.customer_name || '',
+        customer_phone: info.customer_phone || ''
+      });
+      fetch(admin_url + 'order/group_add_item', { method: 'POST', body: payload })
+        .then(r=>r.json()).then(j=>{
+          if (j && j.success) {
+            // optionally show small toast or visual
+            console.log('Đã gửi item lên nhóm, id:', j.id);
+          }
+        }).catch(err=>console.warn('group add error', err));
+    }
+  } catch(e){ console.warn(e); }
+
 }
 
 /* PUBLIC: remove item */
@@ -390,6 +416,73 @@ document.addEventListener('DOMContentLoaded', function(){
       } catch(e){}
       return;
     }
+    // đặt trong DOMContentLoaded
+    const groupCode = window.GROUP_CODE || null; // PHP có thể render JS biến
+    // hoặc: read from data attribute trên body: <body data-group-code="<?= $group_code ?>">
+    const groupCodeFromBody = document.body.getAttribute('data-group-code');
+
+    const code = groupCode || groupCodeFromBody || null;
+    let lastSeenId = 0;
+
+    if (code) {
+      // show small banner: "Bạn đang ở đơn nhóm: CODE"
+      const b = document.createElement('div');
+      b.className = 'alert alert-info';
+      b.textContent = 'Bạn đang tham gia đơn nhóm: ' + code;
+      document.querySelector('.container')?.insertAdjacentElement('afterbegin', b);
+
+      // polling mỗi 3s
+      setInterval(() => {
+        fetch(admin_url + 'order/group_items/' + encodeURIComponent(code) + '?since_id=' + lastSeenId)
+          .then(r => r.json())
+          .then(j => {
+            if (!j || !j.success) return;
+            const items = j.items || [];
+            items.forEach(it => {
+              // hiển thị tạm: ai đặt gì
+              const who = it.customer_name || it.customer_phone || 'Khách';
+              const name = it.product_name || 'Sản phẩm';
+              // hiển thị toast (1 lát rồi ẩn)
+              const toast = document.createElement('div');
+              toast.className = 'toast show';
+              toast.style.position='fixed';
+              toast.style.right='12px';
+              toast.style.bottom=(12 + Math.random()*60)+'px';
+              toast.innerHTML = `<div class="toast-body">🔔 ${who} vừa đặt ${it.quantity} x ${name}</div>`;
+              document.body.appendChild(toast);
+              setTimeout(()=>toast.remove(), 3500);
+
+              // và THÊM món vào giỏ local (để tất cả thấy trong giỏ)
+              // convert item -> positems entry (unique key can be 'g'+it.id)
+              const key = 'g' + it.id;
+              if (!positems[key]) {
+                lastItemId = Math.max(lastItemId, parseInt(localStorage.getItem('lastItemId')||0));
+                lastItemId++;
+                positems[key] = {
+                  id: key,
+                  row: {
+                    product_id: it.product_id,
+                    product_name: it.product_name,
+                    product_image: it.product_image || 'no_image.png',
+                    product_option: it.product_option,
+                    product_option_name: it.product_option_name,
+                    quantity: it.quantity,
+                    unit_price: parseFloat(it.price) || 0,
+                    product_comment: '', product_comment_name: it.customer_name || '',
+                    product_unit: 'undefined',
+                    product_base_quantity: it.quantity
+                  }
+                };
+                savePosItems();
+                renderCart();
+                updateCartCount();
+              }
+              lastSeenId = Math.max(lastSeenId, it.id);
+            });
+          }).catch(e=>console.warn('poll error',e));
+      }, 3000);
+    }
+
   }); // end body click delegation
 
   // delegated change for size radios -> update price on card

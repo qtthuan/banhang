@@ -173,6 +173,13 @@
     var base_url = "<?= base_url(); ?>"; // thêm nếu chưa có
     var admin_url = "<?= admin_url(); ?>";
     var mini_url = "<?= mini_url(); ?>";
+
+    if (typeof group_code !== 'undefined') {
+      let info = JSON.parse(localStorage.getItem('customer_info') || '{}');
+      info.group_code = group_code;
+      localStorage.setItem('customer_info', JSON.stringify(info));
+    }
+
   </script>
 
 <!-- Header -->
@@ -218,6 +225,12 @@
   <!-- Product grid -->
   <div class="row g-2" id="productList">
     <?php //$this->sma->print_arrays($products); ?>
+    <?php if (!empty($group)): ?>
+      <script>
+          var group_code = "<?= $group->code ?>";
+      </script>
+    <?php endif; ?>
+
     <?php foreach ($products as $p):
       $img = !empty($p->image) ? base_url('assets/uploads/thumbs/'.$p->image) : base_url('assets/uploads/thumbs/no_image.png');
       $cleanName = preg_replace('/^[A-Z]_\s*/', '', strtoupper($p->name));
