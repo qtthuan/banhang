@@ -206,6 +206,18 @@
               id="cartCount" style="font-size: 12px;">0</span>
       </button>
 
+      <?php if (!empty($group_items)): ?>
+      <div class="alert alert-info">
+          <strong>Đơn nhóm: <?= $group->code ?></strong><br>
+          <?php foreach ($group_items as $item): ?>
+              <div>
+                  <b><?= $item->customer_name ?>:</b>
+                  <?= $item->product_name ?> x <?= $item->qty ?>
+              </div>
+          <?php endforeach; ?>
+      </div>
+      <?php endif; ?>
+
     </div>
   </div>
 </nav>
@@ -228,6 +240,7 @@
     <?php if (!empty($group)): ?>
       <script>
           var group_code = "<?= $group->code ?>";
+          localStorage.setItem('group_code', group_code);
       </script>
     <?php endif; ?>
 
