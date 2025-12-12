@@ -104,30 +104,6 @@ function mobileAddItem(productObj, qty, variantValue, note, noteName) {
   renderCart();
   updateCartCount();
   // at end of mobileAddItem, after renderCart()
-  try {
-    const info = JSON.parse(localStorage.getItem('customer_info') || '{}');
-    if (info && info.group_code) {
-      // prepare data
-      const payload = new URLSearchParams({
-        group_code: info.group_code,
-        product_id: productObj.id,
-        product_name: productObj.name,
-        product_option: option_id || '',
-        product_option_name: option_name || '',
-        quantity: qty,
-        price: unit_price,
-        customer_name: info.customer_name || '',
-        customer_phone: info.customer_phone || ''
-      });
-      fetch(admin_url + 'order/group_add_item', { method: 'POST', body: payload })
-        .then(r=>r.json()).then(j=>{
-          if (j && j.success) {
-            // optionally show small toast or visual
-            console.log('Đã gửi item lên nhóm, id:', j.id);
-          }
-        }).catch(err=>console.warn('group add error', err));
-    }
-  } catch(e){ console.warn(e); }
 
 }
 
@@ -435,6 +411,33 @@ document.addEventListener('DOMContentLoaded', function(){
       };
 
       mobileAddItem(productObj, qty, variantValue, note, noteName);
+
+
+      // try {
+      //   const info = JSON.parse(localStorage.getItem('customer_info') || '{}');
+      //   if (info && info.group_code) {
+      //     // prepare data
+      //     const payload = new URLSearchParams({
+      //       group_code: info.group_code,
+      //       product_id: productObj.id,
+      //       product_name: productObj.name,
+      //       product_option: option_id || '',
+      //       product_option_name: option_name || '',
+      //       quantity: qty,
+      //       price: unit_price,
+      //       customer_name: info.customer_name || '',
+      //       customer_phone: info.customer_phone || ''
+      //     });
+      //     fetch(admin_url + 'order/group_add_item', { method: 'POST', body: payload })
+      //       .then(r=>r.json()).then(j=>{
+      //         if (j && j.success) {
+      //           // optionally show small toast or visual
+      //           console.log('Đã gửi item lên nhóm, id:', j.id);
+      //         }
+      //       }).catch(err=>console.warn('group add error', err));
+      //   }
+      // } catch(e){ console.warn(e); }
+
       // nếu đang trong đơn nhóm thì push lên server
       var info = localStorage.getItem('customer_info');
       if (info) {
