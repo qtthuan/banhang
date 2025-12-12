@@ -112,7 +112,7 @@ class Order extends MY_Controller {
 
         // Load món mà các thành viên đã đặt (nếu có)
         $this->data['group_items'] = $this->group_model->get_items($group->id);
-        $this->sma->print_arrays($this->data['group_items']);
+        //$this->sma->print_arrays($this->data['group_items']);
 
         // Render view order như bình thường
         $this->load->view($this->mini_theme . 'order', $this->data);
