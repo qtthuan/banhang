@@ -435,6 +435,35 @@ document.addEventListener('DOMContentLoaded', function(){
       };
 
       mobileAddItem(productObj, qty, variantValue, note, noteName);
+      // nếu đang trong đơn nhóm thì push lên server
+      var info = localStorage.getItem('customer_info');
+      if (info) {
+          try {
+              info = JSON.parse(info);
+              if (info.group_code) {
+
+                  var itemSend = {
+                      product_id: pid,
+                      product_name: pname,
+                      option_id: variantValue || null,
+                      quantity: qty,
+                      price: basePrice,
+                      comment: note,
+                      comment_name: noteName
+                  };
+
+                  addItemToGroup(info.group_code, itemSend)
+                  .then(res => {
+                      if (!res || !res.success) {
+                          console.log("Lỗi save group item", res);
+                      }
+                  })
+                  .catch(err => console.error(err));
+              }
+          } catch(e){}
+      }
+
+
 
       // reset UI for that product: qty -> 0, clear note display and stored note
       if (qtyInput) qtyInput.value = 0;
