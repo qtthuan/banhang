@@ -29,33 +29,65 @@ class Group_model extends CI_Model {
         return $code;
     }
 
-    public function add_item($group_code, $item) {
-        $g = $this->db->get_where('mini_group_orders', ['code'=>$group_code])->row();
-        if (!$g) return false;
-        $insert = [
-          'group_order_id' => $g->id,
-          'product_id' => $item['product_id'],
-          'product_name' => $item['product_name'],
-          'option_id' => $item['option_id'] ?? 0,
-          'comment' => $item['comment'] ?? '',
-          'comment_name' => $item['comment_name'] ?? '',
-          'quantity' => $item['quantity'] ?? 1,
-          'price' => $item['price'] ?? 0,
-          'meta' => isset($item['meta']) ? json_encode($item['meta']) : null
-        ];
-        $this->db->insert('mini_group_order_items', $insert);
-        return $this->db->insert_id();
+    // public function add_items($group_order_id, $items)
+    // {
+    //     foreach ($items as $it) {
+    //         $this->db->insert('sma_mini_group_order_items', [
+    //             'group_order_id' => $group_order_id,
+    //             'product_id'     => $it['product_id'],
+    //             'product_name'   => $it['product_name'],
+    //             'option_id'      => $it['option_id'],
+    //             'quantity'       => $it['quantity'],
+    //             'price'          => $it['price'],
+    //             'comment'        => $it['comment'],
+    //             'comment_name'   => $it['comment_name'],
+    //             'meta'           => json_encode($it['meta'], JSON_UNESCAPED_UNICODE)
+    //         ]);
+    //     }
+    // }
+
+
+    // public function add_item($group_code, $item) {
+    //     $g = $this->db->get_where('mini_group_orders', ['code'=>$group_code])->row();
+    //     if (!$g) return false;
+    //     $insert = [
+    //       'group_order_id' => $g->id,
+    //       'product_id' => $item['product_id'],
+    //       'product_name' => $item['product_name'],
+    //       'option_id' => $item['option_id'] ?? 0,
+    //       'comment' => $item['comment'] ?? '',
+    //       'comment_name' => $item['comment_name'] ?? '',
+    //       'quantity' => $item['quantity'] ?? 1,
+    //       'price' => $item['price'] ?? 0,
+    //       'meta' => isset($item['meta']) ? json_encode($item['meta']) : null
+    //     ];
+    //     $this->db->insert('mini_group_order_items', $insert);
+    //     return $this->db->insert_id();
+    // }
+    
+    public function add_item($data)
+{
+    return $this->db->insert('sma_mini_group_order_items', $data);
+}
+
+    // public function get_items($group_code, $since_id = 0) {
+    //     $g = $this->db->get_where('mini_group_orders', ['code'=>$group_code])->row();
+    //     if (!$g) return [];
+    //     $this->db->where('group_order_id', $g->id);
+    //     if ($since_id) $this->db->where('id >', $since_id);
+    //     $this->db->order_by('id','asc');
+    //     $q = $this->db->get('mini_group_order_items');
+    //     return $q->result();
+    // }
+
+    public function get_items($group_order_id)
+    {
+        return $this->db
+                    ->where('group_order_id', $group_order_id)
+                    ->get('sma_mini_group_order_items')
+                    ->result();
     }
 
-    public function get_items($group_code, $since_id = 0) {
-        $g = $this->db->get_where('mini_group_orders', ['code'=>$group_code])->row();
-        if (!$g) return [];
-        $this->db->where('group_order_id', $g->id);
-        if ($since_id) $this->db->where('id >', $since_id);
-        $this->db->order_by('id','asc');
-        $q = $this->db->get('mini_group_order_items');
-        return $q->result();
-    }
 
     public function get_group_by_code($code) {
         return $this->db->get_where('mini_group_orders', ['code'=>$code])->row();

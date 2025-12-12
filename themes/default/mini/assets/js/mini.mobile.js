@@ -331,6 +331,35 @@ function updateProductPrices() {
   });
 }
 
+function addItemToGroup(group_code, item) {
+
+    const payload = new URLSearchParams({
+        group_code: group_code,
+        product_id: item.id,
+        product_name: item.name,
+        option_id: item.option_id || "",
+        quantity: item.qty,
+        price: item.price,
+        comment: item.comment || "",
+        comment_name: item.comment_name || ""
+    });
+
+    fetch(base_url + 'order/group_add_item', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: payload
+    })
+    .then(r => r.json())
+    .then(json => {
+        if (json.success) {
+            console.log("Item added");
+        } else {
+            alert("Không thêm được món: " + json.error);
+        }
+    });
+}
+
+
 function formatMoney(x, symbol = '') {
   if (x === null || x === undefined || x === '') return symbol + '0';
   const num = parseFloat(x);

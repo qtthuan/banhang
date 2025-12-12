@@ -67,24 +67,72 @@ class Order extends MY_Controller {
         }
     }
 
+    // public function group_add_item()
+    // {
+    //     // POST JSON: group_code + item fields
+    //     $code = $this->input->post('group_code', TRUE);
+    //     $item = [
+    //     'product_id' => $this->input->post('product_id', TRUE),
+    //     'product_name' => $this->input->post('product_name', TRUE),
+    //     'product_option' => $this->input->post('product_option', TRUE),
+    //     'product_option_name' => $this->input->post('product_option_name', TRUE),
+    //     'quantity' => $this->input->post('quantity', TRUE),
+    //     'price' => $this->input->post('price', TRUE),
+    //     'customer_name' => $this->input->post('customer_name', TRUE),
+    //     'customer_phone' => $this->input->post('customer_phone', TRUE)
+    //     ];
+    //     $res = $this->group_model->add_item($code, $item);
+    //     if ($res) $this->sma->send_json(['success'=>1, 'id'=>$res]);
+    //     else $this->sma->send_json(['success'=>0]);
+    // }
+
     public function group_add_item()
     {
-        // POST JSON: group_code + item fields
-        $code = $this->input->post('group_code', TRUE);
-        $item = [
-        'product_id' => $this->input->post('product_id', TRUE),
-        'product_name' => $this->input->post('product_name', TRUE),
-        'product_option' => $this->input->post('product_option', TRUE),
-        'product_option_name' => $this->input->post('product_option_name', TRUE),
-        'quantity' => $this->input->post('quantity', TRUE),
-        'price' => $this->input->post('price', TRUE),
-        'customer_name' => $this->input->post('customer_name', TRUE),
-        'customer_phone' => $this->input->post('customer_phone', TRUE)
+        $group_code = $this->input->post('group_code');
+        $product_id = (int)$this->input->post('product_id');
+        $product_name = $this->input->post('product_name', TRUE);
+        $option_id = (int)$this->input->post('option_id');
+        $qty = (int)$this->input->post('quantity');
+        $price = (float)$this->input->post('price');
+        $comment = $this->input->post('comment', TRUE);
+        $comment_name = $this->input->post('comment_name', TRUE);
+
+        if (!$group_code || !$product_id) {
+            return $this->sma->send_json([
+                'success' => 0,
+                'error' => 'Thiếu dữ liệu'
+            ]);
+        }
+
+        // Lấy thông tin đơn nhóm
+        $group = $this->group_model->get_group_by_code($group_code);
+        if (!$group) {
+            return $this->sma->send_json([
+                'success' => 0,
+                'error' => 'Mã nhóm không tồn tại'
+            ]);
+        }
+
+        // Chuẩn bị data insert
+        $item_data = [
+            'group_order_id' => $group->id,
+            'product_id'     => $product_id,
+            'product_name'   => $product_name,
+            'option_id'      => $option_id,
+            'quantity'       => $qty,
+            'price'          => $price,
+            'comment'        => $comment,
+            'comment_name'   => $comment_name,
+            'meta'           => NULL
         ];
-        $res = $this->Group_model->add_item($code, $item);
-        if ($res) $this->sma->send_json(['success'=>1, 'id'=>$res]);
-        else $this->sma->send_json(['success'=>0]);
+
+        $ok = $this->group_model->add_item($item_data);
+
+        return $this->sma->send_json([
+            'success' => $ok ? 1 : 0
+        ]);
     }
+
 
     public function group_items($code = NULL, $since_id = 0)
     {
