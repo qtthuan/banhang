@@ -440,6 +440,7 @@ document.addEventListener('DOMContentLoaded', function(){
       if (info) {
           try {
               info = JSON.parse(info);
+              console.log(JSON.stringify(info));
               if (info.group_code) {
 
                   var itemSend = {
