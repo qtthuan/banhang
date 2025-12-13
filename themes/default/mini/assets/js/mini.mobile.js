@@ -468,35 +468,71 @@ document.addEventListener('DOMContentLoaded', function(){
       //   }
       // } catch(e){ console.warn(e); }
 
+      // nếu đang trong đơn nhóm thì push lên server    
       // nếu đang trong đơn nhóm thì push lên server
-      var info = localStorage.getItem('customer_info');
-      if (info) {
+      const infoRaw = localStorage.getItem('customer_info');
+      if (infoRaw) {
           try {
-              info = JSON.parse(info);
-              console.log(JSON.stringify(info));
-              if (info.group_code) {
+              const info = JSON.parse(infoRaw);
+              console.log('GROUP INFO:', info);
 
-                  var itemSend = {
-                      product_id: pid,
-                      product_name: pname,
-                      option_id: variantValue || null,
-                      quantity: qty,
-                      price: basePrice,
-                      comment: note,
-                      comment_name: noteName
-                  };
-                  console.log('1111');
+              if (!info.group_code) return; // ❗ không phải đơn nhóm
 
-                  addItemToGroup(info.group_code, itemSend)
+              const itemSend = {
+                  product_id: pid,
+                  product_name: pname,
+                  option_id: variantValue ? variantValue.split('|')[0] : null, // chỉ lấy ID
+                  quantity: qty,
+                  price: basePrice,
+                  comment: note || '',
+                  comment_name: noteName || ''
+              };
+
+              console.log('SEND ITEM:', itemSend);
+
+              addItemToGroup(info.group_code, itemSend)
                   .then(res => {
                       if (!res || !res.success) {
-                          console.log("Lỗi save group item", res);
+                          console.error('Lỗi save group item', res);
+                      } else {
+                          console.log('Add item OK');
                       }
                   })
-                  .catch(err => console.error(err));
-              }
-          } catch(e){}
+                  .catch(err => console.error('ADD GROUP ITEM ERROR', err));
+
+          } catch (e) {
+              console.error('Parse customer_info error', e);
+          }
       }
+  
+      // var info = localStorage.getItem('customer_info');
+      // if (info) {
+      //     try {
+      //         info = JSON.parse(info);
+      //         console.log(JSON.stringify(info));
+      //         if (info.group_code) {
+
+      //             var itemSend = {
+      //                 product_id: pid,
+      //                 product_name: pname,
+      //                 option_id: variantValue || null,
+      //                 quantity: qty,
+      //                 price: basePrice,
+      //                 comment: note,
+      //                 comment_name: noteName
+      //             };
+      //             console.log('1111');
+
+      //             addItemToGroup(info.group_code, itemSend)
+      //             .then(res => {
+      //                 if (!res || !res.success) {
+      //                     console.log("Lỗi save group item", res);
+      //                 }
+      //             })
+      //             .catch(err => console.error(err));
+      //         }
+      //     } catch(e){}
+      // }
 
 
 
