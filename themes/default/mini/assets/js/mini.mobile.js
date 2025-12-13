@@ -320,6 +320,9 @@ function addItemToGroup(group_code, item) {
         comment: item.comment || "",
         comment_name: item.comment_name || ""
     });
+    for (const [key, value] of payload.entries()) {
+      console.log('key:' + key, value);
+    }
 
     fetch(base_url + 'order/group_add_item', {
         method: 'POST',
