@@ -760,7 +760,7 @@ $(document).on('click', '.suggest-item', function () {
     .then(json => {
         if (json && json.success && json.code) {
         updated.group_code = json.code;
-        //updated.group_order_id = json.group_order_id;
+        updated.group_order_id = json.group_order_id;
         localStorage.setItem('customer_info', JSON.stringify(updated));
         const link = json.link || (location.origin + '/order/' + json.code);
         // copy to clipboard
