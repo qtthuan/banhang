@@ -746,9 +746,9 @@ $(document).on('click', '.suggest-item', function () {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: new URLSearchParams({
-            customer_name: customer_name,
-            customer_phone: customer_phone,
-            note: order_note,
+            customer_name: updated.customer_name,
+            customer_phone: updated.customer_phone,
+            note: updated.order_note,
             [csrfName]: csrfHash       // 🚀 Gửi CSRF token
         })
     })
