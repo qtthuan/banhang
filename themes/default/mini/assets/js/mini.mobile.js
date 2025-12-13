@@ -320,6 +320,7 @@ function addItemToGroup(group_code, item) {
         comment: item.comment || "",
         comment_name: item.comment_name || ""
     });
+    console.log(JSON.stringify(item));
     for (const [key, value] of payload.entries()) {
       console.log('key:' + key, value);
     }
