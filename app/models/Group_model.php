@@ -103,15 +103,8 @@ class Group_model extends CI_Model {
     }
 
 
-    // public function get_group_by_code($code) {
-    //     return $this->db->get_where('mini_group_orders', ['code'=>$code])->row();
-    // }
-
-    public function get_group_by_code($code)
-    {
-        return $this->db
-                    ->where('code', $code)
-                    ->get('sma_mini_group_orders')
-                    ->row();
+    public function get_group_by_code($code) {
+        return $this->db->get_where('mini_group_orders', ['code'=>$code])->row();
     }
+    
 }
