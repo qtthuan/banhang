@@ -310,11 +310,13 @@ function updateProductPrices() {
 function addItemToGroup(group_code, item) {
 
   console.log('2222');
+    let optionIdRaw = item.option_id || "";
+    let optionId = optionIdRaw ? optionIdRaw.split('|')[0] : "";
     const payload = new URLSearchParams({
         group_code: group_code,
         product_id: item.product_id,
         product_name: item.product_name,
-        option_id: item.option_id || "",
+        option_id: optionId || 0,
         quantity: item.quantity,
         price: item.price,
         comment: item.comment || "",
