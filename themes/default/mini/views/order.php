@@ -308,7 +308,7 @@
               data-price="<?= (float)$p->price ?>"
               data-image="<?= htmlspecialchars($p->image ?: 'no_image.png') ?>"
               data-unit="<?= htmlspecialchars($unit) ?>"
-            >+ Thêm Món1</button>
+            >+ Thêm Món</button>
           </div>
 
         </div>
