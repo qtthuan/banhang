@@ -240,7 +240,9 @@
     <?php if (!empty($group)): ?>
       <script>
           var group_code = "<?= $group->code ?>";
+          var group_order_id = "<?= $group->group_order_id ?>";
           localStorage.setItem('group_code', group_code);
+          localStorage.setItem('group_order_id', group_order_id);
       </script>
     <?php endif; ?>
 
@@ -756,7 +758,7 @@ $(document).on('click', '.suggest-item', function () {
     .then(json => {
         if (json && json.success && json.code) {
         updated.group_code = json.code;
-        updated.group_order_id = json.group_order_id;
+        //updated.group_order_id = json.group_order_id;
         localStorage.setItem('customer_info', JSON.stringify(updated));
         const link = json.link || (location.origin + '/order/' + json.code);
         // copy to clipboard
