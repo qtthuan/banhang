@@ -61,7 +61,7 @@ class Order extends MY_Controller {
         'note' => $note
         ]);
         if ($group) {
-        $this->sma->send_json(['success'=>1, 'code'=>$group->code, 'link'=>site_url('order/'.$group->code)]);
+        $this->sma->send_json(['success'=>1, 'code'=>$group->code, 'group_order_id'=>$group->id, 'link'=>site_url('order/'.$group->code)]);
         } else {
         $this->sma->send_json(['success'=>0, 'error'=>'Không tạo được mã nhóm']);
         }
