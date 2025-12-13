@@ -239,6 +239,8 @@
     <?php //$this->sma->print_arrays($products); ?>
     <?php if (!empty($group)): ?>
       <script>
+        console.log('Has group');
+        console.log(JSON.stringify($group));
           var group_code = "<?= $group->code ?>";
           var group_order_id = "<?= $group->group_order_id ?>";
           localStorage.setItem('group_code', group_code);
