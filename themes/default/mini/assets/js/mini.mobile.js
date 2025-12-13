@@ -312,10 +312,10 @@ function addItemToGroup(group_code, item) {
   console.log('2222');
     const payload = new URLSearchParams({
         group_code: group_code,
-        product_id: item.id,
-        product_name: item.name,
+        product_id: item.product_id,
+        product_name: item.product_name,
         option_id: item.option_id || "",
-        quantity: item.qty,
+        quantity: item.quantity,
         price: item.price,
         comment: item.comment || "",
         comment_name: item.comment_name || ""
