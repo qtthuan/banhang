@@ -65,10 +65,20 @@ class Group_model extends CI_Model {
     //     return $this->db->insert_id();
     // }
     
-    public function add_item($data)
-{
-    return $this->db->insert('sma_mini_group_order_items', $data);
-}
+    public function add_item($group_code, $item)
+    {
+        $group = $this->db
+            ->where('code', $group_code)
+            ->get('sma_mini_group_orders')
+            ->row();
+
+        if (!$group) return false;
+
+        $item['group_order_id'] = $group->id;
+
+        return $this->db->insert('sma_mini_group_order_items', $item);
+    }
+
 
     // public function get_items($group_code, $since_id = 0) {
     //     $g = $this->db->get_where('mini_group_orders', ['code'=>$group_code])->row();
