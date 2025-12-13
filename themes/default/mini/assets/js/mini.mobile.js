@@ -326,18 +326,41 @@ function addItemToGroup(group_code, item) {
     }
 
     fetch(base_url + 'order/group_add_item', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: payload
+      method: 'POST',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: payload
     })
-    .then(r => r.json())
-    .then(json => {
-        if (json.success) {
-            console.log("Item added");
-        } else {
-            alert("Không thêm được món: " + json.error);
+    .then(res => {
+      return res.text().then(text => {
+        console.log('RAW RESPONSE:', text); // 👈 cực quan trọng
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          throw new Error('Response is not JSON');
         }
+      });
+    })
+    .then(json => {
+      console.log('JSON:', json);
+    })
+    .catch(err => {
+      console.error('FETCH ERROR:', err);
     });
+
+
+    // fetch(base_url + 'order/group_add_item', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    //     body: payload
+    // })
+    // .then(r => r.json())
+    // .then(json => {
+    //     if (json.success) {
+    //         console.log("Item added");
+    //     } else {
+    //         alert("Không thêm được món: " + json.error);
+    //     }
+    // });
 }
 
 
