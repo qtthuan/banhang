@@ -85,38 +85,32 @@ class Order extends MY_Controller {
     //     if ($res) $this->sma->send_json(['success'=>1, 'id'=>$res]);
     //     else $this->sma->send_json(['success'=>0]);
     // }
-
     public function group_add_item()
     {
-        $group_code = $this->input->post('group_code', TRUE);
-
-        if (!$group_code) {
+        if (!$this->input->post('group_code')) {
             return $this->sma->send_json([
                 'success' => 0,
-                'error' => 'Thiếu group_code'
+                'error' => 'Missing group_code'
             ]);
         }
 
         $data = [
-            'group_code'    => $group_code,
-            'product_id'    => $this->input->post('product_id'),
-            'product_name'  => $this->input->post('product_name'),
-            'option_id'     => $this->input->post('option_id'),
-            'quantity'      => (int)$this->input->post('quantity'),
-            'price'         => (float)$this->input->post('price'),
-            'comment'       => $this->input->post('comment'),
-            'comment_name'  => $this->input->post('comment_name'),
+            'group_code'   => $this->input->post('group_code', TRUE),
+            'product_id'   => (int)$this->input->post('product_id'),
+            'product_name' => $this->input->post('product_name', TRUE),
+            'option_id'    => (int)$this->input->post('option_id'),
+            'quantity'     => (int)$this->input->post('quantity'),
+            'price'        => (float)$this->input->post('price'),
+            'comment'      => $this->input->post('comment', TRUE),
+            'comment_name' => $this->input->post('comment_name', TRUE),
         ];
 
         $ok = $this->group_model->add_item($data);
 
-        if ($ok) {
-            $this->sma->send_json(['success'=>1]);
-        } else {
-            $this->sma->send_json(['success'=>0,'error'=>'Không lưu được item']);
-        }
+        $this->sma->send_json([
+            'success' => $ok ? 1 : 0
+        ]);
     }
-
 
 
     public function group_items($code = NULL, $since_id = 0)
