@@ -689,6 +689,7 @@ $(document).on('click', '.suggest-item', function () {
     };
     localStorage.setItem('customer_info', JSON.stringify(updated));
 
+    console.log(JSON.stringify(updated));
     if (!isGroup) {
       // hiện "Đang lưu..."
       statusBox.textContent = 'Đang lưu...';
