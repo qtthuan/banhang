@@ -479,6 +479,7 @@ document.addEventListener('DOMContentLoaded', function(){
               if (!info.group_code) return; // ❗ không phải đơn nhóm
 
               const itemSend = {
+                  group_order_id: info.group_order_id,
                   product_id: pid,
                   product_name: pname,
                   option_id: variantValue ? variantValue.split('|')[0] : null, // chỉ lấy ID
