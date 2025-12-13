@@ -240,7 +240,7 @@
     <?php if (!empty($group)): ?>
       <script>
         console.log('Has group');
-        console.log('code: ' + <?= $group->code ?> + ' order_id: ' + <?= $group->group_order_id ?>);
+        console.log('code: ' + "<?= $group->code ?>" + ' order_id: ' + "<?= $group->group_order_id ?>");
           var group_code = "<?= $group->code ?>";
           var group_order_id = "<?= $group->group_order_id ?>";
           localStorage.setItem('group_code', group_code);
