@@ -309,6 +309,7 @@ function updateProductPrices() {
 
 function addItemToGroup(group_code, item) {
 
+  console.log('2222');
     const payload = new URLSearchParams({
         group_code: group_code,
         product_id: item.id,
@@ -455,6 +456,7 @@ document.addEventListener('DOMContentLoaded', function(){
                       comment: note,
                       comment_name: noteName
                   };
+                  console.log('1111');
 
                   addItemToGroup(info.group_code, itemSend)
                   .then(res => {
