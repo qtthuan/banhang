@@ -88,50 +88,35 @@ class Order extends MY_Controller {
 
     public function group_add_item()
     {
-        $group_code = $this->input->post('group_code');
-        $product_id = (int)$this->input->post('product_id');
-        $product_name = $this->input->post('product_name', TRUE);
-        $option_id = (int)$this->input->post('option_id');
-        $qty = (int)$this->input->post('quantity');
-        $price = (float)$this->input->post('price');
-        $comment = $this->input->post('comment', TRUE);
-        $comment_name = $this->input->post('comment_name', TRUE);
+        $group_code = $this->input->post('group_code', TRUE);
 
-        if (!$group_code || !$product_id) {
+        if (!$group_code) {
             return $this->sma->send_json([
                 'success' => 0,
-                'error' => 'Thiếu dữ liệu'
+                'error' => 'Thiếu group_code'
             ]);
         }
 
-        // Lấy thông tin đơn nhóm
-        $group = $this->group_model->get_group_by_code($group_code);
-        if (!$group) {
-            return $this->sma->send_json([
-                'success' => 0,
-                'error' => 'Mã nhóm không tồn tại'
-            ]);
-        }
-
-        // Chuẩn bị data insert
-        $item_data = [
-            'group_order_id' => $group->id,
-            'product_id'     => $product_id,
-            'product_name'   => $product_name,
-            'option_id'      => $option_id,
-            'quantity'       => $qty,
-            'price'          => $price,
-            'comment'        => $comment,
-            'comment_name'   => $comment_name,
-            'meta'           => NULL
+        $data = [
+            'group_code'    => $group_code,
+            'product_id'    => $this->input->post('product_id'),
+            'product_name'  => $this->input->post('product_name'),
+            'option_id'     => $this->input->post('option_id'),
+            'quantity'      => (int)$this->input->post('quantity'),
+            'price'         => (float)$this->input->post('price'),
+            'comment'       => $this->input->post('comment'),
+            'comment_name'  => $this->input->post('comment_name'),
         ];
 
-        $ok = $this->group_model->add_item($item_data);
+        $ok = $this->group_model->add_item($data);
 
-        return $this->sma->send_json([
-            'success' => $ok ? 1 : 0
-        ]);
+        if ($ok) {
+            $this->sma->send_json(['success'=>1]);
+        } else {
+            $this->sma->send_json(['success'=>0,'error'=>'Không lưu được item']);
+        }
     }
+
 
 
     public function group_items($code = NULL, $since_id = 0)
