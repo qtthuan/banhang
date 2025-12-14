@@ -87,6 +87,7 @@ class Order extends MY_Controller {
     // }
     public function group_add_item()
     {
+        exit('xxxx');
         log_message('error', 'GROUP_ADD_ITEM POST: ' . json_encode($this->input->post()));
 
         $data = [
