@@ -310,23 +310,9 @@ function updateProductPrices() {
 function addItemToGroup(group_code, item) {
 
   console.log('2222');
-    // let optionIdRaw = item.option_id || "";
-    // let optionId = optionIdRaw ? optionIdRaw.split('|')[0] : "";
-    // const payload = new URLSearchParams({
-    //     group_code: group_code,
-    //     product_id: item.product_id,
-    //     product_name: item.product_name,
-    //     option_id: optionId || 0,
-    //     quantity: item.quantity,
-    //     price: item.price,
-    //     comment: item.comment || "",
-    //     comment_name: item.comment_name || ""
-    // });
+   
     console.log(JSON.stringify(item));
-    // for (const [key, value] of payload.entries()) {
-    //   console.log('key:' + key, value);
-    // }
-
+    
     return fetch(base_url + 'order/group_add_item', {
         method: 'POST',
         headers: {

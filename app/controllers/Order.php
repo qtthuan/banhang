@@ -99,6 +99,8 @@ class Order extends MY_Controller {
             'comment_name'  => $this->input->post('comment_name', TRUE),
             'meta'          => $this->input->post('meta', TRUE),
         ];
+        log_message('error', 'GROUP_ADD_ITEM POST: ' . json_encode($this->input->post()));
+
 
         $item = $this->group_model->add_item($data);
 
