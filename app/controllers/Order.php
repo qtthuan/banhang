@@ -103,6 +103,7 @@ class Order extends MY_Controller {
         }
 
         $data = [
+            'group_order_id'    => (int)$this->input->post('group_order_id'),
             'product_id'    => (int)$this->input->post('product_id'),
             'product_name'  => $this->input->post('product_name', TRUE),
             'option_id'     => $this->input->post('option_id'),
@@ -110,6 +111,7 @@ class Order extends MY_Controller {
             'price'         => (float)$this->input->post('price'),
             'comment'       => $this->input->post('comment', TRUE),
             'comment_name'  => $this->input->post('comment_name', TRUE),
+            'meta'       => $this->input->post('meta', TRUE),
         ];
 
         $item = $this->group_model->add_item($group_code, $data);
