@@ -114,7 +114,7 @@ class Order extends MY_Controller {
             'meta'       => $this->input->post('meta', TRUE),
         ];
 
-        $item = $this->group_model->add_item($group_code, $data);
+        $item = $this->group_model->add_item($data);
 
         if ($item) {
             $this->sma->send_json(['success' => 1]);
