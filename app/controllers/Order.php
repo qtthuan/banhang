@@ -87,10 +87,8 @@ class Order extends MY_Controller {
     // }
     public function group_add_item()
     {
-         echo 'GROUP_ADD_ITEM_OK';
-        exit;
         
-        log_message('error', 'GROUP_ADD_ITEM POST: ' . json_encode($this->input->post()));
+        log_message('error', 'GROUP_ADD_ITEM POST: ');
 
         $data = [
             'group_order_id'    => (int)$this->input->post('group_order_id'),
