@@ -327,42 +327,42 @@ function addItemToGroup(group_code, item) {
       console.log('key:' + key, value);
     }
 
-    fetch(base_url + 'order/group_add_item', {
-      method: 'POST',
-      headers: {'Content-Type':'application/x-www-form-urlencoded'},
-      body: payload
+    return fetch(base_url + 'order/group_add_item', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: payload
     })
     .then(res => {
-      return res.text().then(text => {
-        console.log('RAW RESPONSE:', text); // 👈 cực quan trọng
-        try {
-          return JSON.parse(text);
-        } catch (e) {
-          throw new Error('Response is not JSON');
-        }
-      });
-    })
-    .then(json => {
-      console.log('JSON:', json);
-    })
-    .catch(err => {
-      console.error('FETCH ERROR:', err);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
     });
 
-
     // fetch(base_url + 'order/group_add_item', {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    //     body: payload
+    //   method: 'POST',
+    //   headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    //   body: payload
     // })
-    // .then(r => r.json())
-    // .then(json => {
-    //     if (json.success) {
-    //         console.log("Item added");
-    //     } else {
-    //         alert("Không thêm được món: " + json.error);
+    // .then(res => {
+    //   return res.text().then(text => {
+    //     console.log('RAW RESPONSE:', text); // 👈 cực quan trọng
+    //     try {
+    //       return JSON.parse(text);
+    //     } catch (e) {
+    //       throw new Error('Response is not JSON');
     //     }
+    //   });
+    // })
+    // .then(json => {
+    //   console.log('JSON:', json);
+    // })
+    // .catch(err => {
+    //   console.error('FETCH ERROR:', err);
     // });
+
+
+    
 }
 
 
@@ -486,7 +486,8 @@ document.addEventListener('DOMContentLoaded', function(){
                   quantity: qty,
                   price: basePrice,
                   comment: note || '',
-                  comment_name: noteName || ''
+                  comment_name: noteName || '',
+                  meta: ''
               };
 
               console.log('SEND ITEM:', itemSend);
