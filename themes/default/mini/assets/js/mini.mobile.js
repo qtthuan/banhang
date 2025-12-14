@@ -335,13 +335,14 @@ function addItemToGroup(group_code, item) {
         body: payload
     })
     .then(res => {
-    return res.text().then(t => {
-      try {
-        return JSON.parse(t);
-      } catch (e) {
-        console.error('RAW RESPONSE:', t);
-        throw new Error('Response is not JSON');
-      }
+      return res.text().then(t => {
+        try {
+          return JSON.parse(t);
+        } catch (e) {
+          console.error('RAW RESPONSE:', t);
+          throw new Error('Response is not JSON');
+        }
+      });
     });
     // .then(res => {
     //     if (!res.ok) throw new Error('HTTP ' + res.status);
