@@ -335,9 +335,18 @@ function addItemToGroup(group_code, item) {
         body: payload
     })
     .then(res => {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.json();
+    return res.text().then(t => {
+      try {
+        return JSON.parse(t);
+      } catch (e) {
+        console.error('RAW RESPONSE:', t);
+        throw new Error('Response is not JSON');
+      }
     });
+    // .then(res => {
+    //     if (!res.ok) throw new Error('HTTP ' + res.status);
+    //     return res.json();
+    // });
 
     // fetch(base_url + 'order/group_add_item', {
     //   method: 'POST',
