@@ -85,22 +85,8 @@ class Order extends MY_Controller {
     //     if ($res) $this->sma->send_json(['success'=>1, 'id'=>$res]);
     //     else $this->sma->send_json(['success'=>0]);
     // }
-    public function group_add_item($code = null)
+    public function group_add_item()
     {
-        // nhận từ POST trước
-        $group_code = $this->input->post('group_code', TRUE);
-
-        // fallback: nhận từ URL
-        if (!$group_code) {
-            $group_code = $code;
-        }
-
-        if (!$group_code) {
-            return $this->sma->send_json([
-                'success' => 0,
-                'error' => 'Missing group_code'
-            ]);
-        }
 
         $data = [
             'group_order_id'    => (int)$this->input->post('group_order_id'),
@@ -111,7 +97,7 @@ class Order extends MY_Controller {
             'price'         => (float)$this->input->post('price'),
             'comment'       => $this->input->post('comment', TRUE),
             'comment_name'  => $this->input->post('comment_name', TRUE),
-            'meta'       => $this->input->post('meta', TRUE),
+            'meta'          => $this->input->post('meta', TRUE),
         ];
 
         $item = $this->group_model->add_item($data);
