@@ -87,6 +87,7 @@ class Order extends MY_Controller {
     // }
     public function group_add_item()
     {
+        log_message('error', 'GROUP_ADD_ITEM POST: ' . json_encode($this->input->post()));
 
         $data = [
             'group_order_id'    => (int)$this->input->post('group_order_id'),
@@ -99,7 +100,7 @@ class Order extends MY_Controller {
             'comment_name'  => $this->input->post('comment_name', TRUE),
             'meta'          => $this->input->post('meta', TRUE),
         ];
-        log_message('error', 'GROUP_ADD_ITEM POST: ' . json_encode($this->input->post()));
+        
 
 
         $item = $this->group_model->add_item($data);
