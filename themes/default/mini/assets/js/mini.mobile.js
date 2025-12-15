@@ -309,6 +309,8 @@ function updateProductPrices() {
 
 function addItemToGroup(group_code, item) {
     
+  const csrfName = $('#csrf_token_input').attr('name');
+  const csrfHash = $('#csrf_token_input').val();
   const payload = new URLSearchParams({
         group_code: group_code,        
         product_id: item.product_id,
