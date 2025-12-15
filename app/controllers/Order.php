@@ -12,7 +12,7 @@ class Order extends MY_Controller {
 
     public function index() {
         
-
+    log_message('error', 'TESTING: ');
         $this->data['products'] = $this->pos_model->getAllMiniProducts();
         $this->load->view($this->mini_theme . 'order', $this->data);
     }

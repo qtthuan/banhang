@@ -318,11 +318,13 @@ function addItemToGroup(group_code, item) {
         price: item.price,
         comment: item.comment || '',
         comment_name: item.comment_name || '',
-        meta: item.meta || ''
+        meta: item.meta || '',
+        [csrfName]: csrfHash       // 🚀 Gửi CSRF token
     });
 
     // log để debug
     console.log('POST PAYLOAD:', payload.toString());
+    
 
     return fetch(base_url + 'order/group_add_item', {
         method: 'POST',
@@ -341,16 +343,6 @@ function addItemToGroup(group_code, item) {
         }
     });
 
-    // .then(res => {
-    //   return res.text().then(t => {
-    //     try {
-    //       return JSON.parse(t);
-    //     } catch (e) {
-    //       console.error('RAW RESPONSE:', t);
-    //       throw new Error('Response is not JSON');
-    //     }
-    //   });
-    // });    
 }
 
 

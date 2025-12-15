@@ -173,6 +173,8 @@
     var base_url = "<?= base_url(); ?>"; // thêm nếu chưa có
     var admin_url = "<?= admin_url(); ?>";
     var mini_url = "<?= mini_url(); ?>";
+    const csrfName = $('#csrf_token_input').attr('name');
+    const csrfHash = $('#csrf_token_input').val();
 
     if (typeof group_code !== 'undefined') {
       let info = JSON.parse(localStorage.getItem('customer_info') || '{}');
@@ -743,8 +745,7 @@ $(document).on('click', '.suggest-item', function () {
     //   console.error(e);
     //   alert('Lỗi khi tạo mã nhóm');
     // });
-    const csrfName = $('#csrf_token_input').attr('name');
-    const csrfHash = $('#csrf_token_input').val();
+    
 
     fetch(base_url + 'order/create_group', {
         method: 'POST',
