@@ -67,7 +67,7 @@ class Group_model extends CI_Model {
     
     public function add_item($data)
     {
-        return $this->db->insert('sma_mini_group_order_items', $data);
+        return $this->db->insert('mini_group_order_items', $data);
     }
 
     // public function add_item($group_code, $item)

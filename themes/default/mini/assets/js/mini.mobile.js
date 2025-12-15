@@ -308,57 +308,49 @@ function updateProductPrices() {
 }
 
 function addItemToGroup(group_code, item) {
-
-  console.log('2222');
-   
-    console.log(JSON.stringify(item));
     
+  const payload = new URLSearchParams({
+        group_code: group_code,        
+        product_id: item.product_id,
+        product_name: item.product_name,
+        option_id: item.option_id || '',
+        quantity: item.quantity,
+        price: item.price,
+        comment: item.comment || '',
+        comment_name: item.comment_name || '',
+        meta: item.meta || ''
+    });
+
+    // log để debug
+    console.log('POST PAYLOAD:', payload.toString());
+
     return fetch(base_url + 'order/group_add_item', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: item
+        body: payload
     })
-    .then(res => {
-      return res.text().then(t => {
+    .then(res => res.text())
+    .then(t => {
         try {
-          return JSON.parse(t);
+            return JSON.parse(t);
         } catch (e) {
-          console.error('RAW RESPONSE:', t);
-          throw new Error('Response is not JSON');
+            console.error('RAW RESPONSE:', t);
+            throw new Error('Response is not JSON');
         }
-      });
     });
-    // .then(res => {
-    //     if (!res.ok) throw new Error('HTTP ' + res.status);
-    //     return res.json();
-    // });
 
-    // fetch(base_url + 'order/group_add_item', {
-    //   method: 'POST',
-    //   headers: {'Content-Type':'application/x-www-form-urlencoded'},
-    //   body: payload
-    // })
     // .then(res => {
-    //   return res.text().then(text => {
-    //     console.log('RAW RESPONSE:', text); // 👈 cực quan trọng
+    //   return res.text().then(t => {
     //     try {
-    //       return JSON.parse(text);
+    //       return JSON.parse(t);
     //     } catch (e) {
+    //       console.error('RAW RESPONSE:', t);
     //       throw new Error('Response is not JSON');
     //     }
     //   });
-    // })
-    // .then(json => {
-    //   console.log('JSON:', json);
-    // })
-    // .catch(err => {
-    //   console.error('FETCH ERROR:', err);
-    // });
-
-
-    
+    // });    
 }
 
 
@@ -474,8 +466,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
               if (!info.group_code) return; // ❗ không phải đơn nhóm
 
-              const itemSend = {
-                  group_order_id: info.group_order_id,
+              const itemSend = {                  
                   product_id: pid,
                   product_name: pname,
                   option_id: variantValue ? variantValue.split('|')[0] : null, // chỉ lấy ID

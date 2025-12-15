@@ -86,11 +86,66 @@ class Order extends MY_Controller {
     //     else $this->sma->send_json(['success'=>0]);
     // }
     public function group_add_item()
-    {
-        
-        log_message('error', 'GROUP_ADD_ITEM POST: ');
+    {   
 
-       
+
+        if (!$this->input->post()) {
+            $this->sma->send_json([
+                'success' => 0,
+                'error' => 'No POST data'
+            ]);
+            return;
+        }
+
+        $group_code = $this->input->post('group_code');
+        if (!$group_code) {
+            $this->sma->send_json([
+                'success' => 0,
+                'error' => 'Missing group_code'
+            ]);
+            return;
+        }
+
+        $group = $this->group_model->get_group_by_code($group_code);
+        if (!$group) {
+            $this->sma->send_json([
+                'success' => 0,
+                'error' => 'Group not found'
+            ]);
+            return;
+        }
+
+        log_message('error', 'POST DATA: ' . json_encode($this->input->post()));
+
+
+        
+        //$group = $this->group_model->get_group_by_code($this->input->post('group_code'));
+
+        $post = $this->input->post(NULL, TRUE);
+        
+        log_message('error', 'POST DATA: ' . json_encode($post));
+
+        $data = [
+            'group_order_id'    => (int)$group->id,
+            'product_id'    => (int)$this->input->post('product_id'),
+            'product_name'  => $this->input->post('product_name', TRUE),
+            'option_id'     => $this->input->post('option_id'),
+            'quantity'      => (int)$this->input->post('quantity'),
+            'price'         => (float)$this->input->post('price'),
+            'comment'       => $this->input->post('comment', TRUE),
+            'comment_name'  => $this->input->post('comment_name', TRUE),
+            'meta'          => $this->input->post('meta', TRUE),
+        ];
+        
+
+
+        $item = $this->group_model->add_item($data);
+
+        if ($item) {
+            $this->sma->send_json(['success' => 1]);
+        } else {
+            $this->sma->send_json(['success' => 0, 'error' => 'Add item failed']);
+        }
     }
 
 
