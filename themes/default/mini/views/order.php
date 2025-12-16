@@ -721,8 +721,8 @@ $(document).on('click', '.suggest-item', function () {
     console.log(JSON.stringify(updated));
     if (!isGroup) {
       // hiện "Đang lưu..."
-      statusBox.textContent = 'Đang lưu...';
-      statusBox.style.display = 'block';
+      //statusBox.textContent = 'Đang lưu...';
+      //statusBox.style.display = 'block';
 
       // Giả lập xử lý lưu ajax (có thể thay bằng thật)
       setTimeout(() => {
