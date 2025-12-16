@@ -443,12 +443,14 @@
         </div>
       </div>
       <!-- Hiển thị trạng thái lưu -->
-      <div id="saveStatus"
+       <div id="status-box" class="status-box hidden"></div>
+
+      <!-- <div id="saveStatus"
           style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
                   background:rgba(0,0,0,0.75); color:#fff; padding:10px 20px;
                   border-radius:8px; font-weight:500; z-index:2000;">
         Đang lưu...
-      </div>
+      </div> -->
       
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" id="resetOrderInfoBtn">Reset</button>
