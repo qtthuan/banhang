@@ -156,6 +156,29 @@
     border: 1px solid #ddd;
 }
 
+.status-box {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #28a745;
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    z-index: 9999;
+    opacity: 0;
+    transition: all .3s ease;
+}
+
+.status-box.show {
+    opacity: 1;
+}
+
+.status-box.hidden {
+    display: none;
+}
+
 
 
 
