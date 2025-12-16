@@ -798,8 +798,11 @@ $(document).on('click', '.suggest-item', function () {
   //   setTimeout(() => alert.remove(), 1000);
   // }
 function showStatus(message, duration = 2000, redirectUrl = null) {
+    
     const box = document.getElementById('saveStatus');
+    console.log('111xxx');
     if (!box) return;
+    console.log('222xxx');
 
     box.textContent = message;
     box.classList.remove('hidden');
