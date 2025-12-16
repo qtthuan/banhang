@@ -728,6 +728,10 @@ $(document).on('click', '.suggest-item', function () {
       setTimeout(() => {
         // hiển thị "Đã lưu"
         statusBox.textContent = '✅ Đã lưu';
+        showStatus(
+            '✅ Đã lưu',
+              1800
+          );
         
         // ẩn sau 800ms và đóng modal
         setTimeout(() => {
