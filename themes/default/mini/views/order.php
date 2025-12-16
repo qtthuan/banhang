@@ -801,7 +801,7 @@ $(document).on('click', '.suggest-item', function () {
   // }
 function showStatus(message, duration = 2000, redirectUrl = null) {
     
-    const box = document.getElementById('saveStatus');
+    const box = document.getElementById('status-box');
     console.log('111xxx');
     if (!box) return;
     console.log('222xxx');
