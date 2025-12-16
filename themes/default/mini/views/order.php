@@ -229,7 +229,7 @@
               id="cartCount" style="font-size: 12px;">0</span>
       </button>
 
-      <?php if (!empty($group_items)): ?>
+      <?php //if (!empty($group_items)): ?>
       <div class="alert alert-info">
           <strong>Đơn nhóm: <?= $group->code ?></strong><br>
           <?php foreach ($group_items as $item): ?>
