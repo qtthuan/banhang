@@ -727,7 +727,7 @@ $(document).on('click', '.suggest-item', function () {
       // Giả lập xử lý lưu ajax (có thể thay bằng thật)
       setTimeout(() => {
         // hiển thị "Đã lưu"
-        statusBox.textContent = '✅ Đã lưu';
+        //statusBox.textContent = '✅ Đã lưu';
         showStatus(
             '✅ Đã lưu',
               1800
@@ -735,7 +735,7 @@ $(document).on('click', '.suggest-item', function () {
         
         // ẩn sau 800ms và đóng modal
         setTimeout(() => {
-          statusBox.style.display = 'none';
+          //statusBox.style.display = 'none';
           const modalInstance = bootstrap.Modal.getInstance(modal);
           if (modalInstance) modalInstance.hide();
         }, 400);
