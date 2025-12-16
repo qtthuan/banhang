@@ -160,7 +160,7 @@
     position: fixed;
     top: 20px;
     right: 20px;
-    background: #eead35ff;
+    background: #dc3545;
     color: #fff;
     padding: 12px 16px;
     border-radius: 6px;
