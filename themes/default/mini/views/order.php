@@ -715,34 +715,7 @@ $(document).on('click', '.suggest-item', function () {
       return;
     }
 
-    // tạo group via AJAX
-    // fetch(base_url + 'order/create_group', {
-    //   method: 'POST',
-    //   headers: {'Content-Type':'application/x-www-form-urlencoded'},
-    //   body: new URLSearchParams({
-    //     customer_name: customer_name,
-    //     customer_phone: customer_phone,
-    //     note: order_note
-    //   })
-    // }).then(r=>r.json()).then(json=>{
-    //   if (json && json.success && json.code) {
-    //     updated.group_code = json.code;
-    //     localStorage.setItem('customer_info', JSON.stringify(updated));
-    //     const link = json.link || (location.origin + '/order/' + json.code);
-    //     // copy to clipboard
-    //     navigator.clipboard && navigator.clipboard.writeText(link).then(function(){
-    //       alert('Mã nhóm đã tạo và đã copy vào clipboard:\n' + link);
-    //     }, function(){
-    //       // fallback
-    //       prompt('Copy link nhóm này cho khách:', link);
-    //     });
-    //   } else {
-    //     alert('Tạo mã nhóm thất bại.');
-    //   }
-    // }).catch(e=>{
-    //   console.error(e);
-    //   alert('Lỗi khi tạo mã nhóm');
-    // });
+    
     const csrfName = $('#csrf_token_input').attr('name');
     const csrfHash = $('#csrf_token_input').val();
 
@@ -765,10 +738,19 @@ $(document).on('click', '.suggest-item', function () {
         const link = json.link || (location.origin + '/order/' + json.code);
         // copy to clipboard
         navigator.clipboard && navigator.clipboard.writeText(link).then(function(){
-          alert('Mã nhóm đã tạo và đã copy vào clipboard:\n' + link);
+          showStatus(
+            'Mã nhóm đã tạo & đã copy link. Đang chuyển vào đơn nhóm...',
+              1800,
+              link
+          );
+          //alert('Mã nhóm đã tạo và đã copy vào clipboard:\n' + link);
         }, function(){
-          // fallback
-          prompt('Copy link nhóm này cho khách:', link);
+          // fallback nếu không copy được
+          showStatus(
+              'Mã nhóm đã tạo. Vui lòng copy link để gửi cho nhóm.',
+              2500,
+              link
+          );
         });
       } else {
         alert('Tạo mã nhóm thất bại.');
@@ -815,6 +797,24 @@ $(document).on('click', '.suggest-item', function () {
   //   document.body.appendChild(alert);
   //   setTimeout(() => alert.remove(), 1000);
   // }
+function showStatus(message, duration = 2000, redirectUrl = null) {
+    const box = document.getElementById('saveStatus');
+    if (!box) return;
+
+    box.textContent = message;
+    box.classList.remove('hidden');
+    box.classList.add('show');
+
+    setTimeout(() => {
+        box.classList.remove('show');
+        setTimeout(() => {
+            box.classList.add('hidden');
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            }
+        }, 300);
+    }, duration);
+}
 
 
 
