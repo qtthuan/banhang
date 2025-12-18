@@ -204,6 +204,16 @@
     // }
 
   </script>
+  <?php if (!empty($group)): ?>
+    <script>
+      //console.log('Has group');
+      //console.log('code: ' + "<?= $group->code ?>" + ' order_id: ' + "<?= $group->id ?>");
+        var group_code = "<?= $group->code ?>";
+        var group_order_id = "<?= $group->id ?>";
+        //localStorage.setItem('group_code', group_code);
+        //localStorage.setItem('group_order_id', group_order_id);
+    </script>
+  <?php endif; ?>
 
 <!-- Header -->
 <nav class="navbar navbar-light bg-white sticky-top">
@@ -260,16 +270,7 @@
   <!-- Product grid -->
   <div class="row g-2" id="productList">
     <?php //$this->sma->print_arrays($products); ?>
-    <?php if (!empty($group)): ?>
-      <script>
-        console.log('Has group');
-        console.log('code: ' + "<?= $group->code ?>" + ' order_id: ' + "<?= $group->id ?>");
-          var group_code = "<?= $group->code ?>";
-          var group_order_id = "<?= $group->id ?>";
-          //localStorage.setItem('group_code', group_code);
-          //localStorage.setItem('group_order_id', group_order_id);
-      </script>
-    <?php endif; ?>
+    
 
     <?php foreach ($products as $p):
       $img = !empty($p->image) ? base_url('assets/uploads/thumbs/'.$p->image) : base_url('assets/uploads/thumbs/no_image.png');
