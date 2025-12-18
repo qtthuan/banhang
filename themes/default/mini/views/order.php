@@ -831,6 +831,7 @@ $(document).on('click', '.suggest-item', function () {
 
   function showStatus(message, onClose) {
     const box = document.createElement('div');
+    console.log('xxxx');
     box.innerHTML = `
         <div class="status-overlay">
             <div class="status-box">
