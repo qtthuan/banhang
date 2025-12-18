@@ -197,11 +197,11 @@
     var admin_url = "<?= admin_url(); ?>";
     var mini_url = "<?= mini_url(); ?>";
 
-    if (typeof group_code !== 'undefined') {
-      let info = JSON.parse(localStorage.getItem('customer_info') || '{}');
-      info.group_code = group_code;
-      localStorage.setItem('customer_info', JSON.stringify(info));
-    }
+    // if (typeof group_code !== 'undefined') {
+    //   let info = JSON.parse(localStorage.getItem('customer_info') || '{}');
+    //   info.group_code = group_code;
+    //   localStorage.setItem('customer_info', JSON.stringify(info));
+    // }
 
   </script>
 
@@ -266,8 +266,8 @@
         console.log('code: ' + "<?= $group->code ?>" + ' order_id: ' + "<?= $group->id ?>");
           var group_code = "<?= $group->code ?>";
           var group_order_id = "<?= $group->id ?>";
-          localStorage.setItem('group_code', group_code);
-          localStorage.setItem('group_order_id', group_order_id);
+          //localStorage.setItem('group_code', group_code);
+          //localStorage.setItem('group_order_id', group_order_id);
       </script>
     <?php endif; ?>
 
@@ -763,7 +763,7 @@ $(document).on('click', '.suggest-item', function () {
     .then(r => r.json())
     .then(json => {
         if (json && json.success && json.code) {
-        updated.group_code = json.code;
+        //updated.group_code = json.code;
         //updated.group_order_id = json.group_order_id;
         localStorage.setItem('customer_info', JSON.stringify(updated));
         
