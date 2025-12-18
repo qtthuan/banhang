@@ -774,6 +774,7 @@ $(document).on('click', '.suggest-item', function () {
             showStatusBox(
                 'Mã nhóm đã tạo và đã copy link cho bạn',
                 () => {
+                  console.log('4444');
                     window.location.href = link; // tự động vào link nhóm
                 }
             );
@@ -895,9 +896,11 @@ function showStatusBox(message, onClose) {
             </div>
         </div>
     `;
+    console.log('333');
     document.body.appendChild(box);
 
     box.querySelector('.status-btn').onclick = () => {
+      console.log('5555');
         document.body.removeChild(box);
         onClose && onClose();
     };
