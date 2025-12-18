@@ -466,7 +466,7 @@
         </div>
       </div>
       <!-- Hiển thị trạng thái lưu -->
-       <div id="status-box" class="status-box hidden"></div>
+       <!-- <div id="status-box" class="status-box hidden"></div> -->
 
       <!-- <div id="saveStatus"
           style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
@@ -770,6 +770,7 @@ $(document).on('click', '.suggest-item', function () {
         const link = json.link || (location.origin + '/order/' + json.code);
 
         copyToClipboard(link).then(() => {
+          console.log('1111');
             showStatusBox(
                 'Mã nhóm đã tạo và đã copy link cho bạn',
                 () => {
@@ -884,6 +885,7 @@ $(document).on('click', '.suggest-item', function () {
 
 
 function showStatusBox(message, onClose) {
+  console.log('222');
     const box = document.createElement('div');
     box.innerHTML = `
         <div class="status-overlay">
