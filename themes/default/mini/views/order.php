@@ -466,7 +466,7 @@
         </div>
       </div>
       <!-- Hiển thị trạng thái lưu -->
-       <!-- <div id="status-box" class="status-box hidden"></div> -->
+       <div id="status-box" class="status-box hidden"></div>
 
       <!-- <div id="saveStatus"
           style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
@@ -765,22 +765,21 @@ $(document).on('click', '.suggest-item', function () {
         //updated.group_order_id = json.group_order_id;
         localStorage.setItem('customer_info', JSON.stringify(updated));
         const link = json.link || (location.origin + '/order/' + json.code);
-        copyToClipboard(link).then(() => {
-            showStatus(
-                'Mã nhóm đã tạo và đã copy link cho bạn',
-                () => {
-                    window.location.href = link; // tự động vào link nhóm
-                }
-            );
-        }).catch(() => {
-            // iOS fail → cho user copy tay
-            showStatus(
-                'Không thể tự copy link, vui lòng copy thủ công',
-                () => {
-                    prompt('Copy link nhóm này gửi cho bạn bè:', link);
-                    window.location.href = link;
-                }
-            );
+        // copy to clipboard
+        navigator.clipboard && navigator.clipboard.writeText(link).then(function(){
+          showStatus(
+            'Mã nhóm đã tạo & đã copy link. Đang chuyển vào đơn nhóm...',
+              1800,
+              link
+          );
+          //alert('Mã nhóm đã tạo và đã copy vào clipboard:\n' + link);
+        }, function(){
+          // fallback nếu không copy được
+          showStatus(
+              'Mã nhóm đã tạo. Vui lòng copy link để gửi cho nhóm.',
+              2500,
+              link
+          );
         });
       } else {
         alert('Tạo mã nhóm thất bại.');
@@ -827,48 +826,27 @@ $(document).on('click', '.suggest-item', function () {
   //   document.body.appendChild(alert);
   //   setTimeout(() => alert.remove(), 1000);
   // }
-
-
-  function showStatus(message, onClose) {
-    const box = document.createElement('div');
-    console.log('xxxx');
-    box.innerHTML = `
-        <div class="status-overlay">
-            <div class="status-box">
-                <div class="status-msg">${message}</div>
-                <button class="status-btn">OK</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(box);
-
-    box.querySelector('.status-btn').onclick = () => {
-        document.body.removeChild(box);
-        onClose && onClose();
-    };
-}
-
-// function showStatus(message, duration = 2000, redirectUrl = null) {
+function showStatus(message, duration = 2000, redirectUrl = null) {
     
-//     const box = document.getElementById('status-box');
-//     console.log('111xxx');
-//     if (!box) return;
-//     console.log('222xxx');
+    const box = document.getElementById('status-box');
+    console.log('111xxx');
+    if (!box) return;
+    console.log('222xxx');
 
-//     box.textContent = message;
-//     box.classList.remove('hidden');
-//     box.classList.add('show');
+    box.textContent = message;
+    box.classList.remove('hidden');
+    box.classList.add('show');
 
-//     setTimeout(() => {
-//         box.classList.remove('show');
-//         setTimeout(() => {
-//             box.classList.add('hidden');
-//             if (redirectUrl) {
-//                 window.location.href = redirectUrl;
-//             }
-//         }, 300);
-//     }, duration);
-// }
+    setTimeout(() => {
+        box.classList.remove('show');
+        setTimeout(() => {
+            box.classList.add('hidden');
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            }
+        }, 300);
+    }, duration);
+}
 
 
 
