@@ -765,21 +765,22 @@ $(document).on('click', '.suggest-item', function () {
         //updated.group_order_id = json.group_order_id;
         localStorage.setItem('customer_info', JSON.stringify(updated));
         const link = json.link || (location.origin + '/order/' + json.code);
-        // copy to clipboard
-        navigator.clipboard && navigator.clipboard.writeText(link).then(function(){
-          showStatus(
-            'Mã nhóm đã tạo & đã copy link. Đang chuyển vào đơn nhóm...',
-              1800,
-              link
-          );
-          //alert('Mã nhóm đã tạo và đã copy vào clipboard:\n' + link);
-        }, function(){
-          // fallback nếu không copy được
-          showStatus(
-              'Mã nhóm đã tạo. Vui lòng copy link để gửi cho nhóm.',
-              2500,
-              link
-          );
+        copyToClipboard(link).then(() => {
+            showStatus(
+                'Mã nhóm đã tạo và đã copy link cho bạn',
+                () => {
+                    window.location.href = link; // tự động vào link nhóm
+                }
+            );
+        }).catch(() => {
+            // iOS fail → cho user copy tay
+            showStatus(
+                'Không thể tự copy link, vui lòng copy thủ công',
+                () => {
+                    prompt('Copy link nhóm này gửi cho bạn bè:', link);
+                    window.location.href = link;
+                }
+            );
         });
       } else {
         alert('Tạo mã nhóm thất bại.');

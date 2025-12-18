@@ -355,6 +355,36 @@ function formatMoney(x, symbol = '') {
   return symbol + num.toLocaleString('vi-VN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }
 
+function copyToClipboard(text) {
+    // ưu tiên API mới
+    if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text);
+    }
+
+    // fallback cho iOS
+    return new Promise((resolve, reject) => {
+        const input = document.createElement('input');
+        input.value = text;
+        input.setAttribute('readonly', '');
+        input.style.position = 'absolute';
+        input.style.left = '-9999px';
+        document.body.appendChild(input);
+
+        input.select();
+        input.setSelectionRange(0, text.length); // iOS fix
+
+        try {
+            const success = document.execCommand('copy');
+            document.body.removeChild(input);
+            success ? resolve() : reject();
+        } catch (err) {
+            document.body.removeChild(input);
+            reject(err);
+        }
+    });
+}
+
+
 
 /* UI wiring: delegated event handlers */
 document.addEventListener('DOMContentLoaded', function(){
