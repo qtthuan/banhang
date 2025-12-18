@@ -764,6 +764,32 @@ $(document).on('click', '.suggest-item', function () {
         updated.group_code = json.code;
         //updated.group_order_id = json.group_order_id;
         localStorage.setItem('customer_info', JSON.stringify(updated));
+
+
+
+        const link = json.link || (location.origin + '/order/' + json.code);
+
+        copyToClipboard(link).then(() => {
+            showStatusBox(
+                'Mã nhóm đã tạo và đã copy link cho bạn',
+                () => {
+                    window.location.href = link; // tự động vào link nhóm
+                }
+            );
+        }).catch(() => {
+            // iOS fail → cho user copy tay
+            showStatusBox(
+                'Không thể tự copy link, vui lòng copy thủ công',
+                () => {
+                    prompt('Copy link nhóm này gửi cho bạn bè:', link);
+                    window.location.href = link;
+                }
+            );
+        });
+
+
+
+
         const link = json.link || (location.origin + '/order/' + json.code);
         // copy to clipboard
         navigator.clipboard && navigator.clipboard.writeText(link).then(function(){
@@ -826,6 +852,56 @@ $(document).on('click', '.suggest-item', function () {
   //   document.body.appendChild(alert);
   //   setTimeout(() => alert.remove(), 1000);
   // }
+
+  function copyToClipboard(text) {
+    // ưu tiên API mới
+    if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text);
+    }
+
+    // fallback cho iOS
+    return new Promise((resolve, reject) => {
+        const input = document.createElement('input');
+        input.value = text;
+        input.setAttribute('readonly', '');
+        input.style.position = 'absolute';
+        input.style.left = '-9999px';
+        document.body.appendChild(input);
+
+        input.select();
+        input.setSelectionRange(0, text.length); // iOS fix
+
+        try {
+            const success = document.execCommand('copy');
+            document.body.removeChild(input);
+            success ? resolve() : reject();
+        } catch (err) {
+            document.body.removeChild(input);
+            reject(err);
+        }
+    });
+}
+
+
+function showStatusBox(message, onClose) {
+    const box = document.createElement('div');
+    box.innerHTML = `
+        <div class="status-overlay">
+            <div class="status-box">
+                <div class="status-msg">${message}</div>
+                <button class="status-btn">OK</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(box);
+
+    box.querySelector('.status-btn').onclick = () => {
+        document.body.removeChild(box);
+        onClose && onClose();
+    };
+}
+
+
 function showStatus(message, duration = 2000, redirectUrl = null) {
     
     const box = document.getElementById('status-box');
