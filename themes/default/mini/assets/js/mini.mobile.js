@@ -355,34 +355,30 @@ function formatMoney(x, symbol = '') {
   return symbol + num.toLocaleString('vi-VN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }
 
-function copyToClipboard(text) {
-    // ưu tiên API mới
-    if (navigator.clipboard && window.isSecureContext) {
-        return navigator.clipboard.writeText(text);
-    }
+function updateCustomerModalTitle() {
+  let info = localStorage.getItem('customer_info');
+  if (!info) return;
 
-    // fallback cho iOS
-    return new Promise((resolve, reject) => {
-        const input = document.createElement('input');
-        input.value = text;
-        input.setAttribute('readonly', '');
-        input.style.position = 'absolute';
-        input.style.left = '-9999px';
-        document.body.appendChild(input);
+  try {
+    info = JSON.parse(info);
+  } catch (e) { return; }
 
-        input.select();
-        input.setSelectionRange(0, text.length); // iOS fix
+  if (!info.group_code) return;
 
-        try {
-            const success = document.execCommand('copy');
-            document.body.removeChild(input);
-            success ? resolve() : reject();
-        } catch (err) {
-            document.body.removeChild(input);
-            reject(err);
-        }
-    });
+  const link = location.origin + '/order/' + info.group_code;
+
+  document.getElementById('customerModalTitle').innerHTML = `
+    ⭐ Đơn Nhóm – Mã: <b>${info.group_code}</b>
+    <button 
+      type="button"
+      class="btn btn-sm btn-outline-primary ms-2"
+      id="btn-copy-group-link"
+      data-link="${link}">
+      📋 Sao chép link nhóm
+    </button>
+  `;
 }
+
 
 
 

@@ -393,7 +393,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">🧾 Thông Tin Khách Hàng</h5>
+        <h5 class="modal-title" id="customerModalTitle">🧾 Thông Tin Khách Hàng</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
@@ -685,6 +685,8 @@ $(document).on('click', '.suggest-item', function () {
       $('#customerSelect').append(option).trigger('change');
     }
 
+    updateCustomerModalTitle();
+
   });
 
   // Khi nhấn “Lưu”
@@ -770,7 +772,7 @@ $(document).on('click', '.suggest-item', function () {
         navigator.clipboard && navigator.clipboard.writeText(link).then(function(){
           showStatus(
             'Mã nhóm đã tạo & đã copy link. Đang chuyển vào đơn nhóm...',
-              1800,
+              2000,
               link
           );
           //alert('Mã nhóm đã tạo và đã copy vào clipboard:\n' + link);
