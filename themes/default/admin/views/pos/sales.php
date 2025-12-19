@@ -38,7 +38,7 @@
                     paid += parseFloat(aaData[aiDisplay[i]][6]);
                 }
                 var nCells = nRow.getElementsByTagName('th');
-                //nCells[5].innerHTML = currencyFormat(parseFloat(gtotal));
+                nCells[5].innerHTML = currencyFormat(parseFloat(gtotal));
                 //nCells[6].innerHTML = currencyFormat(parseFloat(paid));
                 //nCells[7].innerHTML = currencyFormat(parseFloat(balance));
             }
