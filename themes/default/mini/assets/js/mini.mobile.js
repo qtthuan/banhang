@@ -356,14 +356,19 @@ function formatMoney(x, symbol = '') {
 }
 
 function updateCustomerModalTitle() {
-  
+  let info = localStorage.getItem('customer_info');
+  if (!info) return;
 
-  if (!group_code) return;
+  try {
+    info = JSON.parse(info);
+  } catch (e) { return; }
 
-  const link = location.origin + '/order/' + group_code;
+  if (!info.group_code) return;
+
+  const link = location.origin + '/order/' + info.group_code;
 
   document.getElementById('customerModalTitle').innerHTML = `
-    ⭐ Đơn Nhóm – Mã: <b>${group_code}</b>
+    ⭐ Đơn Nhóm – Mã: <b>${info.group_code}</b>
     <button 
       type="button"
       class="btn btn-sm btn-outline-primary ms-2"
