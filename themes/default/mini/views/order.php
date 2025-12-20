@@ -427,7 +427,7 @@
             <input type="checkbox" id="group_order_toggle">
             <span class="slider round"></span>
         </label>
-
+        <input type="text" class="hidd_link" value="">
         
 
         <style>
@@ -770,6 +770,7 @@ $(document).on('click', '.suggest-item', function () {
         const link = json.link || (location.origin + '/order/' + json.code);
         // copy to clipboard
         navigator.clipboard && navigator.clipboard.writeText(link).then(function(){
+          document.querySelector('.hidd_link').val(link);
           showStatus(
             'Mã nhóm đã tạo & đã copy link. Đang chuyển vào đơn nhóm...',
               2000,
