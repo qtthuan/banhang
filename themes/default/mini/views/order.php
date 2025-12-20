@@ -875,9 +875,9 @@ function showStatus(message, duration = 2000, redirectUrl = null) {
         box.classList.remove('show');
         setTimeout(() => {
             box.classList.add('hidden');
-            if (redirectUrl) {
-                window.location.href = redirectUrl;
-            }
+            // if (redirectUrl) {
+            //     window.location.href = redirectUrl;
+            // }
         }, 300);
     }, duration);
 }
