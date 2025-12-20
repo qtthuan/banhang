@@ -769,33 +769,34 @@ $(document).on('click', '.suggest-item', function () {
         
         const link = json.link || (location.origin + '/order/' + json.code);
         // copy to clipboard
-        navigator.clipboard && navigator.clipboard.writeText(link).then(function(){
-          $('.hidd_link').val(link);
-          $('.hidd_link').focus();
-          $('.hidd_link').select();
+        $('.hidd_link').val(link);
+        $('.hidd_link').focus();
+        $('.hidd_link').select();
 
-          try {
-            var successful = document.execCommand('copy');
-            var msg = successful ? 'successful' : 'unsuccessful';
-            $('.hidd_link').blur();
-            console.log('Copying text command was ' + msg);
-          } catch (err) {
-            console.log('Oops, unable to copy');
-          }
-          // showStatus(
-          //   'Mã nhóm đã tạo & đã copy link. Đang chuyển vào đơn nhóm...',
-          //     2000,
-          //     link
-          // );
-          //alert('Mã nhóm đã tạo và đã copy vào clipboard:\n' + link);
-        }, function(){
-          // fallback nếu không copy được
-          showStatus(
-              'Mã nhóm đã tạo. Vui lòng copy link để gửi cho nhóm.',
-              2500,
-              link
-          );
-        });
+        try {
+          var successful = document.execCommand('copy');
+          var msg = successful ? 'successful' : 'unsuccessful';
+          $('.hidd_link').blur();
+          console.log('Copying text command was ' + msg);
+        } catch (err) {
+          console.log('Oops, unable to copy');
+        }
+        // navigator.clipboard && navigator.clipboard.writeText(link).then(function(){
+          
+        //   showStatus(
+        //     'Mã nhóm đã tạo & đã copy link. Đang chuyển vào đơn nhóm...',
+        //       2000,
+        //       link
+        //   );
+        //   //alert('Mã nhóm đã tạo và đã copy vào clipboard:\n' + link);
+        // }, function(){
+        //   // fallback nếu không copy được
+        //   showStatus(
+        //       'Mã nhóm đã tạo. Vui lòng copy link để gửi cho nhóm.',
+        //       2500,
+        //       link
+        //   );
+        // });
       } else {
         alert('Tạo mã nhóm thất bại.');
       }
