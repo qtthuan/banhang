@@ -769,14 +769,15 @@ $(document).on('click', '.suggest-item', function () {
         
         const link = json.link || (location.origin + '/order/' + json.code);
         // copy to clipboard
-        $('.hidd_link').val(link);
-        $('.hidd_link').focus();
-        $('.hidd_link').select();
+        var hidd_link = document.querySelector('.hidd_link');
+        hidd_link.val(link);
+        hidd_link.focus();
+        hidd_link.select();
 
         try {
           var successful = document.execCommand('copy');
           var msg = successful ? 'successful' : 'unsuccessful';
-          $('.hidd_link').blur();
+          hidd_link.blur();
           console.log('Copying text command was ' + msg);
         } catch (err) {
           console.log('Oops, unable to copy');
