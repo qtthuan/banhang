@@ -368,13 +368,13 @@ function updateCustomerModalTitle() {
   const link = location.origin + '/order/' + info.group_code;
 
   document.getElementById('customerModalTitle').innerHTML = `
-    ⭐ Đơn Nhóm – Mã: <b>${info.group_code}</b>
+    ⭐ Đơn Nhóm: <b>${info.group_code}</b>
     <button 
       type="button"
       class="btn btn-sm btn-outline-primary ms-2"
       id="btn-copy-group-link"
       data-link="${link}">
-      📋 Sao chép link nhóm
+      📋 Copy link nhóm
     </button>
   `;
 }
