@@ -102,7 +102,7 @@
                     <td style="border-bottom: 1px solid #EEE;" colspan="2">
                     <p>
   
-  <input type="text" class="js-copytextarea" value="<table><tr><td>test 1</td><td>test 2</td></tr></table>">
+  <input type="text" class="js-copytextarea" value="<table><tr><td>test 4</td><td>test 5</td></tr></table>">
 </p>
                     <?php
                     //$this->sma->print_arrays($best_sellers);
@@ -186,7 +186,7 @@
 
     
 
-
+// qtthuan: Hàm copy text
 var copyTextareaBtn = document.querySelector('.copy');
 
 copyTextareaBtn.addEventListener('click', function(event) {
