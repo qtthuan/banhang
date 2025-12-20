@@ -371,7 +371,7 @@ function updateCustomerModalTitle() {
     ⭐ Đơn Nhóm: <b>${info.group_code}</b>
     <button 
       type="button"
-      class="btn btn-sm btn-outline-primary ms-2"
+      class="btn btn-sm btn-primary ms-2"
       id="btn-copy-group-link"
       data-link="${link}">
       📋 Copy link nhóm

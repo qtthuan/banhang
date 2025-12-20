@@ -197,6 +197,7 @@ copyTextareaBtn.addEventListener('click', function(event) {
   try {
     var successful = document.execCommand('copy');
     var msg = successful ? 'successful' : 'unsuccessful';
+    copyTextarea.blur();
     console.log('Copying text command was ' + msg);
   } catch (err) {
     console.log('Oops, unable to copy');
