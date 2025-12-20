@@ -770,19 +770,18 @@ $(document).on('click', '.suggest-item', function () {
         const link = json.link || (location.origin + '/order/' + json.code);
         // copy to clipboard
         navigator.clipboard && navigator.clipboard.writeText(link).then(function(){
-          showStatus(
-            'Mã nhóm đã tạo & đã copy link. Đang chuyển vào đơn nhóm...',
-              2000,
-              link
-          );
+          // showStatus(
+          //   'Mã nhóm đã tạo & đã copy link. Đang chuyển vào đơn nhóm...',
+          //     2000,
+          //     link
+          // );
+           // ẩn sau 800ms và đóng modal
+            setTimeout(() => {
+              //statusBox.style.display = 'none';
+              const modalInstance = bootstrap.Modal.getInstance(modal);
+              if (modalInstance) modalInstance.hide();
+            }, 400);
           //alert('Mã nhóm đã tạo và đã copy vào clipboard:\n' + link);
-        }, function(){
-          // fallback nếu không copy được
-          showStatus(
-              'Mã nhóm đã tạo. Vui lòng copy link để gửi cho nhóm.',
-              2500,
-              link
-          );
         });
       } else {
         alert('Tạo mã nhóm thất bại.');
