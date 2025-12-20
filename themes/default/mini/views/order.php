@@ -782,11 +782,11 @@ $(document).on('click', '.suggest-item', function () {
           } catch (err) {
             console.log('Oops, unable to copy');
           }
-          showStatus(
-            'Mã nhóm đã tạo & đã copy link. Đang chuyển vào đơn nhóm...',
-              2000,
-              link
-          );
+          // showStatus(
+          //   'Mã nhóm đã tạo & đã copy link. Đang chuyển vào đơn nhóm...',
+          //     2000,
+          //     link
+          // );
           //alert('Mã nhóm đã tạo và đã copy vào clipboard:\n' + link);
         }, function(){
           // fallback nếu không copy được
