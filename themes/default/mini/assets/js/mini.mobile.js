@@ -355,6 +355,23 @@ function formatMoney(x, symbol = '') {
   return symbol + num.toLocaleString('vi-VN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }
 
+function copyTextIOS(text) {
+    var input = document.getElementById('copyInput');
+    input.value = text;
+
+    input.focus();
+    input.select();
+    input.setSelectionRange(0, input.value.length); // 👈 rất quan trọng cho iOS
+
+    try {
+        document.execCommand('copy');
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+
 function updateCustomerModalTitle() {
   let info = localStorage.getItem('customer_info');
   if (!info) return;

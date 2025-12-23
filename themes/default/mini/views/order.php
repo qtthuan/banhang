@@ -427,7 +427,13 @@
             <input type="checkbox" id="group_order_toggle">
             <span class="slider round"></span>
         </label>
-        <input type="text" class="hidd_link" value="">
+
+        <input 
+          type="text" 
+          id="copyInput"
+          style="position:fixed; top:-1000px; opacity:0;"
+          readonly
+        >
         
 
         <style>
@@ -765,40 +771,29 @@ $(document).on('click', '.suggest-item', function () {
         if (json && json.success && json.code) {
         updated.group_code = json.code;
         //updated.group_order_id = json.group_order_id;
-        localStorage.setItem('customer_info', JSON.stringify(updated));
+        
         
         const link = json.link || (location.origin + '/order/' + json.code);
-        // copy to clipboard
-        var hidd_link = document.querySelector('.hidd_link');
-        $('.hidd_link').text(link);
-        console.log('linkkk: ' + link);
-        $('.hidd_link').focus();
-        $('.hidd_link').select();
+        updated.group_link = link;
+        localStorage.setItem('customer_info', JSON.stringify(updated));
 
-        try {
-          var successful = document.execCommand('copy');
-          var msg = successful ? 'successful' : 'unsuccessful';
-          $('.hidd_link').blur();
-          console.log('Copying text command was ' + msg);
-        } catch (err) {
-          console.log('Oops, unable to copy');
-        }
-        // navigator.clipboard && navigator.clipboard.writeText(link).then(function(){
+        // copy to clipboard       
+        navigator.clipboard && navigator.clipboard.writeText(link).then(function(){
           
-        //   showStatus(
-        //     'Mã nhóm đã tạo & đã copy link. Đang chuyển vào đơn nhóm...',
-        //       2000,
-        //       link
-        //   );
-        //   //alert('Mã nhóm đã tạo và đã copy vào clipboard:\n' + link);
-        // }, function(){
-        //   // fallback nếu không copy được
-        //   showStatus(
-        //       'Mã nhóm đã tạo. Vui lòng copy link để gửi cho nhóm.',
-        //       2500,
-        //       link
-        //   );
-        // });
+          showStatus(
+            'Mã nhóm đã tạo & đã copy link. Đang chuyển vào đơn nhóm...',
+              2000,
+              link
+          );
+          //alert('Mã nhóm đã tạo và đã copy vào clipboard:\n' + link);
+        }, function(){
+          // fallback nếu không copy được
+          showStatus(
+              'Mã nhóm đã tạo. Vui lòng copy link để gửi cho nhóm.',
+              2500,
+              link
+          );
+        });
       } else {
         alert('Tạo mã nhóm thất bại.');
       }
