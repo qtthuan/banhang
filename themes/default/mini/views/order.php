@@ -771,6 +771,7 @@ $(document).on('click', '.suggest-item', function () {
         // copy to clipboard
         var hidd_link = document.querySelector('.hidd_link');
         $('.hidd_link').text(link);
+        console.log('linkkk: ' + link);
         $('.hidd_link').focus();
         $('.hidd_link').select();
 
