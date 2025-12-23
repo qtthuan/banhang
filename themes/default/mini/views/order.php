@@ -770,7 +770,7 @@ $(document).on('click', '.suggest-item', function () {
         const link = json.link || (location.origin + '/order/' + json.code);
         // copy to clipboard
         var hidd_link = document.querySelector('.hidd_link');
-        hidd_link.val(link);
+        hidd_link.text(link);
         hidd_link.focus();
         hidd_link.select();
 
