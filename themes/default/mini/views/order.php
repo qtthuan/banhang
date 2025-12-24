@@ -428,6 +428,8 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="customerModalTitle">🧾 Thông Tin Khách Hàng</h5>
+        <!-- Hiển thị trạng thái lưu -->
+       <div id="status-box" class="status-box"></div>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
@@ -505,8 +507,7 @@
           <textarea id="order_note" class="form-control" rows="2" placeholder="Nhập ghi chú..."></textarea>
         </div>
       </div>
-      <!-- Hiển thị trạng thái lưu -->
-       <div id="status-box" class="status-box"></div>
+      
 
       <!-- <div id="saveStatus"
           style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
