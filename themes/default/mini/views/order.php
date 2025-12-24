@@ -198,6 +198,20 @@
   color: #fff;
 }
 
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+
+.input-shake {
+  animation: shake 0.35s;
+  border-color: #dc3545 !important; /* đỏ */
+}
+
 
 
 
@@ -738,17 +752,21 @@ $(document).on('click', '.suggest-item', function () {
       
     };
 
-    const phone = document.getElementById('customer_phone').value.trim();
-    console.log('phone: ' + phone);
+    const phoneInput = document.getElementById('customer_phone');
+    const phone = phoneInput.value.trim();
+
     if (!phone) {
-      showStatus(
-        '❌ Vui lòng nhập số điện thoại khách hàng',
-        2500,
-        null,
-        'error'
-      );
-      return; // ⛔ DỪNG TẠI ĐÂY, không đóng modal
+      showStatus('⚠️ Vui lòng nhập số điện thoại', 2000, null, 'error');
+
+      // rung input
+      phoneInput.classList.remove('input-shake'); // reset
+      void phoneInput.offsetWidth;               // force reflow
+      phoneInput.classList.add('input-shake');
+
+      phoneInput.focus();
+      return; // ❌ không cho chạy tiếp
     }
+
 
 
     localStorage.setItem('customer_info', JSON.stringify(updated));
@@ -893,22 +911,44 @@ $(document).on('click', '.suggest-item', function () {
     });
 }
 
+// function showStatus(text, duration = 2000, redirect = null, type = 'success') {
+//   const box = document.getElementById('status-box');
+//   if (!box) return;
+
+//   box.textContent = text;
+//   box.className = '';
+//   box.classList.add(type === 'error' ? 'status-error' : 'status-success');
+//   box.style.display = 'block';
+
+//   setTimeout(() => {
+//     box.style.display = 'none';
+//     if (redirect) {
+//       window.location.href = redirect;
+//     }
+//   }, duration);
+// }
+
 function showStatus(text, duration = 2000, redirect = null, type = 'success') {
   const box = document.getElementById('status-box');
   if (!box) return;
 
   box.textContent = text;
-  box.className = '';
-  box.classList.add(type === 'error' ? 'status-error' : 'status-success');
   box.style.display = 'block';
+
+  if (type === 'error') {
+    box.style.background = '#dc3545';
+    box.style.color = '#fff';
+  } else {
+    box.style.background = '#198754';
+    box.style.color = '#fff';
+  }
 
   setTimeout(() => {
     box.style.display = 'none';
-    if (redirect) {
-      window.location.href = redirect;
-    }
+    if (redirect) window.location.href = redirect;
   }, duration);
 }
+
 
 
 
