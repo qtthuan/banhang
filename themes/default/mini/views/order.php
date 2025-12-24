@@ -636,6 +636,7 @@ $(document).on('click', '.suggest-item', function () {
 
         // Xóa dữ liệu localStorage
         localStorage.removeItem('customer_info');
+        updateCustomerModalTitle();
         
       } catch (err) {
         console.error('Reset error', err);

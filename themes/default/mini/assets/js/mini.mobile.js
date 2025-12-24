@@ -374,7 +374,10 @@ function copyTextIOS(text) {
 
 function updateCustomerModalTitle() {
   let info = localStorage.getItem('customer_info');
-  if (!info) return;
+  if (!info) {
+      document.getElementById('customerModalTitle').innerHTML = `🧾 Thông Tin Khách Hàng`;
+      return;
+  }
 
   try {
     info = JSON.parse(info);
