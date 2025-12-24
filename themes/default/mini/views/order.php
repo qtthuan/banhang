@@ -156,7 +156,7 @@
     border: 1px solid #ddd;
 }
 
-.status-box {
+/*.status-box {
     position: fixed;
     top: 20px;
     right: 20px;
@@ -177,7 +177,27 @@
 
 .status-box.hidden {
     display: none;
+}*/
+
+#status-box {
+  display: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 10px;
 }
+
+.status-success {
+  background: #28a745;
+  color: #fff;
+}
+
+.status-error {
+  background: #dc3545;
+  color: #fff;
+}
+
 
 
 
@@ -472,7 +492,7 @@
         </div>
       </div>
       <!-- Hiển thị trạng thái lưu -->
-       <div id="status-box" class="status-box hidden"></div>
+       <div id="status-box" class="status-box"></div>
 
       <!-- <div id="saveStatus"
           style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
@@ -629,6 +649,7 @@ $(document).on('click', '.suggest-item', function () {
         // Reset input text
         document.getElementById('customer_name').value = '';
         document.getElementById('customer_phone').value = '';
+        document.getElementById('customer_address').value = '';
         document.getElementById('order_note').value = '';
 
         // Gọi lại cập nhật giá mặc định (giá gốc)
@@ -705,15 +726,6 @@ $(document).on('click', '.suggest-item', function () {
     const customerText = $('#customerSelect').find('option:selected').text();
     const isGroup = document.getElementById('group_order_toggle') && document.getElementById('group_order_toggle').checked;
 
-    // const data = {
-    //   customer_id: customerId,
-    //   customer_text: customerText,
-    //   customer_name: document.getElementById('customer_name').value.trim(),
-    //   customer_phone: document.getElementById('customer_phone').value.trim(),
-    //   order_note: document.getElementById('order_note').value.trim()
-    // };
-
-
 
     const saved = JSON.parse(localStorage.getItem('customer_info') || '{}');
     const updated = {
@@ -725,13 +737,24 @@ $(document).on('click', '.suggest-item', function () {
       order_note: document.getElementById('order_note').value || ''
       
     };
+    
+    const phone = document.getElementById('customer_phone').value.trim();
+
+    if (!phone) {
+      showStatus(
+        '❌ Vui lòng nhập số điện thoại khách hàng',
+        2500,
+        null,
+        'error'
+      );
+      return; // ⛔ DỪNG TẠI ĐÂY, không đóng modal
+    }
+
+
     localStorage.setItem('customer_info', JSON.stringify(updated));
 
-    console.log(JSON.stringify(updated));
+    //console.log(JSON.stringify(updated));
     if (!isGroup) {
-      // hiện "Đang lưu..."
-      //statusBox.textContent = 'Đang lưu...';
-      //statusBox.style.display = 'block';
 
       // Giả lập xử lý lưu ajax (có thể thay bằng thật)
       setTimeout(() => {
@@ -870,28 +893,46 @@ $(document).on('click', '.suggest-item', function () {
     });
 }
 
+function showStatus(text, duration = 2000, redirect = null, type = 'success') {
+  const box = document.getElementById('saveStatus');
+  if (!box) return;
 
-function showStatus(message, duration = 2000, redirectUrl = null) {
-    
-    const box = document.getElementById('status-box');
-    console.log('111xxx');
-    if (!box) return;
-    console.log('222xxx');
+  box.textContent = text;
+  box.className = '';
+  box.classList.add(type === 'error' ? 'status-error' : 'status-success');
+  box.style.display = 'block';
 
-    box.textContent = message;
-    box.classList.remove('hidden');
-    box.classList.add('show');
-
-    setTimeout(() => {
-        box.classList.remove('show');
-        setTimeout(() => {
-            box.classList.add('hidden');
-            if (redirectUrl) {
-                window.location.href = redirectUrl;
-            }
-        }, 300);
-    }, duration);
+  setTimeout(() => {
+    box.style.display = 'none';
+    if (redirect) {
+      window.location.href = redirect;
+    }
+  }, duration);
 }
+
+
+
+// function showStatus(message, duration = 2000, redirectUrl = null) {
+    
+//     const box = document.getElementById('status-box');
+//     console.log('111xxx');
+//     if (!box) return;
+//     console.log('222xxx');
+
+//     box.textContent = message;
+//     box.classList.remove('hidden');
+//     box.classList.add('show');
+
+//     setTimeout(() => {
+//         box.classList.remove('show');
+//         setTimeout(() => {
+//             box.classList.add('hidden');
+//             if (redirectUrl) {
+//                 window.location.href = redirectUrl;
+//             }
+//         }, 300);
+//     }, duration);
+// }
 
 
 
