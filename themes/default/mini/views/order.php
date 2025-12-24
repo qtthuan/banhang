@@ -737,9 +737,9 @@ $(document).on('click', '.suggest-item', function () {
       order_note: document.getElementById('order_note').value || ''
       
     };
-    
-    const phone = document.getElementById('customer_phone').value.trim();
 
+    const phone = document.getElementById('customer_phone').value.trim();
+    console.log('phone: ' + phone);
     if (!phone) {
       showStatus(
         '❌ Vui lòng nhập số điện thoại khách hàng',
@@ -894,7 +894,7 @@ $(document).on('click', '.suggest-item', function () {
 }
 
 function showStatus(text, duration = 2000, redirect = null, type = 'success') {
-  const box = document.getElementById('saveStatus');
+  const box = document.getElementById('status-box');
   if (!box) return;
 
   box.textContent = text;
