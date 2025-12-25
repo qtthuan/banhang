@@ -179,24 +179,41 @@
     display: none;
 }*/
 
-#status-box {
-  display: none;
-  padding: 10px 14px;
-  border-radius: 6px;
+
+
+/* Header gốc */
+.modal-header {
+  background: #198754; /* xanh */
+  overflow: hidden;
+}
+
+/* Status box */
+.modal-status-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   font-weight: 600;
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.status-success {
-  background: #28a745;
+  font-size: 15px;
   color: #fff;
 }
 
-.status-error {
-  background: #dc3545;
-  color: #fff;
+/* Màu */
+.modal-status-success {
+  background: #198754; /* xanh */
 }
+
+.modal-status-error {
+  background: #dc3545; /* đỏ */
+}
+
 
 @keyframes shake {
   0% { transform: translateX(0); }
@@ -426,12 +443,30 @@
 <div class="modal fade" id="orderInfoModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header position-relative p-0">
+
+        <!-- STATUS BOX -->
+        <div id="modalStatusBox" class="modal-status-box d-none"></div>
+
+        <!-- HEADER GỐC -->
+        <div class="modal-header-content d-flex align-items-center w-100 px-3 py-2">
+          <h5 class="modal-title text-white mb-0" id="customerModalTitle">
+            🧾 Thông Tin Khách Hàng
+          </h5>
+          <button type="button" class="btn-close btn-close-white ms-auto"
+                  data-bs-dismiss="modal"></button>
+        </div>
+
+      </div>
+
+
+      <!-- <div class="modal-header">
         <h5 class="modal-title" id="customerModalTitle">🧾 Thông Tin Khách Hàng</h5>
-        <!-- Hiển thị trạng thái lưu -->
        <div id="status-box" class="status-box"></div>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
+      </div> -->
+
+      
       <div class="modal-body">
         <!-- Nhập SĐT -->
         <div class="mb-3">
@@ -667,6 +702,12 @@ $(document).on('click', '.suggest-item', function () {
         document.getElementById('customer_address').value = '';
         document.getElementById('order_note').value = '';
 
+         // ✅ Reset toggle Đơn nhóm
+        const toggle = document.getElementById('group_order_toggle');
+        if (toggle) {
+          toggle.checked = false;
+        }
+
         // Gọi lại cập nhật giá mặc định (giá gốc)
         updateProductPrices();
 
@@ -757,7 +798,7 @@ $(document).on('click', '.suggest-item', function () {
     const phone = phoneInput.value.trim();
 
     if (!phone) {
-      showStatus('⚠️ Vui lòng nhập số điện thoại', 2000, null, 'error');
+      showStatus('⚠️ Vui lòng nhập số điện thoại', 'error', 2000);
 
       // rung input
       phoneInput.classList.remove('input-shake'); // reset
@@ -779,10 +820,7 @@ $(document).on('click', '.suggest-item', function () {
       setTimeout(() => {
         // hiển thị "Đã lưu"
         //statusBox.textContent = '✅ Đã lưu';
-        showStatus(
-            '✅ Đã lưu',
-              1800
-          );
+        showStatus('✅ Đã lưu', 'success', 1800);
         
         // ẩn sau 800ms và đóng modal
         setTimeout(() => {
@@ -929,24 +967,26 @@ $(document).on('click', '.suggest-item', function () {
 //   }, duration);
 // }
 
-function showStatus(text, duration = 2000, redirect = null, type = 'success') {
-  const box = document.getElementById('status-box');
+function showStatus(message, type = 'success', duration = 2000, redirectUrl = null) {
+  const box = document.getElementById('modalStatusBox');
   if (!box) return;
 
-  box.textContent = text;
-  box.style.display = 'block';
+  box.textContent = message;
+  box.className = 'modal-status-box';
 
   if (type === 'error') {
-    box.style.background = '#dc3545';
-    box.style.color = '#fff';
+    box.classList.add('modal-status-error');
   } else {
-    box.style.background = '#198754';
-    box.style.color = '#fff';
+    box.classList.add('modal-status-success');
   }
 
+  box.classList.remove('d-none');
+
   setTimeout(() => {
-    box.style.display = 'none';
-    if (redirect) window.location.href = redirect;
+    box.classList.add('d-none');
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    }
   }, duration);
 }
 

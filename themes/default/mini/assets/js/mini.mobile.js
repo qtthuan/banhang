@@ -375,6 +375,7 @@ function copyTextIOS(text) {
 function updateCustomerModalTitle() {
   let info = localStorage.getItem('customer_info');
   if (!info) {
+    console.log('x111');
       document.getElementById('customerModalTitle').innerHTML = `🧾 Thông Tin Khách Hàng`;
       return;
   }
@@ -384,7 +385,7 @@ function updateCustomerModalTitle() {
   } catch (e) { return; }
 
   if (!info.group_code) return;
-
+console.log('2222x');
   const link = location.origin + '/order/' + info.group_code;
 
   document.getElementById('customerModalTitle').innerHTML = `
