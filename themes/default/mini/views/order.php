@@ -601,7 +601,7 @@
           $('#phone_suggestions').hide();
           return;
       }
-      console.log('111: ' + base_url);
+      //console.log('111: ' + base_url);
 
       $.ajax({
         url: base_url + "order/findCustomer",
@@ -609,7 +609,7 @@
         dataType: "json",
         data: { term: phone },
         success: function (res) {
-          console.log('222: ' + base_url);
+          //console.log('222: ' + base_url);
 
             let list = res.results || [];
 
@@ -626,6 +626,7 @@
                         data-name="${c.name}" 
                         data-address="${c.address}"
                         data-phone="${c.phone}"
+                        data-id="${c.id}"
                         style="padding:8px; cursor:pointer;background:#dbebeb">
                         <strong>${c.name}</strong><br>
                         <small>${c.phone} - ${c.address}</small>
@@ -647,10 +648,15 @@ $(document).on('click', '.suggest-item', function () {
     let name = $(this).data('name');
     let phone = $(this).data('phone');
     let address = $(this).data('address');
+    let customer_id = $(this).data('id');
 
     $('#customer_phone').val(phone);
     $('#customer_name').val(name);
     $('#customer_address').val(address);
+
+    let info = JSON.parse(localStorage.getItem('customer_info') || '{}');
+    info.customer_id = customer_id;
+    localStorage.setItem('customer_info', JSON.stringify(info));
 
     $('#phone_suggestions').hide();
 });
@@ -786,8 +792,6 @@ $(document).on('click', '.suggest-item', function () {
     const saved = JSON.parse(localStorage.getItem('customer_info') || '{}');
     const updated = {
       ...saved,
-      customer_id: customerId,
-      customer_text: customerText,
       customer_name: document.getElementById('customer_name').value || '',
       customer_phone: document.getElementById('customer_phone').value || '',
       address: document.getElementById('customer_address').value || '',
@@ -814,7 +818,7 @@ $(document).on('click', '.suggest-item', function () {
 
     localStorage.setItem('customer_info', JSON.stringify(updated));
 
-    //console.log(JSON.stringify(updated));
+    console.log(JSON.stringify(updated));
     if (!isGroup) {
 
       // Giả lập xử lý lưu ajax (có thể thay bằng thật)
@@ -845,7 +849,7 @@ $(document).on('click', '.suggest-item', function () {
             customer_name: updated.customer_name,
             customer_phone: updated.customer_phone,
             address: updated.address,
-            customer_id: customerId,
+            customer_id: saved.customer_id,
             note: updated.order_note,
             [csrfName]: csrfHash       // 🚀 Gửi CSRF token
         })
