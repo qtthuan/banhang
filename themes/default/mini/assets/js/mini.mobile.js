@@ -672,8 +672,6 @@ document.addEventListener('DOMContentLoaded', function(){
       btn.classList.remove('btn-outline-primary');
       btn.classList.add('btn-success');
 
-      //showStatusBox('Đã sao chép link đơn nhóm');
-
     } catch (e) {
       prompt('Copy link đơn nhóm:', link);
     }

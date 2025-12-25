@@ -53,9 +53,11 @@ class Order extends MY_Controller {
         $name = $this->input->post('customer_name', TRUE);
         $phone = $this->input->post('customer_phone', TRUE);
         $address = $this->input->post('customer_address', TRUE);
+        $customer_id = $this->input->post('customer_id', TRUE);
         $note = $this->input->post('note', TRUE);
         $group = $this->group_model->create_group([
         'customer_name' => $name,
+        'customer_id' => $customer_id,
         'customer_phone' => $phone,
         'customer_address' => $address,
         'note' => $note

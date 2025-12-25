@@ -790,6 +790,7 @@ $(document).on('click', '.suggest-item', function () {
       customer_text: customerText,
       customer_name: document.getElementById('customer_name').value || '',
       customer_phone: document.getElementById('customer_phone').value || '',
+      address: document.getElementById('customer_address').value || '',
       order_note: document.getElementById('order_note').value || ''
       
     };
@@ -843,6 +844,8 @@ $(document).on('click', '.suggest-item', function () {
         body: new URLSearchParams({
             customer_name: updated.customer_name,
             customer_phone: updated.customer_phone,
+            address: updated.address,
+            customer_id: customerId,
             note: updated.order_note,
             [csrfName]: csrfHash       // 🚀 Gửi CSRF token
         })
