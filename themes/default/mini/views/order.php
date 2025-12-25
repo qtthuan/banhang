@@ -790,6 +790,7 @@ $(document).on('click', '.suggest-item', function () {
 
 
     const saved = JSON.parse(localStorage.getItem('customer_info') || '{}');
+    console.log(JSON.stringify(saved));
     const updated = {
       ...saved,
       customer_name: document.getElementById('customer_name').value || '',
@@ -818,7 +819,7 @@ $(document).on('click', '.suggest-item', function () {
 
     localStorage.setItem('customer_info', JSON.stringify(updated));
 
-    console.log(JSON.stringify(updated));
+    //console.log(JSON.stringify(updated));
     if (!isGroup) {
 
       // Giả lập xử lý lưu ajax (có thể thay bằng thật)
@@ -848,7 +849,7 @@ $(document).on('click', '.suggest-item', function () {
         body: new URLSearchParams({
             customer_name: updated.customer_name,
             customer_phone: updated.customer_phone,
-            address: updated.address,
+            customer_address: updated.address,
             customer_id: saved.customer_id,
             note: updated.order_note,
             [csrfName]: csrfHash       // 🚀 Gửi CSRF token

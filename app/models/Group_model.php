@@ -8,6 +8,7 @@ class Group_model extends CI_Model {
         $row = [
           'code' => $code,
           'customer_name' => $data['customer_name'] ?? null,
+          'customer_id' => $data['customer_id'] ?? 0,
           'customer_phone' => $data['customer_phone'] ?? null,
           'customer_address' => $data['customer_address'] ?? null,
           'bill_note' => $data['note'] ?? null,
