@@ -380,6 +380,17 @@ function updateCustomerModalTitle() {
       return;
   }
 
+  function copyTextFallback(text) {
+    const input = document.createElement('input');
+    input.value = text;
+    document.body.appendChild(input);
+    input.select();
+    input.setSelectionRange(0, 99999); // iOS
+    document.execCommand('copy');
+    document.body.removeChild(input);
+  }
+
+
   try {
     info = JSON.parse(info);
   } catch (e) { return; }
@@ -643,6 +654,31 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
   }); // end body click delegation
+
+  document.addEventListener('click', function (e) {
+    const btn = e.target.closest('#btn-copy-group-link');
+    if (!btn) return;
+
+    const link = btn.dataset.link;
+
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(link);
+      } else {
+        copyTextFallback(link);
+      }
+
+      btn.innerHTML = '✅ Đã sao chép';
+      btn.classList.remove('btn-outline-primary');
+      btn.classList.add('btn-success');
+
+      //showStatusBox('Đã sao chép link đơn nhóm');
+
+    } catch (e) {
+      prompt('Copy link đơn nhóm:', link);
+    }
+  });
+
 
   // delegated change for size radios -> update price on card
   document.body.addEventListener('change', function(e){
