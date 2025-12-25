@@ -626,7 +626,7 @@
                         data-name="${c.name}" 
                         data-address="${c.address}"
                         data-phone="${c.phone}"
-                        style="padding:8px; cursor:pointer;">
+                        style="padding:8px; cursor:pointer;background:#dbebeb">
                         <strong>${c.name}</strong><br>
                         <small>${c.phone} - ${c.address}</small>
                     </div>`;
