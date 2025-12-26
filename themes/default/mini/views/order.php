@@ -670,6 +670,9 @@ $(document).on('click', '.suggest-item', function () {
 
     let info = JSON.parse(localStorage.getItem('customer_info') || '{}');
     info.customer_id = customer_id;
+    info.customer_name = name;
+    info.customer_phone = phone;
+    info.customer_address = address;
     localStorage.setItem('customer_info', JSON.stringify(info));
 
     $('#phone_suggestions').hide();
