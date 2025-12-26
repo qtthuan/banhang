@@ -645,18 +645,32 @@
 
 $(document).on('click', '.suggest-item', function () {
 
-    let name = $(this).data('name');
-    let phone = $(this).data('phone');
-    let address = $(this).data('address');
-    let customer_id = $(this).data('id');
+
+
+  const saved = JSON.parse(localStorage.getItem('customer_info') || '{}');
+
+  saved.customer_id   = $(this).data('id');      // 👈 QUAN TRỌNG
+  saved.customer_name = $(this).data('name');
+  saved.customer_phone = $(this).data('phone');
+  saved.customer_address = $(this).data('address');
+
+  localStorage.setItem('customer_info', JSON.stringify(saved));
+
+
+
+
+    // let name = $(this).data('name');
+    // let phone = $(this).data('phone');
+    // let address = $(this).data('address');
+    // let customer_id = $(this).data('id');
 
     $('#customer_phone').val(phone);
     $('#customer_name').val(name);
     $('#customer_address').val(address);
 
-    let info = JSON.parse(localStorage.getItem('customer_info') || '{}');
-    info.customer_id = customer_id;
-    localStorage.setItem('customer_info', JSON.stringify(info));
+    // let info = JSON.parse(localStorage.getItem('customer_info') || '{}');
+    // info.customer_id = customer_id;
+    // localStorage.setItem('customer_info', JSON.stringify(info));
 
     $('#phone_suggestions').hide();
 });
@@ -791,14 +805,14 @@ $(document).on('click', '.suggest-item', function () {
 
     const saved = JSON.parse(localStorage.getItem('customer_info') || '{}');
     console.log(JSON.stringify(saved));
-    const updated = {
-      ...saved,
-      customer_name: document.getElementById('customer_name').value || '',
-      customer_phone: document.getElementById('customer_phone').value || '',
-      address: document.getElementById('customer_address').value || '',
-      order_note: document.getElementById('order_note').value || ''
+    // const updated = {
+    //   ...saved,
+    //   //customer_name: document.getElementById('customer_name').value || '',
+    //   //customer_phone: document.getElementById('customer_phone').value || '',
+    //   //address: document.getElementById('customer_address').value || '',
+    //   order_note: document.getElementById('order_note').value || ''
       
-    };
+    // };
 
     const phoneInput = document.getElementById('customer_phone');
     const phone = phoneInput.value.trim();
@@ -847,11 +861,11 @@ $(document).on('click', '.suggest-item', function () {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: new URLSearchParams({
-            customer_name: updated.customer_name,
-            customer_phone: updated.customer_phone,
-            customer_address: updated.address,
+            customer_name: saved.customer_name,
+            customer_phone: saved.customer_phone,
+            customer_address: saved.address,
             customer_id: saved.customer_id,
-            note: updated.order_note,
+            note: document.getElementById('order_note').value || '',
             [csrfName]: csrfHash       // 🚀 Gửi CSRF token
         })
     })
