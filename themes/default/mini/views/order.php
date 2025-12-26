@@ -859,121 +859,18 @@ $(document).on('click', '.suggest-item', function () {
     .then(json => {
         if (json && json.success && json.code) {
         updated.group_code = json.code;
-        //updated.group_order_id = json.group_order_id;
-        
-        
         const link = json.link || (location.origin + '/order/' + json.code);
         updated.group_link = link;
         localStorage.setItem('customer_info', JSON.stringify(updated));
         updateCustomerModalTitle();
-        // copy to clipboard       
-        // navigator.clipboard && navigator.clipboard.writeText(link).then(function(){
-          
-        //   showStatus(
-        //     'Mã nhóm đã tạo & đã copy link. Đang chuyển vào đơn nhóm...',
-        //       2000,
-        //       link
-        //   );
-        //   //alert('Mã nhóm đã tạo và đã copy vào clipboard:\n' + link);
-        // }, function(){
-        //   // fallback nếu không copy được
-        //   showStatus(
-        //       'Mã nhóm đã tạo. Vui lòng copy link để gửi cho nhóm.',
-        //       2500,
-        //       link
-        //   );
-        // });
       } else {
         alert('Tạo mã nhóm thất bại.');
       }
     })
     .catch(err => console.error(err));
-
-
-
-
-    //localStorage.setItem('customer_info', JSON.stringify(data));
-
-
     
   });
 
-
-  // document.getElementById('saveCustomerInfoBtn').addEventListener('click', async function() {
-  //   const id = document.getElementById('customerSelect').value || '';
-  //   const name = document.getElementById('customer_name').value.trim();
-  //   const phone = document.getElementById('customer_phone').value.trim();
-  //   const note = document.getElementById('order_note').value.trim();
-
-  //   const info = { id, name, phone, note };
-  //   localStorage.setItem('customer_info', JSON.stringify(info));
-
-  //   // gọi hàm cập nhật giá sau khi bấm Lưu
-  //   try {
-  //     await updateProductPrices();
-  //   } catch (e) {
-  //     console.warn('Không thể cập nhật giá:', e);
-  //   }
-
-  //   // hiện thông báo nhỏ rồi đóng modal
-  //   showMiniAlert('Đã lưu thông tin khách hàng');
-  //   const modal = bootstrap.Modal.getInstance(document.getElementById('customerInfoModal'));
-  //   if (modal) modal.hide();
-  // });
-
-  // function showMiniAlert(msg) {
-  //   const alert = document.createElement('div');
-  //   alert.className = 'statusBox';
-  //   alert.textContent = msg;
-  //   document.body.appendChild(alert);
-  //   setTimeout(() => alert.remove(), 1000);
-  // }
-
-  function copyToClipboard(text) {
-    // ưu tiên API mới
-    if (navigator.clipboard && window.isSecureContext) {
-        return navigator.clipboard.writeText(text);
-    }
-
-    // fallback cho iOS
-    return new Promise((resolve, reject) => {
-        const input = document.createElement('input');
-        input.value = text;
-        input.setAttribute('readonly', '');
-        input.style.position = 'absolute';
-        input.style.left = '-9999px';
-        document.body.appendChild(input);
-
-        input.select();
-        input.setSelectionRange(0, text.length); // iOS fix
-
-        try {
-            const success = document.execCommand('copy');
-            document.body.removeChild(input);
-            success ? resolve() : reject();
-        } catch (err) {
-            document.body.removeChild(input);
-            reject(err);
-        }
-    });
-}
-
-// function showStatus(text, duration = 2000, redirect = null, type = 'success') {
-//   const box = document.getElementById('status-box');
-//   if (!box) return;
-
-//   box.textContent = text;
-//   box.className = '';
-//   box.classList.add(type === 'error' ? 'status-error' : 'status-success');
-//   box.style.display = 'block';
-
-//   setTimeout(() => {
-//     box.style.display = 'none';
-//     if (redirect) {
-//       window.location.href = redirect;
-//     }
-//   }, duration);
-// }
 
 function showStatus(message, type = 'success', duration = 2000, redirectUrl = null) {
   const box = document.getElementById('modalStatusBox');
@@ -997,33 +894,6 @@ function showStatus(message, type = 'success', duration = 2000, redirectUrl = nu
     }
   }, duration);
 }
-
-
-
-
-// function showStatus(message, duration = 2000, redirectUrl = null) {
-    
-//     const box = document.getElementById('status-box');
-//     console.log('111xxx');
-//     if (!box) return;
-//     console.log('222xxx');
-
-//     box.textContent = message;
-//     box.classList.remove('hidden');
-//     box.classList.add('show');
-
-//     setTimeout(() => {
-//         box.classList.remove('show');
-//         setTimeout(() => {
-//             box.classList.add('hidden');
-//             if (redirectUrl) {
-//                 window.location.href = redirectUrl;
-//             }
-//         }, 300);
-//     }, duration);
-// }
-
-
 
 
   // Khi mở giỏ hàng, hiển thị thông tin khách hàng trong phần tóm tắt
