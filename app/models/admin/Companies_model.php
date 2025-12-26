@@ -77,6 +77,15 @@ class Companies_model extends CI_Model
         return FALSE;
     }
 
+    public function getCompanyByIDAndPhone($id, $phone)
+    {
+        $q = $this->db->get_where('companies', array('id' => $id, 'phone' => $phone), 1);
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }
+        return FALSE;
+    }
+
     public function getCompanyByEmail($email)
     {
         $q = $this->db->get_where('companies', array('email' => $email), 1);
