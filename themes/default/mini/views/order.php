@@ -647,30 +647,30 @@ $(document).on('click', '.suggest-item', function () {
 
 
 
-  const saved = JSON.parse(localStorage.getItem('customer_info') || '{}');
+  // const saved = JSON.parse(localStorage.getItem('customer_info') || '{}');
 
-  saved.customer_id   = $(this).data('id');      // 👈 QUAN TRỌNG
-  saved.customer_name = $(this).data('name');
-  saved.customer_phone = $(this).data('phone');
-  saved.customer_address = $(this).data('address');
+  // saved.customer_id   = $(this).data('id');      // 👈 QUAN TRỌNG
+  // saved.customer_name = $(this).data('name');
+  // saved.customer_phone = $(this).data('phone');
+  // saved.customer_address = $(this).data('address');
 
-  localStorage.setItem('customer_info', JSON.stringify(saved));
-
-
+  // localStorage.setItem('customer_info', JSON.stringify(saved));
 
 
-    // let name = $(this).data('name');
-    // let phone = $(this).data('phone');
-    // let address = $(this).data('address');
-    // let customer_id = $(this).data('id');
+
+
+    let name = $(this).data('name');
+    let phone = $(this).data('phone');
+    let address = $(this).data('address');
+    let customer_id = $(this).data('id');
 
     $('#customer_phone').val(phone);
     $('#customer_name').val(name);
     $('#customer_address').val(address);
 
-    // let info = JSON.parse(localStorage.getItem('customer_info') || '{}');
-    // info.customer_id = customer_id;
-    // localStorage.setItem('customer_info', JSON.stringify(info));
+    let info = JSON.parse(localStorage.getItem('customer_info') || '{}');
+    info.customer_id = customer_id;
+    localStorage.setItem('customer_info', JSON.stringify(info));
 
     $('#phone_suggestions').hide();
 });
