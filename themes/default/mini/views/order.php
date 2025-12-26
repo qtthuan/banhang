@@ -280,7 +280,7 @@
               id="cartCount" style="font-size: 12px;">0</span>
       </button>
 
-      <?php //if (!empty($group_items)): ?>
+      <?php if (!empty($group)): ?>
       <div class="alert alert-info">
           <strong>Đơn nhóm: <?= $group->code ?></strong><br>
           <?php foreach ($group_items as $item): ?>
@@ -290,7 +290,7 @@
               </div>
           <?php endforeach; ?>
       </div>
-      <?php //endif; ?>
+      <?php endif; ?>
 
     </div>
   </div>
@@ -616,7 +616,6 @@
           $('#phone_suggestions').hide();
           return;
       }
-      //console.log('111: ' + base_url);
 
       $.ajax({
         url: base_url + "order/findCustomer",
@@ -624,7 +623,6 @@
         dataType: "json",
         data: { term: phone },
         success: function (res) {
-          //console.log('222: ' + base_url);
 
             let list = res.results || [];
 
@@ -654,24 +652,9 @@
 
   });
 
-  
-
 
 
 $(document).on('click', '.suggest-item', function () {
-
-
-
-  // const saved = JSON.parse(localStorage.getItem('customer_info') || '{}');
-
-  // saved.customer_id   = $(this).data('id');      // 👈 QUAN TRỌNG
-  // saved.customer_name = $(this).data('name');
-  // saved.customer_phone = $(this).data('phone');
-  // saved.customer_address = $(this).data('address');
-
-  // localStorage.setItem('customer_info', JSON.stringify(saved));
-
-
 
 
     let name = $(this).data('name');
@@ -690,35 +673,6 @@ $(document).on('click', '.suggest-item', function () {
 
     $('#phone_suggestions').hide();
 });
-
-
-
-  //   $('#customer_phone').on('keyup', function () {
-  //     let phone = $(this).val().trim();
-
-  //     if (phone.length < 4) return; // gõ ít quá thì không tìm
-  //     console.log('1111: ' + phone);
-
-  //     $.ajax({
-  //         url: admin_url + "customers/findCustomer",
-  //         type: "GET",
-  //         dataType: "json",
-  //         data: { term: phone },    // POS đang dùng 'term'
-  //         success: function (res) {
-  //           console.log('222: ' + JSON.stringify(res));
-  //             if (res.length > 0) {
-  //                 let cus = res[0];  // lấy khách đầu tiên khớp nhất
-
-  //                 // Gán thông tin xuống form
-  //                 $('#customer_name').val(cus.name);
-  //                 $('#customer_address').val(cus.address);
-
-  //                 // Nếu bạn có lưu customer_id thì cho vào hidden
-  //                 $('#customer_id').val(cus.id);
-  //             }
-  //         }
-  //     });
-  // });
 
      
     // === Nút Reset form Thông tin đơn hàng ===
