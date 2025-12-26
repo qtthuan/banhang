@@ -264,13 +264,13 @@ function updateProductPrices() {
     const productId = card.getAttribute('data-product-id');
     const basePriceEl = card.querySelector('.product-price');
     let basePrice = parseFloat(card.getAttribute('data-base-price')) || 0;
-    console.log(info);
-    console.log(`Updating price for product ${productId}`, {isShopeeOrGrab, priceGroupId});
+    //console.log(info);
+    //console.log(`Updating price for product ${productId}`, {isShopeeOrGrab, priceGroupId});
 
 
 
     if (isShopeeOrGrab && priceGroupId) {
-      console.log('grab/shopee');
+      //console.log('grab/shopee');
       fetch(`${admin_url}/pos/get_price_group/${priceGroupId}/${productId}`)
         .then(res => res.json())
         .then(p => {

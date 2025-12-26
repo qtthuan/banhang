@@ -592,6 +592,21 @@
 <script>
   (function(){
 
+    $('#customer_phone').on('blur', function () {
+        let phoneNow = this.value.trim();
+        let info = JSON.parse(localStorage.getItem('customer_info') || '{}');
+
+        if (info.customer_id && info.customer_phone) {
+            if (phoneNow !== info.customer_phone) {
+                // ❌ Số điện thoại đã bị sửa
+                info.customer_id = 0;
+                info.customer_phone = phoneNow;
+
+                localStorage.setItem('customer_info', JSON.stringify(info));
+                console.log('Reset customer_id vì phone thay đổi');
+            }
+        }
+    });
 
 
     $('#customer_phone').on('keyup', function () {
@@ -670,9 +685,7 @@ $(document).on('click', '.suggest-item', function () {
 
     let info = JSON.parse(localStorage.getItem('customer_info') || '{}');
     info.customer_id = customer_id;
-    info.customer_name = name;
     info.customer_phone = phone;
-    info.customer_address = address;
     localStorage.setItem('customer_info', JSON.stringify(info));
 
     $('#phone_suggestions').hide();
@@ -810,9 +823,8 @@ $(document).on('click', '.suggest-item', function () {
     console.log(JSON.stringify(saved));
     const updated = {
       ...saved,
-      //customer_name: document.getElementById('customer_name').value || '',
-      //customer_phone: document.getElementById('customer_phone').value || '',
-      //address: document.getElementById('customer_address').value || '',
+      customer_name: document.getElementById('customer_name').value || '',
+      customer_address: document.getElementById('customer_address').value || '',
       order_note: document.getElementById('order_note').value || ''
       
     };
@@ -864,11 +876,11 @@ $(document).on('click', '.suggest-item', function () {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: new URLSearchParams({
-            customer_name: saved.customer_name,
+            customer_name: updated.customer_name,
             customer_phone: saved.customer_phone,
-            customer_address: saved.address,
+            customer_address: updated.customer_address,
             customer_id: saved.customer_id,
-            note: updated.note,
+            note: updated.order_note,
             [csrfName]: csrfHash       // 🚀 Gửi CSRF token
         })
     })
