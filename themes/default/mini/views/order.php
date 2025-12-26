@@ -808,14 +808,14 @@ $(document).on('click', '.suggest-item', function () {
 
     const saved = JSON.parse(localStorage.getItem('customer_info') || '{}');
     console.log(JSON.stringify(saved));
-    // const updated = {
-    //   ...saved,
-    //   //customer_name: document.getElementById('customer_name').value || '',
-    //   //customer_phone: document.getElementById('customer_phone').value || '',
-    //   //address: document.getElementById('customer_address').value || '',
-    //   order_note: document.getElementById('order_note').value || ''
+    const updated = {
+      ...saved,
+      //customer_name: document.getElementById('customer_name').value || '',
+      //customer_phone: document.getElementById('customer_phone').value || '',
+      //address: document.getElementById('customer_address').value || '',
+      order_note: document.getElementById('order_note').value || ''
       
-    // };
+    };
 
     const phoneInput = document.getElementById('customer_phone');
     const phone = phoneInput.value.trim();
@@ -868,7 +868,7 @@ $(document).on('click', '.suggest-item', function () {
             customer_phone: saved.customer_phone,
             customer_address: saved.address,
             customer_id: saved.customer_id,
-            note: document.getElementById('order_note').value || '',
+            note: updated.note,
             [csrfName]: csrfHash       // 🚀 Gửi CSRF token
         })
     })

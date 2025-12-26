@@ -60,30 +60,30 @@ class Order extends MY_Controller {
 
         // Nếu KHÔNG có customer_id → tạo khách mới
         if (!$this->companies_model->getCompanyByIDAndPhone($customer_id, $phone)) {
-            $data = array(
-                'name' => $name,
-                'company' => '-',
-                'group_id' => '3',
-                'group_name' => 'customer',
-                'customer_group_id' => 3,
-                'customer_group_name' => 'KHÁCH HÀNG THÂN THIẾT',
-                'customer_no' => '',
-                'fb_link' => '',
-                'address' => $address,
-                'phone' => $phone,
-                'created_date' => date('Y-m-d H:i:s'),
-            );
-            $customer_id = $this->companies_model->addCompany($data);
+            // $data = array(
+            //     'name' => $name,
+            //     'company' => '-',
+            //     'group_id' => '3',
+            //     'group_name' => 'customer',
+            //     'customer_group_id' => 3,
+            //     'customer_group_name' => 'KHÁCH HÀNG THÂN THIẾT',
+            //     'customer_no' => '',
+            //     'fb_link' => '',
+            //     'address' => $address,
+            //     'phone' => $phone,
+            //     'created_date' => date('Y-m-d H:i:s'),
+            // );
+            // $customer_id = $this->companies_model->addCompany($data);
            
             //$customer_id = $this->db->insert_id();
         }
 
         $group = $this->group_model->create_group([
-        'customer_name' => $name,
-        'customer_id' => $customer_id,
-        'customer_phone' => $phone,
-        'customer_address' => $address,
-        'note' => $note
+            'customer_name' => $name,
+            'customer_id' => $customer_id,
+            'customer_phone' => $phone,
+            'customer_address' => $address,
+            'note' => $note
         ]);
         if ($group) {
         $this->sma->send_json(['success'=>1, 'code'=>$group->code, 'group_order_id'=>$group->id, 'link'=>site_url('order/'.$group->code)]);
