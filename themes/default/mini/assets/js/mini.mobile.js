@@ -400,7 +400,7 @@ function updateCustomerModalTitle() {
   const link = location.origin + '/order/' + info.group_code;
 
   document.getElementById('customerModalTitle').innerHTML = `
-    ⭐ Đơn Nhóm: <b>${info.group_code}</b>
+    ⭐ Đơn Nhóm
     <button 
       type="button"
       class="btn btn-sm btn-primary ms-2"

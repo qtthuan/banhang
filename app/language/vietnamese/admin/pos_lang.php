@@ -354,5 +354,6 @@ $lang['mini_size_l']                    = "LY LỚN";
 $lang['mini_add_comment']               = "Thêm ghi chú";
 $lang['bank_info_vcb']                  = "<strong>STK: 0111000285533</strong> <br /><strong>CTK: LƯ NGUYỆT BÌNH</strong> <br /><strong>NH: VIETCOMBANK CẦN THƠ</strong>";
 $lang['bank_info_vietin']               = "<strong>STK: 663614169999</strong> <br /><strong>CTK: LƯ NGUYỆT BÌNH</strong> <br /><strong>NH: VIETINBANK CẦN THƠ</strong>";
+$lang['bank_info_mb']               = "<strong>STK: 0903684662</strong> <br /><strong>CTK: LƯ NGUYỆT BÌNH</strong> <br /><strong>NH: MBBANK CẦN THƠ</strong>";
 $lang['bank_info_bidv']                 = "<strong>STK: 7483397968</strong> <br /><strong>CTK: LƯ NGUYỆT BÌNH</strong> <br /><strong>NH: BIDV CẦN THƠ</strong>";
 $lang['bank_info_tech']                  = "<strong>MS00P00000000605480</strong> <br /><strong>CTK: LƯ NGUYỆT BÌNH</strong> <br /><strong>NH: TECHCOMBANK CẦN THƠ</strong>";

@@ -250,8 +250,10 @@
 
     if (typeof group_code !== 'undefined') {
       let info = JSON.parse(localStorage.getItem('customer_info') || '{}');
+      
       info.group_code = group_code;
       localStorage.setItem('customer_info', JSON.stringify(info));
+      console.log('xxxxx: ' + JSON.stringify(info));
     }
 
   </script>
@@ -282,7 +284,7 @@
 
       <?php if (!empty($group)): ?>
       <div class="alert alert-info">
-          <strong>Đơn nhóm: <?= $group->code ?></strong><br>
+          <strong>Đơn nhóm</strong><br>
           <?php foreach ($group_items as $item): ?>
               <div>
                   <b><?= $item->customer_name ?>:</b>
@@ -748,9 +750,12 @@ $(document).on('click', '.suggest-item', function () {
   // Khi mở modal, load lại thông tin đã lưu
   document.getElementById('orderInfoModal').addEventListener('shown.bs.modal', function() {
     // load lại thông tin từ localStorage
+    
     const savedInfo = JSON.parse(localStorage.getItem('customer_info') || '{}');
+    console.log(JSON.stringify(savedInfo));
     if (savedInfo.customer_name) document.getElementById('customer_name').value = savedInfo.customer_name;
     if (savedInfo.customer_phone) document.getElementById('customer_phone').value = savedInfo.customer_phone;
+     if (savedInfo.customer_address) document.getElementById('customer_address').value = savedInfo.customer_address;
     if (savedInfo.order_note) document.getElementById('order_note').value = savedInfo.order_note;
 
     // load lại khách hàng đã chọn
