@@ -654,7 +654,7 @@
             </div>
             <div style="clear:both;"></div>
             <div style="font-size: 12px; text-align: center;margin-right: 25px">
-                <img src="https://img.vietqr.io/image/mb-0903684662-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Lu%20Nguyet%20Binh" style="width: 130px">
+                <img src="https://img.vietqr.io/image/mb-VQRQAGEUL2470-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Lu%20Nguyet%20Binh" style="width: 130px">
                 <br /><?=lang('bank_info_mb')?>
             <?php //if ($inv->warehouse_id == 3) { ?>
                 <!-- <img src="https://img.vietqr.io/image/vietcombank-NP82501394269214VCB-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Lu%20Nguyet%20Binh" style="width: 130px"> -->
