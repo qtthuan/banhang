@@ -167,6 +167,7 @@ $lang['save_image']                         = "Lưu ảnh";
 $lang['edit_adjustment']                    = "Cập nhật điều chỉnh";
 $lang['delete_adjustment']                  = "Xóa điều chỉnh";
 $lang['unit_code']                          = "Mã đơn vị";
+$lang['unit_name']                          = "Đơn vị";
 $lang['price_addition']                     = "Giá cộng vào";
 $lang['variant_promo_price']                = "Giá KM";
 $lang['default_sale_unit']                  = "Đơn vị bán ra";

@@ -2326,7 +2326,7 @@ class Products extends MY_Controller
                     $this->excel->getActiveSheet()->SetCellValue('C1', lang('barcode_symbology'));
                     $this->excel->getActiveSheet()->SetCellValue('D1', lang('brand'));
                     $this->excel->getActiveSheet()->SetCellValue('E1', lang('category_code'));
-                    $this->excel->getActiveSheet()->SetCellValue('F1', lang('unit_code'));
+                    $this->excel->getActiveSheet()->SetCellValue('F1', lang('unit_name'));
                     $this->excel->getActiveSheet()->SetCellValue('G1', lang('sale').' '.lang('unit_code'));
                     $this->excel->getActiveSheet()->SetCellValue('H1', lang('purchase').' '.lang('unit_code'));
                     $this->excel->getActiveSheet()->SetCellValue('I1', lang('cost'));
