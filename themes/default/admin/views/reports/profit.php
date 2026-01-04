@@ -154,7 +154,7 @@
                         <h4>
                         <span class="label label-danger" style="margin-right: 0 10px 10px 0; font-size: 19px">
                             <strong>
-                                <?= $this->sma->formatMoney(($sale_by_day->grand_total - $sale_by_day->shipping) - $costing->cost - $costing->costing_on_app - $bn_costing_amount - $expense); ?>
+                                <?= $this->sma->formatMoney(($sale_by_day->grand_total - $sale_by_day->shipping) - $costing->cost - $costing->costing_on_app - $bn_costing_amount); ?>
                             </strong></span>
                         </h4>
                     </td>
