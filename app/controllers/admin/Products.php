@@ -2353,13 +2353,13 @@ class Products extends MY_Controller
                         if($units = $this->site->getUnitsByBUID($product->unit)) {
                             foreach($units as $u) {
                                 if ($u->id == $product->unit) {
-                                    $base_unit = $u->code;
+                                    $base_unit = $u->name;
                                 }
                                 if ($u->id == $product->sale_unit) {
-                                    $sale_unit = $u->code;
+                                    $sale_unit = $u->name;
                                 }
                                 if ($u->id == $product->purchase_unit) {
-                                    $purchase_unit = $u->code;
+                                    $purchase_unit = $u->name;
                                 }
                             }
                         }
