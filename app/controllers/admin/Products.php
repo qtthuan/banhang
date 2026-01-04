@@ -2344,8 +2344,10 @@ class Products extends MY_Controller
                     $this->excel->getActiveSheet()->SetCellValue('U1', lang('pcf5'));
                     $this->excel->getActiveSheet()->SetCellValue('V1', lang('pcf6'));
                     $this->excel->getActiveSheet()->SetCellValue('W1', lang('quantity'));
+                    $this->excel->getActiveSheet()->SetCellValue('X1', lang('quantity'));
 
                     $row = 2;
+                    $stt = 1;
                     foreach ($_POST['val'] as $id) {
                         $product = $this->products_model->getProductDetail($id);
                         $brand = $this->site->getBrandByID($product->brand);
@@ -2405,6 +2407,8 @@ class Products extends MY_Controller
                         $this->excel->getActiveSheet()->SetCellValue('U' . $row, $product->cf5);
                         $this->excel->getActiveSheet()->SetCellValue('V' . $row, $product->cf6);
                         $this->excel->getActiveSheet()->SetCellValue('W' . $row, $quantity);
+                        $this->excel->getActiveSheet()->SetCellValue('X' . $row, $stt);
+                        $stt++;
                         $row++;
                     }
 
