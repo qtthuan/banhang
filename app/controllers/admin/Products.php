@@ -1,5 +1,5 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
-
+use PHPExcel_Cell_DataType;
 class Products extends MY_Controller
 {
 
@@ -2426,11 +2426,13 @@ class Products extends MY_Controller
 
                 } elseif ($this->input->post('form_action') == 'export_excel_tax') {
 
+                    
+
                     $this->load->library('excel');
                     $this->excel->setActiveSheetIndex(0);
                     $sheet = $this->excel->getActiveSheet();
                     $sheet->getDefaultStyle()->getFont()->setName('Times New Roman');
-
+                    
                     // Dòng 1
                     //$sheet->mergeCells('A1:D1');
                     $sheet->setCellValue('A1', 'TÊN HỘ KINH DOANH: HKD BA-NI MINI');
@@ -2587,6 +2589,11 @@ class Products extends MY_Controller
                                 $quantity = 0;
                             }
                         }
+                        $sheet->setCellValueExplicit('B' . $row,
+                            $product->code,
+                            PHPExcel_Cell_DataType::TYPE_STRING
+                        );
+
                         $this->excel->getActiveSheet()->SetCellValue('A' . $row, $stt);
                         $this->excel->getActiveSheet()->SetCellValue('B' . $row, $product->code);
                         $this->excel->getActiveSheet()->SetCellValue('C' . $row, $product->name);
@@ -2604,6 +2611,8 @@ class Products extends MY_Controller
 
                         $sheet->getStyle('F11:F' . ($row))->getNumberFormat()->setFormatCode('#,##0');
                         $sheet->getStyle('G11:G' . ($row))->getNumberFormat()->setFormatCode('#,##0');
+
+                        
                         
                         $stt++;
                         $row++;
