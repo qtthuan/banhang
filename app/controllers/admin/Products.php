@@ -2589,13 +2589,14 @@ class Products extends MY_Controller
                                 $quantity = 0;
                             }
                         }
+                        
+
+                        $this->excel->getActiveSheet()->SetCellValue('A' . $row, $stt);
+                        //$this->excel->getActiveSheet()->SetCellValue('B' . $row, $product->code);
                         $sheet->setCellValueExplicit('B' . $row,
                             $product->code,
                             PHPExcel_Cell_DataType::TYPE_STRING
                         );
-
-                        $this->excel->getActiveSheet()->SetCellValue('A' . $row, $stt);
-                        $this->excel->getActiveSheet()->SetCellValue('B' . $row, $product->code);
                         $this->excel->getActiveSheet()->SetCellValue('C' . $row, $product->name);
                         $this->excel->getActiveSheet()->SetCellValue('D' . $row, $base_unit);      
                         $this->excel->getActiveSheet()->SetCellValue('E' . $row, $quantity);
