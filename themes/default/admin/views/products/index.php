@@ -112,6 +112,11 @@
                                 <i class="fa fa-file-excel-o"></i> <?= lang('export_to_excel') ?>
                             </a>
                         </li>
+                        <li>
+                            <a href="#" id="excel" data-action="export_excel_tax">
+                                <i class="fa fa-file-excel-o"></i> <?= lang('export_to_excel_tax') ?>
+                            </a>
+                        </li>
                         <li class="divider"></li>
                         <li>
                             <a href="#" class="bpo" title="<b><?= $this->lang->line("delete_products") ?></b>"

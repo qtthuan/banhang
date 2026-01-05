@@ -2320,9 +2320,9 @@ class Products extends MY_Controller
 
                     $this->load->library('excel');
                     $this->excel->setActiveSheetIndex(0);
-                    $this->excel->getActiveSheet()->setTitle('Products');
-                    $this->excel->getActiveSheet()->SetCellValue('A1', lang('name'));
-                    $this->excel->getActiveSheet()->SetCellValue('B1', lang('code'));
+                    $this->excel->getActiveSheet()->setTitle(lang('excel_product_export_title'));
+                    $this->excel->getActiveSheet()->SetCellValue('A1', lang('code'));
+                    $this->excel->getActiveSheet()->SetCellValue('B1', lang('name'));
                     $this->excel->getActiveSheet()->SetCellValue('C1', lang('barcode_symbology'));
                     $this->excel->getActiveSheet()->SetCellValue('D1', lang('brand'));
                     $this->excel->getActiveSheet()->SetCellValue('E1', lang('category_code'));
@@ -2380,8 +2380,8 @@ class Products extends MY_Controller
                                 $quantity = 0;
                             }
                         }
-                        $this->excel->getActiveSheet()->SetCellValue('A' . $row, $product->name);
-                        $this->excel->getActiveSheet()->SetCellValue('B' . $row, $product->code);
+                        $this->excel->getActiveSheet()->SetCellValue('A' . $row, $product->code);
+                        $this->excel->getActiveSheet()->SetCellValue('B' . $row, $product->name);
                         $this->excel->getActiveSheet()->SetCellValue('C' . $row, $product->barcode_symbology);
                         $this->excel->getActiveSheet()->SetCellValue('D' . $row, ($brand ? $brand->name : ''));
                         $this->excel->getActiveSheet()->SetCellValue('E' . $row, $product->category_code);
@@ -2421,6 +2421,221 @@ class Products extends MY_Controller
                     $this->excel->getActiveSheet()->getColumnDimension('P')->setWidth(30);
                     $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
                     $filename = 'products_' . date('Y_m_d_H_i_s');
+                    $this->load->helper('excel');
+                    return create_excel($this->excel, $filename);
+
+                } elseif ($this->input->post('form_action') == 'export_excel_tax') {
+
+                    $this->load->library('excel');
+                    $this->excel->setActiveSheetIndex(0);
+                    $sheet = $this->excel->getActiveSheet();
+                    $sheet->getDefaultStyle()->getFont()->setName('Times New Roman');
+
+                    // Dòng 1
+                    //$sheet->mergeCells('A1:D1');
+                    $sheet->setCellValue('A1', 'TÊN HỘ KINH DOANH: HKD BA-NI MINI');
+
+                    $sheet->mergeCells('D1:H1');
+                    $sheet->setCellValue('D1', 'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM');
+
+                    // Dòng 2
+                    //$sheet->mergeCells('A2:D2');
+                    $sheet->setCellValue('A2', 'Mã số thuế: 092184008757');
+
+                    $sheet->mergeCells('D2:H2');
+                    $sheet->setCellValue('D2', 'Độc lập - Tự do - Hạnh phúc');
+
+                    // Dòng 3
+                    //$sheet->mergeCells('A3:D3');
+                    $sheet->setCellValue('A3', 'Địa chỉ: 27/12 Trần Bình Trọng, P. Ninh Kiều, TP. Cần Thơ');
+
+                    $sheet->mergeCells('A5:H5');
+                    $sheet->setCellValue('A5', 'BIÊN BẢN KIỂM KÊ HÀNG TỒN KHO');
+
+                    $sheet->mergeCells('A6:H6');
+                    $sheet->setCellValue('A6', '(Sử dụng cho Hộ kinh doanh áp dụng phương pháp kê khai thuế)');
+
+
+                    $now = time();
+
+                    $time_text = date('H', $now) . ' giờ ' .
+                                date('i', $now) . ' phút ngày ' .
+                                date('d', $now) . ' tháng ' .
+                                date('m', $now) . ' năm ' .
+                                date('Y', $now);
+
+                    //$this->excel->getActiveSheet()->setCellValue('C6', $time_text);
+
+
+                    $sheet->mergeCells('A7:H7');
+                    $sheet->setCellValue(
+                        'A7',
+                        '- Thời điểm kiểm kê: ' . $time_text
+                    );
+
+                    $sheet->mergeCells('B8:D8');
+                    $sheet->setCellValue('B8', 'Người lập biên bản: Lư Nguyệt Bình');
+
+                    $sheet->mergeCells('E8:G8');
+                    $sheet->setCellValue('E8', 'Chức danh: Chủ hộ KD');
+
+                    $sheet->mergeCells('B9:D9');
+                    $sheet->setCellValue('B9', 'Người kiểm kê: Quách Tiêu Thuận');
+
+                    $sheet->mergeCells('E9:G9');
+                    $sheet->setCellValue('E9', 'Chức danh:');
+                    
+                    $sheet->mergeCells('B10:D10');
+                    $sheet->setCellValue('B10', 'Đã kiểm kê kho có các mặt hàng dưới đây:');
+
+                    $sheet->getStyle('A1:A3')->getFont()->setBold(true)->setSize(10);
+
+                    $sheet->getStyle('A5:H5')->getFont()->setBold(true)->setSize(16);
+                    $sheet->getStyle('A6')->getFont()->setItalic(true);
+
+                    $sheet->getStyle('A5:H7')->getAlignment()
+                        ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+                    $sheet->getStyle('D1:H2')->getAlignment()
+                        ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+                    $sheet->getStyle('D11')->getAlignment()
+                        ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);    
+                    $sheet->getStyle('D11')->getAlignment()->setWrapText(true);  
+
+                    $sheet->getStyle('E11')->getAlignment()
+                        ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);    
+                    $sheet->getStyle('E11')->getAlignment()->setWrapText(true);  
+
+                    $sheet->getStyle('A1:H3')->getFont()->setBold(true);
+                    //$sheet->getStyle('D2:H2')->getFont()->setBold(true);
+
+
+                    $sheet->getColumnDimension('A')->setWidth(4);   // STT
+                    $sheet->getColumnDimension('B')->setWidth(14);  // Mã hàng
+                    $sheet->getColumnDimension('C')->setWidth(25);  // Tên hàng hóa / vật tư
+                    $sheet->getColumnDimension('D')->setWidth(7);  // Đơn vị tính
+                    $sheet->getColumnDimension('E')->setWidth(8);  // Số lượng tồn
+                    $sheet->getColumnDimension('F')->setWidth(13);  // Đơn giá
+                    $sheet->getColumnDimension('G')->setWidth(15);  // Thành tiền
+                    $sheet->getColumnDimension('H')->setWidth(14);  // Ghi chú
+
+                    $sheet->getStyle('A11:H11')->getAlignment()
+                        ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                        $sheet->getStyle('A11:H11')->getFont()->setBold(true)->setSize(10);
+
+
+                        
+
+
+
+
+                    $this->excel->getActiveSheet()->setTitle(lang('excel_product_export_tax'));
+                    $this->excel->getActiveSheet()->SetCellValue('A11', lang('stt'));
+                    $this->excel->getActiveSheet()->SetCellValue('B11', lang('code_for_tax'));
+                    $this->excel->getActiveSheet()->SetCellValue('C11', lang('name_for_tax'));                    
+                    $this->excel->getActiveSheet()->SetCellValue('D11', lang('unit_name_for_tax'));
+                    $this->excel->getActiveSheet()->SetCellValue('E11', lang('quantity_for_tax'));
+                    $this->excel->getActiveSheet()->SetCellValue('F11', lang('cost_vnd'));
+                    $this->excel->getActiveSheet()->SetCellValue('G11', lang('subtotal_vnd'));
+                    $this->excel->getActiveSheet()->SetCellValue('H11', lang('note'));
+                    // $this->excel->getActiveSheet()->SetCellValue('L1', lang('tax_rate'));
+                    // $this->excel->getActiveSheet()->SetCellValue('M1', lang('tax_method'));
+                    // $this->excel->getActiveSheet()->SetCellValue('N1', lang('image'));
+                    // $this->excel->getActiveSheet()->SetCellValue('O1', lang('subcategory_code'));
+                    // $this->excel->getActiveSheet()->SetCellValue('P1', lang('product_variants'));
+                    // $this->excel->getActiveSheet()->SetCellValue('Q1', lang('pcf1'));
+                    // $this->excel->getActiveSheet()->SetCellValue('R1', lang('pcf2'));
+                    // $this->excel->getActiveSheet()->SetCellValue('S1', lang('pcf3'));
+                    // $this->excel->getActiveSheet()->SetCellValue('T1', lang('pcf4'));
+                    // $this->excel->getActiveSheet()->SetCellValue('U1', lang('pcf5'));
+                    // $this->excel->getActiveSheet()->SetCellValue('V1', lang('pcf6'));
+                    // $this->excel->getActiveSheet()->SetCellValue('W1', lang('quantity'));
+                    // $this->excel->getActiveSheet()->SetCellValue('X1', lang('quantity'));
+
+                    $row = 12;
+                    $stt = 1;
+                    foreach ($_POST['val'] as $id) {
+                        $product = $this->products_model->getProductDetail($id);
+                        $brand = $this->site->getBrandByID($product->brand);
+                        $base_unit = $sale_unit = $purchase_unit = '';
+                        if($units = $this->site->getUnitsByBUID($product->unit)) {
+                            foreach($units as $u) {
+                                if ($u->id == $product->unit) {
+                                    $base_unit = $u->name;
+                                }
+                                if ($u->id == $product->sale_unit) {
+                                    $sale_unit = $u->name;
+                                }
+                                if ($u->id == $product->purchase_unit) {
+                                    $purchase_unit = $u->name;
+                                }
+                            }
+                        }
+                        $variants = $this->products_model->getProductOptions($id);
+                        $product_variants = '';
+                        if ($variants) {
+                            foreach ($variants as $variant) {
+                                $product_variants .= trim($variant->name) . '|';
+                            }
+                        }
+                        $quantity = $product->quantity;
+                        if ($wh) {
+                            if($wh_qty = $this->products_model->getProductQuantity($id, $wh)) {
+                                $quantity = $wh_qty['quantity'];
+                            } else {
+                                $quantity = 0;
+                            }
+                        }
+                        $this->excel->getActiveSheet()->SetCellValue('A' . $row, $stt);
+                        $this->excel->getActiveSheet()->SetCellValue('B' . $row, $product->code);
+                        $this->excel->getActiveSheet()->SetCellValue('C' . $row, $product->name);
+                        $this->excel->getActiveSheet()->SetCellValue('D' . $row, $base_unit);      
+                        $this->excel->getActiveSheet()->SetCellValue('E' . $row, $quantity);
+                        $this->excel->getActiveSheet()->SetCellValue('F' . $row, $product->cost);
+                        
+                         $this->excel->getActiveSheet()->SetCellValue('G' . $row, $product->cost*$quantity);
+                        // $this->excel->getActiveSheet()->SetCellValue('H' . '');       
+                        
+                        $sheet->getStyle('A11:A' . ($row))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                        $sheet->getStyle('A11:H' . ($row))->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                        $sheet->getStyle('C11:C' . ($row))->getAlignment()->setWrapText(true);
+                        $sheet->getStyle('D10:D' . ($row))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+                        $sheet->getStyle('F11:F' . ($row))->getNumberFormat()->setFormatCode('#,##0');
+                        $sheet->getStyle('G11:G' . ($row))->getNumberFormat()->setFormatCode('#,##0');
+                        
+                        $stt++;
+                        $row++;
+                    }
+
+                    $startRow = 11;
+                    $endRow   = $row - 1;
+                    $startCol = 'A';
+                    $endCol   = 'H';
+
+                    $sheet->getStyle($startCol.$startRow.':'.$endCol.$endRow)
+                        ->applyFromArray([
+                            'borders' => [
+                                'allborders' => [
+                                    'style' => PHPExcel_Style_Border::BORDER_THIN,
+                                    'color' => ['rgb' => '000000']
+                                ]
+                            ]
+                        ]);
+
+                    $sheet->freezePane('A12');
+
+
+                    // $this->excel->getActiveSheet()->getColumnDimension('A')->setWidth(30);
+                    // $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+                    // $this->excel->getActiveSheet()->getColumnDimension('D')->setWidth(15);
+                    // $this->excel->getActiveSheet()->getColumnDimension('E')->setWidth(20);
+                    // $this->excel->getActiveSheet()->getColumnDimension('N')->setWidth(40);
+                    // $this->excel->getActiveSheet()->getColumnDimension('O')->setWidth(30);
+                    // $this->excel->getActiveSheet()->getColumnDimension('P')->setWidth(30);
+                    $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                    $filename = lang('product_export_file_name') . date('d.m.Y');
                     $this->load->helper('excel');
                     return create_excel($this->excel, $filename);
 
