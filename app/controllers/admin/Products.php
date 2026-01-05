@@ -2514,13 +2514,13 @@ class Products extends MY_Controller
 
 
                     $sheet->getColumnDimension('A')->setWidth(4);   // STT
-                    $sheet->getColumnDimension('B')->setWidth(14);  // Mã hàng
+                    $sheet->getColumnDimension('B')->setWidth(15);  // Mã hàng
                     $sheet->getColumnDimension('C')->setWidth(25);  // Tên hàng hóa / vật tư
-                    $sheet->getColumnDimension('D')->setWidth(7);  // Đơn vị tính
+                    $sheet->getColumnDimension('D')->setWidth(6);  // Đơn vị tính
                     $sheet->getColumnDimension('E')->setWidth(8);  // Số lượng tồn
                     $sheet->getColumnDimension('F')->setWidth(13);  // Đơn giá
-                    $sheet->getColumnDimension('G')->setWidth(15);  // Thành tiền
-                    $sheet->getColumnDimension('H')->setWidth(14);  // Ghi chú
+                    $sheet->getColumnDimension('G')->setWidth(14);  // Thành tiền
+                    $sheet->getColumnDimension('H')->setWidth(12);  // Ghi chú
 
                     $sheet->getStyle('A11:H11')->getAlignment()
                         ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
