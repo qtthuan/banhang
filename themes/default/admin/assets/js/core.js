@@ -1072,9 +1072,22 @@ $(document).ready(function() {
         $('#myModal').modal({remote: site.base_url + 'sales/modal_view/' + $(this).closest('tr').attr('id')});
         $('#myModal').modal('show');
     });
-    $('body').on('click', '.receipt_link td:not(:first-child, :last-child)', function() {
-        $('#myModal').modal({ remote: site.base_url + 'pos/view/' + $(this).parent('.receipt_link').attr('id') + '/1' });
+    // $('body').on('click', '.receipt_link td:not(:first-child, :last-child)', function() {
+    //     $('#myModal').modal({ remote: site.base_url + 'pos/view/' + $(this).parent('.receipt_link').attr('id') + '/1' });
+    // });
+    $('body').on('click', '.receipt_link td:not(:first-child, :last-child)', function (e) {
+
+        // ❌ Nếu click vào khu vực không được mở bill (edit payment, select, input…)
+        if ($(e.target).closest('.no-receipt-click, .edit-paidby, a, button, select').length) {
+            return;
+        }
+
+        $('#myModal').modal({
+            remote: site.base_url + 'pos/view/' +
+            $(this).parent('.receipt_link').attr('id') + '/1'
+        });
     });
+
     $('body').on('click', '.return_link td', function() {
         // window.location.href = site.base_url + 'sales/view_return/' + $(this).parent('.return_link').attr('id');
         $('#myModal').modal({remote: site.base_url + 'sales/view_return/' + $(this).parent('.return_link').attr('id')});

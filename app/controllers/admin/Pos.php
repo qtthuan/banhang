@@ -64,6 +64,25 @@ class Pos extends MY_Controller
         $this->page_construct('pos/sales', $meta, $this->data);
     }
 
+    public function updatePaidBy()
+    {
+        $sale_id = $this->input->post('sale_id');
+        $paid_by = $this->input->post('paid_by');
+
+        if (!$sale_id || !$paid_by) {
+            echo json_encode(['status' => false]);
+            return;
+        }
+
+        // update payment (POS thường chỉ 1 payment)
+        $this->db->where('sale_id', $sale_id)
+                ->limit(1)
+                ->update('payments', ['paid_by' => $paid_by]);
+
+        echo json_encode(['status' => true]);
+    }
+
+
     public function getSales($warehouse_id = NULL)
     {
         $this->sma->checkPermissions('index');
@@ -103,16 +122,31 @@ class Pos extends MY_Controller
         $this->load->library('datatables');
         if ($warehouse_id) {
             $this->datatables
-                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no, customer, delivery_method, (grand_total+COALESCE(rounding, 0)), paid, sale_status, payment_status, companies.email as cemail")
+                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no, customer, delivery_method, p.paid_by, (grand_total+COALESCE(rounding, 0)), companies.email as cemail")
                 ->from('sales')
                 ->join('companies', 'companies.id=sales.customer_id', 'left')
+                ->join('(SELECT sale_id, MAX(paid_by) as paid_by FROM sma_payments 
+                    WHERE sale_id IS NOT NULL 
+                    GROUP BY sale_id) p',
+                    'p.sale_id = sales.id',
+                    'left',
+                    false
+                )
+
                 ->where('warehouse_id', $warehouse_id)
                 ->group_by('sales.id');
         } else {
             $this->datatables
-                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no as reference_no, customer, delivery_method, (grand_total+COALESCE(rounding, 0)), paid, sale_status, payment_status, companies.email as cemail")
+                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no as reference_no, customer, delivery_method, p.paid_by, (grand_total+COALESCE(rounding, 0)), companies.email as cemail")
                 ->from('sales')
-                ->join('companies', 'companies.id=sales.customer_id', 'left')                
+                ->join('companies', 'companies.id=sales.customer_id', 'left')     
+                ->join('(SELECT sale_id, MAX(paid_by) as paid_by FROM sma_payments 
+                    WHERE sale_id IS NOT NULL 
+                    GROUP BY sale_id) p',
+                    'p.sale_id = sales.id',
+                    'left',
+                    false
+                )           
                 ->group_by('sales.id');
         }
         $this->datatables->where('pos', 1);

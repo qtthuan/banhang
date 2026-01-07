@@ -6,6 +6,34 @@
         return (x != null) ? (pb[x] ? pb[x] : x) : x;
     }
 
+    function paidBy(x, row) {
+        let badge = '';
+        let sale_id = row[0];
+
+        if (x === 'cash') {
+            badge = '<span>💵 Tiền mặt</span>';
+        } else if (x === 'CC') {
+            badge = '<span >💳 Chuyển khoản</span>';
+        }
+
+        return `
+            <div class="no-receipt-click">
+                ${badge}
+                <a href="#"
+                class="edit-paidby"
+                data-id="${sale_id}"
+                data-value="${x}"
+                style="margin-left:5px">
+                    <i class="fa fa-pencil"></i>
+                </a>
+            </div>
+        `;
+    }
+
+
+
+
+
     $(document).ready(function () {
         oTable = $('#POSData').dataTable({
             "aaSorting": [[1, "desc"], [2, "desc"]],
@@ -30,25 +58,39 @@
             "aoColumns": [{
                 "bSortable": false,
                 "mRender": checkbox
-            }, {"mRender": fld}, null, null, {"mRender": delivery_method}, {"mRender": currencyFormat}, {"mRender": currencyFormat}, {"mRender": row_status}, {"mRender": pay_status}, {"bSortable": false}],
-            "fnFooterCallback": function (nRow, aaData, iStart, iEnd, aiDisplay) {
-                var gtotal = 0, paid = 0;
-                for (var i = 0; i < aaData.length; i++) {
-                    gtotal += parseFloat(aaData[aiDisplay[i]][5]);
-                    paid += parseFloat(aaData[aiDisplay[i]][6]);
+            }, {"mRender": fld}, null, null, {"mRender": delivery_method}, {
+                "mRender": function (data, type, row) {
+                    return paidBy(data, row);
                 }
+            }, {"mRender": currencyFormat}, {"bSortable": false}],
+            "fnFooterCallback": function (nRow, aaData, iStart, iEnd, aiDisplay) {
+                var gtotal = 0;
+
+                for (var i = 0; i < aiDisplay.length; i++) {
+                    gtotal += parseFloat(aaData[aiDisplay[i]][6]) || 0;
+                }
+
                 var nCells = nRow.getElementsByTagName('th');
-                nCells[5].innerHTML = currencyFormat(parseFloat(gtotal));
-                //nCells[6].innerHTML = currencyFormat(parseFloat(paid));
-                //nCells[7].innerHTML = currencyFormat(parseFloat(balance));
+
+                // Cột tổng tiền (index 6)
+                nCells[6].innerHTML = currencyFormat(gtotal);
             }
         }).fnSetFilteringDelay().dtFilter([
             {column_number: 1, filter_default_label: "[năm-tháng-ngày]", filter_type: "text", data: []},
             {column_number: 2, filter_default_label: "[<?=lang('reference_no');?>]", filter_type: "text", data: []},
             {column_number: 3, filter_default_label: "[<?=lang('customer');?>]", filter_type: "text"},
             {column_number: 4, filter_default_label: "[<?=lang('delivery_method');?>]", filter_type: "text"},
-            {column_number: 8, filter_default_label: "[<?=lang('sale_status');?>]", filter_type: "text", data: []},
-            {column_number: 9, filter_default_label: "[<?=lang('payment_status');?>]", filter_type: "text", data: []},
+            {
+                column_number: 5,
+                filter_type: "select",
+                filter_default_label: "[Thanh toán]",
+                data: [
+                    { value: "", label: "Tất cả" },
+                    { value: "cash", label: "Tiền mặt" },
+                    { value: "cc", label: "Chuyển khoản" }
+                ]
+            }
+
         ], "footer");
 
         $(document).on('click', '.duplicate_pos', function (e) {
@@ -88,6 +130,47 @@
             }
         });
     });
+
+
+    $(document).on('click', '.edit-paidby', function (e) {
+        e.preventDefault();
+
+        let sale_id = $(this).data('id');
+        let current = $(this).data('value');
+
+        let html = `
+            <select id="new_paid_by" class="form-control">
+                <option value="cash" ${current === 'cash' ? 'selected' : ''}>Tiền mặt</option>
+                <option value="CC" ${current === 'CC' ? 'selected' : ''}>Chuyển khoản</option>
+            </select>
+        `;
+
+        bootbox.confirm({
+            title: "Phương thức thanh toán",
+            message: html,
+            callback: function (result) {
+                if (!result) return;
+
+                let newVal = $('#new_paid_by').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "<?= admin_url('pos/updatePaidBy') ?>",
+                    data: {
+                        sale_id: sale_id,
+                        paid_by: newVal,
+                        <?= $this->security->get_csrf_token_name(); ?>:
+                        "<?= $this->security->get_csrf_hash(); ?>"
+                    },
+                    success: function () {
+                        oTable.fnDraw(false);
+                    }
+                });
+            }
+        });
+    });
+
+
 
 </script>
 
@@ -144,10 +227,9 @@
                             <th><?= lang("reference_no"); ?></th>
                             <th><?= lang("customer"); ?></th>
                             <th><?= lang("delivery_method"); ?></th>
+                            <th><?= lang("paid_by"); ?></th> 
                             <th><?= lang("grand_total"); ?></th>
-                            <th><?= lang("paid_col"); ?></th>
-                            <th><?= lang("sale_status"); ?></th>
-                            <th><?= lang("payment_status"); ?></th>
+                                                       
                             <th style="width:80px; text-align:center;"><?= lang("actions"); ?></th>
                         </tr>
                         </thead>
@@ -163,12 +245,10 @@
                             </th>
                             <th></th>
                             <th></th>
+                            <th></th>                            
                             <th></th>
                             <th></th>
-                            <th><?= lang("grand_total"); ?></th>
-                            <th><?= lang("paid"); ?></th>
-                            <th class="defaul-color"></th>
-                            <th class="defaul-color"></th>
+                            <th></th>
                             <th style="width:80px; text-align:center;"><?= lang("actions"); ?></th>
                         </tr>
                         </tfoot>
