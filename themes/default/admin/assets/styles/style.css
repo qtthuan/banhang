@@ -1764,7 +1764,7 @@ legend.scheduler-border {
 #GCData td:nth-child(3), #GCData td:nth-child(4) { text-align: right; }
 #SLData td:nth-child(7), #SLData td:nth-child(8), #SLData tfoot th:nth-child(7), #SLData tfoot th:nth-child(8), #SLData td:nth-child(6), #SLData tfoot th:nth-child(6), #SLData td:nth-child(9), #SLData tfoot th:nth-child(9), #SLData td:nth-child(10), #SLData tfoot th:nth-child(10) { width: 9% !important; }
 #SLData td:last-child, #SLData tfoot th:last-child { width: 8%; }
-#POSData td:nth-child(7), #POSData td:nth-child(8), #POSData tfoot th:nth-child(7), #POSData tfoot th:nth-child(8), #POSData td:nth-child(9), #POSData tfoot th:nth-child(9) { width: 10% !important; text-align: right; }
+#POSData td:nth-child(7), #POSData td:nth-child(8), #POSData tfoot th:nth-child(7), #POSData tfoot th:nth-child(8), #POSData td:nth-child(9), #POSData tfoot th:nth-child(9) { width: 11% !important; text-align: center; }
 #POSData td:nth-child(9), #POSData tfoot th:nth-child(9) { width: 12%; }
 #DOData th:nth-child(7) { width: 38%; }
 #PrRData th { width: 10%; }
