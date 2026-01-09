@@ -135,6 +135,7 @@ class Pos extends MY_Controller
                 )
 
                 ->where('warehouse_id', $warehouse_id)
+                ->where('sales.is_ingredient', 0)
                 ->group_by('sales.id');
         } else {
             $this->datatables
@@ -149,6 +150,7 @@ class Pos extends MY_Controller
                     'left',
                     false
                 )           
+                ->where('sales.is_ingredient', 0)
                 ->group_by('sales.id');
         }
         $this->datatables->where('pos', 1);
