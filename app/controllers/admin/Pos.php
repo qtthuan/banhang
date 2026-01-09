@@ -295,7 +295,7 @@ class Pos extends MY_Controller
                 $promo_original_price_for_suspend = $_POST['promo_original_price_for_suspend'][$r];
                 $is_promo = $_POST['is_promo'][$r];
 
-                if ((int)$_POST['category_id'] == $ingredient_category_id) { // NGUYÊN LIỆU
+                if ((int)$_POST['category_id'][$r] == $ingredient_category_id) { // NGUYÊN LIỆU
                     $is_ingredient++;
                 }
 
@@ -468,8 +468,6 @@ class Pos extends MY_Controller
                           'order_discount_percent_for_return_sale'   => $this->input->post('order_discount_percent_for_return_sale'),
                           'customer_discount_percent' => $customer_details->discount_percent,
             );
-            //$this->sma->print_arrays($data);
-
 
 
             if (!$suspend) {
