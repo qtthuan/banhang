@@ -2257,3 +2257,46 @@ animation: blink 1s steps(2, start) infinite;
     padding: 10px;
   }
 }
+.edit-paidby .switch {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height: 22px;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.edit-paidby .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.edit-paidby .slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #ccc;
+    transition: .3s;
+    border-radius: 22px;
+}
+
+.edit-paidby .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+.edit-paidby input:checked + .slider {
+    background-color: #2196F3;
+}
+
+.edit-paidby input:checked + .slider:before {
+    transform: translateX(20px);
+}

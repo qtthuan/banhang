@@ -6,31 +6,58 @@
         return (x != null) ? (pb[x] ? pb[x] : x) : x;
     }
 
+    // function paidBy(x, row) {
+    //     let badge = '';
+    //     let sale_id = row[0];
+
+    //     if (x === 'cash') {
+    //         badge = '<span>💵 Tiền mặt</span>';
+    //     } else if (x === 'CC') {
+    //         badge = '<span >💳 Chuyển khoản</span>';
+    //     }
+
+    //     return `
+    //         <div class="no-receipt-click">
+    //             ${badge}
+    //             <a href="#"
+    //             class="edit-paidby"
+    //             data-id="${sale_id}"
+    //             data-value="${x}"
+    //             style="margin-left:5px">
+    //                 <i class="fa fa-pencil"></i>
+    //             </a>
+    //         </div>
+    //     `;
+    // }
+
     function paidBy(x, row) {
-        let badge = '';
         let sale_id = row[0];
+        let label = '';
+        let icon = '';
 
         if (x === 'cash') {
-            badge = '<span>💵 Tiền mặt</span>';
+            label = 'Tiền mặt';
+            icon  = '💵';
         } else if (x === 'CC') {
-            badge = '<span >💳 Chuyển khoản</span>';
+            label = 'Chuyển khoản';
+            icon  = '💳';
+        } else {
+            return '';
         }
 
         return `
-            <div class="no-receipt-click">
-                ${badge}
-                <a href="#"
-                class="edit-paidby"
+            <span class="edit-paidby"
                 data-id="${sale_id}"
                 data-value="${x}"
-                style="margin-left:5px">
-                    <i class="fa fa-pencil"></i>
-                </a>
-            </div>
+                title="Thay đổi phương thức thanh toán"
+                style="cursor:pointer">
+                ${icon} ${label}
+            </span>
         `;
     }
 
 
+        
 
 
 
@@ -134,46 +161,142 @@
         });
     });
 
+    $(document).on('change', '.edit-paidby input[type=checkbox]', function (e) {
+        e.stopPropagation();
 
-    $(document).on('click', '.edit-paidby', function (e) {
-        e.preventDefault();
+        let $badge = $(this).closest('.edit-paidby');
+        let sale_id = $badge.data('id');
 
-        let sale_id = $(this).data('id');
-        let current = $(this).data('value');
+        // checked = true → Chuyển khoản
+        let isCC = this.checked;
+        let paid_by = isCC ? 'cc' : 'cash';
 
-        let html = `
-            <select id="new_paid_by" class="form-control">
-                <option value="cash" ${current === 'cash' ? 'selected' : ''}>Tiền mặt</option>
-                <option value="CC" ${current === 'CC' ? 'selected' : ''}>Chuyển khoản</option>
-            </select>
-        `;
+        // đổi text ngay khi gạt
+        $badge.find('.toggle-text').text(
+            isCC ? 'Chuyển khoản' : 'Tiền mặt'
+        );
 
-        bootbox.confirm({
-            title: "Phương thức thanh toán",
-            message: html,
-            callback: function (result) {
-                if (!result) return;
+        $.ajax({
+            type: 'POST',
+            url: '<?= admin_url('pos/updatePaidBy') ?>',
+            data: {
+                sale_id: sale_id,
+                paid_by: paid_by,
+                <?= $this->security->get_csrf_token_name(); ?>:
+                "<?= $this->security->get_csrf_hash(); ?>"
+            },
+            success: function () {
 
-                let newVal = $('#new_paid_by').val();
+                let icon  = isCC ? '💳' : '💵';
+                let label = isCC ? 'Chuyển khoản' : 'Tiền mặt';
 
-                $.ajax({
-                    type: "POST",
-                    url: "<?= admin_url('pos/updatePaidBy') ?>",
-                    data: {
-                        sale_id: sale_id,
-                        paid_by: newVal,
-                        <?= $this->security->get_csrf_token_name(); ?>:
-                        "<?= $this->security->get_csrf_hash(); ?>"
-                    },
-                    success: function () {
-                        oTable.fnDraw(false);
-                    }
-                });
+                $badge.data('value', paid_by);
+
+                // fade quay lại badge
+                setTimeout(() => {
+                    $badge.fadeOut(50, function () {
+                        $badge.html(`${icon} ${label}`).fadeIn(50);
+                    });
+                }, 100);
             }
         });
     });
 
+    // $(document).on('change', '.edit-paidby input[type=checkbox]', function (e) {
+    //     e.preventDefault();
+    //     e.stopPropagation();
 
+    //     let $wrap   = $(this).closest('.edit-paidby');
+    //     let sale_id = $wrap.data('id');
+
+    //     let isCC    = this.checked;
+    //     let paid_by = isCC ? 'CC' : 'cash';
+
+    //     // 👉 đổi text ngay khi gạt
+    //     $wrap.find('.toggle-text').text(
+    //         isCC ? 'Chuyển khoản' : 'Tiền mặt'
+    //     );
+
+    //     // ⏸ giữ toggle đứng yên 800ms
+    //     setTimeout(() => {
+    //         $.ajax({
+    //             type: 'POST',
+    //             url: '<?= admin_url('pos/updatePaidBy') ?>',
+    //             data: {
+    //                 sale_id: sale_id,
+    //                 paid_by: paid_by,
+    //                 <?= $this->security->get_csrf_token_name(); ?>:
+    //                 "<?= $this->security->get_csrf_hash(); ?>"
+    //             },
+    //             success: function () {
+
+    //                 let icon  = isCC ? '💳' : '💵';
+    //                 let label = isCC ? 'Chuyển khoản' : 'Tiền mặt';
+
+    //                 // cập nhật state mới
+    //                 $wrap.data('value', paid_by);
+
+    //                 // fade về badge
+    //                 $wrap.fadeOut(300, function () {
+    //                     $wrap.html(`
+    //                         ${icon} ${label}
+    //                         <i class="fa fa-pencil"></i>
+    //                     `).fadeIn(300);
+    //                 });
+    //             }
+    //         });
+    //     }, 800);
+    // });
+
+
+    // $(document).on('click', '.edit-paidby', function (e) {
+    //     e.preventDefault();
+    //     e.stopPropagation(); // ❗ chặn mở bill
+
+    //     let $el = $(this);
+    //     let current = $el.data('value'); // cash | cc
+    //     let isCC = current === 'cc';
+
+    //     let html = `
+    //         <div class="paidby-toggle">
+    //             <label class="switch">
+    //                 <input type="checkbox" ${isCC ? 'checked' : ''}>
+    //                 <span class="slider"></span>
+    //             </label>
+    //             <span class="toggle-text">
+    //                 ${isCC ? 'Chuyển khoản' : 'Tiền mặt'}
+    //             </span>
+    //         </div>
+    //     `;
+
+    //     $el.html(html);
+    // });
+
+
+
+    $(document).on('click', '.edit-paidby', function (e) {
+        //e.stopPropagation(); // chặn mở bill
+
+        let $el = $(this);
+        let sale_id = $el.data('id');
+        let current = $el.data('value'); // cash | cc
+
+        let isCC = current === 'CC';
+
+        let toggle = `
+            <label class="switch">
+                <input type="checkbox" ${isCC ? 'checked' : ''}>
+                <span class="slider"></span>
+            </label>
+            <span class="toggle-text">
+                ${isCC ? 'Chuyển khoản' : 'Tiền mặt'}
+            </span>
+        `;
+
+        $el.fadeOut(120, function () {
+            $el.html(toggle).fadeIn(120);
+        });
+    });
 
 </script>
 
