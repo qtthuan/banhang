@@ -169,7 +169,7 @@
 
         // checked = true → Chuyển khoản
         let isCC = this.checked;
-        let paid_by = isCC ? 'cc' : 'cash';
+        let paid_by = isCC ? 'CC' : 'cash';
 
         // đổi text ngay khi gạt
         $badge.find('.toggle-text').text(
