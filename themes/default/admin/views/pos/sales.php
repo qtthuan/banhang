@@ -55,14 +55,17 @@
                 nRow.className = "receipt_link";
                 return nRow;
             },
-            "aoColumns": [{
-                "bSortable": false,
-                "mRender": checkbox
-            }, {"mRender": fld}, null, null, {"mRender": delivery_method}, {
-                "mRender": function (data, type, row) {
-                    return paidBy(data, row);
-                }
-            }, {"mRender": currencyFormat}, {"bSortable": false}],
+            "aoColumns": [
+                {"bSortable": false,"mRender": checkbox}, // 0 checkbox
+                {"mRender": fld}, // 1 date
+                null, // 2 Mã
+                null, // 3 Tên KH
+                {"mRender": delivery_method}, // 4 Hình thức nhận 
+                {"mRender": function (data, type, row) { return paidBy(data, row); } }, // 5 Thanh toán bằng
+                {"mRender": currencyFormat}, // 6 Tổng tiền
+                null, // 7 Kho
+                {"bSortable": false} // 8 Tác vụ
+            ],
             "fnFooterCallback": function (nRow, aaData, iStart, iEnd, aiDisplay) {
                 var gtotal = 0;
 
@@ -83,13 +86,13 @@
             {
                 column_number: 5,
                 filter_type: "select",
-                filter_default_label: "[Thanh toán]",
+                filter_default_label: "[Tất cả]",
                 data: [
-                    { value: "", label: "Tất cả" },
                     { value: "cash", label: "Tiền mặt" },
                     { value: "cc", label: "Chuyển khoản" }
                 ]
-            }
+            },
+            {column_number: 7, filter_default_label: "[<?=lang('warehouse');?>]", filter_type: "text"},
 
         ], "footer");
 
@@ -229,7 +232,7 @@
                             <th><?= lang("delivery_method"); ?></th>
                             <th><?= lang("paid_by"); ?></th> 
                             <th><?= lang("grand_total"); ?></th>
-                                                       
+                            <th><?= lang("warehouse"); ?></th>     
                             <th style="width:80px; text-align:center;"><?= lang("actions"); ?></th>
                         </tr>
                         </thead>
@@ -246,6 +249,7 @@
                             <th></th>
                             <th></th>
                             <th></th>                            
+                            <th></th>
                             <th></th>
                             <th></th>
                             <th></th>
