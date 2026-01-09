@@ -191,7 +191,10 @@ class Pos extends MY_Controller
     public function index($sid = NULL)
     {
         
+        
         $this->sma->checkPermissions();
+
+        
 
         if (!$this->pos_settings->default_biller || !$this->pos_settings->default_customer || !$this->pos_settings->default_category) {
             $this->session->set_flashdata('warning', lang('please_update_settings'));
@@ -218,6 +221,10 @@ class Pos extends MY_Controller
         $this->form_validation->set_rules('warehouse', $this->lang->line("warehouse"), 'required');
         $this->form_validation->set_rules('biller', $this->lang->line("biller"), 'required');
         //$this->sma->print_arrays($this->input->post);
+        $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id'); // id Tiệm Nước Mini
+        $ingredient_category_id = (int)$this->config->item('ingredient_category_id'); // Mã nhóm Nguyên Liệu
+
+
         if ($this->form_validation->run() == TRUE) {
             
             $date = date('Y-m-d H:i:s');
@@ -238,7 +245,7 @@ class Pos extends MY_Controller
             } else {
                 $customer = $customer_details->company != '-'  ? $customer_details->company : $customer_details->name;
             }
-            if ($this->Owner && $warehouse_id == 3) { // Neu dang nhap bang tai khoan qtthuan(admin) va ban tiem nuoc mini
+            if ($this->Owner && $warehouse_id == $mini_warehouse_id) { // Neu dang nhap bang tai khoan qtthuan(admin) va ban tiem nuoc mini
                 $biller_id = 7283;
             }
             $biller_details = $this->site->getCompanyByID($biller_id);
@@ -247,7 +254,7 @@ class Pos extends MY_Controller
             $staff_note = $this->sma->clear_tags($this->input->post('staff_note'));
             $reference = $this->site->getReference('pos');
             
-           // $this->sma->print_arrays($_POST);
+           //$this->sma->print_arrays($_POST);
 
             $total = 0;
             $total_extra = 0;
@@ -259,6 +266,7 @@ class Pos extends MY_Controller
             $digital = FALSE;
             $change_points = 0;
             $total_with_no_points = 0;
+            $is_ingredient = 0;
             $delivery_method = $this->input->post('delivery_method');
             $i = isset($_POST['product_code']) ? sizeof($_POST['product_code']) : 0;
             for ($r = 0; $r < $i; $r++) {
@@ -286,6 +294,10 @@ class Pos extends MY_Controller
                 $promo_original_price = $_POST['promo_original_price'][$r];
                 $promo_original_price_for_suspend = $_POST['promo_original_price_for_suspend'][$r];
                 $is_promo = $_POST['is_promo'][$r];
+
+                if ((int)$_POST['category_id'] == $ingredient_category_id) { // NGUYÊN LIỆU
+                    $is_ingredient++;
+                }
 
                 if (isset($item_code) && isset($real_unit_price) && isset($unit_price) && isset($item_quantity)) {
                     $product_details = $item_type != 'manual' ? $this->pos_model->getProductByCode($item_code) : NULL;
@@ -448,6 +460,7 @@ class Pos extends MY_Controller
                           'rounding'          => $rounding,
                           'suspend_note'      => $this->input->post('suspend_note'),
                           'pos'               => 1,
+                          'is_ingredient'     => ($warehouse_id == $mini_warehouse_id && $is_ingredient > 0) ? 1 : 0,
                           'paid'              => $this->input->post('amount-paid') ? $this->input->post('amount-paid') : 0,
                           'created_by'        => $this->session->userdata('user_id'),
                           'hash'              => hash('sha256', microtime() . mt_rand()),

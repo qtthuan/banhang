@@ -1235,7 +1235,7 @@ function loadItems() {
         }
         var category = 0, print_cate = false;
         // var itn = parseInt(Object.keys(sortedItems).length);
-        //console.log(JSON.stringify(sortedItems));
+        console.log(JSON.stringify(sortedItems));
         $.each(sortedItems, function () {
             var item = this;            
             var item_id = site.settings.item_addition == 1 ? item.item_id : item.id;
@@ -1365,6 +1365,7 @@ function loadItems() {
             var newTr = $('<tr id="row_' + row_no + '" class="row_' + item_id + discount_class + '" data-item-id="' + item_id + '"></tr>');
             tr_html = '<td>' +
                         '<input name="product_id[]" type="hidden" class="rid" value="' + product_id + '">' +
+                        '<input name="category_id[]" type="hidden" class="rid" value="' + item.row.category_id + '">' +
                         '<input name="product_type[]" type="hidden" class="rtype" value="' + item_type + '">' +
                         '<input name="product_code[]" type="hidden" class="rcode" value="' + item_code + '">' +
                         '<input name="product_image[]" type="hidden" class="rcode" value="' + item_image + '">' +
