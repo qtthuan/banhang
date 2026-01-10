@@ -481,9 +481,54 @@ class Reports_model extends CI_Model
         return FALSE;
     }
 
+    // public function getCosting($date, $warehouse_id = NULL, $year = NULL, $month = NULL)
+    // {
+    //     $this->db->select('
+    //         SUM( COALESCE( purchase_unit_cost, 0 ) * quantity ) AS cost, 
+    //         SUM( COALESCE( sale_unit_price, 0 ) * quantity ) AS sales, 
+    //         SUM( COALESCE( costing_on_app, 0 ) * quantity ) AS costing_on_app, 
+    //         SUM( COALESCE( purchase_net_unit_cost, 0 ) * quantity ) AS net_cost, 
+    //         SUM( COALESCE( sale_net_unit_price, 0 ) * quantity ) AS net_sales
+    //     ', FALSE);
+    //     if ($date) {
+    //         $this->db->where('costing.date', $date);
+    //     } elseif ($month) {
+    //         $this->load->helper('date');
+    //         $last_day = days_in_month($month, $year);
+    //         $this->db->where('costing.date >=', $year.'-'.$month.'-01 00:00:00');
+    //         $this->db->where('costing.date <=', $year.'-'.$month.'-'.$last_day.' 23:59:59');
+    //     }
+
+    //     $this->db->where('costing.quantity >', 0);
+
+    //     if ($warehouse_id) {
+    //         $this->db->join('sales', 'sales.id=costing.sale_id')
+    //         ->where('sales.warehouse_id', $warehouse_id);
+    //     }
+
+    //     $q = $this->db->get('costing');
+    //     if ($q->num_rows() > 0) {
+    //         return $q->row();
+    //     }
+    //     return false;
+    // }
+
     public function getCosting($date, $warehouse_id = NULL, $year = NULL, $month = NULL)
     {
-        $this->db->select('SUM( COALESCE( purchase_unit_cost, 0 ) * quantity ) AS cost, SUM( COALESCE( sale_unit_price, 0 ) * quantity ) AS sales, SUM( COALESCE( costing_on_app, 0 ) * quantity ) AS costing_on_app, SUM( COALESCE( purchase_net_unit_cost, 0 ) * quantity ) AS net_cost, SUM( COALESCE( sale_net_unit_price, 0 ) * quantity ) AS net_sales', FALSE);
+        $this->db->select('
+            SUM(COALESCE(costing.purchase_unit_cost, 0) * costing.quantity) AS cost,
+            SUM(COALESCE(costing.sale_unit_price, 0) * costing.quantity) AS sales,
+            SUM(COALESCE(costing.costing_on_app, 0) * costing.quantity) AS costing_on_app,
+            SUM(COALESCE(costing.purchase_net_unit_cost, 0) * costing.quantity) AS net_cost,
+            SUM(COALESCE(costing.sale_net_unit_price, 0) * costing.quantity) AS net_sales
+        ', FALSE);
+
+        // JOIN sales để check is_ingredient
+        $this->db->join('sales', 'sales.id = costing.sale_id', 'left');
+
+        // 👉 CHỈ LẤY ĐƠN KHÔNG PHẢI NGUYÊN LIỆU
+        $this->db->where('sales.is_ingredient', 0);
+
         if ($date) {
             $this->db->where('costing.date', $date);
         } elseif ($month) {
@@ -496,16 +541,18 @@ class Reports_model extends CI_Model
         $this->db->where('costing.quantity >', 0);
 
         if ($warehouse_id) {
-            $this->db->join('sales', 'sales.id=costing.sale_id')
-            ->where('sales.warehouse_id', $warehouse_id);
+            $this->db->where('sales.warehouse_id', $warehouse_id);
         }
 
         $q = $this->db->get('costing');
+
         if ($q->num_rows() > 0) {
             return $q->row();
         }
+
         return false;
     }
+
 
     public function getTotalItems($date, $warehouse_id = NULL, $year = NULL, $month = NULL)
     {
