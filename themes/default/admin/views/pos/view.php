@@ -499,7 +499,7 @@
                                 <?php echo ($payment->pos_balance > 0 ? $this->sma->formatMoney($payment->pos_balance) : 0); ?>
                                 </th>
                             </tr>
-                            <?php } elseif (($payment->paid_by == 'CC' || $payment->paid_by == 'ppp' || $payment->paid_by == 'stripe')) { ?>
+                            <?php } elseif (($payment->paid_by == 'cc' || $payment->paid_by == 'ppp' || $payment->paid_by == 'stripe')) { ?>
                                 
                             <tr>
                                 <th colspan="2" style="border-top: none;">&nbsp;</th>
@@ -533,7 +533,7 @@
                         if (($payment->paid_by == 'cash' || $payment->paid_by == 'pts' || $payment->paid_by == 'deposit') && $payment->pos_paid) {
                             //echo '<th colspan="3" style="color: red;">' . lang("total_paying1") . ': <strong>' . $this->sma->formatMoney($payment->pos_paid == 0 ? $payment->amount : $payment->pos_paid) . ($payment->return_id ? ' (' . lang('returned') . ')' : '') . '</strong></td>';
                            // echo '<th colspan="2" class="text-right" style="color: red;">' . lang("change") . ': <strong>' . ($payment->pos_balance > 0 ? $this->sma->formatMoney($payment->pos_balance) : 0) . '</strong></td>';
-                        } elseif (($payment->paid_by == 'CC' || $payment->paid_by == 'ppp' || $payment->paid_by == 'stripe')) {
+                        } elseif (($payment->paid_by == 'cc' || $payment->paid_by == 'ppp' || $payment->paid_by == 'stripe')) {
                             /*echo '<th colspan="2">&nbsp;</th>
                                   <th colspan="2" style="color: red;"> <div style="margin-left: 2px;">' 
                                     . lang($payment->paid_by) . ' 
@@ -578,7 +578,7 @@
                             echo '<td>' . lang("paid_by") . ': ' . lang($payment->paid_by) . '</td>';
                             echo '<td>' . lang("amount") . ': ' . $this->sma->formatMoney($payment->pos_paid == 0 ? $payment->amount : $payment->pos_paid) . ($payment->return_id ? ' (' . lang('returned') . ')' : '') . '</td>';
                             echo '<td>' . lang("change") . ': ' . ($payment->pos_balance > 0 ? $this->sma->formatMoney($payment->pos_balance) : 0) . '</td>';
-                        } elseif (($payment->paid_by == 'CC' || $payment->paid_by == 'ppp' || $payment->paid_by == 'stripe') && $payment->cc_no) {
+                        } elseif (($payment->paid_by == 'cc' || $payment->paid_by == 'ppp' || $payment->paid_by == 'stripe') && $payment->cc_no) {
                             echo '<td>' . lang("paid_by") . ': ' . lang($payment->paid_by) . '</td>';
                             echo '<td>' . lang("amount") . ': ' . $this->sma->formatMoney($payment->pos_paid) . ($payment->return_id ? ' (' . lang('returned') . ')' : '') . '</td>';
                             echo '<td>' . lang("no") . ': ' . 'xxxx xxxx xxxx ' . substr($payment->cc_no, -4) . '</td>';

@@ -1848,8 +1848,8 @@ var lang = {
                 if ($('#poscustomer').val() == '1') { // Neu khach le thi remove hinh thuc thanh toan diem tich luy
                     $("#paid_by_2 option[value='pts']").remove();
                 }
-                if ($('#paid_by_1').val() == 'CC') {
-                    $("#paid_by_2 option[value='CC']").remove();
+                if ($('#paid_by_1').val() == 'cc') {
+                    $("#paid_by_2 option[value='cc']").remove();
                     $("#paid_by_2 option[value='vnpay']").remove();
                 } else if ($('#paid_by_1').val() == 'pos') {
                     $("#paid_by_2 option[value='pts']").remove();
@@ -1859,7 +1859,7 @@ var lang = {
                     $("#paid_by_2 option[value='pts']").remove();
                     $("#paid_by_2 option[value='pos']").remove();
                     $("#paid_by_2 option[value='vnpay']").remove();
-                    $("#paid_by_2 option[value='CC']").remove();
+                    $("#paid_by_2 option[value='cc']").remove();
                 } else if ($('#paid_by_1').val() == 'pts') {
                     $("#paid_by_2 option[value='pts']").remove();
                     $("#paid_by_2 option[value='pos']").remove();
@@ -2203,7 +2203,7 @@ var lang = {
                 $('#paying_points_val_' + pa_no).val(0);
                 $('#twt').text(formatMoney(gtotal));
 
-            } else if (p_val == 'CC' || p_val == 'vnpay' || p_val == 'pos') {
+            } else if (p_val == 'cc' || p_val == 'vnpay' || p_val == 'pos') {
                 $('.pcheque_' + pa_no).hide();
                 $('.pcash_' + pa_no).hide();
                 $('.gc_' + pa_no).hide();

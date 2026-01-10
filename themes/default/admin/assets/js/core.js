@@ -1078,7 +1078,7 @@ $(document).ready(function() {
     $('body').on('click', '.receipt_link td:not(:first-child, :last-child)', function (e) {
 
         // ❌ Nếu click vào khu vực không được mở bill (edit payment, select, input…)
-        if ($(e.target).closest('.no-receipt-click, .edit-paidby, a, button, select').length) {
+        if ($(e.target).closest('.no-receipt-click, .td-paidby, a, button, select').length) {
             return;
         }
 

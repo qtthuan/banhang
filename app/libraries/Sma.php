@@ -575,7 +575,7 @@ class Sma
         $opts .= '
         <option value="cash"'.($paid_by && $paid_by == 'cash' ? ' selected="selected"' : '').'>'.lang("cash").'</option>
         <option value="pts"'.($paid_by && $paid_by == 'pts' ? ' selected="selected"' : '').'>'.lang("Pts").'</option>
-        <option value="CC"'.($paid_by && $paid_by == 'CC' ? ' selected="selected"' : '').'>'.lang("CC").'</option>
+        <option value="cc"'.($paid_by && $paid_by == 'cc' ? ' selected="selected"' : '').'>'.lang("CC").'</option>
         <option value="pos"'.($paid_by && $paid_by == 'pos' ? ' selected="selected"' : '').'>'.lang("pos_txt").'</option>
         <option value="vnpay"' . ($paid_by && $paid_by == 'vnpay' ? ' selected="selected"' : '') . '>' . lang('vnpay') . '</option>';
         //<option value="gift_card"'.($paid_by && $paid_by == 'gift_card' ? ' selected="selected"' : '').'>'.lang("gift_card").'</option>';
