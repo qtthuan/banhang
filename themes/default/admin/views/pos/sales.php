@@ -26,9 +26,6 @@
                 var oSettings = oTable.fnSettings();
                 nRow.id = aData[0];
                 nRow.className = "receipt_link";
-
-                $('td:eq(5)', nRow).addClass('td-paidby'); // cột paid_by = index 5
-
                 return nRow;
             },
             "aoColumns": [
@@ -136,7 +133,7 @@
     }
 
 
-    $(document).on('click', '.td-paidby', function (e) {
+    $(document).on('click', '.edit-paidby', function (e) {
         e.preventDefault();
         e.stopPropagation();
 
