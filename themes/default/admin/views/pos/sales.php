@@ -166,10 +166,19 @@
 
         $('body').append(pop);
 
+        let popWidth = $('.paidby-pop').outerWidth();
+        let elWidth  = $el.outerWidth();
+
         $('.paidby-pop').css({
-            top: offset.top - 6,
-            left: offset.left + $el.outerWidth() + 8
+            top: offset.top + $el.outerHeight() + 6, // nằm dưới
+            left: offset.left + (elWidth / 2) - (popWidth / 2) // canh giữa
         });
+
+
+        // $('.paidby-pop').css({
+        //     top: offset.top - 6,
+        //     left: offset.left + $el.outerWidth() + 8
+        // });
     });
 
     $(document).on('click', '.paidby-btn', function (e) {
