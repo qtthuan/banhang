@@ -118,6 +118,9 @@
         } else if (x === 'cc') {
             label = 'Chuyển khoản';
             icon  = '💳';
+        } else if (x === 'cod') {
+            label = 'COD';
+            icon  = '📦';
         } else {
             return '';
         }
@@ -132,33 +135,35 @@
         `;
     }
 
-
     $(document).on('click', '.edit-paidby', function (e) {
         e.preventDefault();
         e.stopPropagation();
 
-        $('.paidby-pop').remove(); // đóng popover cũ
-        
+        $('.paidby-pop').remove();
 
         let $el = $(this);
         let sale_id = $el.data('id');
-        let current = $el.data('value'); // cash | cc
-        let isCC = current === 'cc';
-
-        let offset = $el.offset();
+        let current = $el.data('value'); // cash | cc | cod
+        let offset  = $el.offset();
 
         let pop = `
-            <div class="paidby-pop"
-                data-id="${sale_id}">
-                <label class="switch">
-                    <input type="checkbox" ${isCC ? 'checked' : ''}>
-                    <span class="slider"></span>
-                </label>
-                <span class="toggle-text">
-                    ${isCC ? 'Chuyển khoản' : 'Tiền mặt'}
-                </span>
+            <div class="paidby-pop" data-id="${sale_id}">
+                <div class="paidby-btn-group">
+                    <button type="button"
+                        class="paidby-btn ${current === 'cash' ? 'active' : ''}"
+                        data-value="cash">💵 Tiền mặt</button>
+
+                    <button type="button"
+                        class="paidby-btn ${current === 'cc' ? 'active' : ''}"
+                        data-value="cc">💳 Chuyển khoản</button>
+
+                    <button type="button"
+                        class="paidby-btn ${current === 'cod' ? 'active' : ''}"
+                        data-value="cod">📦 COD</button>
+                </div>
             </div>
         `;
+
         $('body').append(pop);
 
         $('.paidby-pop').css({
@@ -167,18 +172,17 @@
         });
     });
 
-    $(document).on('change', '.paidby-pop input[type=checkbox]', function (e) {
+    $(document).on('click', '.paidby-btn', function (e) {
         e.stopPropagation();
 
-        let $pop = $(this).closest('.paidby-pop');
+        let $btn  = $(this);
+        let $pop  = $btn.closest('.paidby-pop');
         let sale_id = $pop.data('id');
+        let paid_by = $btn.data('value');
 
-        let isCC = this.checked;
-        let paid_by = isCC ? 'cc' : 'cash';
-
-        $pop.find('.toggle-text').text(
-            isCC ? 'Chuyển khoản' : 'Tiền mặt'
-        );
+        // UI: active button
+        $btn.addClass('active')
+            .siblings().removeClass('active');
 
         $.ajax({
             type: 'POST',
@@ -191,8 +195,14 @@
             },
             success: function () {
 
-                let icon  = isCC ? '💳' : '💵';
-                let label = isCC ? 'Chuyển khoản' : 'Tiền mặt';
+                let icon  = '💵';
+                let label = 'Tiền mặt';
+
+                if (paid_by === 'cc') {
+                    icon = '💳'; label = 'Chuyển khoản';
+                } else if (paid_by === 'cod') {
+                    icon = '📦'; label = 'COD';
+                }
 
                 let $badge = $('.edit-paidby[data-id="' + sale_id + '"]');
                 $badge.data('value', paid_by);
@@ -201,7 +211,7 @@
                     $badge.html(`${icon} ${label}`).fadeIn(120);
                 });
 
-                $pop.fadeOut(350, function () {
+                $pop.fadeOut(250, function () {
                     $(this).remove();
                 });
             }
@@ -215,6 +225,119 @@
     $(document).on('click', '.paidby-pop', function (e) {
         e.stopPropagation();
     });
+
+
+
+
+
+    // function paidBy(x, row) {
+    //     let sale_id = row[0];
+    //     let label = '';
+    //     let icon  = '';
+
+    //     if (x === 'cash') {
+    //         label = 'Tiền mặt';
+    //         icon  = '💵';
+    //     } else if (x === 'cc') {
+    //         label = 'Chuyển khoản';
+    //         icon  = '💳';
+    //     } else {
+    //         return '';
+    //     }
+
+    //     return `
+    //         <span class="edit-paidby badge-paidby"
+    //             data-id="${sale_id}"
+    //             data-value="${x}"
+    //             title="Thay đổi phương thức thanh toán">
+    //             ${icon} ${label}
+    //         </span>
+    //     `;
+    // }
+
+
+    // $(document).on('click', '.edit-paidby', function (e) {
+    //     e.preventDefault();
+    //     e.stopPropagation();
+
+    //     $('.paidby-pop').remove(); // đóng popover cũ
+        
+
+    //     let $el = $(this);
+    //     let sale_id = $el.data('id');
+    //     let current = $el.data('value'); // cash | cc
+    //     let isCC = current === 'cc';
+
+    //     let offset = $el.offset();
+
+    //     let pop = `
+    //         <div class="paidby-pop"
+    //             data-id="${sale_id}">
+    //             <label class="switch">
+    //                 <input type="checkbox" ${isCC ? 'checked' : ''}>
+    //                 <span class="slider"></span>
+    //             </label>
+    //             <span class="toggle-text">
+    //                 ${isCC ? 'Chuyển khoản' : 'Tiền mặt'}
+    //             </span>
+    //         </div>
+    //     `;
+    //     $('body').append(pop);
+
+    //     $('.paidby-pop').css({
+    //         top: offset.top - 6,
+    //         left: offset.left + $el.outerWidth() + 8
+    //     });
+    // });
+
+    // $(document).on('change', '.paidby-pop input[type=checkbox]', function (e) {
+    //     e.stopPropagation();
+
+    //     let $pop = $(this).closest('.paidby-pop');
+    //     let sale_id = $pop.data('id');
+
+    //     let isCC = this.checked;
+    //     let paid_by = isCC ? 'cc' : 'cash';
+
+    //     $pop.find('.toggle-text').text(
+    //         isCC ? 'Chuyển khoản' : 'Tiền mặt'
+    //     );
+
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: '<?= admin_url('pos/updatePaidBy') ?>',
+    //         data: {
+    //             sale_id: sale_id,
+    //             paid_by: paid_by,
+    //             <?= $this->security->get_csrf_token_name(); ?>:
+    //             "<?= $this->security->get_csrf_hash(); ?>"
+    //         },
+    //         success: function () {
+
+    //             let icon  = isCC ? '💳' : '💵';
+    //             let label = isCC ? 'Chuyển khoản' : 'Tiền mặt';
+
+    //             let $badge = $('.edit-paidby[data-id="' + sale_id + '"]');
+    //             $badge.data('value', paid_by);
+
+    //             $badge.fadeOut(120, function () {
+    //                 $badge.html(`${icon} ${label}`).fadeIn(120);
+    //             });
+
+    //             $pop.fadeOut(350, function () {
+    //                 $(this).remove();
+    //             });
+    //         }
+    //     });
+    // });
+
+    // $(document).on('click', function () {
+    //     $('.paidby-pop').remove();
+    // });
+
+    // $(document).on('click', '.paidby-pop', function (e) {
+    //     e.stopPropagation();
+    // });
 
 
 

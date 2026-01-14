@@ -2257,7 +2257,46 @@ animation: blink 1s steps(2, start) infinite;
     padding: 10px;
   }
 }
+
+
+/*  STYLE THAY ĐỔI PHƯƠNG THỨC THANH TOÁN TRÊN DANH SÁCH HÓA ĐƠN POS  */
 .paidby-pop {
+    position: absolute;
+    background: #fff;
+    padding: 6px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    z-index: 9999;
+}
+
+.paidby-btn-group {
+    display: flex;
+    gap: 6px;
+}
+
+.paidby-btn {
+    border: 1px solid #ddd;
+    background: #f2f2f2;
+    color: #666;
+    font-size: 12px;
+    padding: 6px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all .15s ease;
+}
+
+.paidby-btn.active {
+    background: #4caf50;
+    color: #fff;
+    border-color: #4caf50;
+}
+
+.paidby-btn:hover {
+    opacity: .85;
+}
+
+
+/* .paidby-pop {
     position: absolute;
     background: #fff;
     border: 1px solid #ddd;
@@ -2280,4 +2319,4 @@ animation: blink 1s steps(2, start) infinite;
 @keyframes fadeIn {
     from { opacity:0; transform:translateY(4px); }
     to   { opacity:1; transform:none; }
-}
+} */

@@ -179,6 +179,7 @@ $lang['total_cc_slips']                 = "Tổng phiếu Credit Card";
 $lang['CC']                             = "Chuyển khoản";
 $lang['pos']                            = "POS";
 $lang['pos_txt']                        = "Quẹt thẻ - POS";
+$lang['cod_txt']                        = "COD";
 $lang['header_pos_txt']                 = "Bán hàng";
 $lang['header_mini_txt']                = "Mini";
 $lang['Pts']                            = "Điểm tích lũy";
