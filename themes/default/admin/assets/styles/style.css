@@ -2262,10 +2262,10 @@ animation: blink 1s steps(2, start) infinite;
 /*  STYLE THAY ĐỔI PHƯƠNG THỨC THANH TOÁN TRÊN DANH SÁCH HÓA ĐƠN POS  */
 .paidby-pop {
     position: absolute;
-    background: #fff;
+    background: #d9daab;
     padding: 6px;
     border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    box-shadow: 4px 8px 8px rgba(0, 0, 0, .15);
     z-index: 9999;
 }
 
