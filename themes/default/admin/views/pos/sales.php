@@ -62,10 +62,24 @@
                 filter_default_label: "[Tất cả]",
                 data: [
                     { value: "cash", label: "Tiền mặt" },
-                    { value: "cc", label: "Chuyển khoản" }
+                    { value: "cc", label: "Chuyển khoản" },
+                    { value: "cod", label: "COD" }
                 ]
             },
-            {column_number: 7, filter_default_label: "[<?=lang('warehouse');?>]", filter_type: "text"},
+            {
+                column_number: 7,
+                filter_type: "select",
+                filter_default_label: "[<?= lang('warehouse'); ?>]",
+                data: [
+                    <?php foreach ($warehouses as $w): ?>
+                    {
+                        value: "<?= $w->name ?>",
+                        label: "<?= addslashes($w->name) ?>"
+                    },
+                    <?php endforeach; ?>
+                ]
+            },
+
 
         ], "footer");
 
