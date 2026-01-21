@@ -49,7 +49,7 @@
                 var nCells = nRow.getElementsByTagName('th');
 
                 // Cột tổng tiền (index 6)
-                nCells[6].innerHTML = currencyFormat(gtotal);
+                //nCells[6].innerHTML = currencyFormat(gtotal);
             }
         }).fnSetFilteringDelay().dtFilter([
             {column_number: 1, filter_default_label: "[năm-tháng-ngày]", filter_type: "text", data: []},
@@ -66,6 +66,7 @@
                     { value: "cod", label: "COD" }
                 ]
             },
+            {column_number: 6, filter_default_label: "[<?=lang('total');?>]", filter_type: "text", data: []},
             {
                 column_number: 7,
                 filter_type: "select",
@@ -82,6 +83,12 @@
 
 
         ], "footer");
+
+        // Lọc cột tiền (cột số 6)
+        $('#amount_filter').on('keyup change', function () {
+            oTable.fnFilter(this.value, 6);
+        });
+
 
         $(document).on('click', '.duplicate_pos', function (e) {
             e.preventDefault();
@@ -410,6 +417,9 @@
                 <p class="introtext"><?= lang('list_results'); ?></p>
 
                 <div class="table-responsive">
+                    <input type="text" id="amount_filter" class="form-control" placeholder="Tìm số tiền..." style="width:120px"
+                    />
+
                     <table id="POSData" class="table table-bordered table-hover table-striped">
                         <thead>
                         <tr>
