@@ -83,13 +83,7 @@
 
 
         ], "footer");
-
-        // Lọc cột tiền (cột số 6)
-        $('#amount_filter').on('keyup change', function () {
-            oTable.fnFilter(this.value, 6);
-        });
-
-
+       
         $(document).on('click', '.duplicate_pos', function (e) {
             e.preventDefault();
             var link = $(this).attr('href');
@@ -256,122 +250,6 @@
         e.stopPropagation();
     });
 
-
-
-
-
-    // function paidBy(x, row) {
-    //     let sale_id = row[0];
-    //     let label = '';
-    //     let icon  = '';
-
-    //     if (x === 'cash') {
-    //         label = 'Tiền mặt';
-    //         icon  = '💵';
-    //     } else if (x === 'cc') {
-    //         label = 'Chuyển khoản';
-    //         icon  = '💳';
-    //     } else {
-    //         return '';
-    //     }
-
-    //     return `
-    //         <span class="edit-paidby badge-paidby"
-    //             data-id="${sale_id}"
-    //             data-value="${x}"
-    //             title="Thay đổi phương thức thanh toán">
-    //             ${icon} ${label}
-    //         </span>
-    //     `;
-    // }
-
-
-    // $(document).on('click', '.edit-paidby', function (e) {
-    //     e.preventDefault();
-    //     e.stopPropagation();
-
-    //     $('.paidby-pop').remove(); // đóng popover cũ
-        
-
-    //     let $el = $(this);
-    //     let sale_id = $el.data('id');
-    //     let current = $el.data('value'); // cash | cc
-    //     let isCC = current === 'cc';
-
-    //     let offset = $el.offset();
-
-    //     let pop = `
-    //         <div class="paidby-pop"
-    //             data-id="${sale_id}">
-    //             <label class="switch">
-    //                 <input type="checkbox" ${isCC ? 'checked' : ''}>
-    //                 <span class="slider"></span>
-    //             </label>
-    //             <span class="toggle-text">
-    //                 ${isCC ? 'Chuyển khoản' : 'Tiền mặt'}
-    //             </span>
-    //         </div>
-    //     `;
-    //     $('body').append(pop);
-
-    //     $('.paidby-pop').css({
-    //         top: offset.top - 6,
-    //         left: offset.left + $el.outerWidth() + 8
-    //     });
-    // });
-
-    // $(document).on('change', '.paidby-pop input[type=checkbox]', function (e) {
-    //     e.stopPropagation();
-
-    //     let $pop = $(this).closest('.paidby-pop');
-    //     let sale_id = $pop.data('id');
-
-    //     let isCC = this.checked;
-    //     let paid_by = isCC ? 'cc' : 'cash';
-
-    //     $pop.find('.toggle-text').text(
-    //         isCC ? 'Chuyển khoản' : 'Tiền mặt'
-    //     );
-
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: '<?= admin_url('pos/updatePaidBy') ?>',
-    //         data: {
-    //             sale_id: sale_id,
-    //             paid_by: paid_by,
-    //             <?= $this->security->get_csrf_token_name(); ?>:
-    //             "<?= $this->security->get_csrf_hash(); ?>"
-    //         },
-    //         success: function () {
-
-    //             let icon  = isCC ? '💳' : '💵';
-    //             let label = isCC ? 'Chuyển khoản' : 'Tiền mặt';
-
-    //             let $badge = $('.edit-paidby[data-id="' + sale_id + '"]');
-    //             $badge.data('value', paid_by);
-
-    //             $badge.fadeOut(120, function () {
-    //                 $badge.html(`${icon} ${label}`).fadeIn(120);
-    //             });
-
-    //             $pop.fadeOut(350, function () {
-    //                 $(this).remove();
-    //             });
-    //         }
-    //     });
-    // });
-
-    // $(document).on('click', function () {
-    //     $('.paidby-pop').remove();
-    // });
-
-    // $(document).on('click', '.paidby-pop', function (e) {
-    //     e.stopPropagation();
-    // });
-
-
-
-
 </script>
 
 <?php if ($Owner || $GP['bulk_actions']) {
@@ -417,9 +295,6 @@
                 <p class="introtext"><?= lang('list_results'); ?></p>
 
                 <div class="table-responsive">
-                    <input type="text" id="amount_filter" class="form-control" placeholder="Tìm số tiền..." style="width:120px"
-                    />
-
                     <table id="POSData" class="table table-bordered table-hover table-striped">
                         <thead>
                         <tr>
