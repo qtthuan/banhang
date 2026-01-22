@@ -1025,7 +1025,7 @@ class system_settings extends MY_Controller
 
         $this->load->helper('security');
         $this->form_validation->set_rules('code', lang("category_code"), 'trim|is_unique[categories.code]|required');
-        $this->form_validation->set_rules('name', lang("name"), 'required|min_length[3]');
+        $this->form_validation->set_rules('name', lang("name"), 'required|min_length[2]');
         $this->form_validation->set_rules('slug', lang("slug"), 'required|is_unique[categories.slug]|alpha_dash');
         $this->form_validation->set_rules('userfile', lang("category_image"), 'xss_clean');
 
