@@ -1,4 +1,7 @@
 $(document).ready(function() {
+
+    const MINI_WAREHOUSE_ID = window.APP_CONFIG.MINI_WAREHOUSE_ID;
+
     $('body a, body button').attr('tabindex', -1);
     check_add_item_val();
     $(document).on('keypress', '.rquantity', function (e) {
@@ -520,21 +523,6 @@ $('#posdiscount').focus(function () {
         var start_date = item.row.start_date;
         var end_date = item.row.end_date;
         $('#prModalLabel').text(item.row.code + ' - ' + item.row.name + ' / ' + original_price + ' / ' + discount);
-        if ($('#poswarehouse').val() == 3) {
-            //$('#mini_comment').text('tesst');
-            //console.log('abc: ' + $('#poswarehouse').val());
-        }
-
-        /*if (item.row.promotion && checkValidPromotionDate(start_date, end_date)) {
-            $('#pdiscount').attr('readonly', true);
-            $('#price_after_discount').attr('readonly', true);
-            $('#pprice').attr('readonly', true);
-            $('#prModalLabel').append('<br /><span style="color: green">' + lang.this_is_promotion_product + '</span>');
-        } else {
-            $('#pdiscount').attr('readonly', false);
-            $('#price_after_discount').attr('readonly', false);
-            $('#pprice').attr('readonly', false);
-        }*/
 
         if (site.settings.tax1) {
             $('#ptax').select2('val', item.row.tax_rate);
@@ -678,6 +666,9 @@ $('#posdiscount').focus(function () {
         }        
         $(this).find('#price_after_discount').select().blur();
         $(this).find('#pdiscount').select().focus();
+        if ($('#poswarehouse').val() == window.APP_CONFIG.MINI_WAREHOUSE_ID) {
+            $(this).find('#icommentname').select().focus();
+        }
     });
 
 
@@ -1676,8 +1667,9 @@ function loadItems() {
         }
         if (KB) { display_keyboards(); }
         // qtthuan: focus
-        if (site.settings.set_focus == 1 && (localStorage.getItem('poswarehouse') == 3) 
-            || (site.settings.set_focus == 1 && $("#poswarehouse").is(":hidden") && $("#poswarehouse").val() == 3)) { 
+        if (site.settings.set_focus == 1 && (localStorage.getItem('poswarehouse') == window.APP_CONFIG.MINI_WAREHOUSE_ID) 
+            || (site.settings.set_focus == 1 && $("#poswarehouse").is(":hidden") && $("#poswarehouse").val() == window.APP_CONFIG.MINI_WAREHOUSE_ID)) { 
+        //console.log('warehouse: ' + window.APP_CONFIG.MINI_WAREHOUSE_ID);
             // Focus vào ô điều chỉnh số lượng sau khi scan sản phẩm (Kho Tiệm Nước)
             $('#add_item').attr('tabindex', an);
             $('[tabindex='+(an-1)+']').focus().select();

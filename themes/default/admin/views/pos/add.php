@@ -884,7 +884,7 @@
                         </div>
                     </div> -->
                     
-                <div class="form-group" style="padding: 0 15px;">
+                <div class="form-group box_notes" style="padding: 0 15px;">
                     <div class="col-sm-8">
                         <?= lang('comment', 'icomment'); ?>
                         <input type="text" style="text-transform: uppercase;" name="comment" class="form-control kb-text" id="icomment">
@@ -2444,8 +2444,9 @@ var lang = {
 
             //qtthuan
             $('.chkComment').removeAttr('checked');
-            if ($('#poswarehouse').val() == 3) {
+            if ($('#poswarehouse').val() == window.APP_CONFIG.MINI_WAREHOUSE_ID) {
                 $('.box_comment').show();
+                $('.box_notes').show();
                 var selected_comments=[];
                 $(".chkComment").change(function() {
                     
@@ -2464,6 +2465,7 @@ var lang = {
                 }); 
             } else {
                 $('.box_comment').hide();
+                $('.box_notes').hide();
             }
             
         });
@@ -2515,6 +2517,8 @@ var lang = {
     <?php }
     ?>
 </script>
+
+
 <?php
 	$s2_lang_file = read_file('./assets/config_dumps/s2_lang.js');
 	foreach (lang('select2_lang') as $s2_key => $s2_line) {
@@ -2532,6 +2536,12 @@ var lang = {
 <script type="text/javascript" src="<?=$assets?>js/bootstrapValidator.min.js"></script>
 <script type="text/javascript" src="<?=$assets?>pos/js/plugins.min.js"></script>
 <script type="text/javascript" src="<?=$assets?>pos/js/parse-track-data.js"></script>
+<script>
+    window.APP_CONFIG = {
+        MINI_WAREHOUSE_ID: <?= (int)$this->config->item('mini_warehouse_id'); ?>,
+        BANI_WAREHOUSE_ID: <?= (int)$this->config->item('bani_warehouse_id'); ?>
+    };
+</script>
 <script type="text/javascript" src="<?=$assets?>pos/js/pos.ajax.js"></script>
 <?php
 if ( ! $pos_settings->remote_printing) {
