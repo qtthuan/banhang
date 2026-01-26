@@ -196,7 +196,7 @@ class Products_model extends CI_Model
     }
 
     public function getSubCategories($parent_id) {
-        $this->db->select('id as id, name as text')
+        $this->db->select('id as id, code, name as text')
         ->where('parent_id', $parent_id)->order_by('name');
         $q = $this->db->get("categories");
         if ($q->num_rows() > 0) {

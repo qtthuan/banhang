@@ -18,10 +18,13 @@ if (!empty($variants)) {
                 {id: '', text: '<?= lang('select_category_to_load') ?>'}
             ]
         });
+        
         $('#category').change(function () {
             var v = $(this).val();
             $('#modal-loading').show();
             if (v) {
+                $('#code').val(($('#category_code' + v).val()));
+                //console.log('change cate');
                 $.ajax({
                     type: "get",
                     async: false,
@@ -690,13 +693,7 @@ if (!empty($variants)) {
         $('#oldproduct').on('ifUnchecked', function (event) {
             $('#code').prop('readonly', true);
         });
-        $('#category').change(function () {
-            var v = $(this).val();
-            if (v) {
-                $('#code').val(($('#category_code' + v).val()));
-            }
-
-        });
+        
         $('#drop_select_wh').change(function () {
             var v = $(this).val();
             if (v) {
