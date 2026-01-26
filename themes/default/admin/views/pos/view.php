@@ -36,7 +36,12 @@
             }
         </style>
     </head>
-
+    <script>
+        window.APP_CONFIG = {
+            MINI_WAREHOUSE_ID: <?= (int)$this->config->item('mini_warehouse_id'); ?>,
+            BANI_WAREHOUSE_ID: <?= (int)$this->config->item('bani_warehouse_id'); ?>
+        };
+    </script>
     <body>
         <?php
     } ?>
@@ -653,14 +658,12 @@
                 ?>
             </div>
             <div style="clear:both;"></div>
-            <div style="font-size: 12px; text-align: center;margin-right: 25px">
-                <!-- <img src="https://img.vietqr.io/image/mb-VQRQAGEUL2470-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Lu%20Nguyet%20Binh" style="width: 130px">
-                <br /><?=lang('bank_info_mb')?> -->
-            <?php //if ($inv->warehouse_id == 3) { ?>
-                <!-- <img src="https://img.vietqr.io/image/vietcombank-NP82501394269214VCB-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Lu%20Nguyet%20Binh" style="width: 130px"> -->
-                 
-                <!-- <br /><?=lang('bank_info_vcb')?> -->
-            <?php //} else { ?>
+            <div class="bank_info" style="font-size: 12px; text-align: center;margin-right: 25px">
+                
+            <?php if ($inv->warehouse_id == $this->config->item('mini_warehouse_id')) { ?>
+                <img src="https://img.vietqr.io/image/mb-VQRQAGEUL2470-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Lu%20Nguyet%20Binh" style="width: 135px">
+                <br /><?=lang('bank_info_mb')?>
+            <?php } ?>
                 <!-- <img src="https://img.vietqr.io/image/vietinbank-663614169999-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Lu%20Nguyet%20Binh" style="width: 130px"> -->
                 <!-- <br /><?=lang('bank_info_vietin')?> -->
             <?php //} ?>
