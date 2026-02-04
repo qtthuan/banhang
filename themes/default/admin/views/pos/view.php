@@ -671,7 +671,7 @@
                 <br /><?=lang('bank_info_tech')?> -->
                 
             </div>
-            <div style="padding: 0 0 10px; margin-right: 30px;">
+            <div class="invoice_footer" style="padding: 0 0 10px; margin-right: 30px;">
                 <p style="border-top: 1px solid black;">
                 <?php if ($biller->cf3) { ?>
                     <div class="text-center" style="padding-bottom: 7px; font-size: 14px; font-style: italic"><?= $biller->cf3 ? $this->sma->decode_html($biller->cf3) : ''; ?></div>
@@ -692,6 +692,7 @@
                 <?php } ?>
                 </p>
             </div>
+            
             <?php if ($display_promo_cut == 1 && $promo->promo_cut == 1 && $customer->id != 1) { ?>
             <div style="clear:both;"></div>
             <div style="padding: 0 10px 10px;">
@@ -716,7 +717,10 @@
             </div>
             <?php } ?>
             <div style="clear:both;"></div>
-        </div>
+        </div> <!-- END receiptData -->
+        <div style="height: 120px; display: block;"></div>
+        <div class="print-footer-space"></div>
+
 
         <div id="buttons" style="padding-top:10px; text-transform:uppercase;" class="no-print">
             <?php
