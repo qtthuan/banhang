@@ -718,9 +718,6 @@
             <?php } ?>
             <div style="clear:both;"></div>
         </div> <!-- END receiptData -->
-        <div style="height: 120px; display: block;"></div>
-        <div class="print-footer-space"></div>
-
 
         <div id="buttons" style="padding-top:10px; text-transform:uppercase;" class="no-print">
             <?php

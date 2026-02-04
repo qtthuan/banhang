@@ -1564,6 +1564,9 @@ label { margin-top: 5px;
 .quote:hover {
     cursor: pointer !important;
 }
+.invoice_footer {
+    border-bottom: 1px solid rgb(179, 174, 174);
+}
 .bartable td { width: 20%; }
 .sheettable td { width: 50%; }
 .text_filter,
@@ -2086,7 +2089,7 @@ animation: blink 1s steps(2, start) infinite;
 .sprice { font-size: 16px; }
 .ssubtotal { font-size: 16px; }
 .rquantity { font-size: 17px !important; }
-#receiptData { font-size: 13px !important; margin-bottom: 50px; }
+#receiptData { font-size: 13px !important; }
 #receiptData table td:nth-child(1) { text-align: left; width: 39%; }
 #receiptData table td:nth-child(2) { text-align: left; width: 15%; }
 #receiptData table td:nth-child(3) { text-align: left; width: 26%; }
@@ -2183,18 +2186,6 @@ animation: blink 1s steps(2, start) infinite;
 }
 .topping-tag .remove-topping:hover {
     color: #ffb3b3;
-}
-
-  @media print {
-    #receiptData {
-        page-break-inside: avoid !important;
-    }
-
-    .print-footer-space {
-        height: 120px !important;
-        display: block !important;
-        visibility: hidden;
-    }
 }
 
 
