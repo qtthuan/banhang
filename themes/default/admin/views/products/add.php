@@ -32,19 +32,62 @@ if (!empty($variants)) {
                     dataType: "json",
                     success: function (scdata) {
                         console.log(JSON.stringify(scdata));
+                         // Xóa hidden code cũ mỗi lần đổi category
+                        $('.subcategory-code-hidden').remove();
                         if (scdata != null) {
-                            scdata.push({id: '', text: '<?= lang('select_subcategory') ?>'});
-                            $("#subcategory").select2("destroy").empty().attr("placeholder", "<?= lang('select_subcategory') ?>").select2({
-                                placeholder: "<?= lang('select_category_to_load') ?>",
-                                minimumResultsForSearch: 7,
-                                data: scdata
+
+
+                             // Thêm hidden input chứa code của từng subcategory
+                            scdata.forEach(function (sc) {
+                                if (sc.id && sc.code) {
+                                    $('#subcat_data').append(
+                                        '<input type="hidden" class="subcategory-code-hidden" id="subcategory_code' + sc.id + '" value="' + sc.code + '">'
+                                    );
+                                }
                             });
+
+                            scdata.push({ id: '', text: '<?= lang('select_subcategory') ?>' });
+
+                            $("#subcategory")
+                                .select2("destroy")
+                                .empty()
+                                .attr("placeholder", "<?= lang('select_subcategory') ?>")
+                                .select2({
+                                    placeholder: "<?= lang('select_category_to_load') ?>",
+                                    minimumResultsForSearch: 7,
+                                    data: scdata
+                                });
+
+
+
+                            // scdata.push({id: '', text: '<?= lang('select_subcategory') ?>'});
+                            // $("#subcategory").select2("destroy").empty().attr("placeholder", "<?= lang('select_subcategory') ?>").select2({
+                            //     placeholder: "<?= lang('select_category_to_load') ?>",
+                            //     minimumResultsForSearch: 7,
+                            //     data: scdata
+                            // });
                         } else {
-                            $("#subcategory").select2("destroy").empty().attr("placeholder", "<?= lang('no_subcategory') ?>").select2({
+
+
+                            $("#subcategory")
+                            .select2("destroy")
+                            .empty()
+                            .attr("placeholder", "<?= lang('no_subcategory') ?>")
+                            .select2({
                                 placeholder: "<?= lang('no_subcategory') ?>",
                                 minimumResultsForSearch: 7,
-                                data: [{id: '', text: '<?= lang('no_subcategory') ?>'}]
+                                data: [{ id: '', text: '<?= lang('no_subcategory') ?>' }]
                             });
+
+
+
+
+
+                            // $("#subcategory").select2("destroy").empty().attr("placeholder", "<?= lang('no_subcategory') ?>").select2({
+                            //     placeholder: "<?= lang('no_subcategory') ?>",
+                            //     minimumResultsForSearch: 7,
+                            //     data: [{id: '', text: '<?= lang('no_subcategory') ?>'}]
+                            // });
                         }
                     },
                     error: function () {
@@ -62,6 +105,18 @@ if (!empty($variants)) {
             $('#modal-loading').hide();
         });
         
+        $('#subcategory').change(function () {
+            var catID = $('#category').val();
+            var subID = $(this).val();
+            console.log(catID + ' - ' + subID); 
+
+            var catCode = $('#category_code' + catID).val() || '';
+            var subCode = $('#subcategory_code' + subID).val() || '';
+
+            // Chỉ update trước phần BG + D, không sinh AutoCode
+            $('#code').val(catCode + subCode);
+        });
+
 
         $('#code').bind('keypress', function (e) {
             if (e.keyCode == 13) {
@@ -714,15 +769,23 @@ if (!empty($variants)) {
                 $('#modal-loading').hide();
             }
             else if (v) {
+                var subID = $('#subcategory').val();
+                var subCode = $('#subcategory_code' + subID).val() || '';
                 $.ajax({
                     type: "get",
                     async: false,
                     url: "<?= admin_url('products/getMaxCodeByCategory') ?>/" + v,
                     dataType: "json",
                     success: function (scdata) {
-                        $('#code').val(scdata);
+                        var newCode = scdata;
+                        
                         var code_extra = scdata.replace(/\'/g, '').split(/(\d+)/).filter(Boolean);
+                        if (subCode) {
+                            newCode += subCode;
+                        }
+                        $('#code').val(newCode);
                         $('#code_extra').val(code_extra[1]);
+                        console.log('data: ' + scdata + ' - code_extra: ' + code_extra[1] + 'sub: ' + subCode);
                     },
                     error: function () {
                         bootbox.alert('<?= lang('ajax_error') ?>' + error);
@@ -1166,7 +1229,8 @@ if (!empty($variants)) {
             url: "<?= admin_url('products/getSubCategories') ?>/" + <?= $product->category_id ?>,
             dataType: "json",
             success: function (scdata) {
-                console.log(JSON.stringify(scdata));
+                //console.log(JSON.stringify(scdata));
+                console.log('xxxxxx');
                 if (scdata != null) {
                     $("#subcategory").select2("destroy").empty().attr("placeholder", "<?= lang('select_subcategory') ?>").select2({
                         placeholder: "<?= lang('select_category_to_load') ?>",
