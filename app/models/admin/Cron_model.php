@@ -176,6 +176,16 @@ class Cron_model extends CI_Model
         return false;
     }
 
+    public function get_low_stock_products()
+    {
+        $this->db->select('id, code, name, quantity, alert_quantity');
+        $this->db->from('sma_products');
+        $this->db->where('track_quantity', 1);
+        $this->db->where('quantity <= alert_quantity');
+        return $this->db->get()->result();
+    }
+
+
     /**
      * qtthuan
      * @return array

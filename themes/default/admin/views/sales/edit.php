@@ -250,7 +250,7 @@
                                            class="table items table-striped table-bordered table-condensed table-hover sortable_table">
                                         <thead>
                                         <tr>
-                                            <th class="col-md-4"><?= lang('product') . ' (' . lang('code') .' - '.lang('name') . ')'; ?></th>
+                                            <th class="col-md-4"><?= lang('product'); ?></th>
                                             <?php
                                             if ($Settings->product_serial) {
                                                 echo '<th class="col-md-2">' . lang("serial_no") . '</th>';
