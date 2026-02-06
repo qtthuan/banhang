@@ -184,6 +184,7 @@ class Cron_model extends CI_Model
             SELECT id, name, quantity, alert_quantity
             FROM sma_products
             WHERE quantity <= alert_quantity
+            AND (category_id=38 OR category_id=50)
         ")->result();
 
         if (!$products) return false;
@@ -195,7 +196,7 @@ class Cron_model extends CI_Model
         }
 
         $message .= "</ul>";
-
+        echo $message;
         // gửi email
         $this->load->library('email');
         $this->email->from('noreply@banicantho.com', "Cảnh báo tồn kho");
