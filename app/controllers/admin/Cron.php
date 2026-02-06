@@ -23,7 +23,7 @@ class Cron extends CI_Controller
 
     public function alert_low_stock()
     {
-        $this->load->model('cron_model');
+        //$this->load->model('cron_model');
 
         $products = $this->cron_model->get_low_stock_products();
 
