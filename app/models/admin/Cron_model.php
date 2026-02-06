@@ -94,6 +94,8 @@ class Cron_model extends CI_Model
 
         $this->deleteExpiredCustomers();
 
+        $this->check_low_stock();
+
         // Xóa sản phẩm ko có nơi sản xuất theo nhóm hàng
         //$this->deleteProductTemp(4);
 
@@ -176,14 +178,33 @@ class Cron_model extends CI_Model
         return false;
     }
 
-    public function get_low_stock_products()
+    public function check_low_stock()
     {
-        $this->db->select('id, code, name, quantity, alert_quantity');
-        $this->db->from('sma_products');
-        $this->db->where('track_quantity', 1);
-        $this->db->where('quantity <= alert_quantity');
-        return $this->db->get()->result();
+        $products = $this->db->query("
+            SELECT id, name, quantity, alert_quantity
+            FROM sma_products
+            WHERE quantity <= alert_quantity
+        ")->result();
+
+        if (!$products) return false;
+
+        $message = "<h3>Sản phẩm sắp hết hàng:</h3><ul>";
+
+        foreach ($products as $p) {
+            $message .= "<li>{$p->name} – Tồn: {$p->quantity}, Cảnh báo: {$p->alert_quantity}</li>";
+        }
+
+        $message .= "</ul>";
+
+        // gửi email
+        $this->load->library('email');
+        $this->email->from('noreply@banicantho.com', "Cảnh báo tồn kho");
+        $this->email->to('qtthuan2003@gmail.com');
+        $this->email->subject('Sản phẩm sắp hết hàng');
+        $this->email->message($message);
+        $this->email->send();
     }
+
 
 
     /**
