@@ -2307,6 +2307,10 @@ animation: blink 1s steps(2, start) infinite;
     border-right: 6px solid transparent;
     border-bottom: 6px solid #fff;
 }
+.badge-wait {
+    color: #ff5100 !important;
+}
+
 
 /* .paidby-pop {
     position: absolute;

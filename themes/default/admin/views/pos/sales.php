@@ -137,11 +137,13 @@
             label = 'COD';
             icon  = '📦';
         } else {
-            return '';
-        }
+            x = 'wait';
+            label = 'Chưa TT';
+            icon  = '⏳';
+        } 
 
         return `
-            <span class="edit-paidby badge-paidby"
+            <span class="edit-paidby badge-paidby ${x === 'wait' ? 'badge-wait' : ''}"
                 data-id="${sale_id}"
                 data-value="${x}"
                 title="Thay đổi phương thức thanh toán">
@@ -203,6 +205,14 @@
         let $pop  = $btn.closest('.paidby-pop');
         let sale_id = $pop.data('id');
         let paid_by = $btn.data('value');
+        let current = $('.edit-paidby[data-id="'+sale_id+'"]').data('value');
+        let url = '';
+
+        if (current === 'wait' && paid_by !== 'wait') {
+            url = '<?= admin_url('pos/addPaymentFromWait') ?>';
+        } else {
+            url = '<?= admin_url('pos/updatePaidBy') ?>';
+        }
 
         // UI: active button
         $btn.addClass('active')
@@ -210,7 +220,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '<?= admin_url('pos/updatePaidBy') ?>',
+            url: url,
             data: {
                 sale_id: sale_id,
                 paid_by: paid_by,

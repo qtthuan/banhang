@@ -82,6 +82,47 @@ class Pos extends MY_Controller
         echo json_encode(['status' => true]);
     }
 
+    public function addPaymentFromWait()
+    {
+        //$this->db->db_debug = TRUE;
+
+        $sale_id = $this->input->post('sale_id');
+        $paid_by = $this->input->post('paid_by');
+
+        if (!$sale_id || !$paid_by) {
+            echo json_encode(['status' => false]);
+            return;
+        }
+
+        
+
+        // Lấy thông tin đơn hàng
+        $sale = $this->db->get_where('sales', ['id' => $sale_id])->row();
+
+        if (!$sale) {
+            echo json_encode(['status' => false]);
+            return;
+        }
+
+        // Thêm payment mới
+        $data = [
+            'date'      => date('Y-m-d H:i:s'),
+            'sale_id'   => $sale_id,
+            'reference_no' => $sale->reference_no,
+            'amount'    => $sale->grand_total,
+            'paid_by'   => $paid_by,
+            'type'      => 'received'
+        ];
+        $data['created_by'] = $this->session->userdata('user_id') ?? 1;
+//log_message('error', 'ADD PAYMENT DATA: '.json_encode($data));
+
+
+        $this->db->insert('payments', $data);
+
+        echo json_encode(['status' => true]);
+    }
+
+
 
     public function getSales($warehouse_id = NULL)
     {

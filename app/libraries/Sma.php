@@ -573,6 +573,7 @@ class Sma
             $opts .= '<option value="">'.lang('select').'</option>';
         }
         $opts .= '
+        <option value="wait"'.($paid_by && $paid_by == 'wait' ? ' selected="selected"' : '').'>'.lang("wait").'</option>
         <option value="cash"'.($paid_by && $paid_by == 'cash' ? ' selected="selected"' : '').'>'.lang("cash").'</option>
         <option value="cc"'.($paid_by && $paid_by == 'cc' ? ' selected="selected"' : '').'>'.lang("CC").'</option>
         <option value="cod"'.($paid_by && $paid_by == 'cod' ? ' selected="selected"' : '').'>'.lang("cod_txt").'</option>';

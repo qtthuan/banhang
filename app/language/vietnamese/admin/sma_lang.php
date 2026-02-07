@@ -388,6 +388,7 @@ $lang['payment_reference_no']               = "Mã thanh toán";
 $lang['gift_card_no']                       = "Mã phiếu mua hàng";
 $lang['paying_by']                          = "Thanh toán bằng";
 $lang['cash']                               = "Tiền mặt";
+$lang['wait']                               = "Chưa TT";
 $lang['gift_card']                          = "Phiếu mua hàng";
 $lang['CC']                                 = "Chuyển khoản";
 $lang['cheque']                             = "Séc";
