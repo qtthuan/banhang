@@ -2309,6 +2309,7 @@ animation: blink 1s steps(2, start) infinite;
 }
 .badge-wait {
     color: #ff5100 !important;
+    font-weight: bold;
 }
 
 
