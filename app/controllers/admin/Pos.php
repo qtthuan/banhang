@@ -769,6 +769,12 @@ class Pos extends MY_Controller
             $this->data['printer'] = $this->pos_model->getPrinterByID($this->pos_settings->printer);
             $this->data['order_comment_list'] = $this->pos_model->getOrderCommentList();
             $this->data['topping_list'] = $this->pos_model->getToppingList(39);
+
+            $this->data['qty_alert_num'] = $this->site->get_total_qty_alerts();
+            $this->data['exp_alert_num'] = $this->site->get_expiring_qty_alerts();
+            $this->data['shop_sale_alerts'] = SHOP ? $this->site->get_shop_sale_alerts() : 0;
+            $this->data['shop_payment_alerts'] = SHOP ? $this->site->get_shop_payment_alerts() : 0;
+            
             $order_printers = json_decode($this->pos_settings->order_printers);
             $printers = array();
             if (!empty($order_printers)) {
