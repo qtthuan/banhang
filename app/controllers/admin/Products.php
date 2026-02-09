@@ -441,6 +441,8 @@ class Products extends MY_Controller
 
     function print_label_mini()
     {
+        error_reporting(E_ALL);
+ini_set('display_errors', 1);
         $this->sma->checkPermissions('barcode', true);
 
         //$this->form_validation->set_rules('style', lang("style"), 'required');
