@@ -126,8 +126,19 @@
                                             
                                             $str_span_size = '<span class="circle_text" style="position: absolute; bottom: 22px; right: 3px; font-size: 16px; font-weight: bold">';
                                             //$str_span_other = '<span class="circle_text1" style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold">';
-                                            
-
+                                            if($item->variant && $item->variant != '' && $item->variant != 'undefined') {
+                                                
+                                                if (trim(strtolower($item->variant)) == 'size l') {
+                                                    echo $str_span_size;
+                                                    echo 'L';
+                                                } elseif (trim(strtolower($item->variant)) == 'size m')  {
+                                                    echo $str_span_size;
+                                                    echo 'M';
+                                                } 
+                                                
+                                                
+                                            }
+                                            echo '</span>';
                                             echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
                                             echo '<span style="font-size: 13px; font-weight: bold" class="reference_no">';   
                                             echo '</span>';
