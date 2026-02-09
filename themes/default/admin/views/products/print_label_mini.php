@@ -99,6 +99,7 @@
                                             if ($item->variants == 'L') {
                                                 $str_padding = ' style="padding-top: 10px;"';                                            
                                             }                                       
+                                            echo '<div class="item_1 style' . $style . ' ' . $valign_middle . '" >';
                                             
 
                                             echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
