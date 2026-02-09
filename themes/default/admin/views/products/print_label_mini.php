@@ -100,6 +100,18 @@
                                                 $str_padding = ' style="padding-top: 10px;"';                                            
                                             }                                       
                                             echo '<div class="item_1 style' . $style . ' ' . $valign_middle . '" >';
+                                            if($item->product_name) {
+                                                $str_comment = '';
+                                                $str_comment_style = '';
+                                                if($item->comment && $item->comment != '' && $item->comment != 'undefined') {
+                                                    $str_comment = '<br /><span class="comment" style="font-size: 11px;"><strong>' . $item->comment . '</strong></span>';
+                                                }
+                                                echo '<span style="position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
+                                                echo '<span class="label_product_name_en" style="display: none;"><br />' . $item->product_name_en . '</span>';
+                                                echo $str_comment;
+                                                echo '</span>';
+                                            }
+
                                             
 
                                             echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
