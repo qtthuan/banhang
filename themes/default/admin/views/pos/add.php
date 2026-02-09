@@ -78,45 +78,14 @@
                 </ul>
 
                 <ul class="nav navbar-nav pull-right">
+                    <?php if (($Owner || $Admin || $GP['reports-quantity_alerts'] || $GP['reports-expiry_alerts']) && ($qty_alert_num > 0 || $exp_alert_num > 0 || $shop_sale_alerts)) { ?>
                     <li class="dropdown hidden-sm">
-                        <a class="btn blightOrange tip" title="<?= lang('alerts') ?>"
-                            data-placement="left" data-toggle="dropdown" href="#">
-                            <i class="fa fa-exclamation-triangle"></i>
+                        <a class="btn blightOrange tip" title="<?= lang('alerts') ?>" data-placement="left" target="_blank" href="<?= admin_url('reports/quantity_alerts') ?>">
+                            <i class="fa fa-exclamation-triangle alert-blink-color"></i>
                             <span class="number bred black"><?= $qty_alert_num+(($Settings->product_expiry) ? $exp_alert_num : 0)+$shop_sale_alerts+$shop_payment_alerts; ?></span>
-                        </a>
-                        <ul class="dropdown-menu pull-right">
-                            <li>
-                                <a href="<?= admin_url('reports/quantity_alerts') ?>" class="">
-                                    <span class="label label-danger pull-right" style="margin-top:3px;"><?= $qty_alert_num; ?></span>
-                                    <span style="padding-right: 35px;"><?= lang('quantity_alerts') ?></span>
-                                </a>
-                            </li>
-                            <?php if ($Settings->product_expiry) { ?>
-                            <li>
-                                <a href="<?= admin_url('reports/expiry_alerts') ?>" class="">
-                                    <span class="label label-danger pull-right" style="margin-top:3px;"><?= $exp_alert_num; ?></span>
-                                    <span style="padding-right: 35px;"><?= lang('expiry_alerts') ?></span>
-                                </a>
-                            </li>
-                            <?php } ?>
-                            <?php if ($shop_sale_alerts) { ?>
-                            <li>
-                                <a href="<?= admin_url('sales?shop=yes&delivery=no') ?>" class="">
-                                    <span class="label label-danger pull-right" style="margin-top:3px;"><?= $shop_sale_alerts; ?></span>
-                                    <span style="padding-right: 35px;"><?= lang('sales_x_delivered') ?></span>
-                                </a>
-                            </li>
-                            <?php } ?>
-                            <?php if ($shop_payment_alerts) { ?>
-                            <li>
-                                <a href="<?= admin_url('sales?shop=yes&attachment=yes') ?>" class="">
-                                    <span class="label label-danger pull-right" style="margin-top:3px;"><?= $shop_payment_alerts; ?></span>
-                                    <span style="padding-right: 35px;"><?= lang('manual_payments') ?></span>
-                                </a>
-                            </li>
-                            <?php } ?>
-                        </ul>
+                        </a>                        
                     </li>
+                    <?php } ?>
                     <li class="dropdown">
                         <a class="btn borange change_lang" title="Vi/En" data-container="body" data-placement="bottom">VI/EN</a>
                     </li>                    

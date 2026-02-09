@@ -55,6 +55,25 @@ h6 {
 .alert .close {
     margin: -15px -10px 0 10px;
 }
+.alert-blink-color {
+    animation: alertColorBlink 1.2s infinite, alertOpacityBlink 1.2s infinite;
+}
+
+@keyframes alertColorBlink {
+    0%   { color: #ff0000; }
+    33%  { color: #ffcc00; }
+    66%  { color: #ff6600; }
+    100% { color: #ff0000; }
+}
+
+@keyframes alertOpacityBlink {
+    0%   { opacity: 1; }
+    50%  { opacity: 0.4; }
+    100% { opacity: 1; }
+}
+
+
+
 .table tfoot th .text-center, .table tfoot th .text-right {
     color: #333 !important;
 }
