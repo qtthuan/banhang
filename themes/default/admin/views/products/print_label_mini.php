@@ -67,7 +67,7 @@
                             echo '<div class="barcode_mini div'.$key.'"'.$display_btn.'>';
                             //$this->sma->print_arrays($values);
                             foreach ($values as $item) {
-                                
+                                $this->sma->print_arrays($item);
                                 if ($item->product_id != 21121 && $item->product_id != 21122 && $item->product_id != 20354
                                 && $item->product_id != 20357 && $item->product_id != 20358 && $item->product_id != 22133
                                 && $item->product_id != 22153 && $item->product_id != 22154 && $item->product_id != 22178
