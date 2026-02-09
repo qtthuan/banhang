@@ -80,9 +80,7 @@
                                     if ($item->quantity > 1) {
                                         //echo '-';
                                         $html = '';
-                                        for ($i=0; $i < $item_qty; $i++) {
-                                            $html .= '<div class="item_1 ..."> ... </div>';
-                                        }
+                                    
                                         for ($i=0; $i < $item_qty; $i++) {
                                             $names = [];
                                             if ($item->comment_name) {
@@ -136,9 +134,9 @@
                                                     echo 'M';
                                                 } 
                                                 
-                                                
+                                                echo '</span>';
                                             }
-                                            echo '</span>';
+
                                             echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
                                             echo '<span style="font-size: 13px; font-weight: bold" class="reference_no">';   
                                             echo '</span>';
