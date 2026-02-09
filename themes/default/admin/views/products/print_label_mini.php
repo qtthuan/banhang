@@ -80,7 +80,9 @@
                                     if ($item->quantity > 1) {
                                         //echo '-';
                                         $html = '';
-                                    
+                                    for ($i=0; $i < $item_qty; $i++) {
+                                        $html .= '<div class="item_1 ..."> ... </div>';
+                                    }
                                         for ($i=0; $i < $item_qty; $i++) {
                                             $names = [];
                                             if ($item->comment_name) {
