@@ -281,7 +281,6 @@
           readonly
         >
         
-
     </div>
 
         <!-- Ghi chú -->
@@ -525,7 +524,7 @@ $(document).on('click', '.suggest-item', function () {
 
 
     const saved = JSON.parse(localStorage.getItem('customer_info') || '{}');
-    console.log(JSON.stringify(saved));
+    //console.log(JSON.stringify(saved));
     const updated = {
       ...saved,
       customer_name: document.getElementById('customer_name').value || '',
@@ -555,7 +554,9 @@ $(document).on('click', '.suggest-item', function () {
 
     //console.log(JSON.stringify(updated));
     if (!isGroup) {
+      delete saved.group_code;
 
+    
       // Giả lập xử lý lưu ajax (có thể thay bằng thật)
       setTimeout(() => {
         // hiển thị "Đã lưu"
