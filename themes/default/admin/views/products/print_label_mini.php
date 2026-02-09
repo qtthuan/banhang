@@ -80,7 +80,7 @@
                                     if ($item->quantity > 1) {
                                         //echo '-';
                                         for ($i=0; $i < $item_qty; $i++) {
-                                            echo $i . '<br />';
+                                            echo 'xxxx t';
                                         }
                                     } else {
                                         
