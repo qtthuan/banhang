@@ -281,6 +281,7 @@
           readonly
         >
         
+
     </div>
 
         <!-- Ghi chú -->
@@ -497,7 +498,7 @@ $(document).on('click', '.suggest-item', function () {
     // load lại thông tin từ localStorage
     
     const savedInfo = JSON.parse(localStorage.getItem('customer_info') || '{}');
-    //console.log(JSON.stringify(savedInfo));
+    console.log(JSON.stringify(savedInfo));
     if (savedInfo.customer_name) document.getElementById('customer_name').value = savedInfo.customer_name;
     if (savedInfo.customer_phone) document.getElementById('customer_phone').value = savedInfo.customer_phone;
      if (savedInfo.customer_address) document.getElementById('customer_address').value = savedInfo.customer_address;
@@ -524,7 +525,7 @@ $(document).on('click', '.suggest-item', function () {
 
 
     const saved = JSON.parse(localStorage.getItem('customer_info') || '{}');
-    //console.log(JSON.stringify(saved));
+    console.log(JSON.stringify(saved));
     const updated = {
       ...saved,
       customer_name: document.getElementById('customer_name').value || '',
@@ -550,16 +551,11 @@ $(document).on('click', '.suggest-item', function () {
 
 
 
-    
+    localStorage.setItem('customer_info', JSON.stringify(updated));
 
-    
+    //console.log(JSON.stringify(updated));
     if (!isGroup) {
-                console.log('not group');
-    delete saved.group_code;
-    delete saved.group_link;
 
-    // Lưu lại localStorage ngay
-    //localStorage.setItem('customer_info', JSON.stringify(updated));
       // Giả lập xử lý lưu ajax (có thể thay bằng thật)
       setTimeout(() => {
         // hiển thị "Đã lưu"
@@ -576,8 +572,6 @@ $(document).on('click', '.suggest-item', function () {
       }, 400); // giả lập thời gian ajax
       return;
     }
-    //console.log(JSON.stringify(updated));
-    //localStorage.setItem('customer_info', JSON.stringify(updated));
 
     
     const csrfName = $('#csrf_token_input').attr('name');

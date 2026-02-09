@@ -373,51 +373,42 @@ function copyTextIOS(text) {
 
 
 function updateCustomerModalTitle() {
-    let info = localStorage.getItem('customer_info');
-    if (!info) {
-      //console.log('x111');
-        document.getElementById('customerModalTitle').innerHTML = `🧾 Thông Tin Khách Hàng`;
-        return;
-    }
+  let info = localStorage.getItem('customer_info');
+  if (!info) {
+    //console.log('x111');
+      document.getElementById('customerModalTitle').innerHTML = `🧾 Thông Tin Khách Hàng`;
+      return;
+  }
 
-    function copyTextFallback(text) {
-      const input = document.createElement('input');
-      input.value = text;
-      document.body.appendChild(input);
-      input.select();
-      input.setSelectionRange(0, 99999); // iOS
-      document.execCommand('copy');
-      document.body.removeChild(input);
-    }
+  function copyTextFallback(text) {
+    const input = document.createElement('input');
+    input.value = text;
+    document.body.appendChild(input);
+    input.select();
+    input.setSelectionRange(0, 99999); // iOS
+    document.execCommand('copy');
+    document.body.removeChild(input);
+  }
 
 
-    try {
-      info = JSON.parse(info);
-    } catch (e) { return; }
+  try {
+    info = JSON.parse(info);
+  } catch (e) { return; }
 
-    if (!info.group_code) return;
-    if (info.group_code) {
-        const toggle = document.getElementById('group_order_toggle');
-        if (toggle) {
-            toggle.checked = true;
+  if (!info.group_code) return;
+  //console.log('2222x');
+  const link = location.origin + '/order/' + info.group_code;
 
-            // Trigger sự kiện change để chạy logic của bạn
-            toggle.dispatchEvent(new Event('change'));
-        }
-    }
-    //console.log('2222x');
-    const link = location.origin + '/order/' + info.group_code;
-
-    document.getElementById('customerModalTitle').innerHTML = `
-      ⭐ Đơn Nhóm
-      <button 
-        type="button"
-        class="btn btn-sm btn-primary ms-2"
-        id="btn-copy-group-link"
-        data-link="${link}">
-        📋 Copy link nhóm
-      </button>
-    `;
+  document.getElementById('customerModalTitle').innerHTML = `
+    ⭐ Đơn Nhóm
+    <button 
+      type="button"
+      class="btn btn-sm btn-primary ms-2"
+      id="btn-copy-group-link"
+      data-link="${link}">
+      📋 Copy link nhóm
+    </button>
+  `;
 }
 
 
