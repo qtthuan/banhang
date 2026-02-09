@@ -100,7 +100,6 @@
                                                 $str_padding = ' style="padding-top: 10px;"';                                            
                                             }                                       
                                             
-                                            }
 
                                             echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
                                             echo '<span style="font-size: 13px; font-weight: bold" class="reference_no">';   
