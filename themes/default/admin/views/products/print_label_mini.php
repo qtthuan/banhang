@@ -83,7 +83,7 @@
                                         for ($i=0; $i < $item_qty; $i++) {
                                             $html .= '<div class="item_1 ..."> ... </div>';
                                         }
-                                        
+                                        echo $html; 
                                     } else {
                                         
                                         $increase_size = "increase_size";
