@@ -78,7 +78,7 @@
                                     $item_qty = $item->quantity;
                                     
                                     if ($item->quantity > 1) {
-                                        echo '-';
+                                        echo '- ' . $item_qty;
                                         // for ($i=0; $i < $item_qty; $i++) {
                                         //     echo 'xxxx t';
                                         // }
