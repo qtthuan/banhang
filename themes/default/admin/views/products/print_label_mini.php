@@ -78,10 +78,10 @@
                                     $item_qty = $item->quantity;
                                     
                                     if ($item->quantity > 1) {
-                                        //echo '-';
-                                        for ($i=0; $i < $item_qty; $i++) {
-                                            echo 'xxxx t';
-                                        }
+                                        echo '-';
+                                        // for ($i=0; $i < $item_qty; $i++) {
+                                        //     echo 'xxxx t';
+                                        // }
                                     } else {
                                         
                                         $increase_size = "increase_size";
