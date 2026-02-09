@@ -79,6 +79,8 @@
                                     
                                     if ($item->quantity > 1) {
                                         echo '- ' . $item_qty;
+                                        log_message('error', 'Debug qty = '.$item_qty);
+
                                         for ($i=0; $i < $item_qty; $i++) {
                                             echo 'xxxx t';
                                         }
