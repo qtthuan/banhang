@@ -66,6 +66,139 @@
                             //$this->sma->print_arrays($values);
                             echo '<div class="barcode_mini div'.$key.'"'.$display_btn.'>';
                             
+                            foreach ($values as $item) {
+                                
+                                if ($item->product_id != 21121 && $item->product_id != 21122 && $item->product_id != 20354
+                                && $item->product_id != 20357 && $item->product_id != 20358 && $item->product_id != 22133
+                                && $item->product_id != 22153 && $item->product_id != 22154 && $item->product_id != 22178
+                                && $item->product_id != 22179 && $item->product_id != 22180
+                                && $item->product_id != 22181 && $item->product_id != 22185 && $item->product_id != 22288) {
+                                $total_items++;
+                                //echo 'vv: '. $j.'<br />';
+                                    $item_qty = $item->quantity;
+                                    
+                                    if ($item->quantity > 1) {
+                                        //echo '-';
+                                        for ($i=0; $i < $item_qty; $i++) {
+                                            $names = [];
+                                            if ($item->comment_name) {
+                                                $names = array_map('trim', explode(',', $item->comment_name));
+                                            }
+
+                                            //$total_items++;
+                                            $increase_size = "increase_size";
+                                            if ($item->comment) {
+                                                $increase_size .= '_1';
+                                            }
+                                            
+                                            $str_padding = '';
+                                            if ($item->variants == 'L') {
+                                                $str_padding = ' style="padding-top: 10px;"';                                            
+                                            }                                       
+                                            echo '<div class="item_1 style' . $style . ' ' . $valign_middle . '" >';
+                                            if($item->product_name) {
+                                                $str_comment = '';
+                                                $str_comment_style = '';
+                                                if($item->comment && $item->comment != '' && $item->comment != 'undefined') {
+                                                    $str_comment = '<br /><span class="comment" style="font-size: 11px;"><strong>' . $item->comment . '</strong></span>';
+                                                }
+                                                echo '<span style="position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
+                                                echo '<span class="label_product_name_en" style="display: none;"><br />' . $item->product_name_en . '</span>';
+                                                echo $str_comment;
+                                                echo '</span>';
+                                            }
+
+                                            // Lấy tên cho vòng lặp hiện tại
+                                            $current_name = isset($names[$i]) ? $names[$i] : "";
+
+                                            // In tên nếu có
+                                            if ($current_name !== "") {
+                                                echo '<span class="circle_text1" style="position: absolute; bottom: 32px; left: 3px; font-size: 16px; font-weight: bold">';
+                                                echo '<strong>' . $current_name . '</strong>';
+                                                echo '</span>';
+                                            }
+
+                                            
+                                            $str_span_size = '<span class="circle_text" style="position: absolute; bottom: 22px; right: 3px; font-size: 16px; font-weight: bold">';
+                                            //$str_span_other = '<span class="circle_text1" style="position: absolute; bottom: 18px; right: 3px; font-size: 16px; font-weight: bold">';
+                                            if($item->variant && $item->variant != '' && $item->variant != 'undefined') {
+                                                
+                                                if (trim(strtolower($item->variant)) == 'size l') {
+                                                    echo $str_span_size;
+                                                    echo 'L';
+                                                } elseif (trim(strtolower($item->variant)) == 'size m')  {
+                                                    echo $str_span_size;
+                                                    echo 'M';
+                                                } 
+                                                
+                                                echo '</span>';
+                                            }
+
+                                            echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
+                                            echo '<span style="font-size: 13px; font-weight: bold" class="reference_no">';   
+                                            echo '</span>';
+                                            
+                                            echo '<span class="text_price">'.$this->sma->formatK($item->unit_price);
+                                            echo '</span>';
+                                            
+                                            echo '</h4>';
+
+                                            echo '</div>';
+                                        }
+                                    } else {
+                                        
+                                        $increase_size = "increase_size";
+                                        if ($item->comment) {
+                                            $increase_size .= '_1';
+                                        }
+                                        
+                                        $str_padding = '';
+                                        if ($item->variants == 'L') {
+                                            $str_padding = ' style="padding-top: 10px;"';                                            
+                                        }                                       
+                                        echo '<div class="item_1 style' . $style . ' ' . $valign_middle . '" >';
+                                        if($item->product_name) {
+                                            $str_comment = '';
+                                            $str_comment_style = '';
+                                            if($item->comment && $item->comment != '' && $item->comment != 'undefined') {
+                                                $str_comment = '<br /><span class="comment" style="font-size: 11px;"><strong>' . $item->comment . '</strong></span>';
+                                            }
+                                            echo '<span style="position: absolute; top: 0;'.$str_comment_style.'" class="barcode_name '.$increase_size.'">'.$item->product_name;
+                                            echo '<span class="label_product_name_en" style="display: none;"><br />' . $item->product_name_en . '</span>';
+                                            echo $str_comment;
+                                            echo '</span>';
+                                        }
+                                        if ($item->comment_name) {
+                                                
+                                            echo '<span class="circle_text1" style="position: absolute; bottom: 32px; left: 3px; font-size: 16px; font-weight: bold">';
+                                            echo ' <strong>' . $item->comment_name . '</strong>';
+                                            echo '</span>';
+                                        }
+                                       
+
+                                        $str_span_size = '<span class="circle_text" style="position: absolute; bottom: 22px; right: 3px; font-size: 16px; font-weight: bold">';
+                                        $str_span_other = '<span class="circle_text1" style="position: absolute; bottom: 22px; right: 3px; font-size: 16px; font-weight: bold">';
+                                        if($item->variant && $item->variant != '' && $item->variant != 'undefined') {
+                                            
+                                            if (trim(strtolower($item->variant)) == 'size l') {
+                                                echo $str_span_size;
+                                                echo 'L';
+                                            } elseif (trim(strtolower($item->variant)) == 'size m')  {
+                                                echo $str_span_size;
+                                                echo 'M';
+                                            } 
+                                            
+                                            echo '</span>';
+                                        }
+
+                                        
+
+                                        echo '</div>';
+                                        
+                                    }
+                                    
+                                }
+                            }
                             
                             echo '</div>';  
                             $j++;
