@@ -83,7 +83,36 @@
                                         for ($i=0; $i < $item_qty; $i++) {
                                             $html .= '<div class="item_1 ..."> ... </div>';
                                         }
-                                        echo $html; 
+                                        for ($i=0; $i < $item_qty; $i++) {
+                                            $names = [];
+                                            if ($item->comment_name) {
+                                                $names = array_map('trim', explode(',', $item->comment_name));
+                                            }
+
+                                            //$total_items++;
+                                            $increase_size = "increase_size";
+                                            if ($item->comment) {
+                                                $increase_size .= '_1';
+                                            }
+                                            
+                                            $str_padding = '';
+                                            if ($item->variants == 'L') {
+                                                $str_padding = ' style="padding-top: 10px;"';                                            
+                                            }                                       
+                                            
+                                            }
+
+                                            echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
+                                            echo '<span style="font-size: 13px; font-weight: bold" class="reference_no">';   
+                                            echo '</span>';
+                                            
+                                            echo '<span class="text_price">'.$this->sma->formatK($item->unit_price);
+                                            echo '</span>';
+                                            
+                                            echo '</h4>';
+
+                                            echo '</div>';
+                                        }
                                     } else {
                                         
                                         $increase_size = "increase_size";
