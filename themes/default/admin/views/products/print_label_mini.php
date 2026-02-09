@@ -112,6 +112,18 @@
                                                 echo '</span>';
                                             }
 
+                                            // Lấy tên cho vòng lặp hiện tại
+                                            $current_name = isset($names[$i]) ? $names[$i] : "";
+
+                                            // In tên nếu có
+                                            if ($current_name !== "") {
+                                                echo '<span class="circle_text1" style="position: absolute; bottom: 32px; left: 3px; font-size: 16px; font-weight: bold">';
+                                                echo '<strong>' . $current_name . '</strong>';
+                                                echo '</span>';
+                                            }
+
+
+                                            
                                             
 
                                             echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
