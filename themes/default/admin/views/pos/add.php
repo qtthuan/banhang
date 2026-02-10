@@ -1759,7 +1759,7 @@ var lang = {
         $('#paymentModal').on('shown.bs.modal', function(e) {
             $('#amount_1').focus();
             if ($('#is_quick_finalize_sale').val() == 1) {
-                $('#quick-payable').click();
+                //$('#quick-payable').click();
                 $('#amount_1').blur();
                 $('#submit-sale').click();
             }

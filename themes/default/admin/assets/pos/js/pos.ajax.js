@@ -1489,6 +1489,7 @@ function loadItems() {
                 });
             } else if(item_type == 'standard' && base_quantity > item_aqty) {
                 $('#row_' + row_no).addClass('danger');
+                console.log('vvbbb');
             } else if (item_type == 'combo') {
                 if(combo_items === false) {
                     $('#row_' + row_no).addClass('danger');
