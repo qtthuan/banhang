@@ -154,13 +154,20 @@
                     if ($customer->vat_no != "-" && $customer->vat_no != "") {
                         echo "<br>" . lang("vat_no") . ": " . $customer->vat_no;
                     }
-                    if ($customer->customer_group_id != 4) { // Nhóm Baemin không hiển thị thông tin này
+                    if ($customer->customer_group_id != (int)$this->config->item('customer_group_id_app')) { // Nhóm shopeefood/grab không hiển thị thông tin này
                         if ($customer->address != 'TP Cần Thơ') {
                             echo lang("address") . ": " . $customer->address . "<br>";
                         }
+
+  
+
                         if (strpos($customer->phone, '0000') === false) {
-                            echo lang("tel") . ": " . $customer->phone . "<br>";
-                            //echo str_starts_with($customer->phone, "000");
+                            echo '<div style="display:flex; align-items:center; gap:8px;">';
+                            echo '<span>' . lang("tel") . ": " . $customer->phone . "</span><br>";
+                            echo '<a class="no-print" href="tel:' .$customer->phone . ' style="margin-left:5px; font-size:22px;">
+                                        <i class="fa fa-phone fa-2x" style="color:green;"></i>
+                                    </a>';
+                            echo '</div>';
                        }
                     }
                     if (!empty($customer->cf1) && $customer->cf1 != "-") {
