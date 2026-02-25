@@ -165,7 +165,7 @@
                             echo '<div style="display:flex; align-items:center; gap:8px;">';
                             echo '<span>' . lang("tel") . ": " . $customer->phone . "</span><br>";
                             echo '<a class="no-print" href="tel:' .$customer->phone . '" style="margin-left:5px; font-size:22px;">
-                                        <i class="fa fa-phone fa-2x" style="color:green;"></i>
+                                        <i class="fa fa-phone" style="color:green;"></i>
                                     </a>';
                             echo '</div>';
                        }
