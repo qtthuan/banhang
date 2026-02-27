@@ -441,8 +441,7 @@ class Products extends MY_Controller
 
     function print_label_mini()
     {
-       log_message('error', 'Debug qty = '.$item_qty);
-
+       
         $this->sma->checkPermissions('barcode', true);
 
         //$this->form_validation->set_rules('style', lang("style"), 'required');

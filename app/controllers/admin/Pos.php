@@ -338,7 +338,7 @@ class Pos extends MY_Controller
                 $promo_original_price_for_suspend = $_POST['promo_original_price_for_suspend'][$r];
                 $is_promo = $_POST['is_promo'][$r];
 
-                if ((int)$_POST['category_id'][$r] == $ingredient_category_id) { // NGUYÊN LIỆU
+                if ((int)$_POST['category_id'][$r] == $ingredient_category_id) { // Kiểm tra nếu sản phẩm thuộc mã nhóm Nguyên Liệu hay không
                     $is_ingredient++;
                 }
 
