@@ -94,8 +94,6 @@ class Pos extends MY_Controller
             return;
         }
 
-        
-
         // Lấy thông tin đơn hàng
         $sale = $this->db->get_where('sales', ['id' => $sale_id])->row();
 
@@ -104,6 +102,10 @@ class Pos extends MY_Controller
             return;
         }
 
+        $this->db->where('id', $sale_id)
+                ->limit(1)
+                ->update('sales', ['payment_status' => 'paid', 'paid' => $sale->grand_total]);
+
         // Thêm payment mới
         $data = [
             'date'      => date('Y-m-d H:i:s'),
@@ -111,11 +113,10 @@ class Pos extends MY_Controller
             'reference_no' => $sale->reference_no,
             'amount'    => $sale->grand_total,
             'paid_by'   => $paid_by,
+            'pos_paid'  => $sale->grand_total,
             'type'      => 'received'
         ];
         $data['created_by'] = $this->session->userdata('user_id') ?? 1;
-//log_message('error', 'ADD PAYMENT DATA: '.json_encode($data));
-
 
         $this->db->insert('payments', $data);
 
