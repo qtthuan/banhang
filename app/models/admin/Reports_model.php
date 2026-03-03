@@ -794,7 +794,7 @@ class Reports_model extends CI_Model
                 ->where("sale_status", "completed");
 
         if ($warehouse != "all") {
-            $this->db->where("warehouse_code", $warehouse);
+            $this->db->where("warehouse_id", $warehouse);
         }
 
         return $this->db->group_by("date")
