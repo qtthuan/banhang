@@ -785,19 +785,15 @@ class Reports_model extends CI_Model
         return FALSE;
     }
 
-    public function getRevenueS2A($start, $end, $warehouse)
+    public function getDailySummary($warehouse_id, $start, $end)
     {
-        $this->db->select("date, SUM(grand_total) AS total")
-                ->from("sales")
-                ->where("date >=", $start)
-                ->where("date <=", $end)
-                ->where("sale_status", "completed");
-
-        if ($warehouse != "all") {
-            $this->db->where("warehouse_id", $warehouse);
-        }
-
-        return $this->db->group_by("date")
+        return $this->db->select("DATE(date) AS date, SUM(grand_total-shipping) AS total")
+                        ->from("sales")
+                        ->where("warehouse_id", $warehouse_id)
+                        ->where("date >=", $start)
+                        ->where("date <=", $end)
+                        ->where("sale_status", "completed")
+                        ->group_by("DATE(date)")
                         ->order_by("date", "ASC")
                         ->get()->result();
     }

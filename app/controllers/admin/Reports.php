@@ -2974,81 +2974,131 @@ class Reports extends MY_Controller
         echo $this->datatables->generate();
     }
 
-    public function xuat_s2a_excel($warehouse, $period)
+    public function export_s2a($warehouse, $quarter, $year)
     {
         $this->load->library('excel');
+        $this->load->model('reports_model');
 
-        // Tính ngày bắt đầu – ngày kết thúc
-        $end = date('Y-m-d');
-        $start = date('Y-m-d', strtotime("-{$period} months"));
+        // Tính ngày trong quí
+        $start_month = ($quarter - 1) * 3 + 1;
+        $end_month   = $start_month + 2;
 
-        // Lấy doanh thu từ DB
-        $sales = $this->reports_model->getRevenueS2A($start, $end, $warehouse);
+        $start = "$year-$start_month-01";
+        $end   = date("Y-m-t", strtotime("$year-$end_month-01"));
 
-        // Tạo sheet
-        $sheet = $this->excel->setActiveSheetIndex(0);
+        // Nếu chọn all → xuất nhiều sheet
+        if ($warehouse === 'all') {
+            $warehouses = $this->db->get('warehouses')->result();
 
-        $sheet->setTitle("S2a-HKD");
+            $sheetIndex = 0;
 
-        // ======== HEADER TEMPLATE ========
-        $sheet->mergeCells('A1:E1');
-        $sheet->setCellValue('A1', "HỘ, CÁ NHÂN KINH DOANH: HKD BA-NI MINI");
+            foreach ($warehouses as $wh) {
+                if ($sheetIndex == 0) {
+                    $sheet = $this->excel->setActiveSheetIndex(0);
+                } else {
+                    $sheet = $this->excel->createSheet($sheetIndex);
+                }
+                $sheet->setTitle($wh->name);
 
-        $sheet->mergeCells('A2:E2');
-        $sheet->setCellValue('A2', "Mã số thuế: 092184008757");
+                $sales = $this->reports_model->getDailySummary($wh->id, $start, $end);
 
-        $sheet->mergeCells('A3:E3');
-        $sheet->setCellValue('A3', "Địa chỉ: 27/12 Trần Bình Trọng, P. Ninh Kiều, TP. Cần Thơ");
+                $this->_build_s2a_template($sheet, $sales, $wh->id, $quarter, $year);
 
-        $sheet->mergeCells('C1:F1');
-        $sheet->setCellValue('C1', "Mẫu số S2a-HKD");
+                $sheetIndex++;
+            }
 
-        $sheet->mergeCells('C2:F2');
-        $sheet->setCellValue('C2', "(Theo Thông tư số 152/2025/TT-BTC)");
+        } else {
+            $sheet = $this->excel->setActiveSheetIndex(0);
+            $warehouse_id = intval($warehouse);
 
-        // ======= TIÊU ĐỀ =======
-        $sheet->mergeCells('A5:F5');
-        $sheet->setCellValue('A5', "SỔ DOANH THU BÁN HÀNG HÓA, DỊCH VỤ");
+            $sales = $this->reports_model->getDailySummary($warehouse_id, $start, $end);
 
-        $sheet->mergeCells('A6:F6');
-        $sheet->setCellValue('A6', "Địa điểm kinh doanh: 27/12 Trần Bình Trọng, P. Ninh Kiều, TP. Cần Thơ");
-
-        $sheet->mergeCells('A7:F7');
-        $sheet->setCellValue('A7', "Kỳ kê khai: Quý " . ceil(date('n')/3) . "/" . date('Y'));
-
-        // ======= HEADER BẢNG =======
-        $sheet->setCellValue('A9', "Số hiệu");
-        $sheet->setCellValue('B9', "Ngày, tháng");
-        $sheet->setCellValue('C9', "Diễn giải");
-        $sheet->setCellValue('F9', "Số tiền");
-
-        // ======= GHI DỮ LIỆU =======
-        $row = 10;
-        $stt = 1;
-        $total = 0;
-
-        foreach ($sales as $s) {
-            $sheet->setCellValue("A{$row}", $stt);
-            $sheet->setCellValue("B{$row}", date('j/n/Y', strtotime($s->date)));
-            $sheet->setCellValue("C{$row}", "Doanh thu bán nước uống ngày " . date('j/n/Y', strtotime($s->date)));
-            $sheet->setCellValue("F{$row}", $s->total);
-
-            $total += $s->total;
-            $stt++;
-            $row++;
+            $this->_build_s2a_template($sheet, $sales, $warehouse_id, $quarter, $year);
         }
-
-        // ===== TOTAL =====
-        $sheet->setCellValue("C{$row}", "Tổng cộng");
-        $sheet->setCellValue("F{$row}", $total);
 
         // Xuất file
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="s2a-hkd.xls"');
+        header("Content-Disposition: attachment;filename=s2a_quy{$quarter}_{$year}.xls");
         header('Cache-Control: max-age=0');
 
         $writer = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
         $writer->save('php://output');
+    }
+
+    private function _build_s2a_template($sheet, $sales, $warehouse_id, $quarter, $year)
+    {
+        $CI =& get_instance();
+        $CI->config->load('config');
+
+        $mini = $CI->config->item('mini_warehouse_id');
+        $bani = $CI->config->item('bani_warehouse_id');
+
+        // Chọn diễn giải theo kho
+        if ($warehouse_id == $bani)
+            $desc_prefix = "Doanh thu bán quần áo ngày ";
+        else
+            $desc_prefix = "Doanh thu bán nước ngày ";
+
+        // Font mặc định
+        $sheet->getDefaultStyle()->getFont()->setName('Times New Roman')->setSize(12);
+
+        // ==== HEADER ====
+        $sheet->mergeCells("A1:E1");
+        $sheet->setCellValue("A1", "HỘ, CÁ NHÂN KINH DOANH: HKD BA-NI MINI");
+        $sheet->getStyle("A1")->getFont()->setBold(true)->setSize(14);
+
+        $sheet->mergeCells("A2:E2");
+        $sheet->setCellValue("A2", "Mã số thuế: 092184008757");
+        $sheet->getStyle("A2")->getFont()->setBold(true);
+
+        $sheet->mergeCells("A3:E3");
+        $sheet->setCellValue("A3", "Địa chỉ: 27/12 Trần Bình Trọng, P. Ninh Kiều, TP. Cần Thơ");
+
+        $sheet->mergeCells("C1:F1");
+        $sheet->setCellValue("C1", "Mẫu số S2a-HKD");
+        $sheet->getStyle("C1")->getFont()->setBold(true);
+
+        $sheet->mergeCells("C2:F2");
+        $sheet->setCellValue("C2", "(Kèm theo Thông tư số 152/2025/TT-BTC • Bộ Tài chính)");
+
+        // ==== TIÊU ĐỀ ====
+        $sheet->mergeCells("A5:F5");
+        $sheet->setCellValue("A5", "SỔ DOANH THU BÁN HÀNG HÓA, DỊCH VỤ");
+        $sheet->getStyle("A5")->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle("A5")->getAlignment()->setHorizontal('center');
+
+        // ==== DỮ LIỆU ====
+        $row = 10;
+        $sheet->setCellValue("A9", "Số hiệu");
+        $sheet->setCellValue("B9", "Ngày, tháng");
+        $sheet->setCellValue("C9", "Diễn giải");
+        $sheet->setCellValue("F9", "Số tiền");
+        $sheet->getStyle("A9:F9")->getFont()->setBold(true);
+
+        $total = 0;
+        $i = 1;
+
+        foreach ($sales as $s) {
+            $sheet->setCellValue("A{$row}", $i++);
+            $sheet->setCellValue("B{$row}", date('j/n/Y', strtotime($s->date)));
+            $sheet->setCellValue("C{$row}", $desc_prefix . date('j/n/Y', strtotime($s->date)));
+            $sheet->setCellValue("F{$row}", $s->total);
+
+            $total += $s->total;
+            $row++;
+        }
+
+        // Tổng
+        $sheet->setCellValue("C{$row}", "Tổng cộng");
+        $sheet->setCellValue("F{$row}", $total);
+        $sheet->getStyle("C{$row}:F{$row}")->getFont()->setBold(true);
+
+        // Border bảng
+        $sheet->getStyle("A9:F{$row}")->applyFromArray([
+            'borders' => [
+                'allborders' => ['style' => PHPExcel_Style_Border::BORDER_THIN]
+            ]
+        ]);
     }
 
 }

@@ -102,18 +102,30 @@
                             <label>Kho hàng</label>
                             <select id="excel_warehouse" class="form-control">
                                 <option value="all">Tất cả kho hàng</option>
-                                <option value="bani">Kho Ba-Ni</option>
-                                <option value="mini">Tiệm Nước Mini</option>
+                                <?php foreach ($warehouses as $warehouse): ?>
+                                    <option value="<?= $warehouse->id ?>"><?= $warehouse->name ?></option>
+                                <?php endforeach; ?>
                             </select>
 
                             <br>
 
                             <label>Kỳ báo cáo</label>
-                            <select id="excel_period" class="form-control">
-                                <option value="1">1 tháng</option>
-                                <option value="3">3 tháng</option>
-                                <option value="6">6 tháng</option>
-                                <option value="12">12 tháng</option>
+                            <select id="excel_quarter" class="form-control">
+                                <option value="1">Quí 1 (1-3)</option>
+                                <option value="2">Quí 2 (4-6)</option>
+                                <option value="3">Quí 3 (7-9)</option>
+                                <option value="4">Quí 4 (10-12)</option>
+                            </select>
+
+                            <br>
+
+                            <label>Năm</label>
+                            <select id="excel_year" class="form-control">
+                                <?php for ($y = date("Y") - 5; $y <= date("Y") + 1; $y++): ?>
+                                    <option value="<?= $y ?>" <?= $y == date("Y") ? "selected" : "" ?>>
+                                        <?= $y ?>
+                                    </option>
+                                <?php endfor; ?>
                             </select>
 
                         </div>
@@ -153,15 +165,13 @@
         });
 
         $('#export_excel_confirm').on('click', function () {
-
             let warehouse = $('#excel_warehouse').val();
-            let period    = $('#excel_period').val();
+            let quarter   = $('#excel_quarter').val();
+            let year      = $('#excel_year').val();
 
-            // Redirect sang controller xuất excel
-            window.location.href = "<?= admin_url('reports/xuat_s2a_excel/') ?>" 
-                + warehouse + "/" + period;
-
-            $('#export_excel_popup').modal('hide');
+            window.location.href =
+                "<?= admin_url('reports/export_s2a/') ?>" +
+                warehouse + "/" + quarter + "/" + year;
         });
 
         $('.table .day_num').click(function () {
