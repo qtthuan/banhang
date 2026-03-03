@@ -84,6 +84,50 @@
                         <i class="icon fa fa-file-picture-o"></i>
                     </a>
                 </li>
+                <li class="dropdown">
+                    <a id="export_excel_btn" class="tip" title="<?= lang('export_to_excel') ?>">
+                        <i class="icon fa fa-file-excel-o"></i>
+                    </a>
+                </li>
+                <div id="export_excel_popup" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h4 class="modal-title">Xuất Excel</h4>
+                        </div>
+
+                        <div class="modal-body">
+
+                            <label>Kho hàng</label>
+                            <select id="excel_warehouse" class="form-control">
+                                <option value="all">Tất cả kho hàng</option>
+                                <option value="bani">Kho Ba-Ni</option>
+                                <option value="mini">Tiệm Nước Mini</option>
+                            </select>
+
+                            <br>
+
+                            <label>Kỳ báo cáo</label>
+                            <select id="excel_period" class="form-control">
+                                <option value="1">1 tháng</option>
+                                <option value="3">3 tháng</option>
+                                <option value="6">6 tháng</option>
+                                <option value="12">12 tháng</option>
+                            </select>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button id="export_excel_confirm" class="btn btn-primary">
+                                Xuất Excel
+                            </button>
+                            <button class="btn btn-default" data-dismiss="modal">Đóng</button>
+                        </div>
+
+                        </div>
+                    </div>
+                    </div>
             </ul>
         </div>
     </div>
@@ -102,6 +146,24 @@
 <script type="text/javascript" src="<?= $assets ?>js/html2canvas.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+
+
+        $('#export_excel_btn').on('click', function () {
+            $('#export_excel_popup').modal('show');
+        });
+
+        $('#export_excel_confirm').on('click', function () {
+
+            let warehouse = $('#excel_warehouse').val();
+            let period    = $('#excel_period').val();
+
+            // Redirect sang controller xuất excel
+            window.location.href = "<?= admin_url('reports/xuat_s2a_excel/') ?>" 
+                + warehouse + "/" + period;
+
+            $('#export_excel_popup').modal('hide');
+        });
+
         $('.table .day_num').click(function () {
             var day = $(this).html();
             var date = '<?= $year.'-'.$month.'-'; ?>'+day;
