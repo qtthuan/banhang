@@ -172,6 +172,8 @@
             window.location.href =
                 "<?= admin_url('reports/export_s2a/') ?>" +
                 warehouse + "/" + quarter + "/" + year;
+            $('#export_excel_popup').modal('hide');
+
         });
 
         $('.table .day_num').click(function () {

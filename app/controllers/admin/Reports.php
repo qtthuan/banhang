@@ -2988,26 +2988,30 @@ class Reports extends MY_Controller
 
         // Nếu chọn all → xuất nhiều sheet
         if ($warehouse === 'all') {
-            $warehouses = $this->db->get('warehouses')->result();
 
+            $warehouses = $this->db->get('warehouses')->result();
             $sheetIndex = 0;
 
             foreach ($warehouses as $wh) {
-                if ($sheetIndex == 0) {
+
+                if ($sheetIndex == 0)
                     $sheet = $this->excel->setActiveSheetIndex(0);
-                } else {
+                else
                     $sheet = $this->excel->createSheet($sheetIndex);
-                }
+
                 $sheet->setTitle($wh->name);
 
+                // Lấy doanh thu theo ngày
                 $sales = $this->reports_model->getDailySummary($wh->id, $start, $end);
 
+                // Ghi dữ liệu
                 $this->_build_s2a_template($sheet, $sales, $wh->id, $quarter, $year);
 
                 $sheetIndex++;
             }
 
         } else {
+
             $sheet = $this->excel->setActiveSheetIndex(0);
             $warehouse_id = intval($warehouse);
 
@@ -3017,8 +3021,10 @@ class Reports extends MY_Controller
         }
 
         // Xuất file
+        $filename = "SO_DOANH_THU_Quy_{$quarter}_{$year}.xls";
+
         header('Content-Type: application/vnd.ms-excel');
-        header("Content-Disposition: attachment;filename=s2a_quy{$quarter}_{$year}.xls");
+        header("Content-Disposition: attachment;filename=".$filename);
         header('Cache-Control: max-age=0');
 
         $writer = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
@@ -3033,72 +3039,198 @@ class Reports extends MY_Controller
         $mini = $CI->config->item('mini_warehouse_id');
         $bani = $CI->config->item('bani_warehouse_id');
 
-        // Chọn diễn giải theo kho
+        // Diễn giải theo kho
         if ($warehouse_id == $bani)
             $desc_prefix = "Doanh thu bán quần áo ngày ";
         else
             $desc_prefix = "Doanh thu bán nước ngày ";
 
         // Font mặc định
-        $sheet->getDefaultStyle()->getFont()->setName('Times New Roman')->setSize(12);
+        $sheet->getDefaultStyle()->getFont()
+                ->setName('Times New Roman')
+                ->setSize(12);
 
-        // ==== HEADER ====
-        $sheet->mergeCells("A1:E1");
-        $sheet->setCellValue("A1", "HỘ, CÁ NHÂN KINH DOANH: HKD BA-NI MINI");
-        $sheet->getStyle("A1")->getFont()->setBold(true)->setSize(14);
+        // ========== HEADER ==========
+       // ===== HEADER TRÁI =====
+        $sheet->mergeCells("A1:C1");
+        $left_text  = "HỘ, CÁ NHÂN KINH DOANH: HKD BA-NI MINI\n";
+        $left_text .= "Mã số thuế: 092184008757\n";
+        $left_text .= "Địa chỉ: 27/12 Trần Bình Trọng, P. Ninh Kiều, TP. Cần Thơ";
+        $sheet->setCellValue("A1", $left_text);
+        $sheet->getStyle("A1")->getFont()->setName('Times New Roman')->setSize(14);
+        $sheet->getStyle("A1")->getFont()->setBold(true);
+        $sheet->getStyle("A1")->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
+        $sheet->getStyle("A1")->getAlignment()->setWrapText(true);
 
-        $sheet->mergeCells("A2:E2");
-        $sheet->setCellValue("A2", "Mã số thuế: 092184008757");
-        $sheet->getStyle("A2")->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getColumnDimension('A')->setWidth(15);
+        $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth(15);
+        $this->excel->getActiveSheet()->getColumnDimension('C')->setWidth(42);
 
-        $sheet->mergeCells("A3:E3");
-        $sheet->setCellValue("A3", "Địa chỉ: 27/12 Trần Bình Trọng, P. Ninh Kiều, TP. Cần Thơ");
+        //$sheet->setCellValue("A2", "Mã số thuế: 092184008757");
+        //$sheet->getStyle("A2")->getFont()->setBold(true);
 
-        $sheet->mergeCells("C1:F1");
-        $sheet->setCellValue("C1", "Mẫu số S2a-HKD");
-        $sheet->getStyle("C1")->getFont()->setBold(true);
+        //$sheet->setCellValue("A3", "Địa chỉ: 27/12 Trần Bình Trọng, P. Ninh Kiều, TP. Cần Thơ");
 
-        $sheet->mergeCells("C2:F2");
-        $sheet->setCellValue("C2", "(Kèm theo Thông tư số 152/2025/TT-BTC • Bộ Tài chính)");
 
-        // ==== TIÊU ĐỀ ====
-        $sheet->mergeCells("A5:F5");
-        $sheet->setCellValue("A5", "SỔ DOANH THU BÁN HÀNG HÓA, DỊCH VỤ");
-        $sheet->getStyle("A5")->getFont()->setBold(true)->setSize(14);
+        // ===== HEADER PHẢI (KHÔNG MERGE – CHỈ D1) =====
+        // ===== HEADER PHẢI (D1 = 2 DÒNG) =====
+        $rich = new PHPExcel_RichText();
+
+        // Dòng 1: Bold
+        $bold = $rich->createTextRun("Mẫu số S2a-HKD\n");
+        $bold->getFont()->setBold(true);
+        $bold->getFont()->setName('Times New Roman');
+        $bold->getFont()->setSize(12);
+
+        // Dòng 2: Normal
+        $normal = $rich->createTextRun("(Kèm theo Thông tư số 152/2025/TT-BTC ngày 31 tháng 12 năm 2025 của Bộ trưởng Bộ Tài chính)");
+        $normal->getFont()->setBold(false);
+        $normal->getFont()->setName('Times New Roman');
+        $normal->getFont()->setSize(12);
+
+        $sheet->setCellValue("D1", $rich);
+
+        $sheet->getStyle("D1")->getAlignment()->setWrapText(true);
+        $sheet->getStyle("D1")->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_TOP);
+
+        $sheet->getStyle("D1")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $this->excel->getActiveSheet()->getColumnDimension('D')->setWidth(35);
+
+
+        // ========== TIÊU ĐỀ ==========
+        $sheet->mergeCells("A3:D3");
+        $sheet->setCellValue("A3", "SỔ DOANH THU BÁN HÀNG HÓA, DỊCH VỤ");
+        $sheet->getStyle("A3")->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle("A3")->getAlignment()->setHorizontal('center');
+
+        $sheet->mergeCells("A4:D4");
+        $sheet->setCellValue("A4", "Địa điểm kinh doanh: 27/12 Trần Bình Trọng, P. Ninh Kiều, TP. Cần Thơ");
+        $sheet->getStyle("A4")->getAlignment()->setHorizontal('center');
+
+        $sheet->mergeCells("A5:D5");
+        $sheet->setCellValue("A5", "Kỳ kê khai: Quý $quarter/$year");
         $sheet->getStyle("A5")->getAlignment()->setHorizontal('center');
 
-        // ==== DỮ LIỆU ====
-        $row = 10;
-        $sheet->setCellValue("A9", "Số hiệu");
-        $sheet->setCellValue("B9", "Ngày, tháng");
-        $sheet->setCellValue("C9", "Diễn giải");
-        $sheet->setCellValue("F9", "Số tiền");
-        $sheet->getStyle("A9:F9")->getFont()->setBold(true);
 
+       // ==== HEADER BẢNG (A7:D9) ====
+
+        // ===== Hàng 7 =====
+
+        // Chứng từ → merge A7:B7
+        $sheet->mergeCells("A7:B7");
+        $sheet->setCellValue("A7", "Chứng từ");
+
+        // Diễn giải → merge C7:C8
+        $sheet->mergeCells("C7:C8");
+        $sheet->setCellValue("C7", "Diễn giải");
+
+        // Số tiền → merge D7:D8
+        $sheet->mergeCells("D7:D8");
+        $sheet->setCellValue("D7", "Số tiền");
+
+        // Style hàng 7
+        $sheet->getStyle("A7:D7")->getFont()->setBold(true);
+        $sheet->getStyle("A7:D7")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A7:D7")->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+        // ===== Hàng 8 =====
+        $sheet->setCellValue("A8", "Số hiệu");
+        $sheet->setCellValue("B8", "Ngày, tháng");
+
+        // In nghiêng hàng 8
+        $sheet->getStyle("A8:B8")->getFont()->setItalic(true)->setBold(true);
+        $sheet->getStyle("A8:B8")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+        // ===== Hàng 9 (để border giống template) =====
+        $sheet->setCellValue("A9", "A");
+        $sheet->setCellValue("B9", "B");
+        $sheet->setCellValue("C9", "C");
+        $sheet->setCellValue("D9", "1");
+
+        // ===== Border cho toàn bộ header A7:D9 =====
+        $sheet->getStyle("A7:D9")->applyFromArray([
+            'borders' => [
+                'allborders' => [
+                    'style' => PHPExcel_Style_Border::BORDER_THIN
+                ]
+            ]
+        ]);
+
+        // ===== Căn giữa toàn bộ A7:D9 =====
+        $sheet->getStyle("A7:D9")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A7:D9")->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+
+        // ========== DỮ LIỆU ==========
+        $row = 10;
         $total = 0;
-        $i = 1;
 
         foreach ($sales as $s) {
-            $sheet->setCellValue("A{$row}", $i++);
-            $sheet->setCellValue("B{$row}", date('j/n/Y', strtotime($s->date)));
-            $sheet->setCellValue("C{$row}", $desc_prefix . date('j/n/Y', strtotime($s->date)));
-            $sheet->setCellValue("F{$row}", $s->total);
+
+            $d = date('d/m/Y', strtotime($s->date));
+            $d_short = date('dm', strtotime($s->date)); // tạo DTddmm
+
+            $sheet->setCellValue("A{$row}", "DT{$d_short}");
+            $sheet->setCellValue("B{$row}", $d);
+            $sheet->setCellValue("C{$row}", $desc_prefix . $d);
+            $sheet->setCellValue("D{$row}", $s->total);
+
+            // Căn giữa toàn bộ dòng
+            $sheet->getStyle("A{$row}:C{$row}")
+                ->getAlignment()
+                ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+                ->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("D{$row}")
+                            ->getAlignment()
+                            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT)
+                            ->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+            // Format số tiền 100,000
+            $sheet->getStyle("D{$row}")->getNumberFormat()->setFormatCode('#,##0');
+
+            // Border từng dòng
+            $sheet->getStyle("A{$row}:D{$row}")->applyFromArray([
+                'borders' => ['allborders' => ['style' => PHPExcel_Style_Border::BORDER_THIN]]
+            ]);
 
             $total += $s->total;
             $row++;
         }
 
-        // Tổng
-        $sheet->setCellValue("C{$row}", "Tổng cộng");
-        $sheet->setCellValue("F{$row}", $total);
-        $sheet->getStyle("C{$row}:F{$row}")->getFont()->setBold(true);
 
-        // Border bảng
-        $sheet->getStyle("A9:F{$row}")->applyFromArray([
-            'borders' => [
-                'allborders' => ['style' => PHPExcel_Style_Border::BORDER_THIN]
-            ]
+        // ========== TỔNG ==========
+        $sheet->setCellValue("C{$row}", "Tổng cộng");
+        $sheet->getStyle("C{$row}")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $sheet->setCellValue("D{$row}", $total);
+
+        // Format số tiền 100,000
+        $sheet->getStyle("D{$row}")->getNumberFormat()->setFormatCode('#,##0');
+
+        $sheet->getStyle("C{$row}:D{$row}")->getFont()->setBold(true);
+        $sheet->getStyle("A{$row}:D{$row}")->applyFromArray([
+            'borders' => ['allborders' => ['style' => PHPExcel_Style_Border::BORDER_THIN]]
         ]);
+        
+        $row = $row + 3;
+        
+        $sheet->setCellValue("D{$row}", "Ngày ... tháng ... năm ...");
+        $sheet->getStyle("D{$row}")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $row++;
+
+        $sheet->setCellValue("D{$row}", "NGƯỜI ĐẠI DIỆN HỘ KINH DOANH/");
+        $sheet->getStyle("D{$row}")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("D{$row}")->getFont()->setBold(true);
+        $row++;
+
+        $sheet->setCellValue("D{$row}", "CÁ NHÂN KINH DOANH");
+        $sheet->getStyle("D{$row}")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("D{$row}")->getFont()->setBold(true);
+        $row++;
+
+        $sheet->setCellValue("D{$row}", "(Ký, họ tên, đóng dấu)");
+        $sheet->getStyle("D{$row}")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        
+
     }
 
 }
