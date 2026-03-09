@@ -128,6 +128,25 @@
                                 <?php endfor; ?>
                             </select>
 
+                            <br>
+
+                            <div id="mini_type_box" style="display:none">
+                                <label>Loại đơn</label>
+
+                                <div class="radio">
+                                    <label>
+                                    <input type="radio" name="mini_type" value="shop" checked>
+                                    Xuất đơn Tiệm
+                                    </label>
+                                </div>
+
+                                <div class="radio">
+                                    <label>
+                                    <input type="radio" name="mini_type" value="app">
+                                    Xuất đơn App (Shopee / Grab)
+                                    </label>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="modal-footer">
@@ -159,19 +178,51 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
+        var MINI_WAREHOUSE_ID = <?= $this->config->item('mini_warehouse_id') ?>;
+
+        $("#excel_warehouse").change(function(){
+
+            var w = $(this).val();
+
+            if(w == MINI_WAREHOUSE_ID){
+                $("#mini_type_box").show();
+            }else{
+                $("#mini_type_box").hide();
+            }
+
+        });
+
 
         $('#export_excel_btn').on('click', function () {
             $('#export_excel_popup').modal('show');
         });
 
         $('#export_excel_confirm').on('click', function () {
-            let warehouse = $('#excel_warehouse').val();
-            let quarter   = $('#excel_quarter').val();
-            let year      = $('#excel_year').val();
+            // let warehouse = $('#excel_warehouse').val();
+            // let quarter   = $('#excel_quarter').val();
+            // let year      = $('#excel_year').val();
 
-            window.location.href =
-                "<?= admin_url('reports/export_s2a/') ?>" +
-                warehouse + "/" + quarter + "/" + year;
+            // window.location.href =
+            //     "<?= admin_url('reports/export_s2a/') ?>" +
+            //     warehouse + "/" + quarter + "/" + year;
+
+
+
+            var warehouse = $("#excel_warehouse").val();
+            var quarter   = $("#excel_quarter").val();
+            var year      = $("#excel_year").val();
+
+            var type = $("input[name=mini_type]:checked").val();
+
+            var url = "<?= admin_url('reports/export_s2a') ?>/" + warehouse + "/" + quarter + "/" + year;
+
+            if(type){
+                url += "/" + type;
+            }
+
+            //window.open(url,'_blank');
+            window.location.href = url;
+
             $('#export_excel_popup').modal('hide');
 
         });

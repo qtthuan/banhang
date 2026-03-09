@@ -2974,10 +2974,10 @@ class Reports extends MY_Controller
         echo $this->datatables->generate();
     }
 
-    public function export_s2a($warehouse, $quarter, $year)
+    public function export_s2a($warehouse, $quarter, $year, $type='shop')
     {
         $this->load->library('excel');
-        $this->load->model('reports_model');
+        $this->load->model('reports_model');        
 
         // Tính ngày trong quí
         $start_month = ($quarter - 1) * 3 + 1;
@@ -3002,7 +3002,7 @@ class Reports extends MY_Controller
                 $sheet->setTitle($wh->name);
 
                 // Lấy doanh thu theo ngày
-                $sales = $this->reports_model->getDailySummary($wh->id, $start, $end);
+                $sales = $this->reports_model->getDailySummary($wh->id, $start, $end, $type);
 
                 // Ghi dữ liệu
                 $this->_build_s2a_template($sheet, $sales, $wh->id, $quarter, $year);
@@ -3015,7 +3015,7 @@ class Reports extends MY_Controller
             $sheet = $this->excel->setActiveSheetIndex(0);
             $warehouse_id = intval($warehouse);
 
-            $sales = $this->reports_model->getDailySummary($warehouse_id, $start, $end);
+            $sales = $this->reports_model->getDailySummary($warehouse_id, $start, $end, $type);
 
             $this->_build_s2a_template($sheet, $sales, $warehouse_id, $quarter, $year);
         }

@@ -785,17 +785,90 @@ class Reports_model extends CI_Model
         return FALSE;
     }
 
-    public function getDailySummary($warehouse_id, $start, $end)
+    // public function getDailySummary($warehouse_id, $start, $end, $type)
+    // {
+    //     $CI =& get_instance();
+    //     $CI->config->load('config');
+    //     $customer_group_app = $CI->config->item('customer_group_id_app'); // = 4 - shopeefod/grab
+    //     //exit('sss: ' . $customer_group_app);
+    //     return $this->db->select("DATE(date) AS date, SUM(total-shipping) AS total")
+    //                     ->from("sales")
+    //                     ->join("companies", "companies.id = sales.customer_id", "left")
+    //                     ->where("warehouse_id", $warehouse_id)
+    //                     ->where("date >=", $start)
+    //                     ->where("date <=", $end)
+    //                     ->where("sale_status", "completed")
+    //                     ->where("companies.customer_group_id !=", $customer_group_app)
+    //                     ->group_by("DATE(date)")
+    //                     ->order_by("date", "ASC")
+    //                     ->get()->result();
+    // }
+
+    public function getDailySummary($warehouse_id, $start, $end, $type = 'shop')
     {
-        return $this->db->select("DATE(date) AS date, SUM(grand_total-shipping) AS total")
-                        ->from("sales")
-                        ->where("warehouse_id", $warehouse_id)
-                        ->where("date >=", $start)
-                        ->where("date <=", $end)
-                        ->where("sale_status", "completed")
-                        ->group_by("DATE(date)")
+        $CI =& get_instance();
+        $CI->config->load('config');
+        $customer_group_app = $CI->config->item('customer_group_id_app'); // = 4
+
+        $this->db->select("DATE(date) AS date, SUM(total-shipping) AS total")
+                ->from("sales")
+                ->join("companies", "companies.id = sales.customer_id", "left")
+                ->where("warehouse_id", $warehouse_id)
+                ->where("date >=", $start)
+                ->where("date <=", $end)
+                ->where("sale_status", "completed");
+
+        // xử lý theo loại xuất báo cáo
+        if ($type == 'app') {
+            $this->db->where("companies.customer_group_id", $customer_group_app);
+        } elseif ($type == 'shop') {
+            $this->db->where("companies.customer_group_id !=", $customer_group_app);
+        }
+        //exit($type);
+
+        return $this->db->group_by("DATE(date)")
                         ->order_by("date", "ASC")
-                        ->get()->result();
+                        ->get()
+                        ->result();
     }
+
+    // public function getDailySummary($warehouse_id, $start, $end, $type='shop')
+    // {
+    //     $CI =& get_instance();
+    //     $CI->config->load('config');
+
+    //     $customer_group_app = $CI->config->item('customer_group_id_app');
+
+    //     $this->db->select("
+    //         DATE(sales.date) AS date,
+    //         SUM(sales.grand_total - sales.shipping) AS total
+    //     ");
+
+    //     $this->db->from("sales");
+    //     $this->db->join("companies", "companies.id = sales.customer_id", "left");
+
+    //     $this->db->where("sales.warehouse_id", $warehouse_id);
+    //     $this->db->where("sales.date >=", $start);
+    //     $this->db->where("sales.date <=", $end);
+    //     $this->db->where("sales.sale_status", "completed");
+
+    //     if ($type == 'app') {
+
+    //         $this->db->where("companies.customer_group_id", $customer_group_app);
+
+    //     } else {
+
+    //         $this->db->group_start();
+    //         $this->db->where("companies.customer_group_id !=", $customer_group_app);
+    //         $this->db->or_where("companies.customer_group_id", NULL);
+    //         $this->db->group_end();
+
+    //     }
+
+    //     $this->db->group_by("DATE(sales.date)");
+    //     $this->db->order_by("date", "ASC");
+
+    //     return $this->db->get()->result();
+    // }
 
 }
