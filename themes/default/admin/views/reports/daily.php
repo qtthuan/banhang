@@ -85,7 +85,7 @@
                     </a>
                 </li>
                 <li class="dropdown">
-                    <a id="export_excel_btn" class="tip" title="<?= lang('export_to_excel') ?>">
+                    <a id="export_excel_btn" class="tip" title="<?= lang('export_to_excel') ?>" style="cursor:pointer;">
                         <i class="icon fa fa-file-excel-o"></i>
                     </a>
                 </li>
