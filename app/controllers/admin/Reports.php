@@ -210,10 +210,11 @@ class Reports extends MY_Controller
             $this->load->library('datatables');
             if ($warehouse_id) {
                 $this->datatables
-                    ->select('image, code, name, wp.quantity, alert_quantity, products.id')
+                    ->select('image, code, name, IFNULL(wp.quantity,0) as quantity, alert_quantity, products.id')
                     ->from('products')
                     ->join("( SELECT * from {$this->db->dbprefix('warehouses_products')} WHERE warehouse_id = {$warehouse_id}) wp", 'products.id=wp.product_id', 'left')
-                    ->where('alert_quantity > products.quantity', NULL)
+                    //->where('alert_quantity > products.quantity', NULL)
+                    >where('alert_quantity > IFNULL(wp.quantity,0)', NULL, FALSE)
                     ->where('track_quantity', 1)
                     ->group_by('products.id');
 
@@ -229,9 +230,9 @@ class Reports extends MY_Controller
 //                    ->order_by('code desc');
             } else {
                 $this->datatables
-                    ->select('image, code, name, quantity, alert_quantity, id')
+                    ->select('image, code, name, IFNULL(quantity,0) as quantity, alert_quantity, id')
                     ->from('products')
-                    ->where('alert_quantity > quantity', NULL)
+                    ->where('alert_quantity > IFNULL(quantity,0)', NULL, FALSE)
                     ->where('track_quantity', 1);
             }
 
