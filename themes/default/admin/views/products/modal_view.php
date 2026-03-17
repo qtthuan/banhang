@@ -179,9 +179,9 @@
                                 </thead>
                                 <tbody>
                                     <?php foreach ($warehouses as $warehouse) {
-                                        if ($warehouse->quantity != 0) {
+                                        //if ($warehouse->quantity != 0) {
                                             echo '<tr><td title="' . $warehouse->name . '">' . $warehouse->name . '</td><td><strong>' . $this->sma->formatQuantity($warehouse->quantity) . '</strong>' . ($warehouse->rack ? ' (' . $warehouse->rack . ')' : '') . '</td></tr>';
-                                        }
+                                        //}
                                     } ?>
                                 </tbody>
                             </table>
