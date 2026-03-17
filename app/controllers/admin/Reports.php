@@ -214,20 +214,9 @@ class Reports extends MY_Controller
                     ->from('products')
                     ->join("( SELECT * from {$this->db->dbprefix('warehouses_products')} WHERE warehouse_id = {$warehouse_id}) wp", 'products.id=wp.product_id', 'left')
                     //->where('alert_quantity > products.quantity', NULL)
-                    >where('alert_quantity > IFNULL(wp.quantity,0)', NULL, FALSE)
+                    ->where('alert_quantity > IFNULL(wp.quantity,0)', NULL, FALSE)
                     ->where('track_quantity', 1)
                     ->group_by('products.id');
-
-//                $this->db
-//                    ->select('products.image as image, products.code as code, products.name as name, products.quantity as quantity, products.alert_quantity as alert_quantity')
-//                    ->from('warehouses_products_variants')
-//                    //->join('warehouses_products_variants', 'warehouses_products_variants.product_id=products.id', 'left')
-//                    ->join('product_variants', 'product_variants.id=warehouses_products_variants.option_id')
-//                    ->join('products', 'warehouses_products_variants.product_id=products.id')
-//                    ->where('alert_quantity > quantity', NULL)
-//                    ->where('alert_quantity > warehouses_products_variants.quantity')
-//                    ->where('track_quantity', 1)
-//                    ->order_by('code desc');
             } else {
                 $this->datatables
                     ->select('image, code, name, IFNULL(quantity,0) as quantity, alert_quantity, id')

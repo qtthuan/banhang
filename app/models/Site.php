@@ -8,7 +8,7 @@ class Site extends CI_Model
     }
 
     public function get_total_qty_alerts() {
-        $this->db->where('quantity < alert_quantity', NULL, FALSE)->where('track_quantity', 1);
+        $this->db->where('IFNULL(quantity, 0) < alert_quantity', NULL, FALSE)->where('track_quantity', 1);
         return $this->db->count_all_results('products');
     }
 
