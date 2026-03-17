@@ -164,7 +164,7 @@ class Pos extends MY_Controller
         $this->load->library('datatables');
         if ($warehouse_id) {
             $this->datatables
-                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no, customer, delivery_method, p.paid_by, (grand_total+COALESCE(rounding, 0)), w.name, companies.email as cemail")
+                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no, customer, p.paid_by, (grand_total+COALESCE(rounding, 0)), delivery_method, w.name, companies.email as cemail")
                 ->from('sales')
                 ->join('companies', 'companies.id=sales.customer_id', 'left')
                 ->join('warehouses w', 'w.id = sales.warehouse_id', 'left')
@@ -181,7 +181,7 @@ class Pos extends MY_Controller
                 ->group_by('sales.id');
         } else {
             $this->datatables
-                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no as reference_no, customer, delivery_method, p.paid_by, (grand_total+COALESCE(rounding, 0)), w.name, companies.email as cemail")
+                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no as reference_no, customer, p.paid_by, (grand_total+COALESCE(rounding, 0)), delivery_method, w.name, companies.email as cemail")
                 ->from('sales')
                 ->join('warehouses w', 'w.id = sales.warehouse_id', 'left')
                 ->join('companies', 'companies.id=sales.customer_id', 'left')     

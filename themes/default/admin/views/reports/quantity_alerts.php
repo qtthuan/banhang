@@ -23,9 +23,19 @@
                 return nRow;
             },
             "aoColumns": [{
-                "bSortable": false,
-                "mRender": img_hl
-            }, null, null, {"mRender": formatQuantity}, {"mRender": formatQuantity}]
+                    "bSortable": false,
+                    "mRender": img_hl
+                }, null, null, 
+                {
+                "mRender": function (data, type, row) {
+                    return '<span style="color:red;font-weight:bold;">' + formatQuantity(data) + '</span>';
+                }
+            },
+            {
+                "mRender": function (data, type, row) {
+                    return '<span style="color:green;font-weight:bold;">' + formatQuantity(data) + '</span>';
+                }
+            }]
         }).fnSetFilteringDelay().dtFilter([
             {column_number: 1, filter_default_label: "[<?=lang('product_code');?>]", filter_type: "text", data: []},
             {column_number: 2, filter_default_label: "[<?=lang('product_name');?>]", filter_type: "text", data: []},

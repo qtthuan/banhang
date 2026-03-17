@@ -33,9 +33,10 @@
                 {"mRender": fld}, // 1 date
                 null, // 2 Mã
                 null, // 3 Tên KH
-                {"mRender": delivery_method}, // 4 Hình thức nhận 
+                
                 {"mRender": function (data, type, row) { return paidBy(data, row); } }, // 5 Thanh toán bằng
                 {"mRender": currencyFormat}, // 6 Tổng tiền
+                {"mRender": delivery_method}, // 4 Hình thức nhận 
                 null, // 7 Kho
                 {"bSortable": false} // 8 Tác vụ
             ],
@@ -55,9 +56,9 @@
             {column_number: 1, filter_default_label: "[năm-tháng-ngày]", filter_type: "text", data: []},
             {column_number: 2, filter_default_label: "[<?=lang('reference_no');?>]", filter_type: "text", data: []},
             {column_number: 3, filter_default_label: "[<?=lang('customer');?>]", filter_type: "text"},
-            {column_number: 4, filter_default_label: "[<?=lang('delivery_method');?>]", filter_type: "text"},
+            
             {
-                column_number: 5,
+                column_number: 4,
                 filter_type: "select",
                 filter_default_label: "[Tất cả]",
                 data: [
@@ -66,7 +67,8 @@
                     { value: "cod", label: "COD" }
                 ]
             },
-            {column_number: 6, filter_default_label: "[<?=lang('total');?>]", filter_type: "text", data: []},
+            {column_number: 5, filter_default_label: "[<?=lang('total');?>]", filter_type: "text", data: []},
+            {column_number: 6, filter_default_label: "[<?=lang('delivery_method');?>]", filter_type: "text"},
             {
                 column_number: 7,
                 filter_type: "select",
@@ -314,9 +316,10 @@
                             <th><?= lang("date"); ?></th>
                             <th><?= lang("reference_no"); ?></th>
                             <th><?= lang("customer"); ?></th>
-                            <th><?= lang("delivery_method"); ?></th>
+                            
                             <th><?= lang("paid_by"); ?></th> 
                             <th><?= lang("grand_total"); ?></th>
+                            <th><?= lang("delivery_method"); ?></th>
                             <th><?= lang("warehouse"); ?></th>     
                             <th style="width:80px; text-align:center;"><?= lang("actions"); ?></th>
                         </tr>
