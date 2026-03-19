@@ -244,7 +244,7 @@ class Products_model extends CI_Model
 
     public function getAllWarehousesWithPQ($product_id)
     {
-        $this->db->select('' . $this->db->dbprefix('warehouses') . '.*, ' . $this->db->dbprefix('warehouses_products') . '.quantity,' . $this->db->dbprefix('warehouses_products') . '.rack')
+        $this->db->select('' . $this->db->dbprefix('warehouses') . '.*, ' . $this->db->dbprefix('warehouses_products') . '.quantity,' .  $this->db->dbprefix('warehouses_products') . '.id as whp_id, ' . $this->db->dbprefix('warehouses_products') . '.rack')
             ->join('warehouses_products', 'warehouses_products.warehouse_id=warehouses.id', 'left')
             ->where('warehouses_products.product_id', $product_id)
             ->group_by('warehouses.id');

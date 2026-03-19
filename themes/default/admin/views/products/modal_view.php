@@ -171,21 +171,46 @@
                             <div class="table-responsive">
                                 <table
                                 class="table table-bordered table-striped table-condensed dfTable three-columns">
-                                <thead>
-                                    <tr>
-                                        <th><?= lang('warehouse_name') ?></th>
-                                        <th><?= lang('quantity') . ' (' . lang('rack') . ')'; ?></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($warehouses as $warehouse) {
-                                        //if ($warehouse->quantity != 0) {
-                                            echo '<tr><td title="' . $warehouse->name . '">' . $warehouse->name . '</td><td><strong>' . $this->sma->formatQuantity($warehouse->quantity) . '</strong>' . ($warehouse->rack ? ' (' . $warehouse->rack . ')' : '') . '</td></tr>';
-                                        //}
-                                    } ?>
-                                </tbody>
-                            </table>
-                        </div>
+                                    <thead>
+                                        <tr>
+                                            <th style="width:50%; text-align:center;"><?= lang('warehouse_name') ?></th>
+                                            <th style="width:40%; text-align:center;"><?= lang('quantity') . ' (' . lang('rack') . ')'; ?></th>
+                                            <th style="width:10%; text-align:center;">
+                                                <i class="fa fa-trash"></i>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $total_wh = count($warehouses); ?>
+                                        <?php foreach ($warehouses as $warehouse) { ?>
+                                            <tr id="<?= $warehouse->whp_id ?>">
+                                                <td title="<?= $warehouse->name ?>"><?= $warehouse->name ?></td>
+                                                <td>
+                                                    <strong><?= $this->sma->formatQuantity($warehouse->quantity) ?></strong>
+                                                    <?= ($warehouse->rack ? ' (' . $warehouse->rack . ')' : '') ?>
+                                                </td>
+                                                <td style="text-align:center;">
+                                                    <?php if ($total_wh >= 2 && $warehouse->quantity == 0) { ?>
+                                                        <a href="#" 
+                                                            class="btn-delete-wh bpo" 
+                                                            data-id="<?= $warehouse->whp_id ?>"
+                                                            data-html="true"
+                                                            data-placement="left"
+                                                            data-content="
+                                                            <div style='width:110px;'>
+                                                                <p>Bạn chắc xoá?</p>
+                                                                <button class='btn btn-danger btn-xs confirm-delete' style='width: 50px; height: 30px;' data-id='<?= $warehouse->whp_id ?>'>OK</button>
+                                                                <button class='btn btn-default btn-xs bpo-close' style='width: 50px; height: 30px;'>Huỷ</button>
+                                                            </div>"
+                                                            style="color:red;">✖</a>
+                                                    <?php } ?>
+                                                </td>
+                                            </tr>
+                                        <?php } ?>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
                         <?php } ?>
                     </div>
                     <div class="col-xs-7">
@@ -335,5 +360,33 @@ $(document).ready(function() {
         $(".col_original").slideToggle();
         $(".wh_col_original").slideToggle();
     });
+
+    $(document).on('click', '.bpo-close', function () {
+        $('.bpo').popover('hide');
+    });
+
+    $(document).on('click', '.confirm-delete', function () {
+        var id = $(this).data('id');
+        var row = $('a[data-id="' + id + '"]').closest('tr');
+
+        $.ajax({
+            url: '<?= admin_url("products/deleteWarehouseProduct") ?>',
+            type: 'POST',
+            data: {
+                id: id,
+                <?= json_encode($this->security->get_csrf_token_name()) ?>: '<?= $this->security->get_csrf_hash() ?>'
+            },
+            success: function () {
+                row.fadeOut(300, function () {
+                    $(this).remove();
+                });
+            },
+            error: function () {
+                alert('Xoá thất bại!');
+            }
+        });
+    });
+
 });
+
 </script>

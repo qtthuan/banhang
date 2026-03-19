@@ -2054,6 +2054,17 @@ class Products extends MY_Controller
 
     }
 
+    public function deleteWarehouseProduct()
+    {
+        $id = $this->input->post('id');
+
+        if ($this->db->delete('warehouses_products', ['id' => $id])) {
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error']);
+        }
+    }
+
     /* --------------------------------------------------------------------------------------------- */
 
     function modal_view($id = NULL)
