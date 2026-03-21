@@ -445,6 +445,108 @@ class Site extends CI_Model
         return FALSE;
     }
 
+    public function getWarehouseProducts($product_id, $warehouse_id = NULL) {
+        if ($warehouse_id) {
+            $this->db->where('warehouse_id', $warehouse_id);
+        }
+        $q = $this->db->get_where('warehouses_products', array('product_id' => $product_id));
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return FALSE;
+    }
+
+    public function syncQuantity($sale_id = NULL, $purchase_id = NULL, $oitems = NULL, $product_id = NULL) {
+        if ($sale_id) {
+
+            $sale_items = $this->getAllSaleItems($sale_id);
+            //$this->sma->print_arrays($sale_items);
+            foreach ($sale_items as $item) {
+                if ($item->product_type == 'standard') {
+                    $this->syncProductQty($item->product_id, $item->warehouse_id);
+                    if (isset($item->option_id) && !empty($item->option_id)) {
+                        $this->syncVariantQty($item->option_id, $item->warehouse_id, $item->product_id);
+                    }
+                } elseif ($item->product_type == 'combo') {
+                    $wh = $this->Settings->overselling ? NULL : $item->warehouse_id;
+                    $combo_items = $this->getProductComboItems($item->product_id, $wh);
+                    foreach ($combo_items as $combo_item) {
+                        if($combo_item->type == 'standard') {
+                            $this->syncProductQty($combo_item->id, $item->warehouse_id);
+                        }
+                    }
+                }
+            }
+
+        } elseif ($purchase_id) {
+
+            $purchase_items = $this->getAllPurchaseItems($purchase_id);
+            foreach ($purchase_items as $item) {
+                $this->syncProductQty($item->product_id, $item->warehouse_id);
+                if (isset($item->option_id) && !empty($item->option_id)) {
+                    $this->syncVariantQty($item->option_id, $item->warehouse_id, $item->product_id);
+                }
+            }
+
+        } elseif ($oitems) {
+
+            foreach ($oitems as $item) {
+                if (isset($item->product_type)) {
+                    if ($item->product_type == 'standard') {
+                        $this->syncProductQty($item->product_id, $item->warehouse_id);
+                        if (isset($item->option_id) && !empty($item->option_id)) {
+                            $this->syncVariantQty($item->option_id, $item->warehouse_id, $item->product_id);
+                        }
+                    } elseif ($item->product_type == 'combo') {
+                        $combo_items = $this->getProductComboItems($item->product_id, $item->warehouse_id);
+                        foreach ($combo_items as $combo_item) {
+                            if($combo_item->type == 'standard') {
+                                $this->syncProductQty($combo_item->id, $item->warehouse_id);
+                            }
+                        }
+                    }
+                } else {
+                    $this->syncProductQty($item->product_id, $item->warehouse_id);
+                    if (isset($item->option_id) && !empty($item->option_id)) {
+                        $this->syncVariantQty($item->option_id, $item->warehouse_id, $item->product_id);
+                    }
+                }
+            }
+
+        } elseif ($product_id) {
+            $warehouses = $this->getAllWarehouses();
+            foreach ($warehouses as $warehouse) {
+                $this->syncProductQty($product_id, $warehouse->id);
+                if ($product_variants = $this->getProductVariants($product_id)) {
+                    foreach ($product_variants as $pv) {
+                        $this->syncVariantQty($pv->id, $warehouse->id, $product_id);
+                    }
+                }
+            }
+        }
+    }
+
+    public function syncProductQty($product_id, $warehouse_id) {
+        $balance_qty = $this->getBalanceQuantity($product_id);
+        $wh_balance_qty = $this->getBalanceQuantity($product_id, $warehouse_id);
+        if ($this->db->update('products', array('quantity' => $balance_qty), array('id' => $product_id))) {
+            if ($this->getWarehouseProducts($product_id, $warehouse_id)) {
+                $this->db->update('warehouses_products', array('quantity' => $wh_balance_qty), array('product_id' => $product_id, 'warehouse_id' => $warehouse_id));
+            } else {
+                if( ! $wh_balance_qty) { $wh_balance_qty = 0; }
+                $product = $this->site->getProductByID($product_id);
+                if ($wh_balance_qty > 0) {
+                    $this->db->insert('warehouses_products', array('quantity' => $wh_balance_qty, 'product_id' => $product_id, 'warehouse_id' => $warehouse_id, 'avg_cost' => $product->cost));
+                }
+            }
+            return TRUE;
+        }
+        return FALSE;
+    }
+
     public function syncVariantQty($variant_id, $warehouse_id, $product_id = NULL) {
         $balance_qty = $this->getBalanceVariantQuantity($variant_id);
         $wh_balance_qty = $this->getBalanceVariantQuantity($variant_id, $warehouse_id);
@@ -461,36 +563,62 @@ class Site extends CI_Model
         return FALSE;
     }
 
-    public function getWarehouseProducts($product_id, $warehouse_id = NULL) {
-        if ($warehouse_id) {
-            $this->db->where('warehouse_id', $warehouse_id);
-        }
-        $q = $this->db->get_where('warehouses_products', array('product_id' => $product_id));
-        if ($q->num_rows() > 0) {
-            foreach (($q->result()) as $row) {
-                $data[] = $row;
-            }
-            return $data;
-        }
-        return FALSE;
-    }
+    // public function syncProductQty($product_id, $warehouse_id)
+    // {
+    //     log_message('error', '=== syncProductQty START ===');
+    //     log_message('error', 'product_id: ' . $product_id);
+    //     log_message('error', 'warehouse_id: ' . $warehouse_id);
 
-    public function syncProductQty($product_id, $warehouse_id) {
-        $balance_qty = $this->getBalanceQuantity($product_id);
-        $wh_balance_qty = $this->getBalanceQuantity($product_id, $warehouse_id);
-        if ($this->db->update('products', array('quantity' => $balance_qty), array('id' => $product_id))) {
-            if ($this->getWarehouseProducts($product_id, $warehouse_id)) {
-                $this->db->update('warehouses_products', array('quantity' => $wh_balance_qty), array('product_id' => $product_id, 'warehouse_id' => $warehouse_id));
-                //$this->sma->print_arrays($balance_qty, $wh_balance_qty);
-            } else {
-                if( ! $wh_balance_qty) { $wh_balance_qty = 0; }
-                $product = $this->site->getProductByID($product_id);
-                $this->db->insert('warehouses_products', array('quantity' => $wh_balance_qty, 'product_id' => $product_id, 'warehouse_id' => $warehouse_id, 'avg_cost' => $product->cost));
-            }
-            return TRUE;
-        }
-        return FALSE;
-    }
+    //     $balance_qty = $this->getBalanceQuantity($product_id);
+    //     $wh_balance_qty = $this->getBalanceQuantity($product_id, $warehouse_id);
+
+    //     log_message('error', 'balance_qty (total): ' . $balance_qty);
+    //     log_message('error', 'wh_balance_qty: ' . $wh_balance_qty);
+
+    //     if ($this->db->update('products', array('quantity' => $balance_qty), array('id' => $product_id))) {
+
+    //         log_message('error', 'Updated products.quantity OK');
+
+    //         $check = $this->getWarehouseProducts($product_id, $warehouse_id);
+    //         log_message('error', 'Warehouse exists: ' . ($check ? 'YES' : 'NO'));
+
+    //         if ($check) {
+
+    //             $this->db->update(
+    //                 'warehouses_products',
+    //                 array('quantity' => $wh_balance_qty),
+    //                 array('product_id' => $product_id, 'warehouse_id' => $warehouse_id)
+    //             );
+
+    //             log_message('error', 'Updated warehouses_products quantity');
+
+    //         } else {
+
+    //             if (!$wh_balance_qty) {
+    //                 $wh_balance_qty = 0;
+    //             }
+
+    //             $product = $this->site->getProductByID($product_id);
+
+    //             $insert_data = array(
+    //                 'quantity'     => $wh_balance_qty,
+    //                 'product_id'   => $product_id,
+    //                 'warehouse_id' => $warehouse_id,
+    //                 'avg_cost'     => $product->cost
+    //             );
+
+    //             log_message('error', 'Insert warehouses_products: ' . json_encode($insert_data));
+
+    //             $this->db->insert('warehouses_products', $insert_data);
+    //         }
+
+    //         log_message('error', '=== syncProductQty END SUCCESS ===');
+    //         return TRUE;
+    //     }
+
+    //     log_message('error', '=== syncProductQty FAIL ===');
+    //     return FALSE;
+    // }
 
     public function getSaleByID($id) {
         $q = $this->db->get_where('sales', array('id' => $id), 1);
@@ -883,76 +1011,6 @@ class Site extends CI_Model
             $cost[] = $this->item_costing($item, TRUE);
         }
         return $cost;
-    }
-
-    public function syncQuantity($sale_id = NULL, $purchase_id = NULL, $oitems = NULL, $product_id = NULL) {
-        if ($sale_id) {
-
-            $sale_items = $this->getAllSaleItems($sale_id);
-            //$this->sma->print_arrays($sale_items);
-            foreach ($sale_items as $item) {
-                if ($item->product_type == 'standard') {
-                    $this->syncProductQty($item->product_id, $item->warehouse_id);
-                    if (isset($item->option_id) && !empty($item->option_id)) {
-                        $this->syncVariantQty($item->option_id, $item->warehouse_id, $item->product_id);
-                    }
-                } elseif ($item->product_type == 'combo') {
-                    $wh = $this->Settings->overselling ? NULL : $item->warehouse_id;
-                    $combo_items = $this->getProductComboItems($item->product_id, $wh);
-                    foreach ($combo_items as $combo_item) {
-                        if($combo_item->type == 'standard') {
-                            $this->syncProductQty($combo_item->id, $item->warehouse_id);
-                        }
-                    }
-                }
-            }
-
-        } elseif ($purchase_id) {
-
-            $purchase_items = $this->getAllPurchaseItems($purchase_id);
-            foreach ($purchase_items as $item) {
-                $this->syncProductQty($item->product_id, $item->warehouse_id);
-                if (isset($item->option_id) && !empty($item->option_id)) {
-                    $this->syncVariantQty($item->option_id, $item->warehouse_id, $item->product_id);
-                }
-            }
-
-        } elseif ($oitems) {
-
-            foreach ($oitems as $item) {
-                if (isset($item->product_type)) {
-                    if ($item->product_type == 'standard') {
-                        $this->syncProductQty($item->product_id, $item->warehouse_id);
-                        if (isset($item->option_id) && !empty($item->option_id)) {
-                            $this->syncVariantQty($item->option_id, $item->warehouse_id, $item->product_id);
-                        }
-                    } elseif ($item->product_type == 'combo') {
-                        $combo_items = $this->getProductComboItems($item->product_id, $item->warehouse_id);
-                        foreach ($combo_items as $combo_item) {
-                            if($combo_item->type == 'standard') {
-                                $this->syncProductQty($combo_item->id, $item->warehouse_id);
-                            }
-                        }
-                    }
-                } else {
-                    $this->syncProductQty($item->product_id, $item->warehouse_id);
-                    if (isset($item->option_id) && !empty($item->option_id)) {
-                        $this->syncVariantQty($item->option_id, $item->warehouse_id, $item->product_id);
-                    }
-                }
-            }
-
-        } elseif ($product_id) {
-            $warehouses = $this->getAllWarehouses();
-            foreach ($warehouses as $warehouse) {
-                $this->syncProductQty($product_id, $warehouse->id);
-                if ($product_variants = $this->getProductVariants($product_id)) {
-                    foreach ($product_variants as $pv) {
-                        $this->syncVariantQty($pv->id, $warehouse->id, $product_id);
-                    }
-                }
-            }
-        }
     }
 
     public function getProductVariants($product_id)

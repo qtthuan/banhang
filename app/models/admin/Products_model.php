@@ -242,6 +242,25 @@ class Products_model extends CI_Model
         return FALSE;
     }
 
+    public function getWarehouseByProductHasStock($product_id)
+    {
+        $this->db->where('product_id', $product_id);
+        $this->db->where('quantity >', 0);
+        $this->db->order_by('id', 'ASC'); // hoặc warehouse_id nếu bạn muốn ổn định hơn
+        $q = $this->db->get('warehouses_products', 1);
+
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }
+
+        // fallback nếu không có kho nào > 0
+        $q = $this->db->get_where('warehouses_products', [
+            'product_id' => $product_id
+        ], 1);
+
+        return $q->num_rows() > 0 ? $q->row() : FALSE;
+    }
+
     public function getAllWarehousesWithPQ($product_id)
     {
         $this->db->select('' . $this->db->dbprefix('warehouses') . '.*, ' . $this->db->dbprefix('warehouses_products') . '.quantity,' .  $this->db->dbprefix('warehouses_products') . '.id as whp_id, ' . $this->db->dbprefix('warehouses_products') . '.rack')
@@ -552,7 +571,7 @@ class Products_model extends CI_Model
             }
 
             $tax_rate = $this->site->getTaxRateByID($data['tax_rate']);
-
+            
             if ($warehouse_qty && !empty($warehouse_qty)) {
                 foreach ($warehouse_qty as $wh_qty) {
                     $this->db->update('warehouses_products', array('rack' => $wh_qty['rack']), array('product_id' => $id, 'warehouse_id' => $wh_qty['warehouse_id']));
