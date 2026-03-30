@@ -157,3 +157,5 @@ $lang['update_customer_email']              = "Vui lòng bổ sung địa chỉ 
 $lang['header_pos_txt']                     = "Bán hàng";
 $lang['header_mini_txt']                    = "Mini";
 $lang['input_discount_help']                = "Nhập giá giảm hoặc phần trăm(%)";
+$lang['comment']                        = "Ghi chú";
+$lang['comment_name']                   = "Tên";

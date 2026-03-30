@@ -19,6 +19,7 @@ class Sales extends MY_Controller
         $this->load->library('form_validation');
         $this->load->admin_model('sales_model');
         $this->load->admin_model('products_model');
+        $this->load->admin_model('pos_model');
         $this->digital_upload_path = 'files/';
         $this->upload_path = 'assets/uploads/';
         $this->thumbs_path = 'assets/uploads/thumbs/';
@@ -982,6 +983,7 @@ class Sales extends MY_Controller
             $inv_items = $this->sales_model->getAllInvoiceItems($id);
             krsort($inv_items);
             $c = rand(100000, 9999999);
+            //$this->sma->print_arrays($inv_items);
             foreach ($inv_items as $item) {
                 $row = $this->site->getProductByID($item->product_id);
                 if (!$row) {
@@ -1015,6 +1017,8 @@ class Sales extends MY_Controller
                 $row->serial = $item->serial_no;
                 $row->option = $item->option_id;
                 $row->promo_original_price = $item->promo_original_price;
+                $row->comment = $item->comment;
+                $row->comment_name = $item->comment_name;
                 $options = $this->sales_model->getProductOptions($row->id, $item->warehouse_id);
                 //$this->sma->print_arrays($options);
                 if ($options) {
@@ -1052,6 +1056,7 @@ class Sales extends MY_Controller
 
             $this->data['inv_items'] = json_encode($pr);
             $this->data['id'] = $id;
+            $this->data['order_comment_list'] = $this->pos_model->getOrderCommentList();
             //$this->data['currencies'] = $this->site->getAllCurrencies();
             $this->data['billers'] = ($this->Owner || $this->Admin || !$this->session->userdata('biller_id')) ? $this->site->getAllCompanies('biller') : null;
             $this->data['tax_rates'] = $this->site->getAllTaxRates();

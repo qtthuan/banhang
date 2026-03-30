@@ -115,6 +115,13 @@
     });
 </script>
 
+<script>
+    window.APP_CONFIG = {
+        MINI_WAREHOUSE_ID: <?= (int)$this->config->item('mini_warehouse_id'); ?>,
+        BANI_WAREHOUSE_ID: <?= (int)$this->config->item('bani_warehouse_id'); ?>
+    };
+</script>
+
 
 <div class="box">
     <div class="box-header">
@@ -471,6 +478,34 @@
                         </div>
                     </div>
 
+                    <div class="form-group box_notes" style="padding: 0 15px;">
+                        <div class="col-sm-8">
+                            <?= lang('comment', 'icomment'); ?>
+                            <input type="text" style="text-transform: uppercase;" name="comment" class="form-control kb-text" id="icomment">
+                        </div>
+                        <div class="col-sm-4">
+                        <?= lang('comment_name', 'icommentname'); ?>
+                        <input type="text" style="text-transform: uppercase;" name="commentname" class="form-control kb-text" id="icommentname">
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="box_comment">
+                    
+                        <?php 
+                            foreach ($order_comment_list as $comment) {
+                        ?>
+                                <div class="comment_col">
+                                    <input class="chkComment" type="checkbox" id="<?=$comment->id?>" value="<?=$comment->comment?>">
+                                    <label class="lblComment" for="<?=$comment->id?>"><?=$comment->comment?></label>
+                                </div>
+                        <?php 
+                                
+                            } 
+                        ?>
+                            
+                    </div>
+
                     <table class="table table-bordered table-striped">
                         <tr>
                             <th style="width:25%;"><?=lang('net_unit_price');?></th>
@@ -580,3 +615,31 @@
         </div>
     </div>
 </div>
+
+<script>
+$('#prModal').on('shown.bs.modal', function (e) {
+    $('.chkComment').prop('checked', false);
+
+    if (<?=$inv->warehouse_id?> == window.APP_CONFIG.MINI_WAREHOUSE_ID) {
+        $('.box_comment').show();
+        $('.box_notes').show();
+    } else {
+        $('.box_comment').hide();
+        $('.box_notes').hide();
+    }
+    $('.chkComment').prop('checked', false);
+});
+
+$(document).on('ifChanged', '.chkComment', function () {
+    console.log('zzzz');
+
+    var selected_comments = [];
+
+    $(".chkComment:checked").each(function () {
+        selected_comments.push($(this).val());
+    });
+
+    $('#icomment').val(selected_comments.join(', '));
+});
+
+</script>
