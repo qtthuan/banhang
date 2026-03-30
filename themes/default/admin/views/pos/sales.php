@@ -10,7 +10,7 @@
     $(document).ready(function () {
         oTable = $('#POSData').dataTable({
             "aaSorting": [[1, "desc"], [2, "desc"]],
-            "aLengthMenu": [[10, 25, 50, 100, 200, 500, -1], [10, 25, 50, 100, 200, 500, "<?= lang('all') ?>"]],
+            "aLengthMenu": [[10, 25, 50, 100, 200, 500, 800, -1], [10, 25, 50, 100, 200, 500, 800, "<?= lang('all') ?>"]],
             "iDisplayLength": <?= $Settings->rows_per_page ?>,
             'bProcessing': true, 'bServerSide': true,
             'sAjaxSource': '<?= admin_url('pos/getSales'.($warehouse_id ? '/'.$warehouse_id : '')) ?>',
