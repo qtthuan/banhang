@@ -810,12 +810,14 @@ class Reports_model extends CI_Model
         $CI->config->load('config');
         $customer_group_app = $CI->config->item('customer_group_id_app'); // = 4
 
+        $end_next = date("Y-m-d", strtotime($end . ' +1 day'));
+
         $this->db->select("DATE(date) AS date, SUM(total-shipping) AS total")
                 ->from("sales")
                 ->join("companies", "companies.id = sales.customer_id", "left")
                 ->where("warehouse_id", $warehouse_id)
                 ->where("date >=", $start)
-                ->where("date <=", $end)
+                ->where("date <=", $end_next)
                 ->where("sale_status", "completed");
 
         // xử lý theo loại xuất báo cáo
