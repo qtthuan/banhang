@@ -812,13 +812,31 @@ class Reports_model extends CI_Model
 
         $end_next = date("Y-m-d", strtotime($end . ' +1 day'));
 
-        $this->db->select("DATE(date) AS date, SUM(total-shipping) AS total")
-                ->from("sales")
-                ->join("companies", "companies.id = sales.customer_id", "left")
-                ->where("warehouse_id", $warehouse_id)
-                ->where("date >=", $start)
-                ->where("date <=", $end_next)
-                ->where("sale_status", "completed");
+        $this->db->select("
+            DATE(date) AS date, 
+            SUM(
+                CASE 
+                    WHEN actual_shipping > 0 
+                        THEN total - actual_shipping
+                    ELSE 
+                        total - shipping
+                END
+            ) AS total
+        ")
+        ->from("sales")
+        ->join("companies", "companies.id = sales.customer_id", "left")
+        ->where("warehouse_id", $warehouse_id)
+        ->where("date >=", $start)
+        ->where("date <=", $end_next)
+        ->where("sale_status", "completed");
+
+        // $this->db->select("DATE(date) AS date, SUM(total-shipping) AS total")
+        //         ->from("sales")
+        //         ->join("companies", "companies.id = sales.customer_id", "left")
+        //         ->where("warehouse_id", $warehouse_id)
+        //         ->where("date >=", $start)
+        //         ->where("date <=", $end_next)
+        //         ->where("sale_status", "completed");
 
         // xử lý theo loại xuất báo cáo
         if ($type == 'app') {
