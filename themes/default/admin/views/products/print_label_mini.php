@@ -1,4 +1,10 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var DEFAULT_CUSTOMER = "<?= $default_customer_name ?>";
+        var DEFAULT_CUSTOMER_REPLACE = "<?= $default_customer_name_replace ?>";
+    });
+</script>
 <div class="box">
     <div class="box-header no-print">
         <h2 class="blue"><i class="fa-fw fa fa-plus"></i><?= lang('print_barcode_label'); ?></h2>
@@ -40,12 +46,15 @@
                                 // cắt đúng 15 ký tự và nối 3 dấu chấm sát chữ cuối
                                 $customer_name = rtrim(mb_substr($customer_name, 0, 31, 'UTF-8')) . '..';
                             }
+                            if ($customer_name == $default_customer_name) {
+                                $customer_name = $default_customer_name_replace;
+                            }
                         
 
                             echo '<button type="button" class="btn btn-danger bills" id="'.$sale->id.'" style="height:58px; width: 210px; font-size: 17px; line-height: 16px; margin-top: 10px">';
                             echo '<span id="reference_'.$sale->id.'">#' . substr($sale->reference_no, -3) . '<span>';
 
-                            echo '<br /><span style="font-size: 13px">'. $sale->customer.'</span>';
+                            echo '<br /><span style="font-size: 13px">'. $customer_name.'</span>';
                             echo '<br /><span style="font-size: 13px">'. $this->sma->formatMoney($sale->grand_total).'</span>';
                             echo '<input type="hidden" class="hidd_customer_id" value="'.$sale->customer_id.'">';
                             echo '<input type="hidden" class="hidd_customer_name" value="'.htmlspecialchars($customer_name).'">';
@@ -233,9 +242,6 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
-        var DEFAULT_CUSTOMER = "<?= $default_customer_name ?>";
-        var DEFAULT_CUSTOMER_REPLACE = "<?= $default_customer_name_replace ?>";
-
         <?php if ($this->input->post('print')) { ?>
             $( window ).load(function() {
                 $('html, body').animate({
