@@ -453,6 +453,9 @@ class Products extends MY_Controller
 
             $this->data['items'][$lastest_bills[$i]->id] = $items;
         }
+
+        $this->data['default_customer_name'] = $this->config->item('default_customer_name');
+        $this->data['default_customer_name_replace'] = $this->config->item('default_customer_name_replace');
         
         //$this->sma->print_arrays($this->data['items']);
         //$this->sma->print_arrays($this->data['sales']);

@@ -233,6 +233,9 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
+        var DEFAULT_CUSTOMER = "<?= $default_customer_name ?>";
+        var DEFAULT_CUSTOMER_REPLACE = "<?= $default_customer_name_replace ?>";
+
         <?php if ($this->input->post('print')) { ?>
             $( window ).load(function() {
                 $('html, body').animate({
@@ -325,6 +328,9 @@
                 $(this).addClass('btn-success');
                 //$('.reference_no').text($('#' + div_id).find('.hidd_reference_no').val());
                 $('.reference_no').text($('#' + div_id).find('.hidd_customer_name').val());
+                if ($('#' + div_id).find('.hidd_customer_name').val() == DEFAULT_CUSTOMER) {
+                    $('.reference_no').text(DEFAULT_CUSTOMER_REPLACE);
+                }
                 //console.log('vvv' + sale_language);
                 if(sale_language == 1) {
                     //console.log('vvv');
