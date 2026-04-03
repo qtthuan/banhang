@@ -2917,4 +2917,16 @@ class Sales extends MY_Controller
 
     }
 
+    public function update_actual_shipping()
+    {
+        $id = $this->input->post('id');
+        $shipping = $this->input->post('actual_shipping');
+
+        $this->db->update('sales', [
+            'actual_shipping' => $shipping
+        ], ['id' => $id]);
+
+        echo json_encode(['status' => 'success']);
+    }
+
 }

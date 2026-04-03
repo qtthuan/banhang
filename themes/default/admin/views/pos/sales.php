@@ -36,7 +36,14 @@
                 
                 {"mRender": function (data, type, row) { return paidBy(data, row); } }, // 5 Thanh toán bằng
                 {"mRender": currencyFormat}, // 6 Tổng tiền
-                {"mRender": delivery_method}, // 4 Hình thức nhận 
+                {
+                    "mRender": function (data, type, row) {
+                        let value = data ? parseFloat(data) : 0;
+                        let formatted = value.toLocaleString('vi-VN') + 'đ';
+
+                        return '<span class="actual_shipping" data-id="' + row[0] + '" data-value="' + value + '">' + formatted + '</span>';
+                    }
+                },
                 null, // 7 Kho
                 {"bSortable": false} // 8 Tác vụ
             ],
@@ -68,7 +75,7 @@
                 ]
             },
             {column_number: 5, filter_default_label: "[<?=lang('total');?>]", filter_type: "text", data: []},
-            {column_number: 6, filter_default_label: "[<?=lang('delivery_method');?>]", filter_type: "text"},
+            {column_number: 6, filter_default_label: "[<?=lang('actual_shipping');?>]", filter_type: "text"},
             {
                 column_number: 7,
                 filter_type: "select",
@@ -85,6 +92,112 @@
 
 
         ], "footer");
+
+        // chặn click
+        $(document).on('click', '.actual_shipping, .actual_shipping *', function (e) {
+            e.stopPropagation();
+        });
+
+        // dblclick edit
+        $(document).on('dblclick', '.actual_shipping', function (e) {
+            e.stopPropagation();
+
+            var id = $(this).data('id');
+            var value = $(this).data('value'); // 🔥 lấy giá trị gốc
+
+            $(this).replaceWith(`
+                <span class="actual_shipping_edit" data-id="${id}">
+                    <input type="text" class="ship_input" value="${value}" style="width:80px;">
+                    <button type="button" class="btn_save_ship">✔</button>
+                </span>
+            `);
+            // 🔥 focus + select toàn bộ
+            var input = $('.actual_shipping_edit[data-id="' + id + '"]').find('.ship_input');
+            input.focus().select();
+        });
+        // $(document).on('dblclick', '.actual_shipping', function (e) {
+        //     e.stopPropagation();
+        //     e.preventDefault();
+        //     var span = $(this);
+        //     var id = span.data('id');
+        //     var value = span.text().trim();
+
+        //     var html = `
+        //         <div class="ship_edit_box">
+        //             <input type="number" class="form-control input-sm ship_input" value="${value}" style="width:80px; display:inline-block;">
+        //             <button type="button" class="btn_save_ship">✔</button>
+        //         </div>
+        //     `;
+
+        //     span.replaceWith('<span class="actual_shipping_edit" data-id="' + id + '">' + html + '</span>');
+        // });
+
+        $(document).on('click', '.btn_save_ship', function () {
+            var box = $(this).closest('.actual_shipping_edit');
+            var id = box.data('id');
+            var value = box.find('.ship_input').val();
+
+            if (value === '') {
+                alert('Nhập phí ship');
+                return;
+            }
+
+            updateShipping(id, value, box); // 🔥 truyền box vào
+        });
+
+       $(document).on('keypress', '.ship_input', function (e) {
+            if (e.which == 13) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                $(this).closest('.actual_shipping_edit').find('.btn_save_ship').click();
+            }
+        });
+
+        function updateShipping(id, value, box) {
+            $.ajax({
+                url: '<?= admin_url("sales/update_actual_shipping") ?>',
+                type: 'POST',
+                data: {
+                    id: id,
+                    actual_shipping: value,
+                    <?= json_encode($this->security->get_csrf_token_name()) ?>: '<?= $this->security->get_csrf_hash() ?>'
+                },
+                success: function (res) {
+
+                    // 👉 format lại nếu cần
+                    var display = parseFloat(value).toLocaleString('vi-VN') + 'đ';
+
+                    // 👉 replace lại span
+                    // box.replaceWith(
+                    //     '<span class="actual_shipping" data-id="' + id + '">' + display + '</span>'
+                    // );
+                    box.replaceWith(
+                        '<span class="actual_shipping" data-id="' + id + '" data-value="' + value + '">' + formatMoney(value) + '</span>'
+                    );
+                },
+                error: function () {
+                    alert('Cập nhật thất bại');
+                }
+            });
+        }
+
+        // $(document).on('dblclick', '.actual_shipping', function () {
+        //     e.preventDefault();
+        //     e.stopPropagation();
+        //     var span = $(this);
+        //     var id = span.data('id');
+        //     var value = span.text().trim();
+
+        //     var html = `
+        //         <div class="ship_edit_box">
+        //             <input type="number" class="form-control input-sm ship_input" value="${value}" style="width:80px; display:inline-block;">
+        //             <button class="btn btn-xs btn-primary btn_save_ship">✔</button>
+        //         </div>
+        //     `;
+
+        //     span.replaceWith('<span class="actual_shipping_edit" data-id="' + id + '">' + html + '</span>');
+        // });
        
         $(document).on('click', '.duplicate_pos', function (e) {
             e.preventDefault();
@@ -319,7 +432,7 @@
                             
                             <th><?= lang("paid_by"); ?></th> 
                             <th><?= lang("grand_total"); ?></th>
-                            <th><?= lang("delivery_method"); ?></th>
+                            <th><?= lang("actual_shipping"); ?></th>
                             <th><?= lang("warehouse"); ?></th>     
                             <th style="width:80px; text-align:center;"><?= lang("actions"); ?></th>
                         </tr>

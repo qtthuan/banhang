@@ -812,7 +812,7 @@ class Reports_model extends CI_Model
 
         $end_next = date("Y-m-d", strtotime($end . ' +1 day'));
 
-        $this->db->select("DATE(date) AS date, SUM(total-shipping) AS total")
+        $this->db->select("DATE(date) AS date, SUM(total-actual_shipping) AS total")
                 ->from("sales")
                 ->join("companies", "companies.id = sales.customer_id", "left")
                 ->where("warehouse_id", $warehouse_id)
