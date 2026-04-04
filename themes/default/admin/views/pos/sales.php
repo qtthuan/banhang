@@ -99,7 +99,7 @@
         });
 
         // dblclick edit
-        $(document).on('dblclick', '.actual_shipping', function (e) {
+        $(document).on('click', '.actual_shipping', function (e) {
             e.stopPropagation();
 
             var id = $(this).data('id');
@@ -107,13 +107,61 @@
 
             $(this).replaceWith(`
                 <span class="actual_shipping_edit" data-id="${id}">
-                    <input type="text" class="ship_input" value="${value}" style="width:80px;">
-                    <button type="button" class="btn_save_ship">✔</button>
+                    <input type="text" class="ship_input" value="${value}" style="width:80px; height:30px;padding-left: 5px;">
+                    <button type="button" class="btn_save_ship btn btn-sm btn-primary">
+                        <i class="fa fa-check"></i>
+                    </button>
                 </span>
             `);
             // 🔥 focus + select toàn bộ
             var input = $('.actual_shipping_edit[data-id="' + id + '"]').find('.ship_input');
             input.focus().select();
+        });
+        $(document).on('click', '.btn_save_ship', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            //alert('xxx');
+
+            var btn = $(this);
+            var box = btn.closest('.actual_shipping_edit');
+            var id = box.data('id');
+            var value = box.find('.ship_input').val();
+
+            if (value === '') {
+                alert('Nhập phí ship');
+                return;
+            }
+
+            // 🔥 disable + loading nhẹ
+            btn.prop('disabled', true);
+
+            $.ajax({
+                url: '<?= admin_url("sales/update_actual_shipping") ?>',
+                type: 'POST',
+                data: {
+                    id: id,
+                    actual_shipping: value,
+                    <?= json_encode($this->security->get_csrf_token_name()) ?>: '<?= $this->security->get_csrf_hash() ?>'
+                },
+                success: function () {
+
+                    // 🔥 đổi xanh lá
+                    btn.removeClass('btn-primary').addClass('btn-success');
+
+                    // 🔥 delay rồi trả về span (giống Excel)
+                    setTimeout(function () {
+                        box.replaceWith(
+                            '<span class="actual_shipping" data-id="' + id + '" data-value="' + value + '">' +
+                            formatMoney(value) +
+                            '</span>'
+                        );
+                    }, 500);
+                },
+                error: function () {
+                    btn.prop('disabled', false);
+                    alert('Cập nhật thất bại');
+                }
+            });
         });
         // $(document).on('dblclick', '.actual_shipping', function (e) {
         //     e.stopPropagation();
@@ -132,18 +180,18 @@
         //     span.replaceWith('<span class="actual_shipping_edit" data-id="' + id + '">' + html + '</span>');
         // });
 
-        $(document).on('click', '.btn_save_ship', function () {
-            var box = $(this).closest('.actual_shipping_edit');
-            var id = box.data('id');
-            var value = box.find('.ship_input').val();
+        // $(document).on('click', '.btn_save_ship', function () {
+        //     var box = $(this).closest('.actual_shipping_edit');
+        //     var id = box.data('id');
+        //     var value = box.find('.ship_input').val();
 
-            if (value === '') {
-                alert('Nhập phí ship');
-                return;
-            }
+        //     if (value === '') {
+        //         alert('Nhập phí ship');
+        //         return;
+        //     }
 
-            updateShipping(id, value, box); // 🔥 truyền box vào
-        });
+        //     updateShipping(id, value, box); // 🔥 truyền box vào
+        // });
 
        $(document).on('keypress', '.ship_input', function (e) {
             if (e.which == 13) {
