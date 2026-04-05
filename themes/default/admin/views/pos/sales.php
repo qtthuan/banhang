@@ -257,6 +257,10 @@
             input[0].setSelectionRange(0, input.val().length);
         }, 50);
 
+        $(document).on('input', '.ship_input', function () {
+            this.value = this.value.replace(/[^\d]/g, '');
+        });
+
         $(document).on('keydown', '.ship_input', function (e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
