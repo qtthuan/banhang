@@ -2345,6 +2345,13 @@ animation: blink 1s steps(2, start) infinite;
     border-color: #4cae4c;
     color: #fff;
 }
+.btn_edit_ship {
+    padding: 2px 6px;
+    font-size: 12px;
+    min-width: 24px;
+    height: 24px;
+    line-height: 1;
+}
 
 /* .paidby-pop {
     position: absolute;

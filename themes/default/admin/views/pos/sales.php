@@ -41,7 +41,16 @@
                         let value = data ? parseFloat(data) : 0;
                         let formatted = value.toLocaleString('vi-VN') + 'đ';
 
-                        return '<span class="actual_shipping" data-id="' + row[0] + '" data-value="' + value + '">' + formatted + '</span>';
+                        return `
+                            <div class="ship_cell" style="display:flex; align-items:center; gap:5px;">
+                                <span class="actual_shipping" data-id="${row[0]}" data-value="${value}">
+                                    ${formatted}
+                                </span>
+                                <button type="button" class="btn_edit_ship btn btn-xs btn-primary">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                            </div>
+                        `;
                     }
                 },
                 null, // 7 Kho
@@ -108,7 +117,7 @@
             $(this).replaceWith(`
                 <span class="actual_shipping_edit" data-id="${id}">
                     <input type="text" class="ship_input" value="${value}" style="width:80px; height:30px;padding-left: 5px;">
-                    <button type="button" class="btn_save_ship btn btn-sm btn-primary">
+                    <button type="button" class="btn_save_ship btn btn-xs btn-primary">
                         <i class="fa fa-check"></i>
                     </button>
                 </span>
@@ -162,6 +171,29 @@
                     alert('Cập nhật thất bại');
                 }
             });
+        });
+        $(document).on('click', '.btn_edit_ship', function (e) {
+            e.preventDefault();
+            e.stopPropagation(); // 🔥 cực quan trọng
+
+            var parent = $(this).closest('.ship_cell');
+            var span = parent.find('.actual_shipping');
+
+            var id = span.data('id');
+            var value = span.data('value');
+
+            parent.html(`
+                <span class="actual_shipping_edit" data-id="${id}">
+                    <input type="text" class="ship_input" value="${value}" style="width:80px;">
+                    <button type="button" class="btn_save_ship btn btn-xs btn-primary">
+                        <i class="fa fa-check"></i>
+                    </button>
+                </span>
+            `);
+
+            setTimeout(function () {
+                parent.find('.ship_input').focus().select();
+            }, 50);
         });
         // $(document).on('dblclick', '.actual_shipping', function (e) {
         //     e.stopPropagation();
