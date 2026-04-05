@@ -184,16 +184,40 @@
 
             parent.html(`
                 <span class="actual_shipping_edit" data-id="${id}">
-                    <input type="text" class="ship_input" value="${value}" style="width:80px;">
+                    <input 
+                        type="tel"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        class="ship_input"
+                        value="${value}"
+                        style="width:80px;"
+                    >
                     <button type="button" class="btn_save_ship btn btn-xs btn-primary">
                         <i class="fa fa-check"></i>
                     </button>
                 </span>
             `);
 
+            // parent.html(`
+            //     <span class="actual_shipping_edit" data-id="${id}">
+            //         <input type="text" class="ship_input" value="${value}" style="width:80px;">
+            //         <button type="button" class="btn_save_ship btn btn-xs btn-primary">
+            //             <i class="fa fa-check"></i>
+            //         </button>
+            //     </span>
+            // `);
+
             setTimeout(function () {
-                parent.find('.ship_input').focus().select();
+                var input = parent.find('.ship_input');
+                input.focus();
+
+                // 🔥 trick cho mobile (đảm bảo bật keyboard)
+                input[0].setSelectionRange(0, input.val().length);
             }, 50);
+
+            // setTimeout(function () {
+            //     parent.find('.ship_input').focus().select();
+            // }, 50);
         });
         // $(document).on('dblclick', '.actual_shipping', function (e) {
         //     e.stopPropagation();
@@ -224,6 +248,14 @@
 
         //     updateShipping(id, value, box); // 🔥 truyền box vào
         // });
+
+        setTimeout(function () {
+            var input = parent.find('.ship_input');
+            input.focus();
+
+            // 🔥 trick cho mobile (đảm bảo bật keyboard)
+            input[0].setSelectionRange(0, input.val().length);
+        }, 50);
 
        $(document).on('keypress', '.ship_input', function (e) {
             if (e.which == 13) {

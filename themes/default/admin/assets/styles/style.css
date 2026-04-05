@@ -2352,6 +2352,9 @@ animation: blink 1s steps(2, start) infinite;
     height: 24px;
     line-height: 1;
 }
+.ship_cell {
+    padding: 4px;
+}
 
 /* .paidby-pop {
     position: absolute;
