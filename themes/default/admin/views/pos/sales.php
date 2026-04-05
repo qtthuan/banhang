@@ -257,6 +257,16 @@
             input[0].setSelectionRange(0, input.val().length);
         }, 50);
 
+        $(document).on('keydown', '.ship_input', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+
+                $(this).closest('.actual_shipping_edit')
+                    .find('.btn_save_ship')
+                    .click();
+            }
+        });
+
        $(document).on('keypress', '.ship_input', function (e) {
             if (e.which == 13) {
                 e.preventDefault();
