@@ -207,13 +207,17 @@
             //     </span>
             // `);
 
-            setTimeout(function () {
-                var input = parent.find('.ship_input');
-                input.focus();
+            // setTimeout(function () {
+            //     var input = parent.find('.ship_input');
+            //     input.focus();
 
-                // 🔥 trick cho mobile (đảm bảo bật keyboard)
-                input[0].setSelectionRange(0, input.val().length);
-            }, 50);
+            //     // 🔥 trick cho mobile (đảm bảo bật keyboard)
+            //     input[0].setSelectionRange(0, input.val().length);
+            // }, 50);
+            // 🔥 focus NGAY LẬP TỨC (không setTimeout)
+            var input = parent.find('.ship_input')[0];
+            input.focus();
+            input.setSelectionRange(0, input.value.length);
 
             // setTimeout(function () {
             //     parent.find('.ship_input').focus().select();
@@ -249,14 +253,7 @@
         //     updateShipping(id, value, box); // 🔥 truyền box vào
         // });
 
-        setTimeout(function () {
-            var input = parent.find('.ship_input');
-            input.focus();
-
-            // 🔥 trick cho mobile (đảm bảo bật keyboard)
-            input[0].setSelectionRange(0, input.val().length);
-        }, 50);
-
+        
         $(document).on('input', '.ship_input', function () {
             this.value = this.value.replace(/[^\d]/g, '');
         });
