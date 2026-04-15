@@ -194,7 +194,7 @@
                                             echo '</span>';
                                         }
 
-                                        echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
+                                        echo '<h4 style="margin: 1px 1px 3px 0px; position: absolute; bottom: 0; font-size: 18px;">';
                                         echo '<span style="display: table-cell; font-size: 13px; font-weight: bold" class="reference_no ">';   
                                         echo '</span>';
                                        
