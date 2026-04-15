@@ -1,8 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <script type="text/javascript">
     $(document).ready(function() {
-        var DEFAULT_CUSTOMER = "<?= $default_customer_name ?>";
-        var DEFAULT_CUSTOMER_REPLACE = "<?= $default_customer_name_replace ?>";
+        
     });
 </script>
 <div class="box">
@@ -327,7 +326,8 @@
                 $('.div' + all_div_ids).hide();
             });
             if(!$(this).hasClass('btn-success')) {
-                
+                var DEFAULT_CUSTOMER = "<?= $default_customer_name ?>";
+                var DEFAULT_CUSTOMER_REPLACE = "<?= $default_customer_name_replace ?>";
                 //reference_no = $('.div' + id).find('.hidd_reference_no').val();
                 $(this).removeClass('btn-danger');
                 $('.div' + div_id).show();
