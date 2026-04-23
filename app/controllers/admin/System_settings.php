@@ -3058,7 +3058,7 @@ class system_settings extends MY_Controller
             ->where("products.category_id", 38)  // Chỉ hiển thị nhóm Nước ép- Sinh tố
             ->edit_column("price", "$1__$2", 'id, price')
             ->edit_column("big_size_price", "$1__$2", 'id, big_size_price')
-            ->add_column("Actions", "<div class=\"text-center\"><button class=\"btn btn-primary btn-xs form-submit\" type=\"button\"><i class=\"fa fa-check\"></i></button></div>", "id");
+            ->add_column("Actions", "<div class=\"text-center\"><button class=\"btn btn-primary btn-s form-submit\" type=\"button\"><i class=\"fa fa-check\"></i></button></div>", "id");
 
         echo $this->datatables->generate();
     }
