@@ -1,8 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <script type="text/javascript">
     $(document).ready(function() {
-        var DEFAULT_CUSTOMER = "<?= $default_customer_name ?>";
-        var DEFAULT_CUSTOMER_REPLACE = "<?= $default_customer_name_replace ?>";
+        
     });
 </script>
 <div class="box">
@@ -195,7 +194,7 @@
                                             echo '</span>';
                                         }
 
-                                        echo '<h4 style="margin: 1px; position: absolute; bottom: 0; font-size: 18px;">';
+                                        echo '<h4 style="margin: 1px 1px 3px 0px; position: absolute; bottom: 0; font-size: 18px;">';
                                         echo '<span style="display: table-cell; font-size: 13px; font-weight: bold" class="reference_no ">';   
                                         echo '</span>';
                                        
@@ -327,7 +326,8 @@
                 $('.div' + all_div_ids).hide();
             });
             if(!$(this).hasClass('btn-success')) {
-                
+                var DEFAULT_CUSTOMER = "<?= $default_customer_name ?>";
+                var DEFAULT_CUSTOMER_REPLACE = "<?= $default_customer_name_replace ?>";
                 //reference_no = $('.div' + id).find('.hidd_reference_no').val();
                 $(this).removeClass('btn-danger');
                 $('.div' + div_id).show();
