@@ -657,7 +657,7 @@ function showStatus(message, type = 'success', duration = 2000, redirectUrl = nu
 
     <div class="d-flex">
       <div class="toast-body fw-semibold">
-        ⚠️ Vui lòng chọn số lượng lớn hơn 0
+        ⚠️ Bạn chưa chọn số lượng
       </div>
 
       <button type="button"

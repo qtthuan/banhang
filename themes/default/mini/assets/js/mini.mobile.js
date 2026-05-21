@@ -506,7 +506,7 @@ document.addEventListener('DOMContentLoaded', function(){
         void qtyInput.offsetWidth;
         qtyInput.classList.add('input-shake');
 
-        qtyInput.focus();
+        //qtyInput.focus();
         return;
       }
 
