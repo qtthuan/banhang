@@ -647,5 +647,27 @@ function showStatus(message, type = 'success', duration = 2000, redirectUrl = nu
   });
 
 </script>
+
+<!-- Toast Bootstrap -->
+<div class="position-fixed top-0 start-50 translate-middle-x p-3"
+     style="z-index:99999">
+  <div id="qtyToast"
+       class="toast align-items-center text-bg-danger border-0"
+       role="alert">
+
+    <div class="d-flex">
+      <div class="toast-body fw-semibold">
+        ⚠️ Vui lòng chọn số lượng lớn hơn 0
+      </div>
+
+      <button type="button"
+              class="btn-close btn-close-white me-2 m-auto"
+              data-bs-dismiss="toast">
+      </button>
+    </div>
+
+  </div>
+</div>
+
 </body>
 </html>

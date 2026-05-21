@@ -421,6 +421,55 @@ function updateCustomerModalTitle() {
 }
 
 
+function showQtyToast() {
+  const toastEl = document.getElementById('qtyToast');
+
+  if (!toastEl) return;
+
+  const toast = new bootstrap.Toast(toastEl, {
+    delay: 2200
+  });
+
+  toast.show();
+}
+
+function flyToCart(imgEl) {
+
+  const cartBtn = document.querySelector('[data-bs-target="#cartCanvas"]');
+
+  if (!imgEl || !cartBtn) return;
+
+  const imgRect = imgEl.getBoundingClientRect();
+  const cartRect = cartBtn.getBoundingClientRect();
+
+  const clone = imgEl.cloneNode(true);
+
+  clone.classList.add('fly-clone');
+
+  clone.style.left = imgRect.left + 'px';
+  clone.style.top = imgRect.top + 'px';
+
+  document.body.appendChild(clone);
+
+  requestAnimationFrame(() => {
+
+    clone.style.left = cartRect.left + 'px';
+    clone.style.top = cartRect.top + 'px';
+
+    clone.style.transform = 'scale(.2) rotate(25deg)';
+    clone.style.opacity = '.25';
+  });
+
+  setTimeout(() => {
+
+    clone.remove();
+
+    cartBtn.classList.remove('cart-bounce');
+    void cartBtn.offsetWidth;
+    cartBtn.classList.add('cart-bounce');
+
+  }, 820);
+}
 
 
 /* UI wiring: delegated event handlers */
@@ -450,7 +499,16 @@ document.addEventListener('DOMContentLoaded', function(){
       if (!card) return;
       var qtyInput = card.querySelector('.qty-input');
       var qty = parseInt(qtyInput && qtyInput.value ? qtyInput.value : 0) || 0;
-      if (qty <= 0) { alert('Vui lòng chọn số lượng > 0'); return; }
+      if (qty <= 0) {
+        showQtyToast();
+
+        qtyInput.classList.remove('input-shake');
+        void qtyInput.offsetWidth;
+        qtyInput.classList.add('input-shake');
+
+        qtyInput.focus();
+        return;
+      }
 
       var pid = addBtn.getAttribute('data-id');
       var pcode = addBtn.getAttribute('data-code') || '';
@@ -490,6 +548,12 @@ document.addEventListener('DOMContentLoaded', function(){
       };
 
       mobileAddItem(productObj, qty, variantValue, note, noteName);
+
+      const productImg = card.querySelector('.product-img');
+
+      if (productImg) {
+        flyToCart(productImg);
+      }
 
   
       // nếu đang trong đơn nhóm thì push lên server
