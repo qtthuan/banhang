@@ -140,9 +140,13 @@
                 }
                 echo "<p>";
                 ?>
-            <?php if ($inv->warehouse_id != 3 || ($inv->warehouse_id == 3 && $inv->customer != 'KHÁCH LẺ')) { ?>
+            <?php
+                $bank_customer_info = 'Thanh toan ' . $inv->reference_no;  
+                if ($inv->warehouse_id != 3 || ($inv->warehouse_id == 3 && $inv->customer != 'KHÁCH LẺ')) { 
+                    $bank_customer_info = $inv->customer . " chuyen khoan";  
+                ?>
                 <!--Nếu kho Ba-Ni hoặc (Tiệm Nước Mini và Có nhập tên) => Hiện Tên Khách-->
-                <?=lang("customer") . ': <strong>' .  $inv->customer?></strong><span style="color:red; font-size: 13px; margin-left: 15px;" class="no-print"><a href="#" id="view-customer" class="external pos-tip" title="<?=lang('customers_info');?>" data-toggle="modal" data-target="#myModal2"><i class="fa fa-bars" id="addIcon" style="font-size: 1.7em;"></i></a></span>
+                    <?=lang("customer") . ': <strong>' .  $inv->customer?></strong><span style="color:red; font-size: 13px; margin-left: 15px;" class="no-print"><a href="#" id="view-customer" class="external pos-tip" title="<?=lang('customers_info');?>" data-toggle="modal" data-target="#myModal2"><i class="fa fa-bars" id="addIcon" style="font-size: 1.7em;"></i></a></span>
                 <br>
             <?php } ?>
                 <?=$customer->customer_group_percent != 0 ?  lang("customers_group_txt") . ': <strong>' . $customer->customer_group_name . '</strong><br>' : ''?>
@@ -668,7 +672,7 @@
             <div class="bank_info" style="font-size: 12px; text-align: center;margin-right: 25px">
                 
             <?php //if ($inv->warehouse_id == $this->config->item('mini_warehouse_id')) { ?>
-                <img src="https://img.vietqr.io/image/vietcombank-1064914589-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Ho%20Kinh%20Doanh%20Bani%20Mini" style="width: 80px">
+                <img src="https://img.vietqr.io/image/vietcombank-NP82502685068552VCB-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Ho%20Kinh%20Doanh%20Bani%20Mini&addInfo=<?=$bank_customer_info?> ?>" style="width: 80px">
                 <br /><?=lang('bank_info_vcb')?>
                 <!-- <img src="https://img.vietqr.io/image/mb-VQRQAGEUL2470-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Lu%20Nguyet%20Binh" style="width: 135px">
                 <br /><?=lang('bank_info_mb')?> -->
