@@ -672,7 +672,7 @@
             <div class="bank_info" style="font-size: 12px; text-align: center;margin-right: 25px">
                 
             <?php //if ($inv->warehouse_id == $this->config->item('mini_warehouse_id')) { ?>
-                <img src="https://img.vietqr.io/image/vietcombank-NP82502685068552VCB-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Ho%20Kinh%20Doanh%20Bani%20Mini&addInfo=<?=$bank_customer_info?> ?>" style="width: 80px">
+                <img src="https://img.vietqr.io/image/vietcombank-NP82502685068552VCB-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Ho%20Kinh%20Doanh%20Bani%20Mini&addInfo=<?=$bank_customer_info?> ?>" style="width: 98px">
                 <br /><?=lang('bank_info_vcb')?>
                 <!-- <img src="https://img.vietqr.io/image/mb-VQRQAGEUL2470-qr_only.jpg?amount=<?=$qr_pay?>&accountName=Lu%20Nguyet%20Binh" style="width: 135px">
                 <br /><?=lang('bank_info_mb')?> -->
