@@ -364,7 +364,7 @@
         let sale_id = row[0];
         let label = '';
         let icon  = '';
-
+        console.log('xx: ' + x);
         if (x === 'cash') {
             label = 'Tiền mặt';
             icon  = '💵';

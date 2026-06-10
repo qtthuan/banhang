@@ -106,6 +106,20 @@ class Pos extends MY_Controller
                 ->limit(1)
                 ->update('sales', ['payment_status' => 'paid', 'paid' => $sale->grand_total]);
 
+
+        
+        // Nếu là hóa đơn trả hàng
+        if ($sale->sale_status == 'returned') {
+
+            $this->db->where('sale_id', $sale_id)
+                    ->where('type', 'returned')
+                    ->limit(1)
+                    ->update('payments', ['paid_by' => $paid_by]);
+
+            echo json_encode(['status' => true]);
+            return;
+        }
+
         // Thêm payment mới
         $data = [
             'date'      => date('Y-m-d H:i:s'),
