@@ -2021,6 +2021,9 @@ var lang = {
         $(document).on('click', '.product', function (e) {
            
             $('#modal-loading').show();
+
+            var clickEvent = e;
+
             code = $(this).val(),
             wh = $('#poswarehouse').val(),
             cu = $('#poscustomer').val();
@@ -2032,8 +2035,21 @@ var lang = {
                 success: function (data) {
                     e.preventDefault();
                     if (data !== null) {
-                        //console.log(JSON.stringify(data));
-                        add_invoice_item(data);
+                        console.log(JSON.stringify(data));
+                        console.log('is_mix=', data.row.is_mix);
+                        if (parseInt(data.row.is_mix) > 0) {
+                            var clickPos = {
+                                x : e.pageX,
+                                y : e.pageY
+                            };
+                            openMixModal(data, clickPos);
+
+                        } else {
+
+                            add_invoice_item(data);
+
+                        }
+                        //add_invoice_item(data);
                         $('#modal-loading').hide();
                     } else {
                         bootbox.alert('<?=lang('no_match_found')?>');
@@ -2041,12 +2057,207 @@ var lang = {
                     }
                 }
             });
-            //$.wait(5000).then();
-            // setTimeout(function(){
-            //     $('#product-list>table>tbody>tr:first').find('.edit').trigger('click');
-            //     $('#pquantity').select().focus();
-            // }, 200); 
+           
         });
+
+        function openMixModal(data, clickEvent)
+        {
+            var mixCount = parseInt(data.row.is_mix);
+
+            var flavors = [
+                'CÀ RỐT',
+                'CAM',
+                'DƯA HẤU',
+                'KHÓM',
+                'ỔI',
+                'TÁO'
+            ];
+
+            var html = `
+                <style>
+                    #mix-flavor-container{
+                        display:grid;
+                        grid-template-columns:repeat(3,1fr);
+                        gap:10px;
+                        margin-top:10px;
+                    }
+
+                    #mix-flavor-container .mix-item{
+                        border:2px solid #d9e3f0;
+                        border-radius:10px;
+                        padding:12px;
+                        text-align:center;
+                        cursor:pointer;
+                        font-size:16px;
+                        font-weight:bold;
+                        background:linear-gradient(#ffffff,#f7f9fc);
+                        transition:all .15s;
+                        color:#34495e;
+                    }
+
+                    #mix-flavor-container .mix-item:hover{
+                        background:#eef7ff;
+                        border-color:#5dade2;
+                        transform:scale(1.03);
+                    }
+
+                    #mix-flavor-container .mix-item.active{
+                        background:#3498db;
+                        border-color:#2980b9;
+                        color:#fff;
+                        box-shadow:0 3px 8px rgba(0,0,0,.15);
+                    }
+
+                    #mix-flavor-container .mix-flavor{
+                        width:28px;
+                        height:28px;
+                        margin-bottom:8px;
+                    }
+                </style>
+
+                
+
+                <div id="mix-flavor-container">
+            `;
+
+            $.each(flavors, function(i, flavor){
+
+                html += `
+                    <label class="mix-item">
+                        <input
+                            type="checkbox"
+                            class="mix-flavor"
+                            value="${flavor}"
+                        >
+                        <br>
+                        ${flavor}
+                    </label>
+                `;
+            });
+
+            html += '</div>';
+
+            var dialog = bootbox.dialog({
+                title: 'Chọn ' + mixCount + ' vị',
+                message: html,
+                size: 'small',
+                buttons: {
+                    cancel: {
+                        label: 'Hủy',
+                        className: 'btn-default'
+                    },
+                    ok: {
+                        label: 'OK',
+                        className: 'btn-primary',
+                        callback: function(){
+
+                            var selected = [];
+
+                            $('.mix-flavor:checked').each(function(){
+                                selected.push($(this).val());
+                            });
+
+                            if(selected.length != mixCount){
+
+                                bootbox.alert(
+                                    'Vui lòng chọn đúng ' +
+                                    mixCount +
+                                    ' vị'
+                                );
+
+                                return false;
+                            }
+
+                            var mixText = selected.join(' - ');
+
+                            data.row.mix_flavor = mixText;
+
+                            // thay tên sản phẩm luôn
+                            if(data.row.name.indexOf('(') == -1){
+                                data.row.name =
+                                    data.row.name +
+                                    ' (' + mixText + ')';
+                            }
+
+                            add_invoice_item(data);
+                        }
+                    }
+                }
+            });
+
+            dialog.on('shown.bs.modal', function(){
+
+            var footer = $(this).find('.modal-footer');
+
+            footer.css({
+                'text-align':'center'
+            });
+
+            footer.find('.btn-default').css({
+                'font-size':'20px',
+                'padding':'12px 30px',
+                'min-width':'120px',
+                'font-weight':'bold',
+                'margin-right':'10px',
+                'background':'#95a5a6',
+                'color':'#fff',
+                'border':'0'
+            });
+
+            footer.find('.btn-primary').css({
+                'font-size':'20px',
+                'padding':'12px 30px',
+                'min-width':'120px',
+                'font-weight':'bold',
+                'background':'#3498db',
+                'border':'0'
+            });
+
+        });
+
+            // highlight ô được chọn
+            $(document)
+                .off('change.mixflavor')
+                .on('change.mixflavor', '.mix-flavor', function(){
+
+                    $(this).closest('.mix-item')
+                        .toggleClass('active', this.checked);
+
+                    var checked = $('.mix-flavor:checked').length;
+
+                    if(checked > mixCount){
+
+                        this.checked = false;
+
+                        $(this)
+                            .closest('.mix-item')
+                            .removeClass('active');
+
+                        bootbox.alert(
+                            'Chỉ được chọn tối đa ' +
+                            mixCount +
+                            ' vị'
+                        );
+                    }
+                });
+
+            // hiện gần vị trí click
+            if(clickEvent){
+
+                setTimeout(function(){
+
+                    var modal = $('.bootbox.modal:last .modal-dialog');
+
+                    modal.css({
+                        position : 'absolute',
+                        margin : 0,
+                        top : clickEvent.y - 420,
+                        left : clickEvent.x - 280
+                    });
+
+                },50);
+            }
+        }
 
         $(document).on('click', '.category', function () {
             if (cat_id != $(this).val()) {

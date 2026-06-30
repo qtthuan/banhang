@@ -1226,7 +1226,7 @@ function loadItems() {
         }
         var category = 0, print_cate = false;
         // var itn = parseInt(Object.keys(sortedItems).length);
-        console.log(JSON.stringify(sortedItems));
+        //console.log(JSON.stringify(sortedItems));
         $.each(sortedItems, function () {
             var item = this;            
             var item_id = site.settings.item_addition == 1 ? item.item_id : item.id;
@@ -1489,7 +1489,7 @@ function loadItems() {
                 });
             } else if(item_type == 'standard' && base_quantity > item_aqty) {
                 $('#row_' + row_no).addClass('danger');
-                console.log('vvbbb: ' + base_quantity + ' / item_aqty: ' + item_aqty);
+                //console.log('vvbbb: ' + base_quantity + ' / item_aqty: ' + item_aqty);
             } else if (item_type == 'combo') {
                 if(combo_items === false) {
                     $('#row_' + row_no).addClass('danger');
@@ -1599,10 +1599,14 @@ function loadItems() {
         }
         $('#tship').text(parseFloat(shipping) > 0 ? formatMoney(shipping) : '');
         $('#treturn').text(parseFloat(preturn) > 0 ? formatMoney(preturn) : '');
-        console.log('total: ' + total + ' - gtotal: ' + gtotal);
+        //console.log('total: ' + total + ' - gtotal: ' + gtotal);
         $('#total').text(formatMoney(total));
         $('#gtotal').text(formatMoney(gtotal));
         $('#order_discount_percent_for_return_sale').val(parseFloat(order_discount_percent_for_return_sale));
+
+        updateCustomerScreen(sortedItems, gtotal);
+
+        
         if (pos_settings.remote_printing != 1) {
 
             order_data.items = o_items;
@@ -2119,6 +2123,44 @@ $(document).ajaxStart(function(){
 }).ajaxStop(function(){
   $('#ajaxCall').hide();
 });
+
+/**
+ * qtthuan
+ * Cập nhật màn hình pos cho khách xem
+ */
+function updateCustomerScreen(items, total)
+{
+     //console.log('updateCustomerScreen');
+    //console.log(items);
+    //console.log(total);
+  const csrfName = $('#csrf_token_input').attr('name');
+  const csrfHash = $('#csrf_token_input').val();
+    let payload = {
+        mode : 'sale',
+        total : total,
+        items : []
+    };
+
+    $.each(items, function(){
+
+        payload.items.push({
+            name : this.row.name,
+            qty  : this.row.qty,
+            note : this.row.comment || '',
+            size : this.row.option || '',
+            [csrfName]: csrfHash
+        });
+
+    });
+//console.log(site.base_url + "pos/update_customer_screen");
+    $.ajax({
+        
+        url  : site.base_url + "pos/update_customer_screen",
+        type : "POST",
+        data : JSON.stringify(payload),
+        contentType : "application/json"
+    });
+}
 
 $(document).ready(function(){
     nav_pointer();

@@ -619,6 +619,28 @@ class Pos_model extends CI_Model
         return false;
     }
 
+    public function updateCustomerScreenState($pos_id, $data)
+    {
+        $this->db
+            ->where('pos_id', $pos_id)
+            ->update(
+                'customer_screen_state',
+                [
+                    'data'       => json_encode($data),
+                    'mode'       => 'sale',
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]
+            );
+    }
+
+    public function getCustomerScreenState($pos_id)
+    {
+        return $this->db
+            ->where('pos_id', $pos_id)
+            ->get('customer_screen_state')
+            ->row_array();
+    }
+
     public function addQuantity($product_id, $warehouse_id, $quantity)
     {
         if ($warehouse_quantity = $this->getProductQuantity($product_id, $warehouse_id)) {
