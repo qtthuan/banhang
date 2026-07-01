@@ -2216,30 +2216,61 @@ var lang = {
         });
 
             // highlight ô được chọn
+            var selectedOrder = [];
+
             $(document)
-                .off('change.mixflavor')
-                .on('change.mixflavor', '.mix-flavor', function(){
+            .off('change.mixflavor')
+            .on('change.mixflavor', '.mix-flavor', function(){
+
+                var val = $(this).val();
+
+                if(this.checked){
+
+                    if($.inArray(val, selectedOrder) === -1){
+                        selectedOrder.push(val);
+                    }
+
+                } else {
+
+                    selectedOrder = $.grep(selectedOrder, function(v){
+                        return v !== val;
+                    });
+                }
+
+                $(this).closest('.mix-item')
+                    .toggleClass('active', this.checked);
+
+                // Không cho vượt quá số lượng
+                if(selectedOrder.length > mixCount){
+
+                    this.checked = false;
 
                     $(this).closest('.mix-item')
-                        .toggleClass('active', this.checked);
+                        .removeClass('active');
 
-                    var checked = $('.mix-flavor:checked').length;
+                    selectedOrder = $.grep(selectedOrder, function(v){
+                        return v !== val;
+                    });
 
-                    if(checked > mixCount){
+                    return;
+                }
 
-                        this.checked = false;
+                // Đủ số lượng => tự động đóng
+                if(selectedOrder.length === mixCount){
 
-                        $(this)
-                            .closest('.mix-item')
-                            .removeClass('active');
+                    var mixText = selectedOrder.join(' - ');
 
-                        bootbox.alert(
-                            'Chỉ được chọn tối đa ' +
-                            mixCount +
-                            ' vị'
-                        );
-                    }
-                });
+                    data.row.mix_flavor = mixText;
+
+                    data.row.name = mixText;
+
+                    dialog.modal('hide');
+
+                    setTimeout(function(){
+                        add_invoice_item(data);
+                    }, 100);
+                }
+            });
 
             // hiện gần vị trí click
             if(clickEvent){
