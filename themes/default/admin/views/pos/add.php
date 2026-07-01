@@ -2063,6 +2063,9 @@ var lang = {
         function openMixModal(data, clickEvent)
         {
             var mixCount = parseInt(data.row.is_mix);
+            var productName = (data.row.name || '').toUpperCase();
+
+            productName = productName.replace(/^[A-Z]_/i, '');
 
             var flavors = [
                 'CÀ RỐT',
@@ -2138,7 +2141,7 @@ var lang = {
             html += '</div>';
 
             var dialog = bootbox.dialog({
-                title: 'Chọn ' + mixCount + ' vị',
+                title:  productName,
                 message: html,
                 size: 'small',
                 buttons: {
@@ -2216,11 +2219,68 @@ var lang = {
         });
 
             // highlight ô được chọn
+            // Khởi tạo check sẵn theo tên sản phẩm
             var selectedOrder = [];
+            var initializing = true;
+
+            var productText = (
+                (data.row.name || '') + ' ' +
+                (data.row.comment || '')
+            ).toUpperCase();
+
+            dialog.on('shown.bs.modal', function(){
+
+                // Style button
+                var footer = $(this).find('.modal-footer');
+
+                footer.css({
+                    'text-align':'center'
+                });
+
+                footer.find('.btn-default').css({
+                    'font-size':'20px',
+                    'padding':'12px 30px',
+                    'min-width':'120px',
+                    'font-weight':'bold',
+                    'margin-right':'10px',
+                    'background':'#95a5a6',
+                    'color':'#fff',
+                    'border':'0'
+                });
+
+                footer.find('.btn-primary').css({
+                    'font-size':'20px',
+                    'padding':'12px 30px',
+                    'min-width':'120px',
+                    'font-weight':'bold',
+                    'background':'#3498db',
+                    'border':'0'
+                });
+
+                // Check sẵn các vị có trong tên sản phẩm
+                $.each(flavors, function(i, flavor){
+
+                    if(productText.indexOf(flavor.toUpperCase()) >= 0){
+
+                        $('.mix-flavor[value="' + flavor + '"]')
+                            .prop('checked', true)
+                            .closest('.mix-item')
+                            .addClass('active');
+
+                        selectedOrder.push(flavor);
+                    }
+                });
+
+                initializing = false;
+            });
 
             $(document)
             .off('change.mixflavor')
             .on('change.mixflavor', '.mix-flavor', function(){
+
+            if(initializing){
+                return;
+            }
 
                 var val = $(this).val();
 
