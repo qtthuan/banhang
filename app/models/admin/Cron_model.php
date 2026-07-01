@@ -87,6 +87,7 @@ class Cron_model extends CI_Model
 //        }
         //$this->updateMemberJoiningDate();
         
+        $this->clean_unused_product_images();
 
         $this->updateCostingOnEditProduct();
 
@@ -680,6 +681,198 @@ class Cron_model extends CI_Model
             return TRUE;
         }
         RETURN FALSE;
+    }
+
+
+    public function clean_unused_product_images()
+    {
+        log_message(
+                    'info',
+                    '[START DELETING UNUSED IMAGES]');
+        $used = [];
+
+        // Ảnh chính sản phẩm
+        $products = $this->db
+            ->select('image')
+            ->where('image IS NOT NULL', null, false)
+            ->where('image !=', '')
+            ->get('products')
+            ->result();
+
+        foreach ($products as $row) {
+            $used[trim($row->image)] = true;
+        }
+
+        // Ảnh phụ sản phẩm
+        $photos = $this->db
+            ->select('photo')
+            ->where('photo IS NOT NULL', null, false)
+            ->where('photo !=', '')
+            ->get('product_photos')
+            ->result();
+
+        foreach ($photos as $row) {
+            $used[trim($row->photo)] = true;
+        }
+
+        // ======================================
+        // Slider (sma_shop_settings.slider)
+        // ======================================
+
+        $shop_settings = $this->db
+            ->select('slider')
+            ->limit(1)
+            ->get('shop_settings')
+            ->row();
+
+        if ($shop_settings && !empty($shop_settings->slider)) {
+
+            $sliders = json_decode($shop_settings->slider);
+
+            if (!empty($sliders)) {
+
+                foreach ($sliders as $slide) {
+
+                    if (!empty($slide->image)) {
+                        $used[trim($slide->image)] = true;
+                    }
+                }
+            }
+        }
+
+
+        // ======================================
+        // Nhóm hàng (sma_categories.image)
+        // ======================================
+
+        $categories = $this->db
+            ->select('image')
+            ->where('image IS NOT NULL', null, false)
+            ->where('image !=', '')
+            ->get('categories')
+            ->result();
+
+        foreach ($categories as $row) {
+
+            $used[trim($row->image)] = true;
+        }
+
+
+        // ======================================
+        // Kho hàng (sma_warehouses.map)
+        // ======================================
+
+        $warehouses = $this->db
+            ->select('map')
+            ->where('map IS NOT NULL', null, false)
+            ->where('map !=', '')
+            ->get('warehouses')
+            ->result();
+
+        foreach ($warehouses as $row) {
+
+            $used[trim($row->map)] = true;
+        }
+
+
+        // ======================================
+        // User avatar (sma_users.avatar)
+        // ======================================
+
+        $users = $this->db
+            ->select('avatar')
+            ->where('avatar IS NOT NULL', null, false)
+            ->where('avatar !=', '')
+            ->get('users')
+            ->result();
+
+        foreach ($users as $row) {
+
+            $used[trim($row->avatar)] = true;
+        }
+
+
+        // ======================================
+        // Nơi sản xuất / Brand (sma_brands.image)
+        // ======================================
+
+        $brands = $this->db
+            ->select('image')
+            ->where('image IS NOT NULL', null, false)
+            ->where('image !=', '')
+            ->get('brands')
+            ->result();
+
+        foreach ($brands as $row) {
+
+            $used[trim($row->image)] = true;
+        }
+
+        $upload_path = FCPATH . 'assets/uploads/';
+        $thumb_path  = FCPATH . 'assets/uploads/thumbs/';
+
+        $ignore = [
+            '.',
+            '..',
+            'index.html',
+            'no_image.png',
+            'default.png'
+        ];
+
+        $deleted = 0;
+        $total_size = 0;
+
+        foreach (scandir($upload_path) as $file) {
+
+            if (in_array($file, $ignore)) {
+                continue;
+            }
+
+            if (is_dir($upload_path . $file)) {
+                continue;
+            }
+
+            // Chỉ xử lý file ảnh
+            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+            if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                continue;
+            }
+
+            // Không có trong DB
+            if (!isset($used[$file])) {
+
+
+                $size = filesize($upload_path . $file);
+
+                $total_size += $size;
+                $deleted++;
+
+                log_message(
+                    'info',
+                    '[DELETE IMAGE] ' . $file .
+                    ' | Size: ' . round($size / 1024, 2) . ' KB'
+                );
+
+                @unlink($upload_path . $file);
+
+                if (file_exists($thumb_path . $file)) {
+                    @unlink($thumb_path . $file);
+                }
+            }
+        }
+
+        log_message(
+            'info',
+            '[IMAGE CLEANUP] Deleted: ' . $deleted .
+            ' files | Freed: ' .
+            round($total_size / 1024 / 1024, 2) .
+            ' MB'
+        );
+        log_message(
+                    'info',
+                    '[END DELETING UNUSED IMAGES]');
+        return $deleted;
     }
 
 
