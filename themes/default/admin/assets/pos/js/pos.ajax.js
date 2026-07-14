@@ -1,6 +1,8 @@
+var lastCustomerScreenItems = [];
 $(document).ready(function() {
 
     const MINI_WAREHOUSE_ID = window.APP_CONFIG.MINI_WAREHOUSE_ID;
+
 
     $('body a, body button').attr('tabindex', -1);
     check_add_item_val();
@@ -795,6 +797,7 @@ $('#posdiscount').focus(function () {
         positems[item_id].row.serial = $('#pserial').val();
         positems[item_id].row.comment = $('#icomment').val().toUpperCase();
         positems[item_id].row.comment_name = $('#icommentname').val().toUpperCase();
+        //positems[item_id].order = new Date().getTime();
         localStorage.setItem('positems', JSON.stringify(positems));
         //console.log(JSON.stringify(positems));
         $('#prModal').modal('hide');
@@ -1181,6 +1184,7 @@ function loadItems() {
         order_data = {};
         bill_data = {};
 
+
         $("#posTable tbody").empty();
         var time = ((new Date).getTime())/1000;
         if (pos_settings.remote_printing != 1) {
@@ -1225,6 +1229,7 @@ function loadItems() {
             sortedItems = positems;
         }
         var category = 0, print_cate = false;
+        var customerScreenItems = []; // Push thông tin hiển thị màn hình phụ
         // var itn = parseInt(Object.keys(sortedItems).length);
         //console.log(JSON.stringify(sortedItems));
         $.each(sortedItems, function () {
@@ -1387,6 +1392,23 @@ function loadItems() {
             if (site.settings.tax1 == 1) {
                 tr_html += '<input class="form-control input-sm text-right rproduct_tax" name="product_tax[]" type="hidden" id="product_tax_' + row_no + '" value="' + pr_tax.id + '"><input type="hidden" class="sproduct_tax" id="sproduct_tax_' + row_no + '" value="' + formatMoney(pr_tax_val * item_qty) + '">';
             }
+
+            customerScreenItems.push({
+                row_no      : item.order,
+                id          : item_id,
+                code        : item_code,
+                image       : item_image,
+                name        : item_name,
+                qty         : item_qty,
+                comment     : item_comment,
+                comment_name: item_comment_name,
+                price       : item_price,
+                original_price : unit_price,
+                subtotal    : item_price * item_qty,
+                discount    : item_discount,
+                option      : sel_opt,
+            });
+            
             
             if (item_discount > 0) {
                 //console.log('11111');
@@ -1604,7 +1626,15 @@ function loadItems() {
         $('#gtotal').text(formatMoney(gtotal));
         $('#order_discount_percent_for_return_sale').val(parseFloat(order_discount_percent_for_return_sale));
 
-        updateCustomerScreen(sortedItems, gtotal);
+
+
+        //console.log('LOAD ITEMS');
+        //console.log(sortedItems);
+        //console.log(gtotal);
+
+        lastCustomerScreenItems = customerScreenItems;
+
+        updateCustomerScreen(customerScreenItems, gtotal);
 
         
         if (pos_settings.remote_printing != 1) {
@@ -1704,25 +1734,7 @@ function printLine(str) {
  ---------------------------- */
 
  function add_invoice_item(item) {
-    //console.log(JSON.stringify(item));
-
-
-
-    /*
-    if ($this->sma->isPromo($row)) {
-                    $row->original_price = $row->price;
-                    $row->price = $row->promo_price;
-                } elseif ($customer->price_group_id) {
-                    if ($pr_group_price = $this->site->getProductGroupPrice($row->id, $customer->price_group_id)) {
-                        $row->original_price = $row->price;
-                        $row->price = $pr_group_price->price;
-                    }
-                } elseif ($warehouse->price_group_id) {
-                    if ($pr_group_price = $this->site->getProductGroupPrice($row->id, $warehouse->price_group_id)) {
-                        $row->original_price = $row->price;
-                        $row->price = $pr_group_price->price;
-                    }
-                }*/
+    
     if (count == 1) {
         positems = {};
         if ($('#poswarehouse').val() && $('#poscustomer').val()) {
@@ -1756,7 +1768,7 @@ function printLine(str) {
     }
     positems[item_id].order = new Date().getTime();
     localStorage.setItem('positems', JSON.stringify(positems));
-    //console.log(JSON.stringify(positems));
+    console.log(JSON.stringify(positems));
     loadItems();
     return true;
  }
@@ -2128,37 +2140,50 @@ $(document).ajaxStart(function(){
  * qtthuan
  * Cập nhật màn hình pos cho khách xem
  */
+
 function updateCustomerScreen(items, total)
 {
-     //console.log('updateCustomerScreen');
-    //console.log(items);
-    //console.log(total);
-  const csrfName = $('#csrf_token_input').attr('name');
-  const csrfHash = $('#csrf_token_input').val();
+
+    //console.log(JSON.stringify(items));
+    //console.log('CSRF hash:', csrfHash);
+
     let payload = {
-        mode : 'sale',
-        total : total,
-        items : []
+        mode: 'sale',
+        total: total,
+        items: []
     };
 
-    $.each(items, function(){
-
+    $.each(items, function () {
+       
         payload.items.push({
-            name : this.row.name,
-            qty  : this.row.qty,
-            note : this.row.comment || '',
-            size : this.row.option || '',
-            [csrfName]: csrfHash
+            row_no:this.row_no,
+            id:this.item_id,
+            code:this.code,
+            name:this.name,
+            image:this.image,
+            qty:this.qty,
+            price:this.price,
+            subtotal:this.subtotal,
+            note:this.comment||'',
+            size:this.option||''
         });
-
     });
-//console.log(site.base_url + "pos/update_customer_screen");
+
+    let postData = {
+        payload: JSON.stringify(payload)
+    };
+
+    postData[csrfName] = csrfHash;
     $.ajax({
-        
-        url  : site.base_url + "pos/update_customer_screen",
-        type : "POST",
-        data : JSON.stringify(payload),
-        contentType : "application/json"
+        url: site.base_url + "pos/update_customer_screen",
+        type: "POST",
+        data: postData,
+        success: function(res){
+            console.log(res);
+        },
+        error: function(xhr){
+            console.log(xhr.responseText);
+        }
     });
 }
 

@@ -619,26 +619,130 @@ class Pos_model extends CI_Model
         return false;
     }
 
+    // public function updateCustomerScreenState($pos_id, $data)
+    // {
+    //     $this->db
+    //         ->where('pos_id', $pos_id)
+    //         ->update(
+    //             'customer_screen_state',
+    //             [
+    //                 'data'       => json_encode($data),
+    //                 'mode'       => 'sale',
+    //                 'updated_at' => date('Y-m-d H:i:s')
+    //             ]
+    //         );
+    // }
+
+    // public function updateCustomerScreenState($pos_id, $data)
+    // {
+    //     $save = [
+    //         'data'       => json_encode($data, JSON_UNESCAPED_UNICODE),
+    //         'mode'       => 'sale',
+    //         'updated_at' => date('Y-m-d H:i:s')
+    //     ];
+
+    //     $row = $this->db
+    //         ->where('pos_id', $pos_id)
+    //         ->get('sma_customer_screen_state')
+    //         ->row();
+
+    //     if ($row) {
+
+    //         $this->db
+    //             ->where('pos_id', $pos_id)
+    //             ->update('sma_customer_screen_state', $save);
+
+    //     } else {
+
+    //         $save['pos_id'] = $pos_id;
+
+    //         $this->db
+    //             ->insert('sma_customer_screen_state', $save);
+    //     }
+    // }
+
     public function updateCustomerScreenState($pos_id, $data)
     {
-        $this->db
-            ->where('pos_id', $pos_id)
-            ->update(
-                'customer_screen_state',
-                [
-                    'data'       => json_encode($data),
-                    'mode'       => 'sale',
-                    'updated_at' => date('Y-m-d H:i:s')
-                ]
-            );
+        $mode = isset($data['mode']) ? $data['mode'] : 'sale';
+
+       if (
+            $mode == 'payment_wait' ||
+            $mode == 'payment_cash' ||
+            $mode == 'payment_bank' ||
+            $mode == 'payment_success'
+        ) {
+
+            $save = [
+                'mode'       => $mode,
+                'data'       => json_encode($data['payment'], JSON_UNESCAPED_UNICODE),
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+
+        } else {
+
+            $save = [
+                'mode'       => $mode,
+                'data'       => json_encode($data, JSON_UNESCAPED_UNICODE),
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+
+        }
+
+        $this->db->where('pos_id', $pos_id);
+
+        if ($this->db->count_all_results('sma_customer_screen_state')) {
+
+            $this->db->where('pos_id', $pos_id);
+
+            return $this->db->update('sma_customer_screen_state', $save);
+
+        }
+
+        $save['pos_id'] = $pos_id;
+
+        return $this->db->insert('sma_customer_screen_state', $save);
     }
 
     public function getCustomerScreenState($pos_id)
     {
-        return $this->db
+        $row = $this->db
             ->where('pos_id', $pos_id)
             ->get('customer_screen_state')
             ->row_array();
+
+        if (!$row) {
+            return null;
+        }
+
+        // Nếu đang ở màn hình Thank You quá 10 giây thì tự về Ads
+        if (
+            $row['mode'] == 'payment_success' &&
+            strtotime($row['updated_at']) <= (time() - 10)
+        ) {
+
+            $this->resetCustomerScreenState($pos_id);
+
+            $row['mode'] = 'ads';
+            $row['data'] = null;
+            $row['updated_at'] = date('Y-m-d H:i:s');
+        }
+
+        return $row;
+    }
+
+    public function resetCustomerScreenState($pos_id = 1)
+    {
+        return $this->db
+            ->where('pos_id', $pos_id)
+            ->update(
+                'customer_screen_state',
+                [
+                    'sale_id'    => null,
+                    'data'       => null,
+                    'mode'       => 'ads',
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]
+            );
     }
 
     public function addQuantity($product_id, $warehouse_id, $quantity)

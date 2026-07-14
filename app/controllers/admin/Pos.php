@@ -252,31 +252,70 @@ class Pos extends MY_Controller
             $this->data
         );
     }
+
     public function update_customer_screen()
     {
-        die('TOI DA VAO CONTROLLER');
-        $json = file_get_contents('php://input');
-         echo '<pre>';
-    var_dump($json);
-
-    exit;
+        $json = $this->input->post('payload');
         $data = json_decode($json, true);
 
-        $this->pos_model->updateCustomerScreenState(
-            1,
-            $data
-        );
+        $this->pos_model->updateCustomerScreenState(1, $data);
 
         echo json_encode([
             'success' => true
         ]);
     }
 
+    // public function update_customer_screen()
+    // {
+    //     log_message('error', '===== UPDATE CUSTOMER SCREEN =====');
+
+    //     $json = $this->input->post('payload');
+    //     $data = json_decode($json, true);
+
+    //     echo '<pre>';
+    //     print_r($data);
+    //     exit;
+
+    //     log_message('error', $json);
+
+    //     die('OK');
+    // }
+
+    // public function update_customer_screen()
+    // {
+    //     die('TOI DA VAO CONTROLLER');
+    //     $json = file_get_contents('php://input');
+    //     //  echo '<pre>';
+    //     // var_dump($json);
+
+    //     // exit;
+        
+    //     $data = json_decode($json, true);
+
+    //     $this->pos_model->updateCustomerScreenState(
+    //         1,
+    //         $data
+    //     );
+
+    //     echo json_encode([
+    //         'success' => true
+    //     ]);
+    // }
+
     public function get_customer_screen()
     {
         $state = $this->pos_model->getCustomerScreenState(1);
 
         echo json_encode($state);
+    }
+
+    public function reset_customer_screen()
+    {
+        $this->pos_model->resetCustomerScreenState(1);
+
+        echo json_encode([
+            'success' => true
+        ]);
     }
 
     
@@ -687,6 +726,13 @@ class Pos extends MY_Controller
                             $redirect_to .= '?print='.$sale['sale_id'];
                         }
                     }
+                    $this->pos_model->updateCustomerScreenState(
+                        1, 
+                        [
+                            'mode' => 'payment_success',
+                            'payment' => []
+                        ]
+                    );
                     admin_redirect($redirect_to);
                 }
             }
@@ -856,6 +902,7 @@ class Pos extends MY_Controller
                     $this->data['created_by'] = $this->site->getUser($inv->created_by);
                 }
             }
+            $this->pos_model->resetCustomerScreenState(1);
             //$this->sma->print_arrays($this->data);
             //$this->load->view($this->theme . 'pos/add', $this->data);
             if ($this->agent->is_mobile()) {

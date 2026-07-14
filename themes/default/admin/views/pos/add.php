@@ -1337,7 +1337,9 @@
 </div>
 <?php unset($Settings->setting_id, $Settings->smtp_user, $Settings->smtp_pass, $Settings->smtp_port, $Settings->update, $Settings->reg_ver, $Settings->allow_reg, $Settings->default_email, $Settings->mmode, $Settings->timezone, $Settings->restrict_calendar, $Settings->restrict_user, $Settings->auto_reg, $Settings->reg_notification, $Settings->protocol, $Settings->mailpath, $Settings->smtp_crypto, $Settings->corn, $Settings->customer_group, $Settings->envato_username, $Settings->purchase_code);?>
 <script type="text/javascript">
-var site = <?=json_encode(array('url' => base_url(), 'base_url' => admin_url('/'), 'assets' => $assets, 'settings' => $Settings, 'dateFormats' => $dateFormats))?>, pos_settings = <?=json_encode($pos_settings);?>;
+var site = <?=json_encode(array('url' => base_url(), 'base_url' => admin_url(), 'assets' => $assets, 'settings' => $Settings, 'dateFormats' => $dateFormats))?>, pos_settings = <?=json_encode($pos_settings);?>;
+var csrfName = "<?= $this->security->get_csrf_token_name(); ?>";
+var csrfHash = "<?= $this->security->get_csrf_hash(); ?>";
 var lang = {
     unexpected_value: '<?=lang('unexpected_value');?>', 
     select_above: '<?=lang('select_above');?>', 
@@ -1369,6 +1371,7 @@ var lang = {
     var protect_delete = <?php if (!$Owner && !$Admin) {echo $pos_settings->pin_code ? '1' : '0';} else {echo '0';} ?>, billers = <?= json_encode($posbillers); ?>, biller = <?= json_encode($posbiller); ?>;
     var username = '<?=$this->session->userdata('username');?>', order_data = '', bill_data = '';
     var customer_points = 0;
+    var currentPaymentIndex = 1;
 
     function widthFunctions(e) {
         var wh = $(window).height(),
@@ -1625,7 +1628,7 @@ var lang = {
                             $('#posdiscount').val(realPercent);
                             
                             if (percent != 0) {
-                                console.log(JSON.stringify(cgdata));
+                                //console.log(JSON.stringify(cgdata));
                                 var str = cgdata['customer_group_name'] + '<?= lang('vip_discount') ?>' + realPercent;
                                 $('#posInfoModalLabel').text(str);
                                 $('#posInfoModal').modal();
@@ -1665,6 +1668,7 @@ var lang = {
             $('#amount_val_<?=$i?>').val($(this).val());
         });
         $('#paymentModal').on('keyup', '#amount_<?=$i?>', function (e) {
+            currentPaymentIndex = <?=$i?>;
             calculateTotals();
             $('#amount_val_<?=$i?>').val($(this).val());
         });
@@ -1763,6 +1767,22 @@ var lang = {
                 $('#amount_1').blur();
                 $('#submit-sale').click();
             }
+
+            // Reset cột quick payable và phương thức thanh toán
+            $('#clear-cash-notes').click();
+            for (var i = 1; i <= 5; i++) {
+
+                if ($("#paid_by_" + i).length) {
+
+                    $("#paid_by_" + i)
+                        .val("wait")
+                        .trigger("change");
+
+                    $("#amount_" + i).val("");
+                }
+
+            } // Reset cột quick payable và phương thức thanh toán
+
             $('#customer').select2({
                 minimumInputLength: 1,
                 ajax: {
@@ -1785,8 +1805,85 @@ var lang = {
                 }
             });
 
+            console.log("shown paid_by_1 =", $("#paid_by_1").val());
+
+            syncCustomerPaymentScreen();
+
         });
 
+        $('#paymentModal').on('hidden.bs.modal', function () {
+
+        // console.log(lastCustomerScreenItems);
+        // console.log(grand_total);
+            updateCustomerScreen(
+                lastCustomerScreenItems,
+                grand_total
+            );
+
+        });
+
+        function syncCustomerPaymentScreen()
+        {
+            var paidBy = $("#paid_by_1").val();
+
+            switch (paidBy) {
+
+                case "wait":
+                case "cod":
+
+                    updateCustomerPayment("payment_wait", {
+                        total: grand_total
+                    });
+
+                    break;
+
+                case "cash":
+
+                    updateCustomerPayment("payment_cash", {
+                        total: grand_total
+                    });
+
+                    break;
+
+                case "cc":
+
+                    updateCustomerPayment("payment_bank", {
+                        total: grand_total,
+                        bank_amount: grand_total
+                    });
+
+            break;
+            }
+        }
+
+
+        function updateCustomerPayment(mode, data)
+        {
+            let postData = {
+
+                payload: JSON.stringify({
+
+                    mode: mode,
+
+                    payment: data
+
+                })
+
+            };
+            //console.log("SEND:", mode, data);
+
+            postData[csrfName] = csrfHash;
+
+            $.ajax({
+
+                url: site.base_url + "pos/update_customer_screen",
+
+                type: "POST",
+
+                data: postData
+
+            });
+        }
 
 
         var pi = 'amount_1', pa = 2;
@@ -1809,7 +1906,9 @@ var lang = {
 
         $(document).on('click', '#clear-cash-notes', function () {
             $('.quick-cash').find('.badge').remove();
-            $('#' + pi).val('0').focus();
+
+            $('#' + pi).val('0');
+            syncCustomerPaymentScreen();
         });
 
 
@@ -1908,9 +2007,12 @@ var lang = {
         });
         $(document).on('focus', '.amount', function () {
             pi = $(this).attr('id');
+            currentPaymentIndex = parseInt(pi.replace("amount_", ""));
             calculateTotals();
         }).on('blur', '.amount', function () {
-            calculateTotals();
+            //alert('xxxxx');
+            //calculateTotals();
+            //syncCustomerPaymentScreen();
         });
 
         function calculateTotals() {
@@ -1925,18 +2027,47 @@ var lang = {
             //console.log(' - cash_used: ' + cash_used);
             $('#number_to_string_1').text(upperFirst(NUMBERTOSTRING.read(total_paying)) + ' đồng')
             <?php if ($pos_settings->rounding) {?>
-            $('#balance').text(formatMoney((total_paying - round_total) + cash_used));
-            $('#balance_' + pi).val(formatDecimal((total_paying - round_total) + cash_used));
-            total_paid = total_paying;
-            grand_total = round_total;
+                $('#balance').text(formatMoney((total_paying - round_total) + cash_used));
+                $('#balance_' + pi).val(formatDecimal((total_paying - round_total) + cash_used));
+                total_paid = total_paying;
+                grand_total = round_total;
             <?php } else {?>
-            $('#balance').text(formatMoney(total_paying - gtotal));
-            $('#balance_' + pi).val(formatDecimal(total_paying - gtotal));
-            total_paid = total_paying;
-            grand_total = gtotal;
+                $('#balance').text(formatMoney(total_paying - gtotal));
+                $('#balance_' + pi).val(formatDecimal(total_paying - gtotal));
+                total_paid = total_paying;
+                grand_total = gtotal;
             
-            <?php }
+            <?php 
+                } // END ELSE
             ?>
+
+           // ======================================
+            // Customer Screen
+            // ======================================
+            if ($("#paymentModal").is(":visible")) {
+
+                var method = $("#paid_by_1").val();
+
+                if (method == "cash") {
+
+                    var paid = formatCNum($("#amount_1").val());
+
+                    if (isNaN(paid)) {
+                        paid = 0;
+                    }
+
+                    updateCustomerPayment(
+                        "payment_cash",
+                        {
+                            total  : grand_total,
+                            paid   : paid,
+                            change : Math.max(0, paid - grand_total)
+                        }
+                    );
+
+                }
+
+            }
         }
 
         $("#add_item").autocomplete({
@@ -2035,8 +2166,9 @@ var lang = {
                 success: function (data) {
                     e.preventDefault();
                     if (data !== null) {
-                        console.log(JSON.stringify(data));
-                        console.log('is_mix=', data.row.is_mix);
+                        //console.log(' view pos/add lineL 2038: ');
+                        //console.log(JSON.stringify(data));
+                        //console.log('is_mix=', data.row.is_mix);
                         if (parseInt(data.row.is_mix) > 0) {
                             var clickPos = {
                                 x : e.pageX,
@@ -2498,17 +2630,44 @@ var lang = {
         });
 
         $(document).on('change', '.paid_by', function () {
-            //$('#clear-cash-notes').click();
+           
+            $('#clear-cash-notes').click();
             var p_val = $(this).val(),
-                id = $(this).attr('id'),
-                pa_no = id.substr(id.length - 1);
+            id = $(this).attr('id'),
+            pa_no = id.substr(id.length - 1);
+            
             $('#rpaidby').val(p_val);
             if (p_val == 'cash' || p_val == 'other') {
+
                 $('.pcheque_' + pa_no).hide();
                 $('.pcc_' + pa_no).hide();
                 $('.gc_' + pa_no).hide();
                 $('.pts_' + pa_no).hide();
                 $('.pcash_' + pa_no).show();
+
+
+
+                // Cho nhập tiền lại
+                $("#amount_" + pa_no)
+                    .prop("readonly", false)
+                    .val(0);
+
+                // Enable Quick Cash
+                $(".quick-cash")
+                    .removeClass("disabled");
+
+                // Cập nhật màn hình phụ
+                updateCustomerPayment(
+                    "payment_cash",
+                    {
+                        total  : grand_total,
+                        paid   : 0,
+                        change : 0
+                    }
+                );
+
+
+
                 $('#amount_' + pa_no).focus();
 
                 $('#ca_points_' + pa_no).val(0);
@@ -2517,17 +2676,29 @@ var lang = {
                 $('#twt').text(formatMoney(gtotal));
 
             } else if (p_val == 'cc' || p_val == 'vnpay' || p_val == 'pos') {
+
                 $('.pcheque_' + pa_no).hide();
                 $('.pcash_' + pa_no).hide();
                 $('.gc_' + pa_no).hide();
                 $('.pts_' + pa_no).hide();
                 $('.pcc_' + pa_no).show();
+
+                // Điền tiền trước
+                $("#amount_" + pa_no)
+                    .val(formatDecimal(gtotal))
+                    .prop("readonly", true);
+
+                $(".quick-cash").addClass("disabled");
+
                 $('#swipe_' + pa_no).focus();
 
                 $('#ca_points_' + pa_no).val(0);
                 $('#details_pts_' + pa_no).html('');
                 $('#paying_points_val_' + pa_no).val(0);
                 $('#twt').text(formatMoney(gtotal));
+
+                // Sau cùng mới tính
+                calculateTotals();
             }
             if (p_val == 'gift_card') {
                 $('.gc_' + pa_no).show();
@@ -2583,6 +2754,10 @@ var lang = {
                 $('#paying_points_val_' + pa_no).val(0);
                 $('#twt').text(formatMoney(gtotal));
             }
+
+            setTimeout(function () {
+                syncCustomerPaymentScreen();
+            }, 50);
         });
 
 
