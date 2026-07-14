@@ -813,7 +813,7 @@ body{
 
 .payment-title{
 
-    font-size:42px;
+    font-size:40px;
 
     font-weight:700;
 
@@ -855,9 +855,9 @@ body{
 
 .payment-preview{
 
-    width:260px;
+    width:190px;
 
-    height:190px;
+    height:120px;
 
     background:white;
 
@@ -894,7 +894,7 @@ body{
 
 .preview-icon{
 
-    font-size:70px;
+    font-size:50px;
 
     margin-bottom:18px;
 
@@ -902,7 +902,7 @@ body{
 
 .preview-title{
 
-    font-size:28px;
+    font-size:20px;
 
     font-weight:800;
 
@@ -937,7 +937,7 @@ body{
 }
 .payment-total{
 
-    font-size:120px;
+    font-size:65px;
 
     font-weight:900;
 
@@ -951,7 +951,7 @@ body{
 
 .payment-wait{
 
-    font-size:40px;
+    font-size:35px;
 
     color:#666;
 
