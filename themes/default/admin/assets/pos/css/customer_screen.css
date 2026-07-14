@@ -1029,8 +1029,6 @@ body{
     box-shadow:
         0 8px 24px rgba(0,0,0,.12);
 
-    margin:5px 0;
-
 }
 
 .payment-bank-amount{
@@ -1067,7 +1065,7 @@ body{
 
     background:#eceff1;
 
-    margin:30px auto;
+    margin:5px auto;
 
 }
 
