@@ -483,7 +483,7 @@ body{
 
 #cs-footer{
 
-    height:52px;
+    height:48px;
 
     background:#0D6EFD;
 
@@ -516,7 +516,7 @@ body{
 
 .footer-title{
 
-    font-size:28px;
+    font-size:25px;
 
     font-weight:600;
 
@@ -525,7 +525,7 @@ body{
 
 #grand-total{
 
-    font-size:38px;
+    font-size:35px;
 
     font-weight:bold;
 
