@@ -546,9 +546,6 @@ function renderBill(data)
     // Lưu row mới nhất
     CS.lastRowNo = newestRowNo;
 
-    // Tự co giao diện nếu nhiều món
-    fitBillList();
-
     // Hiệu ứng tổng tiền
     animateTotal(data.total);
 }
@@ -677,47 +674,6 @@ function renderItem(item)
         .append(right);
 
     return html;
-}
-
-function fitBillList()
-{
-    let $list = $("#bill-list");
-
-    // reset
-    $list.removeClass("compact");
-
-    $list.css({
-        transform: "scale(1)",
-        transformOrigin: "top left",
-        width: "100%"
-    });
-
-    // từ 7 món trở lên dùng compact
-    if($list.children().length >= 7){
-        $list.addClass("compact");
-    }
-
-    // đợi browser render xong
-    requestAnimationFrame(function(){
-
-        let containerHeight = $list.parent().height();
-        let contentHeight   = $list[0].scrollHeight;
-
-        if(contentHeight > containerHeight){
-
-            let scale = containerHeight / contentHeight;
-
-            // không nhỏ quá
-            scale = Math.max(scale,0.75);
-
-            $list.css({
-                transform:"scale("+scale+")",
-                width:(100/scale)+"%"
-            });
-        }
-
-    });
-
 }
 
 /* ----------------------------------------------------------

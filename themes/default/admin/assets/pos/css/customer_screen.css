@@ -43,7 +43,7 @@ body{
 
 #cs-header{
 
-    height:75px;
+    height:60px;
 
     background:#2E7D32;
 
@@ -75,9 +75,9 @@ body{
 
 .logo{
 
-    width:52px;
+    width:44px;
 
-    height:52px;
+    height:44px;
 
     border-radius:50%;
 
@@ -100,7 +100,7 @@ body{
 
 .shop-name{
 
-    font-size:30px;
+    font-size:26px;
 
     font-weight:700;
 
@@ -111,7 +111,7 @@ body{
 
 .shop-slogan{
 
-    font-size:16px;
+    font-size:14px;
 
     opacity:.8;
 
@@ -127,7 +127,7 @@ body{
 
 #clock-time{
 
-    font-size:32px;
+    font-size:25px;
 
     font-weight:bold;
 
@@ -136,7 +136,7 @@ body{
 
 #clock-date{
 
-    font-size:22px;
+    font-size:18px;
 
 }
 
@@ -340,9 +340,9 @@ body{
 
     border-radius:16px;
 
-    padding:0 17px;
+    padding:4px 12px;
 
-    margin-bottom:5px;
+    margin-bottom:3px;
 
     box-shadow:
 
@@ -406,9 +406,9 @@ body{
 
 .bill-icon{
 
-    width:42px;
+    width:35px;
 
-    height:42px;
+    height:35px;
 
     border-radius:50%;
 
@@ -450,14 +450,14 @@ body{
 
     text-align:right;
 
-    min-width:170px;
+    min-width:140px;
 
 }
 
 
 .bill-qty{
 
-    font-size:24px;
+    font-size:19px;
 
     color:#777;
 
@@ -468,7 +468,7 @@ body{
 
     margin-top:1px;
 
-    font-size:26px;
+    font-size:23px;
 
     font-weight:bold;
 
@@ -483,7 +483,7 @@ body{
 
 #cs-footer{
 
-    height:70px;
+    height:55px;
 
     background:#0D6EFD;
 
@@ -516,7 +516,7 @@ body{
 
 .footer-title{
 
-    font-size:35px;
+    font-size:30px;
 
     font-weight:600;
 
@@ -525,7 +525,7 @@ body{
 
 #grand-total{
 
-    font-size:45px;
+    font-size:39px;
 
     font-weight:bold;
 
@@ -578,7 +578,7 @@ body{
 
 .bill-extra{
 
-    margin-top:5px;
+    margin-top:3px;
 
     display:flex;
 
@@ -604,7 +604,7 @@ body{
 
 .bill-name{
 
-    font-size:22px;
+    font-size:20px;
 
     font-weight:700;
 
@@ -624,7 +624,7 @@ body{
 
     border-radius:20px;
 
-    font-size:17px;
+    font-size:14px;
 
     font-weight:700;
 
@@ -666,7 +666,7 @@ body{
 
     color:#0e0e0e;
 
-    font-size:14px;
+    font-size:12px;
 
 }
 
@@ -1132,43 +1132,4 @@ body{
 
     text-align:center;
 
-}
-
-/* ====================================
-   AUTO COMPACT BILL
-==================================== */
-
-#bill-list.compact .bill-item{
-    padding:0 12px;
-    margin-bottom:3px;
-}
-
-#bill-list.compact .bill-icon{
-    width:34px;
-    height:34px;
-}
-
-#bill-list.compact .bill-right{
-    min-width:140px;
-}
-
-#bill-list.compact .bill-name{
-    font-size:18px;
-}
-
-#bill-list.compact .bill-option{
-    font-size:14px;
-    padding:3px 10px;
-}
-
-#bill-list.compact .bill-note{
-    font-size:12px;
-}
-
-#bill-list.compact .bill-qty{
-    font-size:18px;
-}
-
-#bill-list.compact .bill-price{
-    font-size:21px;
 }
