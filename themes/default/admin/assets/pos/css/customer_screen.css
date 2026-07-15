@@ -1133,3 +1133,42 @@ body{
     text-align:center;
 
 }
+
+/* ====================================
+   AUTO COMPACT BILL
+==================================== */
+
+#bill-list.compact .bill-item{
+    padding:0 12px;
+    margin-bottom:3px;
+}
+
+#bill-list.compact .bill-icon{
+    width:34px;
+    height:34px;
+}
+
+#bill-list.compact .bill-right{
+    min-width:140px;
+}
+
+#bill-list.compact .bill-name{
+    font-size:18px;
+}
+
+#bill-list.compact .bill-option{
+    font-size:14px;
+    padding:3px 10px;
+}
+
+#bill-list.compact .bill-note{
+    font-size:12px;
+}
+
+#bill-list.compact .bill-qty{
+    font-size:18px;
+}
+
+#bill-list.compact .bill-price{
+    font-size:21px;
+}
