@@ -617,7 +617,9 @@
                                         <div class="col-sm-3">
                                             <div class="form-group">
                                                 <?=lang("paying_by", "paid_by_1");?>
-                                                
+                                                <select name="paid_by[]" id="paid_by_1" class="form-control paid_by">
+                                                    <?= $this->sma->paid_opts(); ?>
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
