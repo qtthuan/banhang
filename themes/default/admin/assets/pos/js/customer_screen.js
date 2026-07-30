@@ -564,6 +564,8 @@ function clearBill()
     $("#grand-total").text(
         formatMoney(0)
     );
+
+    $("#total-items-number").text("0 MÓN");
 }
 
 
@@ -584,6 +586,15 @@ function renderBill(data)
         return;
 
     }
+
+    // Tổng số món (tính theo quantity)
+    var totalItems = 0;
+
+    $.each(data.items, function(i, item){
+        totalItems += Number(item.qty || 0);
+    });
+
+    $("#total-items-number").text(totalItems + " MÓN");
 
     // Sắp xếp món mới lên đầu
     data.items.sort(function(a, b) {

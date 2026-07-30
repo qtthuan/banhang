@@ -45,7 +45,7 @@ body{
 
     height:50px;
 
-    background:#2E7D32;
+    background:#146B2E;
 
     color:#fff;
 
@@ -525,7 +525,7 @@ body{
 
     height:46px;
 
-    background:#0D6EFD;
+    background:#064BC4;
 
     color:#fff;
 
@@ -560,6 +560,35 @@ body{
 
     font-weight:600;
 
+}
+
+#total-items{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+
+    margin-left:12px;
+    padding-left:12px;
+
+    border-left:1px solid rgba(255,255,255,.65);
+
+    font-size:17px;
+    font-weight:600;
+}
+
+.total-items-icon{
+    width:28px;
+    height:28px;
+
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    border:1.5px solid rgba(255,255,255,.9);
+    border-radius:50%;
+
+    font-size:17px;
+    line-height:1;
 }
 
 
