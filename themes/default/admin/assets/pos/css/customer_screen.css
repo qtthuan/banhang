@@ -1210,10 +1210,9 @@ body{
 @media (max-height: 650px) {
 
     .payment-box{
-        width:88%;
-        height:82%;
-
-        padding:22px 35px;
+        width:92%;
+        height:86%;
+        padding:20px 30px;
         border-radius:28px;
     }
 
