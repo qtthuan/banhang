@@ -383,8 +383,8 @@ body{
     border:1px solid #b8c1cc;
     border-radius:12px;
 
-    padding:0 12px;
-    margin-bottom:4px;
+    padding:1px 12px;
+    margin-bottom:5px;
 
     /* Shadow nhẹ thôi, border mới là phần phân cách chính */
     box-shadow:0 1px 3px rgba(0,0,0,.10);
@@ -446,9 +446,9 @@ body{
 
 .bill-icon{
 
-    width:30px;
+    width:32px;
 
-    height:30px;
+    height:32px;
 
     border-radius:50%;
 
@@ -497,9 +497,9 @@ body{
 
 .bill-qty{
 
-    font-size:19px;
+    font-size:20px;
 
-    color:#777;
+    color:#000000;
 
 }
 
@@ -673,7 +673,7 @@ body{
 
 .bill-name{
 
-    font-size:18px;
+    font-size:19px;
 
     font-weight:700;
 
