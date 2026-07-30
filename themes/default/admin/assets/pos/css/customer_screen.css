@@ -1207,7 +1207,7 @@ body{
    PAYMENT - MÀN HÌNH THẤP / MÀN HÌNH PHỤ 11.6"
    ========================================================== */
 
-@media (max-height: 650px) {
+@media screen and (max-width: 1400px) and (max-height: 900px) {
 
     .payment-box{
         width:92%;
