@@ -162,7 +162,7 @@
             TẠM TÍNH
 
             <span id="total-items">
-                <span class="total-items-icon">🥤</span>
+                <span class="total-items-icon">🍵</span>
                 <span id="total-items-number">0 MÓN</span>
             </span>
         </div>
