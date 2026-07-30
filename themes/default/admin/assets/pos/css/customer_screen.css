@@ -923,30 +923,23 @@ body{
 }
 
 .payment-preview{
-
     width:190px;
-
     height:120px;
 
-    background:white;
-
+    background:#fff;
     border-radius:24px;
 
     display:flex;
-
     flex-direction:column;
-
     justify-content:center;
-
     align-items:center;
 
-    border:2px solid #eef2f6;
+    /* 3 cạnh còn lại rõ hơn */
+    border:2px solid #d3d9e0;
 
-    box-shadow:
-        0 10px 25px rgba(0,0,0,.08);
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
 
     transition:.25s;
-
 }
 
 .payment-preview.cash{
@@ -1127,21 +1120,19 @@ body{
 }
 
 .payment-divider{
-
     width:75%;
+    height:0;
 
-    height:3px;
+    border:0;
+    border-top:2px solid #d0d5dc;
 
-    background:#eceff1;
+    background:none;
 
-    margin:5px auto;
-
+    margin:18px auto;
 }
 
 .payment-divider.small{
-
     width:45%;
-
 }
 
 
@@ -1225,8 +1216,6 @@ body{
 
     /* Đường ngang dài dưới tiêu đề */
     .payment-divider{
-        width:75%;
-        height:2px;
         margin:16px auto;
     }
 
