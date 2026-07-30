@@ -204,20 +204,9 @@ body{
 #waiting-screen{
 
     position:absolute;
-
     inset:0;
 
-    display:flex;
-
-    flex-direction:column;
-
-    justify-content:center;
-
-    align-items:center;
-
-    transform:scale(1);
-
-    filter:blur(0);
+    overflow:hidden;
 
 }
 
@@ -232,6 +221,64 @@ body{
     transform:scale(.96);
 
     filter:blur(5px);
+
+}
+
+/*=========================
+ ADS
+=========================*/
+
+#ads-bg{
+
+    position:absolute;
+    inset:0;
+
+    background-size:cover;
+    background-position:center;
+
+    filter:blur(35px);
+
+    transform:scale(1.15);
+
+    transition:background-image .8s;
+
+}
+
+#ads-image{
+
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%) scale(1);
+
+    transition:
+        opacity .8s,
+        transform 6s linear;
+
+}
+
+#ads-image.landscape{
+
+    width:100%;
+    height:100%;
+    object-fit:cover;
+
+}
+
+#ads-image.portrait{
+
+    height:100%;
+    width:auto;
+
+    object-fit:contain;
+
+}
+
+#waiting-overlay{
+
+    display:none;
 
 }
 
@@ -297,13 +344,9 @@ body{
 
 
 #bill-list{
-
     height:100%;
-
     overflow:auto;
-
-    padding:18px;
-
+    padding:10px 12px;
 }
 
 
@@ -331,25 +374,22 @@ body{
 /*====================================*/
 
 .bill-item{
-
     display:flex;
-
     align-items:center;
 
     background:#fff;
 
-    border-radius:16px;
+    /* Viền thật để màn hình độ phân giải thấp vẫn rõ */
+    border:1px solid #cfd6df;
+    border-radius:12px;
 
     padding:0 12px;
+    margin-bottom:4px;
 
-    margin-bottom:3px;
-
-    box-shadow:
-
-        0 4px 12px rgba(0,0,0,.08);
+    /* Shadow nhẹ thôi, border mới là phần phân cách chính */
+    box-shadow:0 1px 3px rgba(0,0,0,.10);
 
     transition:.25s;
-
 }
 
 .item-enter{

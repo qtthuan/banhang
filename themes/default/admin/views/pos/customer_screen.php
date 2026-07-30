@@ -40,7 +40,18 @@
 
             bankInfo : "",
 
-            bankInfoText : <?=json_encode(lang('bank_info_vcb'))?>
+            bankInfoText : <?=json_encode(lang('bank_info_vcb'))?>,
+            
+            ads : <?=json_encode(
+                array_values(
+                    array_map(
+                        'basename',
+                        glob(FCPATH.'assets/uploads/ads/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}', GLOB_BRACE)
+                    )
+                )
+            )?>,
+
+            adsUrl : "<?=base_url('assets/uploads/ads/')?>"
 
         };
 
@@ -109,17 +120,11 @@
             <!-- ADS / WAITING -->
             <div id="waiting-screen" class="screen-layer active">
 
-                <div class="waiting-icon">
-                    🧋
-                </div>
+                <div id="ads-bg"></div>
 
-                <div class="waiting-title">
-                    MINI DRINK
-                </div>
+                <img id="ads-image">
 
-                <div class="waiting-text">
-                    Đang chờ đơn hàng...
-                </div>
+                <div id="waiting-overlay"></div>
 
             </div>
 

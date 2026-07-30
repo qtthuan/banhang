@@ -17,6 +17,10 @@ var CS = {
     lastRowNo : 0,
     currentTotal : 0,
 
+    adsIndex : 0,
+
+    adsTimer : null,
+
     pollTime    : 500,
 
     loading     : false
@@ -293,6 +297,85 @@ function processScreenData(res)
 
 }
 
+function startAds()
+{
+    if(CS.adsTimer) return;
+
+    if(customerScreen.ads.length===0) return;
+
+    showAds();
+
+    if(customerScreen.ads.length==1){
+        return;
+    }
+
+    CS.adsTimer=setInterval(nextAds,5000);
+}
+
+function stopAds()
+{
+    clearInterval(CS.adsTimer);
+
+    CS.adsTimer=null;
+}
+
+function nextAds()
+{
+    CS.adsIndex++;
+
+    if(CS.adsIndex>=customerScreen.ads.length){
+        CS.adsIndex=0;
+    }
+
+    $("#ads-image").css("opacity",0);
+
+    setTimeout(function(){
+
+        showAds();
+
+        $("#ads-image")
+            .css({
+                opacity:1,
+                transform:"translate(-50%,-50%) scale(1.06)"
+            });
+
+    },800);
+}
+
+function showAds()
+{
+    var file=customerScreen.ads[CS.adsIndex];
+
+    var url=customerScreen.adsUrl+file;
+
+    $("#ads-bg").css(
+        "background-image",
+        "url('"+url+"')"
+    );
+
+    var img=new Image();
+
+    img.onload=function(){
+
+        let portrait=this.height>this.width;
+
+        $("#ads-image")
+            .removeClass("portrait landscape")
+            .addClass(
+                portrait?"portrait":"landscape"
+            )
+            .attr("src",url)
+            .css({
+                opacity:1,
+                transform:"translate(-50%,-50%) scale(1)"
+            });
+
+    }
+
+    img.src=url;
+
+}
+
 
 /* ----------------------------------------------------------
     WAITING
@@ -302,6 +385,9 @@ function showWaiting()
 {
     $("#payment-screen").removeClass("active");
     $("#bill-screen").removeClass("active");
+
+    startAds();
+
     $("#waiting-screen").addClass("active");
 
     clearBill();
@@ -316,6 +402,8 @@ function showWaiting()
 
 function showBill()
 {
+    stopAds();
+
     $("#waiting-screen").removeClass("active");
 
     $("#payment-screen").removeClass("active");
@@ -327,6 +415,8 @@ function showBill()
 
 function showPayment()
 {
+    stopAds();
+
     $("#waiting-screen").removeClass("active");
 
     $("#bill-screen").removeClass("active");
