@@ -1202,3 +1202,72 @@ body{
     text-align:center;
 
 }
+
+/* ==========================================================
+   PAYMENT - MÀN HÌNH THẤP / MÀN HÌNH PHỤ 11.6"
+   ========================================================== */
+
+@media (max-height: 650px) {
+
+    .payment-box{
+        width:88%;
+        height:82%;
+
+        padding:22px 35px;
+        border-radius:28px;
+    }
+
+    .payment-title{
+        font-size:30px;
+        letter-spacing:1.5px;
+    }
+
+    .payment-total{
+        font-size:48px;
+        margin:20px 0;
+    }
+
+    .payment-divider{
+        height:2px;
+        margin:4px auto;
+    }
+
+    .payment-divider.small{
+        width:45%;
+    }
+
+    .payment-wait{
+        font-size:25px;
+        margin-top:12px;
+    }
+
+    .payment-method-preview{
+        gap:28px;
+        margin-top:25px;
+    }
+
+    .payment-preview{
+        width:155px;
+        height:95px;
+
+        border-radius:18px;
+    }
+
+    .payment-preview.cash{
+        border-top-width:6px;
+    }
+
+    .payment-preview.bank{
+        border-top-width:6px;
+    }
+
+    .preview-icon{
+        font-size:38px;
+        margin-bottom:4px;
+    }
+
+    .preview-title{
+        font-size:16px;
+    }
+
+}
