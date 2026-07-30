@@ -1210,63 +1210,78 @@ body{
 @media screen and (max-width: 1400px) and (max-height: 900px) {
 
     .payment-box{
-        width:92%;
-        height:86%;
-        padding:20px 30px;
+        width:94%;
+        height:88%;
+        padding:25px 45px;
         border-radius:28px;
     }
 
+    /* TỔNG THANH TOÁN */
     .payment-title{
-        font-size:30px;
-        letter-spacing:1.5px;
+        font-size:36px;
+        font-weight:700;
+        letter-spacing:2px;
     }
 
-    .payment-total{
-        font-size:48px;
-        margin:20px 0;
-    }
-
+    /* Đường ngang dài dưới tiêu đề */
     .payment-divider{
+        width:75%;
         height:2px;
-        margin:4px auto;
+        margin:16px auto;
     }
 
+    /* 116.000đ */
+    .payment-total{
+        font-size:58px;
+        font-weight:900;
+        margin:22px 0;
+        line-height:1;
+    }
+
+    /* Đường ngang ngắn dưới số tiền */
     .payment-divider.small{
         width:45%;
+        margin:18px auto;
     }
 
+    /* Vui lòng chọn phương thức... */
     .payment-wait{
-        font-size:25px;
-        margin-top:12px;
+        font-size:29px;
+        font-weight:600;
+        line-height:1.2;
+        white-space:nowrap;
     }
 
+    /* Khu vực 2 nút */
     .payment-method-preview{
-        gap:28px;
-        margin-top:25px;
+        display:flex;
+        justify-content:center;
+        gap:40px;
+        margin-top:28px;
     }
 
     .payment-preview{
-        width:155px;
-        height:95px;
-
-        border-radius:18px;
+        width:180px;
+        height:110px;
+        border-radius:22px;
     }
 
     .payment-preview.cash{
-        border-top-width:6px;
+        border-top:7px solid #43A047;
     }
 
     .payment-preview.bank{
-        border-top-width:6px;
+        border-top:7px solid #1976D2;
     }
 
     .preview-icon{
-        font-size:38px;
-        margin-bottom:4px;
+        font-size:45px;
+        margin-bottom:6px;
     }
 
     .preview-title{
-        font-size:16px;
+        font-size:18px;
+        font-weight:800;
+        white-space:nowrap;
     }
-
 }
