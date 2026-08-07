@@ -57,7 +57,8 @@ class Pos extends MY_Controller
 
     private function register_pos_device() {
 
-    log_message('error', 'REGISTER DEVICE: ' . current_url());
+        echo current_url();
+die();
         
         $token = $this->input->cookie('sma_device_token', TRUE);
 
