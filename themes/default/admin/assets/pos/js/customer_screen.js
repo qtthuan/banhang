@@ -659,8 +659,12 @@ function renderItem(item)
 
     let note = item.note || "";
     let size  = item.size || "";
-    let qty     = item.qty || 1;
-    let price   = item.subtotal || item.price || 0;
+    let qty   = Number(item.qty || 1);
+    let price = Number(item.price || 0);
+
+    let originalPrice = Number(item.original_price || price);
+
+    let hasDiscount = originalPrice > price;
 
     let html = $("<div>")
         .addClass("bill-item new")
@@ -764,10 +768,23 @@ function renderItem(item)
         .text("x" + qty)
         .appendTo(right);
 
+    let priceBox = $("<div>")
+        .addClass("bill-price-box");    
+
+    if (hasDiscount) {
+
+        $("<div>")
+            .addClass("bill-original-price")
+            .text(formatMoney(originalPrice))
+            .appendTo(priceBox);
+    }
+
     $("<div>")
         .addClass("bill-price")
         .text(formatMoney(price))
-        .appendTo(right);
+        .appendTo(priceBox);
+
+    priceBox.appendTo(right);
 
     html
         .append(icon)

@@ -2,9 +2,18 @@
 
 class MY_Controller extends CI_Controller {
 
+    protected $device = null;
+
+    const DEVICE_ROLE_UNKNOWN = 'unknown';
+    const DEVICE_ROLE_POS = 'pos';
+    const DEVICE_ROLE_CUSTOMER_SCREEN = 'pos_customer_screen';
+    const DEVICE_ROLE_KDS = 'kds';
+    const DEVICE_ROLE_INVENTORY = 'inventory';
+
     function __construct()
     {
-        parent::__construct();
+        parent::__construct();        
+
         $this->Settings = $this->site->get_setting();
         if($sma_language = $this->input->cookie('sma_language', TRUE)) {
             $this->config->set_item('language', $sma_language);
@@ -118,6 +127,24 @@ class MY_Controller extends CI_Controller {
         $this->load->view($this->theme . 'header', $meta);
         $this->load->view($this->theme . $page, $data);
         $this->load->view($this->theme . 'footer');
+    }
+
+    protected function hasDeviceRole($role) {
+        return isset($this->device)
+            && $this->device
+            && $this->device->device_role === $role;
+    }
+
+    protected function isCustomerScreen() {
+        return $this->hasDeviceRole(self::DEVICE_ROLE_CUSTOMER_SCREEN);
+    }
+
+    protected function isPos() {
+        return $this->hasDeviceRole(self::DEVICE_ROLE_POS);
+    }
+
+    protected function isKds() {
+        return $this->hasDeviceRole(self::DEVICE_ROLE_KDS);
     }
 
 }

@@ -11,6 +11,9 @@ class Pos extends MY_Controller
             $this->session->set_userdata('requested_page', $this->uri->uri_string());
             $this->sma->md('login');
         }
+
+        
+
         if ($this->Customer || $this->Supplier) {
             $this->session->set_flashdata('warning', lang('access_denied'));
             redirect($_SERVER["HTTP_REFERER"]);
@@ -26,6 +29,8 @@ class Pos extends MY_Controller
         $this->load->library('form_validation');
         $this->load->library('user_agent');
 
+        //$this->register_pos_device();
+
         $this->data['pb'] = array(
             'cash' => lang('cash'),
             'CC' => lang('CC'),
@@ -39,6 +44,90 @@ class Pos extends MY_Controller
             'authorize' => lang('authorize'),
             'pts' => lang('pts'),
         );
+
+    }
+
+    protected function initDevice() {
+        if ($this->device !== null) {
+            return;
+        }
+
+        $this->register_pos_device();
+    }
+
+    private function register_pos_device() {
+
+        
+        $token = $this->input->cookie('sma_device_token', TRUE);
+
+        if (!$token) {
+
+            $token = bin2hex(random_bytes(32));
+
+            set_cookie(array(
+                'name'     => 'sma_device_token',
+                'value'    => $token,
+                'expire'   => 60 * 60 * 24 * 365 * 10, // 10 năm
+                'path'     => '/',
+                'secure'   => FALSE,
+                'httponly' => TRUE
+            ));
+        }
+
+        $device = $this->db
+                ->where('device_token', $token)
+                ->get('devices')
+                ->row();
+
+        if (!$device) {
+
+            $platform = strtoupper(substr($this->agent->platform(), 0, 3));
+
+            $device_name = $platform . '-' . strtoupper(substr($token, -4));
+
+            $this->db->insert('devices', array(
+
+                'device_token' => $token,
+
+                'device_name' => $device_name,
+
+                'device_role' => self::DEVICE_ROLE_UNKNOWN,
+
+                'status' => 1,
+
+                'created_at' => date('Y-m-d H:i:s'),
+
+                'last_seen' => date('Y-m-d H:i:s'),
+
+                'last_ip' => $this->input->ip_address(),
+
+                'user_agent' => $this->agent->agent_string()
+
+            ));
+
+            $device = $this->db
+                    ->where('device_token', $token)
+                    ->get('devices')
+                    ->row();
+        }
+
+        if ($device) {
+
+            $this->db
+                ->where('id', $device->id)
+                ->update('devices', array(
+                    'last_seen'  => date('Y-m-d H:i:s'),
+                    'last_ip'    => $this->input->ip_address(),
+                    'user_agent' => $this->agent->agent_string()
+                ));
+
+        }
+
+        $this->device = $device;
+
+        $this->data['device'] = $device;
+
+        $this->session->set_userdata('device_id', $device->id);
 
     }
 
@@ -255,6 +344,18 @@ class Pos extends MY_Controller
 
     public function update_customer_screen()
     {
+        $this->initDevice();
+
+        if (!$this->isCustomerScreen()) {
+
+            return $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(array(
+                    'status'  => false,
+                    'message' => 'Device is not allowed.'
+                )));
+        }
+
         $json = $this->input->post('payload');
         $data = json_decode($json, true);
 
@@ -329,7 +430,7 @@ class Pos extends MY_Controller
         
         $this->sma->checkPermissions();
 
-        
+        $this->initDevice();        
 
         if (!$this->pos_settings->default_biller || !$this->pos_settings->default_customer || !$this->pos_settings->default_category) {
             $this->session->set_flashdata('warning', lang('please_update_settings'));

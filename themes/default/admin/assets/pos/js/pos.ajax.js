@@ -1440,8 +1440,19 @@ function loadItems() {
                     total_with_no_points += sel_opt_promo_price * item_qty;
                 }
                 else if (is_promo && checkValidPromotionDate(start_date, end_date) && customer_group_id != 4) { // Loại nhóm BAEMIN
-                    //console.log('33333');
-                    //console.log(JSON.stringify(sortedItems));
+                                
+                    var csItem = customerScreenItems.find(function(cs) {                        
+
+                        return cs.row_no == item.order;
+                    });
+
+                    if (csItem) {                        
+
+                        csItem.price = parseFloat(item_price);
+                        csItem.original_price = parseFloat(item_original_price);
+                        csItem.subtotal = parseFloat(item_price) * parseFloat(item_qty);
+                    } 
+
                     display_price = '<span style="font-weight: bold">' + formatMoney(parseFloat(item_price) + parseFloat(pr_tax_val)) + '</span>';
                     display_price += '(<span style="text-decoration: line-through">' + formatMoney(item_original_price) + '</span>)';
                     tr_html += '<input name="is_promo[]" type="hidden" class="is_promo" value="' + (is_promo && checkValidPromotionDate(start_date, end_date) ? is_promo : 0) + '">';
@@ -1768,7 +1779,7 @@ function printLine(str) {
     }
     positems[item_id].order = new Date().getTime();
     localStorage.setItem('positems', JSON.stringify(positems));
-    console.log(JSON.stringify(positems));
+    //console.log(JSON.stringify(positems));
     loadItems();
     return true;
  }
@@ -2154,7 +2165,6 @@ function updateCustomerScreen(items, total)
     };
 
     $.each(items, function () {
-       
         payload.items.push({
             row_no:this.row_no,
             id:this.item_id,
@@ -2164,6 +2174,12 @@ function updateCustomerScreen(items, total)
             qty:this.qty,
             price:this.price,
             subtotal:this.subtotal,
+
+            // Thêm thông tin giá gốc / khuyến mãi / giảm giá
+            original_price: this.original_price || this.real_unit_price || 0,
+            is_promo: this.is_promo || 0,
+            discount: this.discount || 0,
+
             note:this.comment||'',
             size:this.option||''
         });
@@ -2179,10 +2195,21 @@ function updateCustomerScreen(items, total)
         type: "POST",
         data: postData,
         success: function(res){
+
+            if (typeof res === "string") {
+                try {
+                    res = JSON.parse(res);
+                } catch(e) {}
+            }
+
+            if (res && res.status === false) {
+                return;
+            }
+
             console.log(res);
         },
         error: function(xhr){
-            console.log(xhr.responseText);
+            //console.log(xhr.responseText);
         }
     });
 }

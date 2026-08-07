@@ -516,6 +516,26 @@ body{
 
 }
 
+.bill-price-box{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:8px;
+}
+
+.bill-original-price{
+    font-size:15px;
+    color:#999;
+    text-decoration:line-through;
+    white-space:nowrap;
+}
+
+.bill-price{
+    font-size:20px;
+    font-weight:bold;
+    color:#0D6EFD;
+    white-space:nowrap;
+}
 
 /*====================================*/
 /* FOOTER                             */
