@@ -57,8 +57,15 @@ class Pos extends MY_Controller
 
     private function register_pos_device() {
 
-        echo current_url();
-die();
+       echo '<pre>';
+
+echo "COOKIE:\n";
+var_dump($this->input->cookie('sma_device_token', TRUE));
+
+echo "\nSESSION:\n";
+echo session_id();
+
+exit;
         
         $token = $this->input->cookie('sma_device_token', TRUE);
 
