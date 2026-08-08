@@ -67,14 +67,14 @@ class Pos extends MY_Controller
 
 // exit;
         
-        $token = $this->input->cookie('sma_device_token', TRUE);
+        $token = $this->input->cookie('device_token', TRUE);
 
         if (!$token) {
 
             $token = bin2hex(random_bytes(32));
 
             set_cookie(array(
-                'name'     => 'sma_device_token',
+                'name'     => 'device_token',
                 'value'    => $token,
                 'expire'   => 60 * 60 * 24 * 365 * 10, // 10 năm
                 'path'     => '/',
