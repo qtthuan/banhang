@@ -1645,6 +1645,7 @@ function loadItems() {
 
         lastCustomerScreenItems = customerScreenItems;
 
+        console.log('IS_CUSTOMER_SCREEN_CONTROLLER: ' + IS_CUSTOMER_SCREEN_CONTROLLER);
 
         if (IS_CUSTOMER_SCREEN_CONTROLLER) {
             updateCustomerScreen(customerScreenItems, gtotal);
