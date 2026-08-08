@@ -1648,6 +1648,7 @@ function loadItems() {
         console.log('IS_CUSTOMER_SCREEN_CONTROLLER: ' + IS_CUSTOMER_SCREEN_CONTROLLER);
 
         if (IS_CUSTOMER_SCREEN_CONTROLLER) {
+            console.log('IS_CUSTOMER_SCREEN_CONTROLLER======>>>>>: ' + IS_CUSTOMER_SCREEN_CONTROLLER);
             updateCustomerScreen(customerScreenItems, gtotal);
         }
 
