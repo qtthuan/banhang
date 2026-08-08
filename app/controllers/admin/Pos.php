@@ -95,22 +95,22 @@ class Pos extends MY_Controller
 
                 echo "<pre>";
 
-// echo "TOKEN: " . $token . "<br><br>";
+echo "TOKEN: " . $token . "<br><br>";
 
-// echo $this->db
-//     ->where('device_token', $token)
-//     ->get_compiled_select('devices');
+echo $this->db
+    ->where('device_token', $token)
+    ->get_compiled_select('devices');
 
-// echo "<br><br>";
+echo "<br><br>";
 
-// $device = $this->db
-//     ->where('device_token', $token)
-//     ->get('devices')
-//     ->row();
+$device = $this->db
+    ->where('device_token', $token)
+    ->get('devices')
+    ->row();
 
-// var_dump($device);
+var_dump($device);
 
-// exit;
+exit;
 
         if (!$device) {
 
