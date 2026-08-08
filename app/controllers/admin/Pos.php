@@ -57,19 +57,19 @@ class Pos extends MY_Controller
 
     private function register_pos_device() {
 
-echo "device_token: ";
-var_dump($this->input->cookie('device_token', TRUE));
+// echo "device_token: ";
+// var_dump($this->input->cookie('device_token', TRUE));
 
-echo "sma_device_token: ";
-var_dump($this->input->cookie('sma_device_token', TRUE));
+// echo "sma_device_token: ";
+// var_dump($this->input->cookie('sma_device_token', TRUE));
 
-echo "_COOKIE['sma_device_token']: ";
-var_dump(isset($_COOKIE['sma_device_token']) ? $_COOKIE['sma_device_token'] : null);
+// echo "_COOKIE['sma_device_token']: ";
+// var_dump(isset($_COOKIE['sma_device_token']) ? $_COOKIE['sma_device_token'] : null);
 
-echo "_COOKIE['device_token']: ";
-var_dump(isset($_COOKIE['device_token']) ? $_COOKIE['device_token'] : null);
+// echo "_COOKIE['device_token']: ";
+// var_dump(isset($_COOKIE['device_token']) ? $_COOKIE['device_token'] : null);
 
-exit;
+// exit;
         
         $token = $this->input->cookie('device_token', TRUE);
 
@@ -91,6 +91,26 @@ exit;
                 ->where('device_token', $token)
                 ->get('devices')
                 ->row();
+
+
+                echo "<pre>";
+
+echo "TOKEN: " . $token . "<br><br>";
+
+echo $this->db
+    ->where('device_token', $token)
+    ->get_compiled_select('devices');
+
+echo "<br><br>";
+
+$device = $this->db
+    ->where('device_token', $token)
+    ->get('devices')
+    ->row();
+
+var_dump($device);
+
+exit;
 
         if (!$device) {
 
