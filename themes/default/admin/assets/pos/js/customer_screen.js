@@ -34,6 +34,8 @@ var CS = {
 
 $(function(){
 
+    console.log('init screen: ');
+
     updateClock();
 
     setInterval(updateClock,1000);
@@ -41,6 +43,7 @@ $(function(){
     loadCustomerScreen();
 
     setInterval(loadCustomerScreen,CS.pollTime);
+    console.log('end cuss screen: ');
 
 });
 

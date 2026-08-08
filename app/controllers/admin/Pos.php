@@ -1038,7 +1038,6 @@ class Pos extends MY_Controller
                     $this->data['created_by'] = $this->site->getUser($inv->created_by);
                 }
             }
-            $this->pos_model->resetCustomerScreenState(1);
             //$this->sma->print_arrays($this->data);
             //$this->load->view($this->theme . 'pos/add', $this->data);
             if ($this->agent->is_mobile()) {
