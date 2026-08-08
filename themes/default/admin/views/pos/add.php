@@ -18,8 +18,9 @@
     <script type="text/javascript" src="<?=$assets?>js/jquery-migrate-1.2.1.min.js"></script>
 
     <script>
-        var IS_CUSTOMER_SCREEN_CONTROLLER = <?= $this->hasDeviceRole(self::DEVICE_ROLE_POS_CUSTOMER_SCREEN) ? 'true' : 'false' ?>;
-    </script>
+var IS_CUSTOMER_SCREEN_CONTROLLER =
+<?= $is_customer_screen_controller ? 'true' : 'false' ?>;
+</script>
     <!--[if lt IE 9]>
     <script src="<?=$assets?>js/jquery.js"></script>
     <![endif]-->

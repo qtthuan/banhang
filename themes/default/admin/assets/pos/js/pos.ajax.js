@@ -1645,7 +1645,10 @@ function loadItems() {
 
         lastCustomerScreenItems = customerScreenItems;
 
-        updateCustomerScreen(customerScreenItems, gtotal);
+
+        if (IS_CUSTOMER_SCREEN_CONTROLLER) {
+            updateCustomerScreen(customerScreenItems, gtotal);
+        }
 
         
         if (pos_settings.remote_printing != 1) {

@@ -465,6 +465,8 @@ class Pos extends MY_Controller
 
         $this->initDevice();        
 
+        $this->data['is_customer_screen_controller'] = $this->isCustomerScreen();
+
         if (!$this->pos_settings->default_biller || !$this->pos_settings->default_customer || !$this->pos_settings->default_category) {
             $this->session->set_flashdata('warning', lang('please_update_settings'));
             admin_redirect('pos/settings');

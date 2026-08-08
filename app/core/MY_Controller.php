@@ -129,21 +129,21 @@ class MY_Controller extends CI_Controller {
         $this->load->view($this->theme . 'footer');
     }
 
-    protected function hasDeviceRole($role) {
+    public function hasDeviceRole($role) {
         return isset($this->device)
             && $this->device
             && $this->device->device_role === $role;
     }
 
-    protected function isCustomerScreen() {
+    public function isCustomerScreen() {
         return $this->hasDeviceRole(self::DEVICE_ROLE_CUSTOMER_SCREEN);
     }
 
-    protected function isPos() {
+    public function isPos() {
         return $this->hasDeviceRole(self::DEVICE_ROLE_POS);
     }
 
-    protected function isKds() {
+    public function isKds() {
         return $this->hasDeviceRole(self::DEVICE_ROLE_KDS);
     }
 
