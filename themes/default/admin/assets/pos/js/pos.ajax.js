@@ -1645,10 +1645,8 @@ function loadItems() {
 
         lastCustomerScreenItems = customerScreenItems;
 
-        console.log('IS_CUSTOMER_SCREEN_CONTROLLER: ' + IS_CUSTOMER_SCREEN_CONTROLLER);
-
+        // Nếu máy trạm được cập quyền điều khiển màn hình phụ thì mới được cập nhật màn hình phụ
         if (IS_CUSTOMER_SCREEN_CONTROLLER) {
-            console.log('IS_CUSTOMER_SCREEN_CONTROLLER======>>>>>: ' + IS_CUSTOMER_SCREEN_CONTROLLER);
             updateCustomerScreen(customerScreenItems, gtotal);
         }
 
