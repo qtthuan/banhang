@@ -1,20 +1,32 @@
 * { box-sizing: border-box; }
 
 :root {
-    --mini-bg: #111217;
-    --mini-panel: #1b1d23;
-    --mini-panel-2: #22242b;
-    --mini-panel-3: #2a2d34;
-    --mini-border: #353841;
-    --mini-text: #f4f5f7;
-    --mini-muted: #a4a8b1;
-    --mini-green: #00a94f;
-    --mini-green-2: #08c45d;
-    --mini-green-soft: rgba(0,169,79,.16);
-    --mini-red: #ef3b24;
-    --mini-shadow: 0 10px 30px rgba(0,0,0,.25);
-}
+    /* =====================================================
+     * MINI - LIGHT SUZLON
+     * ===================================================== */
 
+    --mini-bg: #f4f5f7;
+
+    --mini-panel: #ffffff;
+    --mini-panel-2: #f8f9fa;
+    --mini-panel-3: #eef0f2;
+
+    --mini-border: #e0e2e5;
+
+    --mini-text: #25272b;
+    --mini-muted: #70757d;
+
+    /* SUZLON GREEN */
+    --mini-green: #00a651;
+    --mini-green-2: #00b956;
+
+    --mini-green-soft: rgba(0,166,81,.10);
+
+    --mini-red: #ef3b24;
+
+    --mini-shadow:
+        0 8px 24px rgba(0,0,0,.10);
+}
 html, body { width:100%; height:100%; margin:0; padding:0; }
 body {
     font-family: Arial, Helvetica, sans-serif;
@@ -231,3 +243,656 @@ body.mini-modal-open { overflow:hidden; }
     .mini-product-card { height:190px; }
     .mini-product-image-wrap { height:110px; flex-basis:110px; }
 }
+
+/* =========================================================
+ * MINI POS - LIGHT SUZLON OVERRIDE
+ *
+ * Không cần sửa các CSS phía trên.
+ * Khối này ghi đè màu giao diện cũ.
+ * ========================================================= */
+
+
+/* =========================================================
+ * BODY / APP
+ * ========================================================= */
+
+html,
+body {
+    background: #f4f5f7;
+    color: #25272b;
+}
+
+
+/* =========================================================
+ * HEADER
+ * Giữ header tối theo Suzlon
+ * ========================================================= */
+
+.mini-header {
+    background: #24262b;
+    border-bottom: 1px solid #303238;
+}
+
+.mini-brand-name {
+    color: #ffffff;
+}
+
+.mini-brand-accent {
+    color: #00a651;
+}
+
+.mini-header-tab {
+    color: #b8bcc3;
+}
+
+.mini-header-tab.active {
+    color: #00b956;
+}
+
+.mini-header-tab:hover {
+    color: #ffffff;
+}
+
+.mini-header-tab.active::after {
+    background: #00a651;
+}
+
+.mini-user {
+    color: #ffffff;
+}
+
+.mini-user-avatar {
+    background: #e1e4e7;
+    color: #666b72;
+    border-color: #555960;
+}
+
+
+/* =========================================================
+ * MAIN
+ * ========================================================= */
+
+.mini-main {
+    background: #f4f5f7;
+}
+
+
+/* =========================================================
+ * ORDER / GIỎ HÀNG
+ * ========================================================= */
+
+.mini-order {
+    background: #ffffff;
+    border-right: 1px solid #e0e2e5;
+}
+
+
+/* Header giỏ hàng */
+
+.mini-order-topbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7e9;
+}
+
+.mini-order-title {
+    color: #25272b;
+}
+
+.mini-order-subtitle {
+    color: #747980;
+}
+
+
+/* Bàn / tại chỗ */
+
+.mini-order-mode {
+    background: #f1f3f4;
+    border-color: #dfe2e5;
+}
+
+.mini-mode-btn {
+    color: #6f747b;
+}
+
+.mini-mode-btn.active {
+    background: #00a651;
+    color: #ffffff;
+}
+
+
+/* Thông tin khách */
+
+.mini-order-info {
+    color: #383b40;
+    background: #ffffff;
+    border-bottom-color: #e6e8ea;
+}
+
+.mini-order-info span {
+    color: #7b8087;
+}
+
+
+/* Header danh sách món */
+
+.mini-cart-head {
+    color: #777c84;
+    border-bottom-color: #e5e7e9;
+}
+
+
+/* Danh sách */
+
+.mini-cart-list {
+    background: #ffffff;
+}
+
+
+/* Scrollbar */
+
+.mini-cart-list::-webkit-scrollbar-thumb,
+.mini-product-grid::-webkit-scrollbar-thumb {
+    background: #c7cbd0;
+}
+
+
+/* Khi chưa có món */
+
+.mini-cart-empty {
+    color: #858a91;
+}
+
+.mini-empty-icon {
+    background: #eef0f2;
+    color: #00a651;
+}
+
+.mini-cart-empty small {
+    color: #969ba2;
+}
+
+
+/* Một dòng món */
+
+.mini-cart-row {
+    border-bottom-color: #e4e6e8;
+}
+
+.mini-cart-name strong {
+    color: #25272b;
+}
+
+.mini-cart-name small {
+    color: #858a91;
+}
+
+.mini-cart-price {
+    color: #50545a;
+}
+
+.mini-cart-total {
+    color: #00a651;
+}
+
+
+/* Nút +/- */
+
+.mini-cart-qty button {
+    background: #00a651;
+    color: #ffffff;
+}
+
+.mini-cart-qty button:hover {
+    background: #00b956;
+}
+
+.mini-cart-qty span {
+    color: #25272b;
+}
+
+
+/* =========================================================
+ * KHU VỰC DƯỚI GIỎ
+ * ========================================================= */
+
+.mini-order-bottom {
+    background: #ffffff;
+    border-top-color: #e0e2e5;
+}
+
+
+/* Tool */
+
+.mini-order-tools {
+    background: #ffffff;
+    border-bottom-color: #e3e5e7;
+}
+
+.mini-tool-btn {
+    color: #666b72;
+    border-right-color: #e3e5e7;
+    background: #ffffff;
+}
+
+.mini-tool-btn:hover {
+    color: #00a651;
+    background: #f4f8f6;
+}
+
+
+/* Tổng */
+
+.mini-summary {
+    background: #ffffff;
+}
+
+.mini-summary div {
+    color: #656a71;
+}
+
+.mini-summary strong {
+    color: #35383d;
+}
+
+
+/* Tổng tiền nổi bật */
+
+.mini-grand-total {
+    background: #f0f7f3;
+    border-top-color: #dcebe3;
+    border-bottom-color: #dcebe3;
+}
+
+.mini-grand-total span {
+    color: #25272b;
+}
+
+.mini-grand-total strong {
+    color: #00a651;
+}
+
+
+/* Nút */
+
+.mini-action-cancel {
+    background: #ef3b24;
+}
+
+.mini-action-pay {
+    background: #00a651;
+}
+
+.mini-action-cancel:hover {
+    background: #ff4b32;
+}
+
+.mini-action-pay:hover {
+    background: #00b956;
+}
+
+
+/* =========================================================
+ * PRODUCT AREA
+ * ========================================================= */
+
+.mini-products {
+    background: #f4f5f7;
+}
+
+
+/* Tiêu đề */
+
+.mini-products-title {
+    color: #25272b;
+}
+
+.mini-products-count {
+    color: #7a7f86;
+}
+
+
+/* =========================================================
+ * CATEGORY
+ * ========================================================= */
+
+.mini-category {
+    background: #ffffff;
+    border-color: #dfe2e5;
+    color: #45494f;
+    box-shadow: 0 2px 7px rgba(0,0,0,.04);
+}
+
+.mini-category:hover {
+    border-color: #00a651;
+    color: #00a651;
+}
+
+.mini-category-icon {
+    color: #00a651;
+}
+
+.mini-category.active {
+    background: #00a651;
+    border-color: #00a651;
+    color: #ffffff;
+    box-shadow:
+        0 6px 16px rgba(0,166,81,.18);
+}
+
+.mini-category.active .mini-category-icon {
+    color: #ffffff;
+}
+
+
+/* Mũi tên category */
+
+.mini-category-arrow {
+    background: #ffffff;
+    border-color: #dfe2e5;
+    color: #4d5258;
+}
+
+.mini-category-arrow:hover {
+    background: #00a651;
+    border-color: #00a651;
+    color: #ffffff;
+}
+
+
+/* =========================================================
+ * SEARCH
+ * ========================================================= */
+
+.mini-search {
+    background: #ffffff;
+    border-color: #dfe2e5;
+    color: #25272b;
+    box-shadow:
+        0 2px 7px rgba(0,0,0,.04);
+}
+
+.mini-search::placeholder {
+    color: #999ea5;
+}
+
+.mini-search:focus {
+    border-color: #00a651;
+    box-shadow:
+        0 0 0 2px rgba(0,166,81,.10);
+}
+
+.mini-search-icon {
+    color: #8b9097;
+}
+
+.mini-search-shortcut {
+    background: #eef0f2;
+    color: #747980;
+}
+
+
+/* =========================================================
+ * PRODUCT CARD
+ * ========================================================= */
+
+.mini-product-card {
+    background: #ffffff;
+    border-color: #e0e2e5;
+    color: #25272b;
+    box-shadow:
+        0 2px 7px rgba(0,0,0,.04);
+}
+
+.mini-product-card:hover {
+    border-color: #00a651;
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.10);
+}
+
+
+/* Ảnh */
+
+.mini-product-image-wrap {
+    background: #f0f1f3;
+}
+
+
+/* Tên */
+
+.mini-product-name {
+    color: #25272b;
+}
+
+
+/* Giá */
+
+.mini-product-price {
+    color: #00a651;
+}
+
+.mini-product-old-price {
+    color: #9a9ea4;
+}
+
+
+/* KM */
+
+.mini-promo {
+    background: #ff7518;
+}
+
+
+/* Nút edit */
+
+.mini-product-edit {
+    background: rgba(255,255,255,.94);
+    color: #555a61;
+    box-shadow:
+        0 2px 7px rgba(0,0,0,.12);
+}
+
+.mini-product-edit:hover {
+    background: #00a651;
+    color: #ffffff;
+}
+
+
+/* Không có sản phẩm */
+
+.mini-no-products {
+    color: #8b9097;
+}
+
+
+/* Phân trang */
+
+.mini-products-footer {
+    color: #70757d;
+}
+
+.mini-products-footer button {
+    background: #ffffff;
+    color: #4d5258;
+    border: 1px solid #dfe2e5;
+}
+
+.mini-products-footer button:hover {
+    background: #00a651;
+    color: #ffffff;
+    border-color: #00a651;
+}
+
+
+/* =========================================================
+ * MODAL
+ * ========================================================= */
+
+.mini-modal-overlay {
+    background: rgba(0,0,0,.48);
+    backdrop-filter: blur(2px);
+}
+
+
+/* Modal trắng */
+
+.mini-modal-dialog {
+    background: #ffffff;
+    border-color: #dfe2e5;
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.25);
+}
+
+
+/* Header modal */
+
+.mini-modal-header {
+    background: #ffffff;
+    border-bottom-color: #e5e7e9;
+}
+
+.mini-modal-header-name {
+    color: #25272b;
+}
+
+.mini-modal-header-price {
+    color: #00a651;
+}
+
+
+/* Nút đóng */
+
+.mini-modal-close {
+    background: #eef0f2;
+    color: #44484e;
+}
+
+.mini-modal-close:hover {
+    background: #00a651;
+    color: #ffffff;
+}
+
+
+/* Nội dung */
+
+.mini-modal-field label,
+.mini-modal-label {
+    color: #303338;
+}
+
+
+/* Input */
+
+.mini-modal-input,
+.mini-qty-input {
+    background: #ffffff;
+    border-color: #d9dce0;
+    color: #25272b;
+}
+
+.mini-modal-input::placeholder {
+    color: #999ea5;
+}
+
+.mini-modal-input:focus,
+.mini-qty-input:focus {
+    border-color: #00a651;
+    box-shadow:
+        0 0 0 2px rgba(0,166,81,.10);
+}
+
+
+/* Quantity */
+
+.mini-qty-btn,
+.mini-discount-step-btn {
+    background: #f1f3f4;
+    border-color: #d9dce0;
+    color: #303338;
+}
+
+.mini-qty-btn:hover,
+.mini-discount-step-btn:hover {
+    background: #00a651;
+    border-color: #00a651;
+    color: #ffffff;
+}
+
+
+/* Giảm giá */
+
+.mini-discount-type {
+    background: #f1f3f4;
+    border-color: #d9dce0;
+}
+
+.mini-discount-type-btn {
+    color: #666b72;
+    border-right-color: #d9dce0;
+}
+
+.mini-discount-type-btn.active {
+    background: #00a651;
+    color: #ffffff;
+}
+
+.mini-input-money span {
+    color: #888d94;
+}
+
+
+/* Ghi chú */
+
+.mini-note-item {
+    color: #3d4147;
+}
+
+.mini-note-box {
+    background: #ffffff;
+    border-color: #b9bdc3;
+}
+
+.mini-note-checkbox:checked + .mini-note-box {
+    background: #00a651;
+    border-color: #00a651;
+    color: #ffffff;
+}
+
+
+/* Footer modal */
+
+.mini-modal-footer {
+    background: #ffffff;
+    border-top-color: #e5e7e9;
+}
+
+.mini-modal-btn-cancel {
+    background: #eceef0;
+    color: #35383d;
+}
+
+.mini-modal-btn-cancel:hover {
+    background: #dfe2e5;
+}
+
+.mini-modal-btn-primary {
+    background: #00a651;
+    color: #ffffff;
+}
+
+.mini-modal-btn-primary:hover {
+    background: #00b956;
+}
+
+
+/* =========================================================
+ * MOBILE
+ * ========================================================= */
+
+@media (max-width:800px) {
+
+    .mini-order {
+        border-top-color: #e0e2e5;
+    }
+
+}
+
