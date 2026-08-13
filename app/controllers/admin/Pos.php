@@ -494,9 +494,11 @@ class Pos extends MY_Controller
         //$this->sma->print_arrays($this->input->post);
         $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id'); // id Tiệm Nước Mini
         $ingredient_category_id = (int)$this->config->item('ingredient_category_id'); // Mã nhóm Nguyên Liệu
-
+$this->pos_model->resetCustomerScreenState(1);
 
         if ($this->form_validation->run() == TRUE) {
+
+            
             
             $date = date('Y-m-d H:i:s');
             $warehouse_id = $this->input->post('warehouse');
@@ -871,7 +873,7 @@ class Pos extends MY_Controller
                     );
                     admin_redirect($redirect_to);
                 }
-            }
+            }            
         } else {
             $this->data['old_sale'] = NULL;
             $this->data['oid'] = NULL;
