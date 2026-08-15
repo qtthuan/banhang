@@ -494,7 +494,8 @@ class Pos extends MY_Controller
         //$this->sma->print_arrays($this->input->post);
         $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id'); // id Tiệm Nước Mini
         $ingredient_category_id = (int)$this->config->item('ingredient_category_id'); // Mã nhóm Nguyên Liệu
-$this->pos_model->resetCustomerScreenState(1);
+        
+        $this->pos_model->resetCustomerScreenState(1);
 
         if ($this->form_validation->run() == TRUE) {
 

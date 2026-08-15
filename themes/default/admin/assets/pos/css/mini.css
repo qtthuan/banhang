@@ -998,7 +998,7 @@ button {
     flex:
         0 0 auto;
 
-    min-width: 150px;
+    min-width: 125px;
 
     height: 66px;
 
@@ -1027,7 +1027,7 @@ button {
 
     cursor: pointer;
 
-    font-size: 13px;
+    font-size: 15px;
 
     font-weight: 800;
 }
@@ -2503,6 +2503,11 @@ body.mini-modal-open {
    37. TABLET ĐỨNG + MOBILE
    <= 800
    ========================================================= */
+
+/* Desktop: ẩn thông tin số món + tổng tiền của mobile cart bar. */
+.mini-mobile-cart-meta {
+    display: none;
+}
 
 @media (max-width: 800px) {
 

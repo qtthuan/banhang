@@ -224,30 +224,17 @@
 
                     <button type="button"
                             class="mini-category active"
-                            data-category="all">
-                        <span class="mini-category-icon">●</span>
-                        <span>Tất cả</span>
+                            data-category="all">                        
+                        <span>TẤT CẢ</span>
                     </button>
 
                     <?php if (!empty($categories)): ?>
 
-                        <?php foreach ($categories as $category): ?>
-
-                            <?php
-                            if (
-                                !isset($category->parent_id) ||
-                                (int) $category->parent_id !== 38
-                            ) {
-                                continue;
-                            }
-                            ?>
+                        <?php foreach ($categories as $category): ?>                           
 
                             <button type="button"
                                     class="mini-category"
                                     data-category="<?= (int) $category->id; ?>">
-
-                                <span class="mini-category-icon">◆</span>
-
                                 <span>
                                     <?= html_escape($category->name); ?>
                                 </span>

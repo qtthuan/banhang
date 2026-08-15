@@ -75,7 +75,9 @@ class Mini extends MY_Controller
         * database hiện tại đang xác định Mini
         * bằng category_id = 38.
         */
-        $this->data['categories'] = $this->site->getAllCategories();
+        $mini_category_id = (int)$this->config->item('mini_category_id'); // Mã nhóm Nguyên Liệu
+        $this->data['categories'] = $this->site->getSubCategories($mini_category_id);
+        //$this->sma->print_arrays($mini_category_id, $this->data['categories']);
 
         // POS settings để sau này dùng tiếp
         $this->data['pos_settings'] = $this->pos_settings;
