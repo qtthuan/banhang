@@ -282,15 +282,6 @@
                        placeholder="Tìm món..."
                        autocomplete="off">
 
-                <button
-                    type="button"
-                    id="mini-search-clear"
-                    class="mini-search-clear"
-                    aria-label="Xóa tìm kiếm"
-                    title="Xóa tìm kiếm">
-                    ×
-                </button>
-
                 <span class="mini-search-shortcut">
                     ⌘ K
                 </span>

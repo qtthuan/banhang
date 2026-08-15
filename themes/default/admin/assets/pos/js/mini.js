@@ -1,37 +1,42 @@
 document.addEventListener('DOMContentLoaded', function () {
 
     const grid =
-        document.getElementById('mini-product-grid');
+        document.getElementById(
+            'mini-product-grid'
+        );
 
-    if (!grid) return;
+    if (!grid) {
+        return;
+    }
 
 
     /* =========================================================
      * STATE
      * ========================================================= */
 
+    let miniModal = null;
+
+    let miniBasePrice = 0;
+
+    let miniDiscountType = 'amount';
+
+
+    /*
+     * Array thay cho Map.
+     *
+     * Mỗi lần thêm sản phẩm:
+     * => tạo một rowId mới
+     * => không cộng dồn quantity.
+     */
+
     const cart = [];
-
-    let modal = null;
-
-    let basePrice = 0;
-
-    let discountType = 'amount';
-
-    let editingRowId = null;
-
-    let touchRow = null;
-
-    let touchStartX = 0;
-
-    let touchCurrentX = 0;
 
 
     /* =========================================================
-     * HELPERS
+     * MONEY
      * ========================================================= */
 
-    const money = function (value) {
+    function money(value) {
 
         return (
             Math.max(
@@ -44,10 +49,14 @@ document.addEventListener('DOMContentLoaded', function () {
             'đ'
         );
 
-    };
+    }
 
 
-    const esc = function (value) {
+    /* =========================================================
+     * ESCAPE
+     * ========================================================= */
+
+    function escapeHtml(value) {
 
         return String(
             value == null
@@ -60,10 +69,14 @@ document.addEventListener('DOMContentLoaded', function () {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
 
-    };
+    }
 
 
-    const createRowId = function () {
+    /* =========================================================
+     * UNIQUE ROW ID
+     * ========================================================= */
+
+    function createRowId() {
 
         return (
             Date.now().toString(36) +
@@ -73,11 +86,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 .slice(2, 9)
         );
 
-    };
+    }
 
 
     /* =========================================================
-     * PRICE / DISCOUNT
+     * DISCOUNT
      * ========================================================= */
 
     function getItemDiscount(item) {
@@ -139,10 +152,96 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
+     * MOBILE CART BAR
+     * ========================================================= */
+
+    function updateMobileCartBar(
+        qty,
+        total
+    ) {
+
+        const panel =
+            document.querySelector(
+                '.mini-order-info-panel'
+            );
+
+
+        if (!panel) {
+            return;
+        }
+
+
+        let meta =
+            panel.querySelector(
+                '.mini-mobile-cart-meta'
+            );
+
+
+        if (!meta) {
+
+            meta =
+                document.createElement(
+                    'div'
+                );
+
+            meta.className =
+                'mini-mobile-cart-meta';
+
+
+            meta.innerHTML = `
+
+                <span
+                    class="mini-mobile-cart-count">
+                    0 món
+                </span>
+
+                <strong
+                    class="mini-mobile-cart-total">
+                    0đ
+                </strong>
+
+            `;
+
+
+            panel.appendChild(
+                meta
+            );
+
+        }
+
+
+        const count =
+            meta.querySelector(
+                '.mini-mobile-cart-count'
+            );
+
+
+        const totalEl =
+            meta.querySelector(
+                '.mini-mobile-cart-total'
+            );
+
+
+        if (count) {
+
+            count.textContent =
+                qty + ' món';
+
+        }
+
+
+        if (totalEl) {
+
+            totalEl.textContent =
+                money(total);
+
+        }
+
+    }
+
+
+    /* =========================================================
      * RENDER CART
-     *
-     * QUAN TRỌNG:
-     * Không hiển thị code sản phẩm.
      * ========================================================= */
 
     function renderCart() {
@@ -159,151 +258,180 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
 
-        if (!list) return;
+        if (!list) {
+            return;
+        }
 
+
+        /*
+         * Xóa row cũ.
+         */
 
         list
             .querySelectorAll(
                 '.mini-cart-row'
             )
-            .forEach(function (row) {
+            .forEach(
+                function (row) {
+                    row.remove();
+                }
+            );
 
-                row.remove();
 
-            });
+        /*
+         * Empty.
+         */
+
+        if (!cart.length) {
+
+            if (empty) {
+
+                empty.style.display =
+                    'flex';
+
+            }
+
+        } else {
+
+            if (empty) {
+
+                empty.style.display =
+                    'none';
+
+            }
 
 
-        if (empty) {
+            /*
+             * Render từng row.
+             */
 
-            empty.style.display =
-                cart.length
-                    ? 'none'
-                    : 'flex';
+            cart.forEach(
+                function (item) {
+
+                    const row =
+                        document.createElement(
+                            'div'
+                        );
+
+
+                    row.className =
+                        'mini-cart-row';
+
+
+                    row.dataset.rowId =
+                        item.rowId;
+
+
+                    row.dataset.productId =
+                        item.id;
+
+
+                    const noteText = [
+
+                        item.comment ||
+                            '',
+
+                        item.commentName
+                            ? 'Ly: ' +
+                              item.commentName
+                            : ''
+
+                    ]
+                    .filter(Boolean)
+                    .join(' • ');
+
+
+                    row.innerHTML = `
+
+                        <div
+                            class="mini-cart-name">
+
+                            <strong>
+                                ${escapeHtml(
+                                    item.name
+                                )}
+                            </strong>
+
+                            <small>
+                                ${escapeHtml(
+                                    item.code || ''
+                                )}
+                            </small>
+
+                            ${
+                                noteText
+                                    ? `
+                                        <span
+                                            class="mini-cart-note">
+                                            ${escapeHtml(
+                                                noteText
+                                            )}
+                                        </span>
+                                    `
+                                    : ''
+                            }
+
+                        </div>
+
+
+                        <div
+                            class="mini-cart-price">
+
+                            ${money(
+                                getItemUnitNet(
+                                    item
+                                )
+                            )}
+
+                        </div>
+
+
+                        <div
+                            class="mini-cart-qty">
+
+                            <button
+                                type="button"
+                                data-cart-action="minus"
+                                aria-label="Giảm">
+                                −
+                            </button>
+
+                            <span>
+                                ${item.qty}
+                            </span>
+
+                            <button
+                                type="button"
+                                data-cart-action="plus"
+                                aria-label="Tăng">
+                                +
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            class="mini-cart-total">
+
+                            ${money(
+                                getItemTotal(
+                                    item
+                                )
+                            )}
+
+                        </div>
+
+                    `;
+
+
+                    list.appendChild(
+                        row
+                    );
+
+                }
+            );
 
         }
-
-
-        cart.forEach(function (item) {
-
-            const row =
-                document.createElement(
-                    'div'
-                );
-
-
-            row.className =
-                'mini-cart-row';
-
-
-            row.dataset.rowId =
-                item.rowId;
-
-
-            row.dataset.productId =
-                item.id;
-
-
-            const noteText = [
-
-                item.comment ||
-                    '',
-
-                item.commentName
-                    ? 'Ly: ' +
-                      item.commentName
-                    : ''
-
-            ]
-            .filter(Boolean)
-            .join(' • ');
-
-
-            row.innerHTML = `
-
-                <div
-                    class="mini-cart-swipe-delete">
-                    XÓA
-                </div>
-
-
-                <div
-                    class="mini-cart-row-content">
-
-
-                    <div
-                        class="mini-cart-name">
-
-                        <strong>
-                            ${esc(item.name)}
-                        </strong>
-
-                        ${
-                            noteText
-                                ? `
-                                    <span
-                                        class="mini-cart-note">
-                                        ${esc(noteText)}
-                                    </span>
-                                  `
-                                : ''
-                        }
-
-                    </div>
-
-
-                    <div
-                        class="mini-cart-price">
-
-                        ${money(
-                            getItemUnitNet(item)
-                        )}
-
-                    </div>
-
-
-                    <div
-                        class="mini-cart-qty">
-
-                        <button
-                            type="button"
-                            data-cart-action="minus"
-                            aria-label="Giảm">
-                            −
-                        </button>
-
-
-                        <span>
-                            ${item.qty}
-                        </span>
-
-
-                        <button
-                            type="button"
-                            data-cart-action="plus"
-                            aria-label="Tăng">
-                            +
-                        </button>
-
-                    </div>
-
-
-                    <div
-                        class="mini-cart-total">
-
-                        ${money(
-                            getItemTotal(item)
-                        )}
-
-                    </div>
-
-                </div>
-
-            `;
-
-
-            list.appendChild(row);
-
-        });
 
 
         /* =====================================================
@@ -317,19 +445,26 @@ document.addEventListener('DOMContentLoaded', function () {
         let discount = 0;
 
 
-        cart.forEach(function (item) {
+        cart.forEach(
+            function (item) {
 
-            qty += item.qty;
+                qty +=
+                    item.qty;
 
-            subtotal +=
-                item.price *
-                item.qty;
 
-            discount +=
-                getItemDiscount(item) *
-                item.qty;
+                subtotal +=
+                    item.price *
+                    item.qty;
 
-        });
+
+                discount +=
+                    getItemDiscount(
+                        item
+                    ) *
+                    item.qty;
+
+            }
+        );
 
 
         const deliveryFee =
@@ -345,60 +480,101 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
 
-        function setText(
-            id,
-            value
-        ) {
+        /* =====================================================
+         * UPDATE DOM
+         * ===================================================== */
 
-            const el =
-                document.getElementById(
-                    id
-                );
+        const count =
+            document.getElementById(
+                'mini-products-count'
+            );
 
 
-            if (el) {
+        const qtyEl =
+            document.getElementById(
+                'mini-total-qty'
+            );
 
-                el.textContent =
-                    value;
 
-            }
+        const subEl =
+            document.getElementById(
+                'mini-subtotal'
+            );
+
+
+        const discountEl =
+            document.getElementById(
+                'mini-total-discount'
+            );
+
+
+        const deliveryEl =
+            document.getElementById(
+                'mini-delivery-fee'
+            );
+
+
+        const grandEl =
+            document.getElementById(
+                'mini-grand-total'
+            );
+
+
+        if (count) {
+
+            count.textContent =
+                qty + ' món';
 
         }
 
 
-        setText(
-            'mini-total-qty',
-            qty
-        );
+        if (qtyEl) {
+
+            qtyEl.textContent =
+                qty;
+
+        }
 
 
-        setText(
-            'mini-subtotal',
-            money(subtotal)
-        );
+        if (subEl) {
+
+            subEl.textContent =
+                money(subtotal);
+
+        }
 
 
-        setText(
-            'mini-total-discount',
-            money(discount)
-        );
+        if (discountEl) {
+
+            discountEl.textContent =
+                money(discount);
+
+        }
 
 
-        setText(
-            'mini-delivery-fee',
-            money(deliveryFee)
-        );
+        if (deliveryEl) {
+
+            deliveryEl.textContent =
+                money(deliveryFee);
+
+        }
 
 
-        setText(
-            'mini-grand-total',
-            money(grandTotal)
-        );
+        if (grandEl) {
+
+            grandEl.textContent =
+                money(grandTotal);
+
+        }
 
 
-        setText(
-            'mini-products-count',
-            qty + ' món'
+        /*
+         * Mobile bar.
+         */
+
+        updateMobileCartBar(
+            qty,
+            grandTotal
         );
 
     }
@@ -406,33 +582,39 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* =========================================================
      * ADD TO CART
-     *
-     * MỖI LẦN BẤM MÓN
-     * => DÒNG MỚI
-     *
-     * Không cộng SL vào dòng cũ.
      * ========================================================= */
 
     function addToCart(
         card,
-        qty,
-        data
+        quantity,
+        extra
     ) {
 
-        data =
-            data || {};
+        if (!card) {
+            return;
+        }
 
 
-        cart.push({
+        const data =
+            extra || {};
+
+
+        const item = {
 
             rowId:
                 createRowId(),
 
+
             id:
                 String(
-                    card.dataset.productId ||
-                    ''
+                    card.dataset
+                        .productId || ''
                 ),
+
+
+            code:
+                card.dataset.code || '',
+
 
             name:
                 card.dataset.name ||
@@ -444,20 +626,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     .trim() ||
                 '',
 
+
             price:
                 parseFloat(
-                    card.dataset.price ||
-                    0
+                    card.dataset.price || 0
                 ) || 0,
+
 
             qty:
                 Math.max(
                     1,
                     parseInt(
-                        qty,
+                        quantity,
                         10
                     ) || 1
                 ),
+
 
             discount:
                 Math.max(
@@ -467,25 +651,59 @@ document.addEventListener('DOMContentLoaded', function () {
                     ) || 0
                 ),
 
+
             discountType:
                 data.discountType ===
                 'percent'
                     ? 'percent'
                     : 'amount',
 
+
             comment:
-                data.comment ||
-                '',
+                data.comment || '',
+
 
             commentName:
-                data.commentName ||
-                ''
+                data.commentName || '',
 
-        });
+
+            option:
+                data.option || '',
+
+
+            serial:
+                data.serial || '',
+
+
+            isPromo:
+                Number(
+                    card.dataset
+                        .promo || 0
+                )
+                    ? 1
+                    : 0
+
+        };
+
+
+        /*
+         * QUAN TRỌNG:
+         *
+         * Không tìm sản phẩm cũ.
+         * Không cộng quantity.
+         *
+         * Mỗi click = dòng mới.
+         */
+
+        cart.push(item);
 
 
         renderCart();
 
+
+        /*
+         * Animation.
+         */
 
         card.classList.remove(
             'quick-added'
@@ -503,26 +721,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-     * CHANGE QTY
+     * CHANGE CART QTY
      * ========================================================= */
 
-    function changeQty(
+    function changeCartQty(
         rowId,
         delta
     ) {
 
         const index =
-            cart.findIndex(function (item) {
+            cart.findIndex(
+                function (item) {
 
-                return (
-                    item.rowId ===
-                    rowId
-                );
+                    return (
+                        item.rowId ===
+                        rowId
+                    );
 
-            });
+                }
+            );
 
 
-        if (index < 0) return;
+        if (index === -1) {
+            return;
+        }
 
 
         cart[index].qty +=
@@ -530,8 +752,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         if (
-            cart[index].qty <=
-            0
+            cart[index].qty <= 0
         ) {
 
             cart.splice(
@@ -548,51 +769,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-     * DELETE ROW
-     * ========================================================= */
-
-    function removeRow(
-        rowId
-    ) {
-
-        const index =
-            cart.findIndex(function (item) {
-
-                return (
-                    item.rowId ===
-                    rowId
-                );
-
-            });
-
-
-        if (index < 0) return;
-
-
-        cart.splice(
-            index,
-            1
-        );
-
-
-        renderCart();
-
-    }
-
-
-    /* =========================================================
      * QUICK NOTES
      * ========================================================= */
 
     function renderQuickNotes() {
 
-        const box =
+        const container =
             document.getElementById(
                 'mini-quick-notes-list'
             );
 
 
-        if (!box) return;
+        if (!container) {
+            return;
+        }
 
 
         const comments =
@@ -603,76 +793,89 @@ document.addEventListener('DOMContentLoaded', function () {
                 : [];
 
 
-        box.innerHTML =
+        container.innerHTML =
             comments
-                .map(function (comment) {
+                .map(
+                    function (comment) {
 
-                    const id =
-                        String(
-                            comment.id ||
-                            ''
-                        );
-
-
-                    const text =
-                        String(
-                            comment.comment ||
-                            ''
-                        )
-                        .trim();
+                        const id =
+                            String(
+                                comment.id ||
+                                ''
+                            );
 
 
-                    if (
-                        !id ||
-                        !text
-                    ) {
+                        const text =
+                            String(
+                                comment.comment ||
+                                ''
+                            )
+                            .trim();
 
-                        return '';
+
+                        if (
+                            !id ||
+                            !text
+                        ) {
+
+                            return '';
+
+                        }
+
+
+                        return `
+
+                            <label
+                                class="mini-note-item"
+                                for="mini-comment-${escapeHtml(id)}">
+
+                                <input
+                                    class="mini-note-checkbox chkComment"
+                                    type="checkbox"
+                                    id="mini-comment-${escapeHtml(id)}"
+                                    value="${escapeHtml(text)}">
+
+                                <span
+                                    class="mini-note-box">
+                                    ✓
+                                </span>
+
+                                <span
+                                    class="mini-note-text">
+                                    ${escapeHtml(text)}
+                                </span>
+
+                            </label>
+
+                        `;
 
                     }
-
-
-                    return `
-
-                        <label
-                            class="mini-note-item"
-                            for="mini-comment-${esc(id)}">
-
-                            <input
-                                class="mini-note-checkbox chkComment"
-                                type="checkbox"
-                                id="mini-comment-${esc(id)}"
-                                value="${esc(text)}">
-
-
-                            <span
-                                class="mini-note-box">
-                                ✓
-                            </span>
-
-
-                            <span
-                                class="mini-note-text">
-                                ${esc(text)}
-                            </span>
-
-                        </label>
-
-                    `;
-
-                })
+                )
                 .join('');
 
     }
 
 
     /* =========================================================
-     * CREATE MODAL
+     * CREATE PRODUCT MODAL
      * ========================================================= */
 
-    function createModal() {
+    function createProductModal() {
 
-        if (modal) return;
+        const existing =
+            document.getElementById(
+                'mini-product-modal'
+            );
+
+
+        if (existing) {
+
+            miniModal =
+                existing;
+
+            return;
+
+        }
 
 
         const html = `
@@ -706,7 +909,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                 Chi tiết món
                             </div>
 
-
                             <div
                                 id="mini-modal-product-price"
                                 class="mini-modal-header-price">
@@ -734,6 +936,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             class="mini-modal-two-col-top">
 
 
+                            <!-- SỐ LƯỢNG -->
+
                             <div
                                 class="mini-modal-field">
 
@@ -758,7 +962,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                         id="mini-qty"
                                         class="mini-qty-input"
                                         value="1"
-                                        min="1">
+                                        min="1"
+                                        inputmode="numeric">
 
 
                                     <button
@@ -772,6 +977,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             </div>
 
+
+                            <!-- GIẢM -->
 
                             <div
                                 class="mini-modal-field">
@@ -804,7 +1011,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 id="pdiscount"
                                                 class="mini-modal-input"
                                                 value="0"
-                                                inputmode="numeric">
+                                                inputmode="numeric"
+                                                autocomplete="off">
 
                                             <span
                                                 id="mini-discount-suffix">
@@ -855,6 +1063,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             class="mini-modal-two-col-bottom">
 
 
+                            <!-- GHI CHÚ -->
+
                             <div
                                 class="mini-modal-field">
 
@@ -869,10 +1079,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                     id="icomment"
                                     class="mini-modal-input"
                                     maxlength="500"
+                                    autocomplete="off"
                                     placeholder="Chọn ghi chú hoặc nhập thêm...">
 
                             </div>
 
+
+                            <!-- TÊN LY -->
 
                             <div
                                 class="mini-modal-field">
@@ -888,6 +1101,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     id="icommentname"
                                     class="mini-modal-input"
                                     maxlength="100"
+                                    autocomplete="off"
                                     placeholder="Tên khách...">
 
                             </div>
@@ -910,6 +1124,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
 
                         </div>
+
 
                     </div>
 
@@ -947,7 +1162,7 @@ document.addEventListener('DOMContentLoaded', function () {
         );
 
 
-        modal =
+        miniModal =
             document.getElementById(
                 'mini-product-modal'
             );
@@ -956,123 +1171,139 @@ document.addEventListener('DOMContentLoaded', function () {
         renderQuickNotes();
 
 
-        modal
+        /*
+         * Close.
+         */
+
+        miniModal
             .querySelectorAll(
                 '[data-mini-modal-close]'
             )
-            .forEach(function (button) {
+            .forEach(
+                function (button) {
 
-                button.addEventListener(
-                    'click',
-                    closeModal
-                );
+                    button.addEventListener(
+                        'click',
+                        closeProductModal
+                    );
 
-            });
+                }
+            );
 
+
+        /*
+         * Quantity.
+         */
 
         document
             .getElementById(
                 'mini-qty-minus'
             )
-            .onclick =
-            function () {
+            .addEventListener(
+                'click',
+                function () {
 
-                changeModalQty(-1);
+                    changeModalQuantity(
+                        -1
+                    );
 
-            };
+                }
+            );
 
 
         document
             .getElementById(
                 'mini-qty-plus'
             )
-            .onclick =
-            function () {
+            .addEventListener(
+                'click',
+                function () {
 
-                changeModalQty(1);
+                    changeModalQuantity(
+                        1
+                    );
 
-            };
+                }
+            );
 
 
         document
             .getElementById(
                 'mini-qty'
             )
-            .onchange =
-            normalizeQty;
+            .addEventListener(
+                'change',
+                normalizeModalQuantity
+            );
 
+
+        /*
+         * Discount.
+         */
 
         document
             .getElementById(
                 'mini-discount-minus'
             )
-            .onclick =
-            function () {
+            .addEventListener(
+                'click',
+                function () {
 
-                changeDiscount(-1);
+                    changeMiniDiscount(
+                        -1
+                    );
 
-            };
+                }
+            );
 
 
         document
             .getElementById(
                 'mini-discount-plus'
             )
-            .onclick =
-            function () {
+            .addEventListener(
+                'click',
+                function () {
 
-                changeDiscount(1);
+                    changeMiniDiscount(
+                        1
+                    );
 
-            };
+                }
+            );
 
+
+        /*
+         * Add.
+         */
 
         document
             .getElementById(
                 'mini-modal-add'
             )
-            .onclick =
-            saveModal;
+            .addEventListener(
+                'click',
+                handleModalAdd
+            );
 
 
-        document
-            .getElementById(
-                'pdiscount'
-            )
-            .oninput =
-            updateDiscountInput;
+        /*
+         * ESC.
+         */
 
-
-        modal
-            .querySelectorAll(
-                '.mini-discount-type-btn'
-            )
-            .forEach(function (button) {
-
-                button.onclick =
-                    function () {
-
-                        setDiscountType(
-                            this.dataset
-                                .discountType
-                        );
-
-                    };
-
-            });
-
-
-        modal.addEventListener(
-            'change',
+        document.addEventListener(
+            'keydown',
             function (event) {
 
                 if (
-                    event.target.classList
-                        .contains(
-                            'chkComment'
-                        )
+                    event.key ===
+                        'Escape' &&
+                    miniModal &&
+                    miniModal.classList
+                        .contains('show')
                 ) {
 
-                    updateNoteField();
+                    closeProductModal();
 
                 }
 
@@ -1083,250 +1314,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-     * OPEN MODAL
-     *
-     * item = null:
-     *      thêm món mới
-     *
-     * item != null:
-     *      sửa dòng đang có
+     * DISCOUNT VALUE
      * ========================================================= */
 
-    function openModal(
-        card,
-        item
-    ) {
+    function getDiscountValue() {
 
-        createModal();
-
-
-        editingRowId =
-            item
-                ? item.rowId
-                : null;
-
-
-        basePrice =
-            parseFloat(
-                card.dataset.price ||
-                0
-            ) || 0;
-
-
-        modal.dataset.productId =
-            card.dataset.productId ||
-            '';
-
-
-        document
-            .getElementById(
-                'mini-modal-product-name'
-            )
-            .textContent =
-            card.dataset.name ||
-            '';
-
-
-        document
-            .getElementById(
-                'mini-qty'
-            )
-            .value =
-            item
-                ? item.qty
-                : 1;
-
-
-        setDiscountType(
-            item?.discountType ||
-            'amount'
-        );
-
-
-        document
-            .getElementById(
+        const input =
+            document.getElementById(
                 'pdiscount'
-            )
-            .value =
-            item
-                ? item.discount || 0
-                : 0;
-
-
-        document
-            .getElementById(
-                'icomment'
-            )
-            .value =
-            item?.comment ||
-            '';
-
-
-        document
-            .getElementById(
-                'icommentname'
-            )
-            .value =
-            item?.commentName ||
-            '';
-
-
-        modal
-            .querySelectorAll(
-                '.chkComment'
-            )
-            .forEach(function (box) {
-
-                box.checked =
-                    !!(
-                        item &&
-                        item.comment &&
-                        item.comment
-                            .split(',')
-                            .map(
-                                function (x) {
-                                    return x.trim();
-                                }
-                            )
-                            .includes(
-                                box.value.trim()
-                            )
-                    );
-
-            });
-
-
-        document
-            .getElementById(
-                'mini-modal-add'
-            )
-            .textContent =
-            item
-                ? 'CẬP NHẬT MÓN'
-                : 'THÊM VÀO ĐƠN';
-
-
-        updateModalPrice();
-
-
-        modal.classList.add(
-            'show'
-        );
-
-
-        modal.setAttribute(
-            'aria-hidden',
-            'false'
-        );
-
-
-        document.body.classList.add(
-            'mini-modal-open'
-        );
-
-    }
-
-
-    /* =========================================================
-     * CLOSE MODAL
-     * ========================================================= */
-
-    function closeModal() {
-
-        if (!modal) return;
-
-
-        modal.classList.remove(
-            'show'
-        );
-
-
-        modal.setAttribute(
-            'aria-hidden',
-            'true'
-        );
-
-
-        document.body.classList.remove(
-            'mini-modal-open'
-        );
-
-
-        editingRowId =
-            null;
-
-    }
-
-
-    /* =========================================================
-     * MODAL QUANTITY
-     * ========================================================= */
-
-    function changeModalQty(
-        amount
-    ) {
-
-        const input =
-            document.getElementById(
-                'mini-qty'
             );
 
-
-        if (!input) return;
-
-
-        input.value =
-            Math.max(
-                1,
-                (
-                    parseInt(
-                        input.value,
-                        10
-                    ) || 1
-                ) +
-                amount
-            );
-
-    }
-
-
-    function normalizeQty() {
-
-        const input =
-            document.getElementById(
-                'mini-qty'
-            );
-
-
-        if (!input) return;
-
-
-        input.value =
-            Math.max(
-                1,
-                parseInt(
-                    input.value,
-                    10
-                ) || 1
-            );
-
-    }
-
-
-    /* =========================================================
-     * MODAL DISCOUNT
-     * ========================================================= */
-
-    function getDiscount() {
 
         let value =
-            parseFloat(
-                document
-                    .getElementById(
-                        'pdiscount'
-                    )
-                    .value
-            ) || 0;
+            input
+                ? parseFloat(
+                    input.value
+                ) || 0
+                : 0;
 
 
         value =
@@ -1337,7 +1341,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         if (
-            discountType ===
+            miniDiscountType ===
             'percent'
         ) {
 
@@ -1355,75 +1359,92 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    function updateModalPrice() {
+    /* =========================================================
+     * MODAL PRICE
+     * ========================================================= */
+
+    function updateMiniModalPrice() {
 
         const value =
-            getDiscount();
+            getDiscountValue();
 
 
-        const discount =
-            discountType ===
+        let discount;
+
+
+        if (
+            miniDiscountType ===
             'percent'
-                ? basePrice *
-                  value /
-                  100
-                : Math.min(
-                    basePrice,
-                    value
-                );
+        ) {
+
+            discount =
+                miniBasePrice *
+                value /
+                100;
+
+        } else {
+
+            discount =
+                value;
+
+        }
 
 
-        document
-            .getElementById(
-                'mini-modal-product-price'
-            )
-            .textContent =
-            money(
-                basePrice -
+        discount =
+            Math.min(
+                miniBasePrice,
                 discount
             );
 
 
-        document
-            .getElementById(
+        const priceEl =
+            document.getElementById(
+                'mini-modal-product-price'
+            );
+
+
+        if (priceEl) {
+
+            priceEl.textContent =
+                money(
+                    miniBasePrice -
+                    discount
+                );
+
+        }
+
+
+        const suffix =
+            document.getElementById(
                 'mini-discount-suffix'
-            )
-            .textContent =
-            discountType ===
-            'percent'
-                ? '%'
-                : 'đ';
+            );
+
+
+        if (suffix) {
+
+            suffix.textContent =
+                miniDiscountType ===
+                'percent'
+                    ? '%'
+                    : 'đ';
+
+        }
 
     }
 
 
-    function setDiscountType(
+    /* =========================================================
+     * DISCOUNT TYPE
+     * ========================================================= */
+
+    function setMiniDiscountType(
         type
     ) {
 
-        discountType =
+        miniDiscountType =
             type === 'percent'
                 ? 'percent'
                 : 'amount';
-
-
-        if (!modal) return;
-
-
-        modal
-            .querySelectorAll(
-                '.mini-discount-type-btn'
-            )
-            .forEach(function (button) {
-
-                button.classList.toggle(
-                    'active',
-                    button.dataset
-                        .discountType ===
-                    discountType
-                );
-
-            });
 
 
         const input =
@@ -1434,14 +1455,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (input) {
 
+            input.value = 0;
+
             input.max =
-                discountType ===
+                miniDiscountType ===
                 'percent'
                     ? '100'
                     : '';
 
             input.step =
-                discountType ===
+                miniDiscountType ===
                 'percent'
                     ? '1'
                     : '1000';
@@ -1449,59 +1472,39 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
 
-        updateModalPrice();
+        if (miniModal) {
 
-    }
+            miniModal
+                .querySelectorAll(
+                    '.mini-discount-type-btn'
+                )
+                .forEach(
+                    function (button) {
 
+                        button.classList.toggle(
+                            'active',
 
-    function updateDiscountInput() {
+                            button.dataset
+                                .discountType ===
+                            miniDiscountType
+                        );
 
-        let value =
-            parseFloat(
-                this.value
-            ) || 0;
-
-
-        value =
-            Math.max(
-                0,
-                value
-            );
-
-
-        if (
-            discountType ===
-            'percent'
-        ) {
-
-            value =
-                Math.min(
-                    100,
-                    Math.round(value)
+                    }
                 );
-
-        } else {
-
-            value =
-                Math.round(
-                    value /
-                    1000
-                ) *
-                1000;
 
         }
 
 
-        this.value =
-            value;
-
-
-        updateModalPrice();
+        updateMiniModalPrice();
 
     }
 
 
-    function changeDiscount(
+    /* =========================================================
+     * DISCOUNT + / -
+     * ========================================================= */
+
+    function changeMiniDiscount(
         direction
     ) {
 
@@ -1511,11 +1514,13 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
 
-        if (!input) return;
+        if (!input) {
+            return;
+        }
 
 
         const step =
-            discountType ===
+            miniDiscountType ===
             'percent'
                 ? 1
                 : 1000;
@@ -1539,7 +1544,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         if (
-            discountType ===
+            miniDiscountType ===
             'percent'
         ) {
 
@@ -1556,19 +1561,16 @@ document.addEventListener('DOMContentLoaded', function () {
             value;
 
 
-        updateModalPrice();
+        updateMiniModalPrice();
 
     }
 
 
     /* =========================================================
-     * NOTE
+     * COMMENT
      * ========================================================= */
 
-    function updateNoteField() {
-
-        if (!modal) return;
-
+    function updateMiniNoteField() {
 
         const input =
             document.getElementById(
@@ -1576,82 +1578,402 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
 
+        if (
+            !input ||
+            !miniModal
+        ) {
+
+            return;
+
+        }
+
+
         const quick = [];
 
         const known = [];
 
 
-        modal
+        miniModal
             .querySelectorAll(
                 '.chkComment'
             )
-            .forEach(function (box) {
+            .forEach(
+                function (box) {
 
-                const value =
-                    box.value.trim();
+                    const value =
+                        box.value.trim();
 
 
-                if (value) {
+                    if (value) {
 
-                    known.push(
+                        known.push(
+                            value
+                        );
+
+                    }
+
+
+                    if (
+                        box.checked &&
                         value
-                    );
+                    ) {
+
+                        quick.push(
+                            value
+                        );
+
+                    }
 
                 }
-
-
-                if (
-                    box.checked &&
-                    value
-                ) {
-
-                    quick.push(
-                        value
-                    );
-
-                }
-
-            });
+            );
 
 
         const manual =
-            input
-                .value
+            input.value
                 .split(',')
-                .map(function (x) {
-                    return x.trim();
-                })
-                .filter(function (x) {
+                .map(
+                    function (value) {
+                        return value.trim();
+                    }
+                )
+                .filter(
+                    function (value) {
 
-                    return (
-                        x &&
-                        known.indexOf(x) ===
-                        -1
-                    );
+                        return (
+                            value &&
+                            known.indexOf(
+                                value
+                            ) === -1
+                        );
 
-                });
+                    }
+                );
 
 
         input.value =
             manual
-                .concat(quick)
+                .concat(
+                    quick
+                )
                 .join(', ');
 
     }
 
 
     /* =========================================================
-     * SAVE MODAL
+     * OPEN MODAL
      * ========================================================= */
 
-    function saveModal() {
+    function openProductModal(
+        card
+    ) {
 
-        if (!modal) return;
+        createProductModal();
+
+
+        miniBasePrice =
+            parseFloat(
+                card.dataset.price ||
+                0
+            ) || 0;
+
+
+        miniModal.dataset.productId =
+            card.dataset.productId ||
+            '';
+
+
+        document
+            .getElementById(
+                'mini-modal-product-name'
+            )
+            .textContent =
+            card.dataset.name ||
+            card
+                .querySelector(
+                    '.mini-product-name'
+                )
+                ?.textContent
+                .trim() ||
+            '';
+
+
+        document
+            .getElementById(
+                'mini-qty'
+            )
+            .value = 1;
+
+
+        document
+            .getElementById(
+                'pdiscount'
+            )
+            .value = 0;
+
+
+        document
+            .getElementById(
+                'icomment'
+            )
+            .value = '';
+
+
+        document
+            .getElementById(
+                'icommentname'
+            )
+            .value = '';
+
+
+        miniModal
+            .querySelectorAll(
+                '.chkComment'
+            )
+            .forEach(
+                function (box) {
+
+                    box.checked =
+                        false;
+
+                }
+            );
+
+
+        setMiniDiscountType(
+            'amount'
+        );
+
+
+        /*
+         * Discount input.
+         */
+
+        const discountInput =
+            document.getElementById(
+                'pdiscount'
+            );
+
+
+        discountInput.oninput =
+            function () {
+
+                let value =
+                    parseFloat(
+                        this.value
+                    ) || 0;
+
+
+                value =
+                    Math.max(
+                        0,
+                        value
+                    );
+
+
+                if (
+                    miniDiscountType ===
+                    'percent'
+                ) {
+
+                    value =
+                        Math.min(
+                            100,
+                            Math.round(
+                                value
+                            )
+                        );
+
+                } else {
+
+                    value =
+                        Math.round(
+                            value /
+                            1000
+                        ) *
+                        1000;
+
+                }
+
+
+                this.value =
+                    value;
+
+
+                updateMiniModalPrice();
+
+            };
+
+
+        /*
+         * Discount type.
+         */
+
+        miniModal
+            .querySelectorAll(
+                '.mini-discount-type-btn'
+            )
+            .forEach(
+                function (button) {
+
+                    button.onclick =
+                        function () {
+
+                            setMiniDiscountType(
+                                this.dataset
+                                    .discountType
+                            );
+
+                        };
+
+                }
+            );
+
+
+        /*
+         * Quick notes.
+         */
+
+        miniModal
+            .querySelectorAll(
+                '.chkComment'
+            )
+            .forEach(
+                function (box) {
+
+                    box.onchange =
+                        updateMiniNoteField;
+
+                }
+            );
+
+
+        updateMiniModalPrice();
+
+
+        miniModal.classList.add(
+            'show'
+        );
+
+
+        miniModal.setAttribute(
+            'aria-hidden',
+            'false'
+        );
+
+
+        document.body.classList.add(
+            'mini-modal-open'
+        );
+
+    }
+
+
+    /* =========================================================
+     * CLOSE MODAL
+     * ========================================================= */
+
+    function closeProductModal() {
+
+        if (!miniModal) {
+            return;
+        }
+
+
+        miniModal.classList.remove(
+            'show'
+        );
+
+
+        miniModal.setAttribute(
+            'aria-hidden',
+            'true'
+        );
+
+
+        document.body.classList.remove(
+            'mini-modal-open'
+        );
+
+    }
+
+
+    /* =========================================================
+     * MODAL QUANTITY
+     * ========================================================= */
+
+    function changeModalQuantity(
+        amount
+    ) {
+
+        const input =
+            document.getElementById(
+                'mini-qty'
+            );
+
+
+        if (!input) {
+            return;
+        }
+
+
+        input.value =
+            Math.max(
+                1,
+
+                (
+                    parseInt(
+                        input.value,
+                        10
+                    ) || 1
+                ) +
+                amount
+            );
+
+    }
+
+
+    function normalizeModalQuantity() {
+
+        const input =
+            document.getElementById(
+                'mini-qty'
+            );
+
+
+        if (!input) {
+            return;
+        }
+
+
+        input.value =
+            Math.max(
+                1,
+
+                parseInt(
+                    input.value,
+                    10
+                ) || 1
+            );
+
+    }
+
+
+    /* =========================================================
+     * MODAL ADD
+     * ========================================================= */
+
+    function handleModalAdd() {
+
+        if (!miniModal) {
+            return;
+        }
 
 
         const productId =
             String(
-                modal.dataset.productId ||
+                miniModal.dataset
+                    .productId ||
                 ''
             );
 
@@ -1664,12 +1986,15 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
 
-        if (!card) return;
+        if (!card) {
+            return;
+        }
 
 
         const qty =
             Math.max(
                 1,
+
                 parseInt(
                     document
                         .getElementById(
@@ -1681,91 +2006,50 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
 
-        const data = {
-
-            discount:
-                getDiscount(),
-
-            discountType:
-                discountType,
-
-            comment:
-                document
-                    .getElementById(
-                        'icomment'
-                    )
-                    .value
-                    .trim(),
-
-            commentName:
-                document
-                    .getElementById(
-                        'icommentname'
-                    )
-                    .value
-                    .trim()
-
-        };
+        const discount =
+            getDiscountValue();
 
 
-        /* =====================================================
-         * EDIT DÒNG CŨ
-         * ===================================================== */
-
-        if (editingRowId) {
-
-            const item =
-                cart.find(function (x) {
-
-                    return (
-                        x.rowId ===
-                        editingRowId
-                    );
-
-                });
+        const comment =
+            document
+                .getElementById(
+                    'icomment'
+                )
+                ?.value
+                .trim() ||
+            '';
 
 
-            if (item) {
-
-                item.qty =
-                    qty;
-
-                item.discount =
-                    data.discount;
-
-                item.discountType =
-                    data.discountType;
-
-                item.comment =
-                    data.comment;
-
-                item.commentName =
-                    data.commentName;
+        const commentName =
+            document
+                .getElementById(
+                    'icommentname'
+                )
+                ?.value
+                .trim() ||
+            '';
 
 
-                renderCart();
+        addToCart(
+            card,
+            qty,
+            {
+                discount:
+                    discount,
 
+                discountType:
+                    miniDiscountType,
+
+                comment:
+                    comment,
+
+                commentName:
+                    commentName
             }
-
-        }
-
-
-        /* =====================================================
-         * THÊM DÒNG MỚI
-         * ===================================================== */
-
-        else {
-
-            addToCart(
-                card,
-                qty,
-                data
-            );
-
-        }
+        );
 
 
-        closeModal();
+        closeProductModal();
 
     }
 
@@ -1778,80 +2062,76 @@ document.addEventListener('DOMContentLoaded', function () {
         .querySelectorAll(
             '.mini-product-card'
         )
-        .forEach(function (card) {
+        .forEach(
+            function (card) {
 
 
-            /*
-             * Bấm thân món
-             * => thêm ngay 1 dòng
-             */
+                /*
+                 * Click thân card:
+                 * thêm ngay 1 dòng.
+                 */
 
-            card.addEventListener(
-                'click',
-                function (event) {
-
-                    if (
-                        event.target.closest(
-                            '.mini-product-edit'
-                        )
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    addToCart(
-                        card,
-                        1
-                    );
-
-                }
-            );
-
-
-            /*
-             * Nút ✎
-             * => mở modal thêm món có chi tiết
-             */
-
-            const edit =
-                card.querySelector(
-                    '.mini-product-edit'
-                );
-
-
-            if (edit) {
-
-                edit.addEventListener(
+                card.addEventListener(
                     'click',
                     function (event) {
 
-                        event.preventDefault();
+                        if (
+                            event.target.closest(
+                                '.mini-product-edit'
+                            )
+                        ) {
 
-                        event.stopPropagation();
+                            return;
+
+                        }
 
 
-                        openModal(
-                            card
+                        addToCart(
+                            this,
+                            1
                         );
 
                     }
                 );
 
-            }
 
-        });
+                /*
+                 * Click edit:
+                 * mở modal.
+                 */
+
+                const edit =
+                    card.querySelector(
+                        '.mini-product-edit'
+                    );
+
+
+                if (edit) {
+
+                    edit.addEventListener(
+                        'click',
+                        function (event) {
+
+                            event.preventDefault();
+
+                            event.stopPropagation();
+
+
+                            openProductModal(
+                                card
+                            );
+
+                        }
+                    );
+
+                }
+
+            }
+        );
 
 
     /* =========================================================
-     * CART CLICK
-     *
-     * Click +/-:
-     *      đổi SL
-     *
-     * Click phần còn lại:
-     *      mở modal EDIT
+     * CART EVENTS
      * ========================================================= */
 
     const cartList =
@@ -1866,229 +2146,38 @@ document.addEventListener('DOMContentLoaded', function () {
             'click',
             function (event) {
 
-                const row =
-                    event.target.closest(
-                        '.mini-cart-row'
-                    );
-
-
-                if (!row) return;
-
-
                 const button =
                     event.target.closest(
                         '[data-cart-action]'
                     );
 
 
-                if (button) {
-
-                    event.preventDefault();
-
-                    event.stopPropagation();
-
-
-                    changeQty(
-                        row.dataset.rowId,
-
-                        button.dataset
-                            .cartAction ===
-                            'plus'
-                            ? 1
-                            : -1
-                    );
-
-
-                    return;
-
-                }
-
-
-                const item =
-                    cart.find(function (x) {
-
-                        return (
-                            x.rowId ===
-                            row.dataset.rowId
-                        );
-
-                    });
-
-
-                const card =
-                    grid.querySelector(
-                        '.mini-product-card[data-product-id="' +
-                        CSS.escape(
-                            row.dataset.productId ||
-                            ''
-                        ) +
-                        '"]'
-                    );
-
-
-                if (
-                    item &&
-                    card
-                ) {
-
-                    openModal(
-                        card,
-                        item
-                    );
-
-                }
-
-            }
-        );
-
-
-        /* =====================================================
-         * SWIPE START
-         * ===================================================== */
-
-        cartList.addEventListener(
-            'touchstart',
-            function (event) {
-
                 const row =
                     event.target.closest(
                         '.mini-cart-row'
                     );
 
 
-                if (!row) return;
-
-
-                touchRow =
-                    row;
-
-
-                touchStartX =
-                    event.touches[0]
-                        .clientX;
-
-
-                touchCurrentX =
-                    touchStartX;
-
-
-                row.classList.add(
-                    'is-swiping'
-                );
-
-            },
-            {
-                passive: true
-            }
-        );
-
-
-        /* =====================================================
-         * SWIPE MOVE
-         * ===================================================== */
-
-        cartList.addEventListener(
-            'touchmove',
-            function (event) {
-
-                if (!touchRow) return;
-
-
-                touchCurrentX =
-                    event.touches[0]
-                        .clientX;
-
-
-                const distance =
-                    touchCurrentX -
-                    touchStartX;
-
-
                 if (
-                    distance < 0
+                    !button ||
+                    !row
                 ) {
 
-                    const content =
-                        touchRow.querySelector(
-                            '.mini-cart-row-content'
-                        );
-
-
-                    if (content) {
-
-                        content.style.transform =
-                            'translateX(' +
-                            Math.max(
-                                -110,
-                                distance
-                            ) +
-                            'px)';
-
-                    }
+                    return;
 
                 }
 
-            },
-            {
-                passive: true
-            }
-        );
 
+                changeCartQty(
+                    row.dataset.rowId,
 
-        /* =====================================================
-         * SWIPE END
-         * ===================================================== */
-
-        cartList.addEventListener(
-            'touchend',
-            function () {
-
-                if (!touchRow) return;
-
-
-                const row =
-                    touchRow;
-
-
-                const distance =
-                    touchCurrentX -
-                    touchStartX;
-
-
-                const content =
-                    row.querySelector(
-                        '.mini-cart-row-content'
-                    );
-
-
-                row.classList.remove(
-                    'is-swiping'
+                    button.dataset
+                        .cartAction ===
+                        'plus'
+                        ? 1
+                        : -1
                 );
 
-
-                if (
-                    distance <=
-                    -80
-                ) {
-
-                    removeRow(
-                        row.dataset.rowId
-                    );
-
-                } else if (content) {
-
-                    content.style.transform =
-                        '';
-
-                }
-
-
-                touchRow =
-                    null;
-
-            },
-            {
-                passive: true
             }
         );
 
@@ -2096,474 +2185,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-     * SEARCH
-     * ========================================================= */
-
-    const search =
-        document.getElementById(
-            'mini-product-search'
-        );
-
-
-    const searchClear =
-        document.getElementById(
-            'mini-search-clear'
-        );
-
-
-    function applySearch() {
-
-        if (!search) return;
-
-
-        const keyword =
-            search.value
-                .toLowerCase()
-                .trim();
-
-
-        grid
-            .querySelectorAll(
-                '.mini-product-card'
-            )
-            .forEach(function (card) {
-
-                const name =
-                    (
-                        card.dataset.name ||
-                        ''
-                    )
-                    .toLowerCase();
-
-
-                const code =
-                    (
-                        card.dataset.code ||
-                        ''
-                    )
-                    .toLowerCase();
-
-
-                card.style.display =
-                    (
-                        !keyword ||
-                        name.includes(
-                            keyword
-                        ) ||
-                        code.includes(
-                            keyword
-                        )
-                    )
-                        ? ''
-                        : 'none';
-
-            });
-
-
-        if (searchClear) {
-
-            searchClear.style.display =
-                search.value
-                    ? 'flex'
-                    : 'none';
-
-        }
-
-
-        grid.scrollLeft =
-            0;
-
-
-        updatePages();
-
-    }
-
-
-    if (search) {
-
-        search.addEventListener(
-            'input',
-            applySearch
-        );
-
-    }
-
-
-    if (searchClear) {
-
-        searchClear.addEventListener(
-            'click',
-            function () {
-
-                search.value =
-                    '';
-
-                applySearch();
-
-                search.focus();
-
-            }
-        );
-
-    }
-
-
-    /* =========================================================
-     * CATEGORY
-     * ========================================================= */
-
-    document
-        .querySelectorAll(
-            '.mini-category'
-        )
-        .forEach(function (button) {
-
-            button.addEventListener(
-                'click',
-                function () {
-
-                    document
-                        .querySelectorAll(
-                            '.mini-category'
-                        )
-                        .forEach(function (item) {
-
-                            item.classList
-                                .remove(
-                                    'active'
-                                );
-
-                        });
-
-
-                    button.classList.add(
-                        'active'
-                    );
-
-
-                    const category =
-                        button.dataset
-                            .category ||
-                        'all';
-
-
-                    grid
-                        .querySelectorAll(
-                            '.mini-product-card'
-                        )
-                        .forEach(function (card) {
-
-                            card.style.display =
-                                (
-                                    category ===
-                                    'all' ||
-                                    card.dataset
-                                        .category ===
-                                    category
-                                )
-                                    ? ''
-                                    : 'none';
-
-                        });
-
-
-                    grid.scrollLeft =
-                        0;
-
-
-                    updatePages();
-
-                }
-            );
-
-        });
-
-
-    /* =========================================================
-     * CATEGORY SCROLL
-     * ========================================================= */
-
-    document
-        .querySelectorAll(
-            '[data-category-scroll]'
-        )
-        .forEach(function (button) {
-
-            button.addEventListener(
-                'click',
-                function () {
-
-                    const categories =
-                        document.querySelector(
-                            '.mini-categories'
-                        );
-
-
-                    if (!categories) return;
-
-
-                    categories.scrollBy({
-
-                        left:
-                            button.dataset
-                                .categoryScroll ===
-                            'left'
-                                ? -230
-                                : 230,
-
-                        behavior:
-                            'smooth'
-
-                    });
-
-                }
-            );
-
-        });
-
-
-    /* =========================================================
-     * PRODUCT PAGING
-     * ========================================================= */
-
-    function pageWidth() {
-
-        return Math.max(
-            1,
-            grid.clientWidth
-        );
-
-    }
-
-
-    function pageCount() {
-
-        return Math.max(
-            1,
-            Math.ceil(
-                grid.scrollWidth /
-                pageWidth()
-            )
-        );
-
-    }
-
-
-    function updatePages() {
-
-        const label =
-            document.getElementById(
-                'mini-page-label'
-            );
-
-
-        if (!label) return;
-
-
-        const current =
-            Math.min(
-
-                pageCount(),
-
-                Math.floor(
-                    (
-                        grid.scrollLeft +
-                        pageWidth() *
-                        .5
-                    ) /
-                    pageWidth()
-                ) + 1
-
-            );
-
-
-        label.textContent =
-            current +
-            ' / ' +
-            pageCount();
-
-    }
-
-
-    const prev =
-        document.getElementById(
-            'mini-prev-page'
-        );
-
-
-    const next =
-        document.getElementById(
-            'mini-next-page'
-        );
-
-
-    if (prev) {
-
-        prev.addEventListener(
-            'click',
-            function () {
-
-                grid.scrollBy({
-
-                    left:
-                        -pageWidth(),
-
-                    behavior:
-                        'smooth'
-
-                });
-
-            }
-        );
-
-    }
-
-
-    if (next) {
-
-        next.addEventListener(
-            'click',
-            function () {
-
-                grid.scrollBy({
-
-                    left:
-                        pageWidth(),
-
-                    behavior:
-                        'smooth'
-
-                });
-
-            }
-        );
-
-    }
-
-
-    grid.addEventListener(
-        'scroll',
-        function () {
-
-            requestAnimationFrame(
-                updatePages
-            );
-
-        },
-        {
-            passive: true
-        }
-    );
-
-
-    window.addEventListener(
-        'resize',
-        updatePages
-    );
-
-
-    /* =========================================================
-     * HEADER ORDER MODE
-     * ========================================================= */
-
-    document
-        .querySelectorAll(
-            '.mini-header-mode'
-        )
-        .forEach(function (button) {
-
-            button.addEventListener(
-                'click',
-                function () {
-
-                    document
-                        .querySelectorAll(
-                            '.mini-header-mode'
-                        )
-                        .forEach(function (item) {
-
-                            item.classList
-                                .remove(
-                                    'active'
-                                );
-
-                        });
-
-
-                    button.classList.add(
-                        'active'
-                    );
-
-
-                    const mode =
-                        button.dataset
-                            .orderMode ||
-                        'table';
-
-
-                    const modeEl =
-                        document.getElementById(
-                            'mini-order-info-mode'
-                        );
-
-
-                    const mainEl =
-                        document.getElementById(
-                            'mini-order-info-main'
-                        );
-
-
-                    const subEl =
-                        document.getElementById(
-                            'mini-order-info-sub'
-                        );
-
-
-                    if (modeEl) {
-
-                        modeEl.textContent =
-                            mode === 'table'
-                                ? 'BÀN'
-                                : mode === 'dinein'
-                                    ? 'TẠI CHỖ'
-                                    : 'MANG ĐI';
-
-
-                        modeEl.dataset.mode =
-                            mode;
-
-                    }
-
-
-                    if (mainEl) {
-
-                        mainEl.textContent =
-                            mode === 'table'
-                                ? 'Chưa chọn bàn'
-                                : mode === 'dinein'
-                                    ? 'Tại chỗ'
-                                    : 'Khách mang đi';
-
-                    }
-
-
-                    if (subEl) {
-
-                        subEl.textContent =
-                            mode === 'takeaway'
-                                ? 'Chưa nhập thông tin khách'
-                                : 'Khách: Khách lẻ';
-
-                    }
-
-                }
-            );
-
-        });
-
-
-    /* =========================================================
-     * MOBILE ORDER PANEL
+     * MOBILE CART TOGGLE
      * ========================================================= */
 
     const miniOrder =
@@ -2572,7 +2194,7 @@ document.addEventListener('DOMContentLoaded', function () {
         );
 
 
-    const infoPanel =
+    const miniOrderInfo =
         document.querySelector(
             '.mini-order-info-panel'
         );
@@ -2580,10 +2202,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (
         miniOrder &&
-        infoPanel
+        miniOrderInfo
     ) {
 
-        infoPanel.addEventListener(
+        miniOrderInfo.addEventListener(
             'click',
             function () {
 
@@ -2604,15 +2226,174 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    const headerOrder =
+    /* =========================================================
+     * HEADER MODE
+     * ========================================================= */
+
+    document
+        .querySelectorAll(
+            '.mini-header-mode'
+        )
+        .forEach(
+            function (button) {
+
+                button.addEventListener(
+                    'click',
+                    function () {
+
+
+                        document
+                            .querySelectorAll(
+                                '.mini-header-mode'
+                            )
+                            .forEach(
+                                function (item) {
+
+                                    item.classList
+                                        .remove(
+                                            'active'
+                                        );
+
+                                }
+                            );
+
+
+                        this.classList.add(
+                            'active'
+                        );
+
+
+                        const mode =
+                            this.dataset
+                                .orderMode ||
+                            'table';
+
+
+                        const modeEl =
+                            document.getElementById(
+                                'mini-order-info-mode'
+                            );
+
+
+                        const mainEl =
+                            document.getElementById(
+                                'mini-order-info-main'
+                            );
+
+
+                        const subEl =
+                            document.getElementById(
+                                'mini-order-info-sub'
+                            );
+
+
+                        if (modeEl) {
+
+                            modeEl.textContent =
+                                mode === 'table'
+                                    ? 'BÀN'
+                                    : mode === 'dinein'
+                                        ? 'TẠI CHỖ'
+                                        : 'MANG ĐI';
+
+
+                            modeEl.dataset.mode =
+                                mode;
+
+                        }
+
+
+                        if (
+                            mode ===
+                            'table'
+                        ) {
+
+                            if (mainEl) {
+
+                                mainEl.textContent =
+                                    'Chưa chọn bàn';
+
+                            }
+
+
+                            if (subEl) {
+
+                                subEl.textContent =
+                                    'Khách: Khách lẻ';
+
+                            }
+
+                        }
+
+
+                        else if (
+                            mode ===
+                            'dinein'
+                        ) {
+
+                            if (mainEl) {
+
+                                mainEl.textContent =
+                                    'Tại chỗ';
+
+                            }
+
+
+                            if (subEl) {
+
+                                subEl.textContent =
+                                    'Khách: Khách lẻ';
+
+                            }
+
+                        }
+
+
+                        else {
+
+                            if (mainEl) {
+
+                                mainEl.textContent =
+                                    'Khách mang đi';
+
+                            }
+
+
+                            if (subEl) {
+
+                                subEl.textContent =
+                                    'Chưa nhập thông tin khách';
+
+                            }
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+    /* =========================================================
+     * HEADER ORDER BUTTON
+     *
+     * Desktop:
+     * không làm gì.
+     *
+     * Mobile:
+     * mở cart.
+     * ========================================================= */
+
+    const orderButton =
         document.querySelector(
             '.mini-header-order'
         );
 
 
-    if (headerOrder) {
+    if (orderButton) {
 
-        headerOrder.addEventListener(
+        orderButton.addEventListener(
             'click',
             function () {
 
@@ -2635,6 +2416,381 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
+     * SEARCH
+     * ========================================================= */
+
+    const search =
+        document.getElementById(
+            'mini-product-search'
+        );
+
+
+    if (search) {
+
+        search.addEventListener(
+            'input',
+            function () {
+
+                const keyword =
+                    this.value
+                        .toLowerCase()
+                        .trim();
+
+
+                grid
+                    .querySelectorAll(
+                        '.mini-product-card'
+                    )
+                    .forEach(
+                        function (card) {
+
+                            const name =
+                                (
+                                    card.dataset
+                                        .name ||
+                                    card
+                                        .querySelector(
+                                            '.mini-product-name'
+                                        )
+                                        ?.textContent ||
+                                    ''
+                                )
+                                .toLowerCase();
+
+
+                            const code =
+                                (
+                                    card.dataset
+                                        .code ||
+                                    ''
+                                )
+                                .toLowerCase();
+
+
+                            card.style.display =
+                                (
+                                    !keyword ||
+                                    name.indexOf(
+                                        keyword
+                                    ) !== -1 ||
+                                    code.indexOf(
+                                        keyword
+                                    ) !== -1
+                                )
+                                    ? ''
+                                    : 'none';
+
+                        }
+                    );
+
+
+                grid.scrollLeft =
+                    0;
+
+
+                updateSwiperPages();
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+     * CATEGORY FILTER
+     * ========================================================= */
+
+    document
+        .querySelectorAll(
+            '.mini-category'
+        )
+        .forEach(
+            function (button) {
+
+                button.addEventListener(
+                    'click',
+                    function () {
+
+
+                        document
+                            .querySelectorAll(
+                                '.mini-category'
+                            )
+                            .forEach(
+                                function (item) {
+
+                                    item.classList
+                                        .remove(
+                                            'active'
+                                        );
+
+                                }
+                            );
+
+
+                        this.classList.add(
+                            'active'
+                        );
+
+
+                        const category =
+                            this.dataset
+                                .category ||
+                            'all';
+
+
+                        grid
+                            .querySelectorAll(
+                                '.mini-product-card'
+                            )
+                            .forEach(
+                                function (card) {
+
+                                    card.style.display =
+                                        (
+                                            category ===
+                                                'all' ||
+                                            category ===
+                                                card.dataset
+                                                    .category
+                                        )
+                                            ? ''
+                                            : 'none';
+
+                                }
+                            );
+
+
+                        grid.scrollLeft =
+                            0;
+
+
+                        updateSwiperPages();
+
+                    }
+                );
+
+            }
+        );
+
+
+    /* =========================================================
+     * CATEGORY SCROLL
+     * ========================================================= */
+
+    document
+        .querySelectorAll(
+            '[data-category-scroll]'
+        )
+        .forEach(
+            function (button) {
+
+                button.addEventListener(
+                    'click',
+                    function () {
+
+                        const categories =
+                            document.querySelector(
+                                '.mini-categories'
+                            );
+
+
+                        if (!categories) {
+                            return;
+                        }
+
+
+                        categories.scrollBy({
+
+                            left:
+                                this.dataset
+                                    .categoryScroll ===
+                                'left'
+                                    ? -230
+                                    : 230,
+
+                            behavior:
+                                'smooth'
+
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+
+    /* =========================================================
+     * SWIPER
+     * ========================================================= */
+
+    function getPageWidth() {
+
+        return Math.max(
+            1,
+            grid.clientWidth
+        );
+
+    }
+
+
+    function getPageCount() {
+
+        const width =
+            getPageWidth();
+
+
+        return Math.max(
+            1,
+
+            Math.ceil(
+                grid.scrollWidth /
+                width
+            )
+        );
+
+    }
+
+
+    function getCurrentPage() {
+
+        const width =
+            getPageWidth();
+
+
+        return Math.min(
+            getPageCount(),
+
+            Math.floor(
+                (
+                    grid.scrollLeft +
+                    width * .5
+                ) /
+                width
+            ) + 1
+        );
+
+    }
+
+
+    function updateSwiperPages() {
+
+        const label =
+            document.getElementById(
+                'mini-page-label'
+            );
+
+
+        if (!label) {
+            return;
+        }
+
+
+        label.textContent =
+            getCurrentPage() +
+            ' / ' +
+            getPageCount();
+
+    }
+
+
+    function scrollProducts(
+        direction
+    ) {
+
+        const amount =
+            getPageWidth() *
+            (
+                direction === 'next'
+                    ? 1
+                    : -1
+            );
+
+
+        grid.scrollBy({
+
+            left:
+                amount,
+
+            behavior:
+                'smooth'
+
+        });
+
+    }
+
+
+    const prevPage =
+        document.getElementById(
+            'mini-prev-page'
+        );
+
+
+    const nextPage =
+        document.getElementById(
+            'mini-next-page'
+        );
+
+
+    if (prevPage) {
+
+        prevPage.addEventListener(
+            'click',
+            function () {
+
+                scrollProducts(
+                    'prev'
+                );
+
+            }
+        );
+
+    }
+
+
+    if (nextPage) {
+
+        nextPage.addEventListener(
+            'click',
+            function () {
+
+                scrollProducts(
+                    'next'
+                );
+
+            }
+        );
+
+    }
+
+
+    grid.addEventListener(
+        'scroll',
+        function () {
+
+            window.requestAnimationFrame(
+                updateSwiperPages
+            );
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    window.addEventListener(
+        'resize',
+        function () {
+
+            updateSwiperPages();
+
+        }
+    );
+
+
+    /* =========================================================
      * CANCEL
      * ========================================================= */
 
@@ -2650,7 +2806,9 @@ document.addEventListener('DOMContentLoaded', function () {
             'click',
             function () {
 
-                if (!cart.length) return;
+                if (!cart.length) {
+                    return;
+                }
 
 
                 if (
@@ -2659,11 +2817,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     )
                 ) {
 
-                    cart.length =
-                        0;
-
+                    cart.length = 0;
 
                     renderCart();
+
+                    if (miniOrder) {
+
+                        miniOrder.classList
+                            .remove(
+                                'mini-order-open'
+                            );
+
+                    }
 
                 }
 
@@ -2710,7 +2875,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-     * KEYBOARD
+     * HOTKEY SEARCH
      * ========================================================= */
 
     document.addEventListener(
@@ -2723,7 +2888,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     event.metaKey
                 ) &&
                 event.key.toLowerCase() ===
-                'k'
+                    'k'
             ) {
 
                 event.preventDefault();
@@ -2732,42 +2897,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (search) {
 
                     search.focus();
-
-                }
-
-            }
-
-
-            if (
-                event.key ===
-                'Escape'
-            ) {
-
-                if (
-                    modal &&
-                    modal.classList.contains(
-                        'show'
-                    )
-                ) {
-
-                    closeModal();
-
-                    return;
-
-                }
-
-
-                if (
-                    search &&
-                    document.activeElement ===
-                    search &&
-                    search.value
-                ) {
-
-                    search.value =
-                        '';
-
-                    applySearch();
 
                 }
 
@@ -2783,10 +2912,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     renderCart();
 
-    applySearch();
 
-    requestAnimationFrame(
-        updatePages
+    window.requestAnimationFrame(
+        function () {
+
+            updateSwiperPages();
+
+        }
     );
 
 });
