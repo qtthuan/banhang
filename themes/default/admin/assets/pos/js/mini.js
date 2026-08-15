@@ -2416,14 +2416,115 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-     * SEARCH
-     * ========================================================= */
+    * SEARCH
+    * ========================================================= */
 
     const search =
         document.getElementById(
             'mini-product-search'
         );
 
+    const searchClear =
+        document.getElementById(
+            'mini-search-clear'
+        );
+
+
+    function updateSearchClear() {
+
+        if (!searchClear) {
+            return;
+        }
+
+
+        const hasText =
+            !!(
+                search &&
+                search.value.trim()
+            );
+
+
+        searchClear.classList.toggle(
+            'is-visible',
+            hasText
+        );
+
+    }
+
+
+    function applyProductSearch() {
+
+        if (!search) {
+            return;
+        }
+
+
+        const keyword =
+            search.value
+                .toLowerCase()
+                .trim();
+
+
+        grid
+            .querySelectorAll(
+                '.mini-product-card'
+            )
+            .forEach(
+                function (card) {
+
+                    const name =
+                        (
+                            card.dataset
+                                .name ||
+                            card
+                                .querySelector(
+                                    '.mini-product-name'
+                                )
+                                ?.textContent ||
+                            ''
+                        )
+                        .toLowerCase();
+
+
+                    const code =
+                        (
+                            card.dataset
+                                .code ||
+                            ''
+                        )
+                        .toLowerCase();
+
+
+                    card.style.display =
+                        (
+                            !keyword ||
+                            name.indexOf(
+                                keyword
+                            ) !== -1 ||
+                            code.indexOf(
+                                keyword
+                            ) !== -1
+                        )
+                            ? ''
+                            : 'none';
+
+                }
+            );
+
+
+        grid.scrollLeft = 0;
+
+
+        updateSwiperPages();
+
+        updateSearchClear();
+
+    }
+
+
+    /*
+    * Gõ tìm kiếm
+    */
 
     if (search) {
 
@@ -2431,69 +2532,53 @@ document.addEventListener('DOMContentLoaded', function () {
             'input',
             function () {
 
-                const keyword =
-                    this.value
-                        .toLowerCase()
-                        .trim();
-
-
-                grid
-                    .querySelectorAll(
-                        '.mini-product-card'
-                    )
-                    .forEach(
-                        function (card) {
-
-                            const name =
-                                (
-                                    card.dataset
-                                        .name ||
-                                    card
-                                        .querySelector(
-                                            '.mini-product-name'
-                                        )
-                                        ?.textContent ||
-                                    ''
-                                )
-                                .toLowerCase();
-
-
-                            const code =
-                                (
-                                    card.dataset
-                                        .code ||
-                                    ''
-                                )
-                                .toLowerCase();
-
-
-                            card.style.display =
-                                (
-                                    !keyword ||
-                                    name.indexOf(
-                                        keyword
-                                    ) !== -1 ||
-                                    code.indexOf(
-                                        keyword
-                                    ) !== -1
-                                )
-                                    ? ''
-                                    : 'none';
-
-                        }
-                    );
-
-
-                grid.scrollLeft =
-                    0;
-
-
-                updateSwiperPages();
+                applyProductSearch();
 
             }
         );
 
     }
+
+
+    /*
+    * Bấm X
+    */
+
+    if (searchClear) {
+
+        searchClear.addEventListener(
+            'click',
+            function (event) {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+
+                if (!search) {
+                    return;
+                }
+
+
+                search.value = '';
+
+
+                applyProductSearch();
+
+
+                search.focus();
+
+            }
+        );
+
+    }
+
+
+    /*
+    * Trạng thái ban đầu
+    */
+
+    updateSearchClear();
 
 
     /* =========================================================

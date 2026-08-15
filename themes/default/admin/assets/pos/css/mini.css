@@ -30,14 +30,30 @@ body {
 
 body {
     font-family:
-        Arial,
-        Helvetica,
+        'Inter',
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
         sans-serif;
 
     background: #f4f5f7;
     color: #25282d;
 
     overflow: hidden;
+}
+
+.mini-app,
+.mini-app *,
+.mini-app button,
+.mini-app input,
+.mini-app textarea,
+.mini-app select {
+    font-family:
+        'Inter',
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        sans-serif;
 }
 
 button,
@@ -1158,6 +1174,76 @@ button {
         #777e85;
 
     font-size: 11px;
+}
+
+
+/* ---------------------------------------------------------
+   SEARCH CLEAR
+   Chỉ xử lý nút X của ô tìm kiếm.
+   --------------------------------------------------------- */
+
+.mini-search-wrap > #mini-search-clear {
+
+    position: absolute !important;
+
+    top: 50% !important;
+    right: 12px !important;
+
+    transform: translateY(-50%) !important;
+
+    width: 30px !important;
+    height: 30px !important;
+
+    min-width: 30px !important;
+    max-width: 30px !important;
+
+    min-height: 30px !important;
+    max-height: 30px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box !important;
+
+    border: 0 !important;
+    border-radius: 50% !important;
+
+    background: #eef0f2 !important;
+    color: #697078 !important;
+
+    font-family:
+        'Inter',
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        sans-serif !important;
+
+    font-size: 21px !important;
+    font-weight: 400 !important;
+
+    line-height: 1 !important;
+    text-align: center !important;
+
+    cursor: pointer;
+
+    z-index: 20 !important;
+
+    appearance: none !important;
+    -webkit-appearance: none !important;
+}
+
+.mini-search-wrap > #mini-search-clear.is-visible {
+    display: flex !important;
+}
+
+.mini-search-wrap > #mini-search-clear:hover {
+    background: #e1e4e7 !important;
+    color: #25282d !important;
 }
 
 
@@ -3754,38 +3840,13 @@ body.mini-modal-open {
         flex: 0 0 auto;
     }
 
-    .mini-search-wrap {
-        margin-bottom: 9px !important;
-    }
-
+    
     .mini-search {
         padding-right: 48px !important;
     }
 
-    .mini-search-clear {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-
-        width: 30px;
-        height: 30px;
-
-        display: none;
-        align-items: center;
-        justify-content: center;
-
-        padding: 0;
-        border: 0;
-        border-radius: 50%;
-
-        background: #eef0f2;
-        color: #666;
-
-        font-size: 21px;
-        line-height: 1;
-
-        z-index: 4;
+    .mini-search-wrap > #mini-search-clear {
+        right: 10px !important;
     }
 
     /* DỌC - 2 CỘT.
