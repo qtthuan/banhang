@@ -2415,6 +2415,38 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     );
 
+    /* =========================================================
+    * MOBILE CART TOGGLE
+    * ========================================================= */
+
+    const miniOrder =
+        document.querySelector('.mini-order');
+
+    const miniOrderTopbar =
+        document.querySelector('.mini-order-topbar');
+
+
+    if (miniOrder && miniOrderTopbar) {
+
+        miniOrderTopbar.addEventListener(
+            'click',
+            function () {
+
+                if (
+                    window.innerWidth <= 800
+                ) {
+
+                    miniOrder.classList.toggle(
+                        'mini-order-open'
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
 
     /* =========================================================
      * INIT
