@@ -27,13 +27,6 @@
                     data-order-mode="table">
                 BÀN
             </button>
-
-            <button type="button"
-                    class="mini-header-mode"
-                    data-order-mode="dinein">
-                TẠI CHỖ
-            </button>
-
             <button type="button"
                     class="mini-header-mode"
                     data-order-mode="takeaway">
@@ -282,9 +275,13 @@
                        placeholder="Tìm món..."
                        autocomplete="off">
 
-                <span class="mini-search-shortcut">
-                    ⌘ K
-                </span>
+                <button
+                    type="button"
+                    id="mini-search-clear"
+                    class="mini-search-clear"
+                    aria-label="Xóa tìm kiếm">
+                    ×
+                </button>
 
             </div>
 

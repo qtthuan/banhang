@@ -3617,3 +3617,603 @@ body.mini-modal-open {
     }
 
 }
+
+/* =========================================================
+   MINI POS - FINAL MOBILE LAYOUT
+   Bám đúng bản V3 hiện tại.
+
+   MOBILE / IPAD ĐỨNG:
+   1. Product grid cuộn DỌC, 2 cột.
+   2. Không còn khoảng trắng lớn dưới grid.
+   3. Cart thu gọn thành BAR cố định đáy.
+   4. Bấm bar => mở cart.
+   5. Header sticky.
+   6. Header chỉ BÀN / MANG ĐI / ĐƠN HÀNG.
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    html,
+    body {
+        width: 100%;
+        min-height: 100%;
+        height: auto;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+    }
+
+    body {
+        padding-bottom:
+            calc(
+                64px +
+                env(safe-area-inset-bottom, 0px)
+            );
+    }
+
+    .mini-app {
+        width: 100%;
+        height: auto !important;
+        min-height: 100vh;
+        overflow: visible !important;
+        display: block;
+    }
+
+    /* ---------------- HEADER ---------------- */
+
+    .mini-header {
+        position: sticky !important;
+        top: 0;
+        z-index: 9000;
+
+        width: 100%;
+        height: 56px !important;
+        min-height: 56px !important;
+
+        padding: 0 10px !important;
+        gap: 6px;
+
+        display: flex;
+    }
+
+    .mini-logo {
+        font-size: 16px !important;
+    }
+
+    .mini-header-actions {
+        margin-left: auto;
+        gap: 4px;
+    }
+
+    .mini-header-mode,
+    .mini-header-order {
+        width: 40px !important;
+        min-width: 40px !important;
+        height: 40px !important;
+        padding: 0 !important;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 0 !important;
+        border-radius: 9px;
+    }
+
+    .mini-header-mode[data-order-mode="table"]::before {
+        content: "🪑";
+        font-size: 18px;
+    }
+
+    .mini-header-mode[data-order-mode="takeaway"]::before {
+        content: "🛍️";
+        font-size: 18px;
+    }
+
+    .mini-header-order::before {
+        content: "🧾";
+        font-size: 18px;
+    }
+
+    .mini-user {
+        display: none !important;
+    }
+
+    /* ---------------- MAIN ---------------- */
+
+    .mini-main {
+        width: 100%;
+        min-height: 0 !important;
+        display: block !important;
+    }
+
+    /* ---------------- PRODUCTS ---------------- */
+
+    .mini-products {
+        width: 100% !important;
+        min-height: 0 !important;
+        height: auto !important;
+
+        padding: 9px 9px 14px !important;
+
+        display: block !important;
+        overflow: visible !important;
+    }
+
+    .mini-categories-wrap {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+    .mini-categories {
+        overflow-x: auto;
+        overflow-y: hidden;
+        flex-wrap: nowrap;
+    }
+
+    .mini-category {
+        flex: 0 0 auto;
+    }
+
+    .mini-search-wrap {
+        margin-bottom: 9px !important;
+    }
+
+    .mini-search {
+        padding-right: 48px !important;
+    }
+
+    .mini-search-clear {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+
+        width: 30px;
+        height: 30px;
+
+        display: none;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+
+        background: #eef0f2;
+        color: #666;
+
+        font-size: 21px;
+        line-height: 1;
+
+        z-index: 4;
+    }
+
+    /* DỌC - 2 CỘT.
+       Đây là điểm khác quan trọng so với bản đang chạy. */
+    .mini-product-grid {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+
+        display: grid !important;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+        grid-template-rows: none !important;
+
+        grid-auto-flow: row !important;
+        grid-auto-columns: auto !important;
+        grid-auto-rows: auto !important;
+
+        gap: 8px !important;
+
+        overflow-x: hidden !important;
+        overflow-y: visible !important;
+
+        padding: 1px !important;
+
+        scroll-snap-type: none !important;
+        scrollbar-width: none;
+    }
+
+    .mini-product-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mini-product-card {
+        width: 100% !important;
+        height: 190px !important;
+        min-height: 190px !important;
+
+        padding: 6px !important;
+        border-radius: 12px !important;
+
+        scroll-snap-align: none !important;
+    }
+
+    .mini-product-image-wrap {
+        width: 100% !important;
+        height: 106px !important;
+        min-height: 106px !important;
+        flex: 0 0 106px !important;
+    }
+
+    .mini-product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain !important;
+    }
+
+    .mini-product-name {
+        height: 36px !important;
+        min-height: 36px !important;
+
+        margin-top: 7px !important;
+
+        font-size: 12px !important;
+        line-height: 1.18 !important;
+    }
+
+    .mini-product-price {
+        min-height: 22px !important;
+        margin-top: auto !important;
+
+        font-size: 14px !important;
+    }
+
+    .mini-product-edit {
+        width: 32px !important;
+        height: 32px !important;
+        top: 5px !important;
+        right: 5px !important;
+
+        font-size: 14px !important;
+    }
+
+    .mini-products-footer {
+        height: 38px !important;
+        min-height: 38px !important;
+        margin-top: 4px;
+    }
+
+    /* Với grid dọc, pagination không còn là "trang ngang".
+       Giữ lại tối thiểu để không phá HTML cũ. */
+    .mini-products-footer {
+        display: none !important;
+    }
+
+    /* ---------------- CART BAR ---------------- */
+
+    .mini-order {
+        position: fixed !important;
+
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+
+        z-index: 10000 !important;
+
+        width: 100% !important;
+
+        height:
+            calc(
+                64px +
+                env(safe-area-inset-bottom, 0px)
+            ) !important;
+
+        min-height:
+            calc(
+                64px +
+                env(safe-area-inset-bottom, 0px)
+            ) !important;
+
+        max-height: 86vh !important;
+
+        display: flex !important;
+        flex-direction: column !important;
+
+        overflow: hidden !important;
+
+        background: #fff !important;
+
+        border: 0 !important;
+        border-top: 1px solid #dfe3e6 !important;
+
+        box-shadow:
+            0 -5px 22px rgba(0,0,0,.12) !important;
+
+        transition:
+            height .22s ease,
+            min-height .22s ease !important;
+    }
+
+    .mini-order-info-panel {
+        flex: 0 0 64px !important;
+
+        width: 100% !important;
+        height: 64px !important;
+        min-height: 64px !important;
+
+        display: grid !important;
+
+        grid-template-columns:
+            40px
+            minmax(0,1fr)
+            auto !important;
+
+        grid-template-areas:
+            "mode title meta" !important;
+
+        align-items: center;
+
+        gap: 8px;
+
+        padding:
+            7px 12px
+            env(safe-area-inset-bottom,0px) !important;
+
+        border: 0 !important;
+    }
+
+    .mini-order-info-mode {
+        grid-area: mode;
+
+        width: 38px !important;
+        height: 38px !important;
+
+        margin: 0 !important;
+
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50% !important;
+
+        background: #eaf7f0 !important;
+
+        font-size: 0 !important;
+    }
+
+    .mini-order-info-mode::before {
+        content: "🪑";
+        font-size: 19px;
+    }
+
+    .mini-order-info-mode[data-mode="takeaway"]::before {
+        content: "🛍️";
+    }
+
+    .mini-order-info-main {
+        grid-area: title;
+
+        min-width: 0;
+
+        font-size: 14px !important;
+        font-weight: 800 !important;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .mini-order-info-sub {
+        display: none !important;
+    }
+
+    .mini-mobile-cart-meta {
+        grid-area: meta;
+
+        display: flex !important;
+        align-items: center;
+
+        gap: 6px;
+
+        white-space: nowrap;
+    }
+
+    .mini-mobile-cart-count {
+        color: #697078;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .mini-mobile-cart-total {
+        color: #00a651;
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    /* ---------------- CART OPEN ---------------- */
+
+    .mini-order.mini-order-open {
+        height:
+            min(
+                86vh,
+                680px
+            ) !important;
+
+        min-height:
+            min(
+                86vh,
+                680px
+            ) !important;
+    }
+
+    .mini-cart-head {
+        display: none !important;
+    }
+
+    .mini-cart-list {
+        display: none !important;
+
+        flex: 1 !important;
+        min-height: 0 !important;
+
+        overflow-y: auto !important;
+
+        padding:
+            0 12px 140px !important;
+    }
+
+    .mini-order.mini-order-open
+    .mini-cart-list {
+        display: block !important;
+    }
+
+    .mini-cart-empty {
+        display: none !important;
+    }
+
+    .mini-cart-row {
+        min-height: 58px !important;
+        padding: 9px 2px !important;
+
+        grid-template-columns:
+            minmax(0,1fr)
+            auto
+            auto !important;
+
+        grid-template-areas:
+            "name qty total"
+            "price qty total" !important;
+
+        gap: 2px 7px !important;
+    }
+
+    .mini-cart-name {
+        grid-area: name !important;
+    }
+
+    .mini-cart-name strong {
+        font-size: 12px !important;
+    }
+
+    .mini-cart-name small {
+        display: none !important;
+    }
+
+    .mini-cart-price {
+        grid-area: price !important;
+        text-align: left !important;
+        font-size: 10px !important;
+    }
+
+    .mini-cart-qty {
+        grid-area: qty !important;
+    }
+
+    .mini-cart-total {
+        grid-area: total !important;
+        font-size: 11px !important;
+    }
+
+    .mini-order-bottom {
+        display: none !important;
+
+        position: absolute !important;
+
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        z-index: 20;
+    }
+
+    .mini-order.mini-order-open
+    .mini-order-bottom {
+        display: block !important;
+    }
+
+    .mini-order-tools {
+        height: 43px !important;
+    }
+
+    .mini-tool-btn {
+        height: 43px !important;
+    }
+
+    .mini-tool-btn small {
+        display: none !important;
+    }
+
+    .mini-summary {
+        padding: 5px 13px 2px !important;
+    }
+
+    .mini-summary div {
+        padding: 2px 0 !important;
+        font-size: 10px !important;
+    }
+
+    .mini-grand-total {
+        padding: 7px 13px !important;
+    }
+
+    .mini-grand-total strong {
+        font-size: 17px !important;
+    }
+
+    .mini-order-actions button {
+        height: 46px !important;
+        font-size: 13px !important;
+    }
+}
+
+
+/* =========================================================
+   SMALL PHONE
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+    .mini-header {
+        height: 54px !important;
+        min-height: 54px !important;
+    }
+
+    .mini-header-mode,
+    .mini-header-order {
+        width: 38px !important;
+        min-width: 38px !important;
+        height: 38px !important;
+    }
+
+    .mini-logo {
+        font-size: 15px !important;
+    }
+
+    .mini-products {
+        padding:
+            8px 7px 14px !important;
+    }
+
+    .mini-product-grid {
+        grid-template-columns:
+            repeat(2, minmax(0,1fr)) !important;
+        gap: 7px !important;
+    }
+
+    .mini-product-card {
+        height: 178px !important;
+        min-height: 178px !important;
+        padding: 5px !important;
+    }
+
+    .mini-product-image-wrap {
+        height: 91px !important;
+        min-height: 91px !important;
+        flex-basis: 91px !important;
+    }
+
+    .mini-product-name {
+        height: 32px !important;
+        min-height: 32px !important;
+        margin-top: 6px !important;
+        font-size: 11px !important;
+    }
+
+    .mini-product-price {
+        font-size: 13px !important;
+    }
+}
