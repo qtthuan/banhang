@@ -11,57 +11,82 @@
 
 <div class="mini-app">
 
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
     <header class="mini-header">
-        <div class="mini-brand">
-            <span class="mini-brand-name">MINI</span>
-            <span class="mini-brand-accent">POS</span>
+
+        <div class="mini-logo">
+            🧋 MINI POS
         </div>
 
-        <nav class="mini-header-nav">
-            <button type="button" class="mini-header-tab active">▣ <span>POS</span></button>
-            <button type="button" class="mini-header-tab">⌂ <span>Items</span></button>
-            <button type="button" class="mini-header-tab">♟ <span>People</span></button>
-            <button type="button" class="mini-header-tab">▤ <span>Sales &amp; Expense</span></button>
-            <button type="button" class="mini-header-tab">⚙ <span>Settings</span></button>
-            <button type="button" class="mini-header-tab">⌛ <span>Order Status</span></button>
+        <nav class="mini-header-actions" aria-label="Loại đơn">
+
+            <button type="button"
+                    class="mini-header-mode active"
+                    data-order-mode="table">
+                BÀN
+            </button>
+
+            <button type="button"
+                    class="mini-header-mode"
+                    data-order-mode="dinein">
+                TẠI CHỖ
+            </button>
+
+            <button type="button"
+                    class="mini-header-mode"
+                    data-order-mode="takeaway">
+                MANG ĐI
+            </button>
+
+            <button type="button"
+                    class="mini-header-order">
+                ĐƠN HÀNG
+            </button>
+
         </nav>
 
         <div class="mini-user">
-            <span class="mini-user-avatar">●</span>
-            <span>
-                <?php
-                if (isset($user) && $user && !empty($user->first_name)) {
-                    echo html_escape($user->first_name);
-                } else {
-                    echo 'Nhân viên';
-                }
-                ?>
-            </span>
+            <?php
+            if (isset($user) && $user && !empty($user->first_name)) {
+                echo html_escape($user->first_name);
+            }
+            ?>
         </div>
+
     </header>
+
 
     <main class="mini-main">
 
+        <!-- =================================================
+             ORDER / CART
+             ================================================= -->
         <section class="mini-order">
 
-            <div class="mini-order-topbar">
-                <div>
-                    <div class="mini-order-title">ĐƠN / GIỎ HÀNG</div>
-                    <div class="mini-order-subtitle">Đơn hiện tại</div>
+            <!-- Thông tin động của đơn -->
+            <div class="mini-order-info-panel">
+
+                <div id="mini-order-info-mode"
+                     class="mini-order-info-mode">
+                    BÀN
                 </div>
 
-                <div class="mini-order-mode">
-                    <button type="button" class="mini-mode-btn active">BÀN</button>
-                    <button type="button" class="mini-mode-btn">TẠI CHỖ</button>
-                    <button type="button" class="mini-mode-btn">MANG ĐI</button>
+                <div id="mini-order-info-main"
+                     class="mini-order-info-main">
+                    Chưa chọn bàn
                 </div>
+
+                <div id="mini-order-info-sub"
+                     class="mini-order-info-sub">
+                    Khách: Khách lẻ
+                </div>
+
             </div>
 
-            <div class="mini-order-info">
-                <div><span>Khách:</span> Khách lẻ</div>
-                <div><span>Bàn:</span> Bàn 01</div>
-            </div>
 
+            <!-- Header cột -->
             <div class="mini-cart-head">
                 <span>MÓN</span>
                 <span>ĐƠN GIÁ</span>
@@ -69,134 +94,307 @@
                 <span>THÀNH TIỀN</span>
             </div>
 
-            <div id="mini-cart-list" class="mini-cart-list">
-                <div id="mini-cart-empty" class="mini-cart-empty">
+
+            <!-- Danh sách món -->
+            <div id="mini-cart-list"
+                 class="mini-cart-list">
+
+                <div id="mini-cart-empty"
+                     class="mini-cart-empty">
+
                     <div class="mini-empty-icon">🛒</div>
+
                     <div>Chưa có món nào</div>
-                    <small>Chạm vào món bên phải để thêm vào đơn</small>
+
+                    <small>
+                        Chạm vào món bên phải để thêm vào đơn
+                    </small>
+
                 </div>
+
             </div>
 
+
+            <!-- Khu dưới giỏ -->
             <div class="mini-order-bottom">
 
                 <div class="mini-order-tools">
+
                     <button type="button" class="mini-tool-btn">
-                        <span>🚚</span><small>Ship</small>
+                        <span>🚚</span>
+                        <small>Ship</small>
                     </button>
+
                     <button type="button" class="mini-tool-btn">
-                        <span>🏷</span><small>Giảm</small>
+                        <span>🏷</span>
+                        <small>Giảm</small>
                     </button>
+
                     <button type="button" class="mini-tool-btn">
-                        <span>📝</span><small>Ghi</small>
+                        <span>📝</span>
+                        <small>Ghi</small>
                     </button>
+
                     <button type="button" class="mini-tool-btn">
-                        <span>🔎</span><small>Bếp</small>
+                        <span>🔎</span>
+                        <small>Bếp</small>
                     </button>
+
                     <button type="button" class="mini-tool-btn">
-                        <span>•••</span><small>Thêm</small>
+                        <span>•••</span>
+                        <small>Thêm</small>
                     </button>
+
                 </div>
+
 
                 <div class="mini-summary">
-                    <div><span>Số lượng</span><strong id="mini-total-qty">0</strong></div>
-                    <div><span>Tạm tính</span><strong id="mini-subtotal">0đ</strong></div>
-                    <div><span>Giảm giá</span><strong id="mini-total-discount">0đ</strong></div>
-                    <div><span>Phí giao hàng</span><strong id="mini-delivery-fee">0đ</strong></div>
+
+                    <div>
+                        <span>Số lượng</span>
+                        <strong id="mini-total-qty">0</strong>
+                    </div>
+
+                    <div>
+                        <span>Tạm tính</span>
+                        <strong id="mini-subtotal">0đ</strong>
+                    </div>
+
+                    <div>
+                        <span>Giảm giá</span>
+                        <strong id="mini-total-discount">0đ</strong>
+                    </div>
+
+                    <div>
+                        <span>Phí giao hàng</span>
+                        <strong id="mini-delivery-fee">0đ</strong>
+                    </div>
+
                 </div>
+
 
                 <div class="mini-grand-total">
+
                     <span>TỔNG</span>
-                    <strong id="mini-grand-total">0đ</strong>
+
+                    <strong id="mini-grand-total">
+                        0đ
+                    </strong>
+
                 </div>
+
 
                 <div class="mini-order-actions">
-                    <button type="button" id="mini-cancel-order" class="mini-action-cancel">HỦY</button>
-                    <button type="button" id="mini-payment" class="mini-action-pay">THANH TOÁN</button>
+
+                    <button type="button"
+                            id="mini-cancel-order"
+                            class="mini-action-cancel">
+                        HỦY
+                    </button>
+
+                    <button type="button"
+                            id="mini-payment"
+                            class="mini-action-pay">
+                        THANH TOÁN
+                    </button>
+
                 </div>
 
             </div>
+
         </section>
 
+
+        <!-- =================================================
+             PRODUCTS
+             ================================================= -->
         <section class="mini-products">
 
-            <div class="mini-products-top">
-                <div class="mini-products-title">MÓN</div>
-                <div class="mini-products-count" id="mini-products-count">0 món</div>
-            </div>
+            <!-- Không còn MÓN / số món theo yêu cầu -->
 
             <div class="mini-categories-wrap">
-                <button type="button" class="mini-category-arrow" data-category-scroll="left">‹</button>
+
+                <button type="button"
+                        class="mini-category-arrow"
+                        data-category-scroll="left"
+                        aria-label="Danh mục trước">
+                    ‹
+                </button>
+
                 <div class="mini-categories">
-                    <button type="button" class="mini-category active" data-category="all">
-                        <span class="mini-category-icon">●</span>Tất cả
+
+                    <button type="button"
+                            class="mini-category active"
+                            data-category="all">
+                        <span class="mini-category-icon">●</span>
+                        <span>Tất cả</span>
                     </button>
 
                     <?php if (!empty($categories)): ?>
+
                         <?php foreach ($categories as $category): ?>
-                            <?php if ((int) $category->id !== 38) continue; ?>
-                            <button type="button" class="mini-category" data-category="<?= (int) $category->id; ?>">
-                                <span class="mini-category-icon">◆</span><?= html_escape($category->name); ?>
+
+                            <?php
+                            if (
+                                !isset($category->parent_id) ||
+                                (int) $category->parent_id !== 38
+                            ) {
+                                continue;
+                            }
+                            ?>
+
+                            <button type="button"
+                                    class="mini-category"
+                                    data-category="<?= (int) $category->id; ?>">
+
+                                <span class="mini-category-icon">◆</span>
+
+                                <span>
+                                    <?= html_escape($category->name); ?>
+                                </span>
+
                             </button>
+
                         <?php endforeach; ?>
+
                     <?php endif; ?>
+
                 </div>
-                <button type="button" class="mini-category-arrow" data-category-scroll="right">›</button>
+
+                <button type="button"
+                        class="mini-category-arrow"
+                        data-category-scroll="right"
+                        aria-label="Danh mục tiếp">
+                    ›
+                </button>
+
             </div>
 
+
+            <!-- Search -->
             <div class="mini-search-wrap">
+
                 <span class="mini-search-icon">⌕</span>
-                <input type="text" id="mini-product-search" class="mini-search" placeholder="Tìm món..." autocomplete="off">
-                <span class="mini-search-shortcut">⌘ K</span>
+
+                <input type="text"
+                       id="mini-product-search"
+                       class="mini-search"
+                       placeholder="Tìm món..."
+                       autocomplete="off">
+
+                <span class="mini-search-shortcut">
+                    ⌘ K
+                </span>
+
             </div>
 
-            <div id="mini-product-grid" class="mini-product-grid">
+
+            <!-- Product swiper ngang -->
+            <div id="mini-product-grid"
+                 class="mini-product-grid">
+
                 <?php if (!empty($products)): ?>
+
                     <?php foreach ($products as $product): ?>
-                        <?php $image = !empty($product->image) ? $product->image : 'no_image.png'; ?>
+
+                        <?php
+                        $image = !empty($product->image)
+                            ? $product->image
+                            : 'no_image.png';
+                        ?>
+
                         <button type="button"
-                            class="mini-product-card"
-                            data-product-id="<?= (int) $product->id; ?>"
-                            data-code="<?= html_escape($product->code); ?>"
-                            data-category="<?= (int) $product->category_id; ?>"
-                            data-price="<?= (float) $product->price; ?>"
-                            data-name="<?= html_escape($product->name); ?>">
+                                class="mini-product-card"
+                                data-product-id="<?= (int) $product->id; ?>"
+                                data-code="<?= html_escape($product->code); ?>"
+                                data-category="<?= (int) $product->category_id; ?>"
+                                data-price="<?= (float) $product->price; ?>"
+                                data-name="<?= html_escape($product->name); ?>">
 
                             <?php if (!empty($product->is_promo)): ?>
                                 <span class="mini-promo">KM</span>
                             <?php endif; ?>
 
-                            <span class="mini-product-edit" role="button" tabindex="0" title="Chi tiết món">✎</span>
+                            <span class="mini-product-edit"
+                                  role="button"
+                                  tabindex="0"
+                                  title="Chi tiết món">
+                                ✎
+                            </span>
 
                             <div class="mini-product-image-wrap">
+
                                 <img src="<?= base_url('assets/uploads/thumbs/' . $image); ?>"
                                      alt="<?= html_escape($product->name); ?>"
                                      class="mini-product-image"
                                      loading="lazy">
+
                             </div>
 
-                            <div class="mini-product-name"><?= html_escape($product->name); ?></div>
+                            <div class="mini-product-name">
+                                <?= html_escape($product->name); ?>
+                            </div>
 
                             <div class="mini-product-price">
-                                <?php if (!empty($product->is_promo) && isset($product->original_price) && $product->original_price != $product->price): ?>
-                                    <span class="mini-product-old-price"><?= $this->sma->formatMoney($product->original_price); ?></span>
+
+                                <?php if (
+                                    !empty($product->is_promo) &&
+                                    isset($product->original_price) &&
+                                    $product->original_price != $product->price
+                                ): ?>
+
+                                    <span class="mini-product-old-price">
+                                        <?= $this->sma->formatMoney($product->original_price); ?>
+                                    </span>
+
                                 <?php endif; ?>
+
                                 <?= $this->sma->formatMoney($product->price); ?>
+
                             </div>
+
                         </button>
+
                     <?php endforeach; ?>
+
                 <?php else: ?>
-                    <div class="mini-no-products">Không có sản phẩm Mini.</div>
+
+                    <div class="mini-no-products">
+                        Không có sản phẩm Mini.
+                    </div>
+
                 <?php endif; ?>
+
             </div>
 
+
+            <!-- Swiper controls -->
             <div class="mini-products-footer">
-                <button type="button" id="mini-prev-page">‹</button>
-                <span id="mini-page-label">1 / 1</span>
-                <button type="button" id="mini-next-page">›</button>
+
+                <button type="button"
+                        id="mini-prev-page"
+                        aria-label="Trang trước">
+                    ‹
+                </button>
+
+                <span id="mini-page-label">
+                    1 / 1
+                </span>
+
+                <button type="button"
+                        id="mini-next-page"
+                        aria-label="Trang tiếp">
+                    ›
+                </button>
+
             </div>
+
         </section>
+
     </main>
+
 </div>
+
 
 <script>
 window.miniOrderComments = <?= json_encode(
@@ -209,6 +407,9 @@ window.miniOrderComments = <?= json_encode(
     JSON_UNESCAPED_UNICODE
 ); ?>;
 </script>
-<script type="text/javascript" src="<?=$assets?>pos/js/mini.js"></script>
+
+<script type="text/javascript"
+        src="<?=$assets?>pos/js/mini.js"></script>
+
 </body>
 </html>

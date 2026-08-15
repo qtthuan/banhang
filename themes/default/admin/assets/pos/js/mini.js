@@ -6,54 +6,104 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-     * MINI POS - DARK SUZLON
+     * MINI POS STATE
      * ========================================================= */
 
     let miniModal = null;
-
     let miniBasePrice = 0;
-
     let miniDiscountType = 'amount';
 
-    const cart = new Map();
+    /*
+     * Dùng Array thay cho Map.
+     *
+     * Cùng một sản phẩm click nhiều lần
+     * => tạo nhiều dòng riêng.
+     */
+    const cart = [];
 
 
     /* =========================================================
-     * FORMAT TIỀN
+     * HELPERS
      * ========================================================= */
 
     function money(value) {
-
         return (
+            Math.max(0, Math.round(Number(value) || 0))
+                .toLocaleString('vi-VN') + 'đ'
+        );
+    }
+
+
+    function escapeHtml(value) {
+        return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+
+    function createRowId() {
+        return (
+            Date.now().toString(36) +
+            '_' +
+            Math.random().toString(36).slice(2, 9)
+        );
+    }
+
+
+    function getLineDiscount(item) {
+
+        const value =
             Math.max(
                 0,
-                Math.round(
-                    Number(value) || 0
-                )
-            ).toLocaleString('vi-VN') + 'đ'
+                Number(item.discount) || 0
+            );
+
+
+        if (item.discountType === 'percent') {
+
+            return Math.min(
+                item.price,
+                item.price * Math.min(100, value) / 100
+            );
+
+        }
+
+
+        return Math.min(
+            item.price,
+            value
+        );
+    }
+
+
+    function getLineUnitNet(item) {
+
+        return Math.max(
+            0,
+            item.price - getLineDiscount(item)
+        );
+
+    }
+
+
+    function getLineTotal(item) {
+
+        return (
+            getLineUnitNet(item) *
+            item.qty
         );
 
     }
 
 
     /* =========================================================
-     * ESCAPE HTML
-     * ========================================================= */
-
-    function escapeHtml(value) {
-
-        return String(value || '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-
-    }
-
-
-    /* =========================================================
      * RENDER CART
+     *
+     * DOM mới của Mini POS.
+     * Không phụ thuộc DOM của POS cũ.
      * ========================================================= */
 
     function renderCart() {
@@ -72,50 +122,66 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!list) return;
 
 
+        /*
+         * Xóa các row cũ.
+         */
         list
-            .querySelectorAll(
-                '.mini-cart-row'
-            )
-            .forEach(function (el) {
+            .querySelectorAll('.mini-cart-row')
+            .forEach(function (row) {
 
-                el.remove();
+                row.remove();
 
             });
 
 
-        if (!cart.size) {
+        /*
+         * Không có món.
+         */
+        if (!cart.length) {
 
             if (empty) {
-
-                empty.style.display =
-                    'flex';
-
+                empty.style.display = 'flex';
             }
 
         } else {
 
             if (empty) {
-
-                empty.style.display =
-                    'none';
-
+                empty.style.display = 'none';
             }
 
 
+            /*
+             * Render từng dòng.
+             *
+             * Quan trọng:
+             * mỗi item có rowId riêng.
+             */
             cart.forEach(function (item) {
 
                 const row =
-                    document.createElement(
-                        'div'
-                    );
+                    document.createElement('div');
 
 
                 row.className =
                     'mini-cart-row';
 
 
+                row.dataset.rowId =
+                    item.rowId;
+
+
                 row.dataset.productId =
                     item.id;
+
+
+                const noteText = [
+                    item.comment || '',
+                    item.commentName
+                        ? 'Ly: ' + item.commentName
+                        : ''
+                ]
+                    .filter(Boolean)
+                    .join(' • ');
 
 
                 row.innerHTML = `
@@ -130,13 +196,21 @@ document.addEventListener('DOMContentLoaded', function () {
                             ${escapeHtml(item.code || '')}
                         </small>
 
+                        ${
+                            noteText
+                                ? `
+                                    <span class="mini-cart-note">
+                                        ${escapeHtml(noteText)}
+                                    </span>
+                                `
+                                : ''
+                        }
+
                     </div>
 
 
                     <div class="mini-cart-price">
-
-                        ${money(item.price)}
-
+                        ${money(getLineUnitNet(item))}
                     </div>
 
 
@@ -145,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <button
                             type="button"
                             data-cart-action="minus"
-                        >
+                            aria-label="Giảm số lượng">
                             −
                         </button>
 
@@ -158,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <button
                             type="button"
                             data-cart-action="plus"
-                        >
+                            aria-label="Tăng số lượng">
                             +
                         </button>
 
@@ -166,20 +240,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                     <div class="mini-cart-total">
-
-                        ${money(
-                            item.price *
-                            item.qty
-                        )}
-
+                        ${money(getLineTotal(item))}
                     </div>
 
                 `;
 
 
-                list.appendChild(
-                    row
-                );
+                list.appendChild(row);
 
             });
 
@@ -187,12 +254,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /* =====================================================
-         * TÍNH TỔNG
+         * SUMMARY
          * ===================================================== */
 
         let qty = 0;
-
         let subtotal = 0;
+        let discount = 0;
 
 
         cart.forEach(function (item) {
@@ -203,12 +270,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 item.price *
                 item.qty;
 
+            discount +=
+                getLineDiscount(item) *
+                item.qty;
+
         });
 
 
-        const count =
-            document.getElementById(
-                'mini-products-count'
+        const deliveryFee = 0;
+
+
+        const grandTotal =
+            Math.max(
+                0,
+                subtotal -
+                discount +
+                deliveryFee
             );
 
 
@@ -242,51 +319,32 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
 
-        if (count) {
-
-            count.textContent =
-                qty + ' món';
-
-        }
-
-
         if (qtyEl) {
-
-            qtyEl.textContent =
-                qty;
-
+            qtyEl.textContent = qty;
         }
 
 
         if (subEl) {
-
             subEl.textContent =
                 money(subtotal);
-
         }
 
 
         if (discountEl) {
-
             discountEl.textContent =
-                '0đ';
-
+                money(discount);
         }
 
 
         if (deliveryEl) {
-
             deliveryEl.textContent =
-                '0đ';
-
+                money(deliveryFee);
         }
 
 
         if (grandEl) {
-
             grandEl.textContent =
-                money(subtotal);
-
+                money(grandTotal);
         }
 
     }
@@ -294,71 +352,123 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* =========================================================
      * ADD TO CART
+     *
+     * Mỗi lần click sản phẩm:
+     * => push một dòng mới.
+     *
+     * Không tìm sản phẩm cũ để cộng quantity.
      * ========================================================= */
 
     function addToCart(
         card,
-        quantity
+        quantity,
+        extra
     ) {
 
-        const id =
-            String(
-                card.dataset.productId
-            );
+        if (!card) return;
 
 
-        const item =
-            cart.get(id);
+        const data =
+            extra || {};
 
 
-        const data = {
+        const item = {
 
-            id: id,
+            rowId:
+                createRowId(),
+
+
+            id:
+                String(
+                    card.dataset.productId || ''
+                ),
+
 
             code:
                 card.dataset.code || '',
 
+
             name:
                 card.dataset.name ||
-                card
-                    .querySelector(
-                        '.mini-product-name'
-                    )
-                    ?.textContent
-                    .trim() ||
+                (
+                    card
+                        .querySelector(
+                            '.mini-product-name'
+                        )
+                        ?.textContent
+                        .trim()
+                ) ||
                 '',
+
 
             price:
                 parseFloat(
                     card.dataset.price || 0
                 ) || 0,
 
+
             qty:
-                quantity || 1
+                Math.max(
+                    1,
+                    parseInt(
+                        quantity,
+                        10
+                    ) || 1
+                ),
+
+
+            discount:
+                Math.max(
+                    0,
+                    Number(data.discount) || 0
+                ),
+
+
+            discountType:
+                data.discountType === 'percent'
+                    ? 'percent'
+                    : 'amount',
+
+
+            comment:
+                data.comment || '',
+
+
+            commentName:
+                data.commentName || '',
+
+
+            option:
+                data.option || '',
+
+
+            serial:
+                data.serial || '',
+
+
+            isPromo:
+                Number(
+                    card.dataset.promo || 0
+                )
+                    ? 1
+                    : 0
 
         };
 
 
-        if (item) {
-
-            item.qty +=
-                data.qty;
-
-        } else {
-
-            cart.set(
-                id,
-                data
-            );
-
-        }
+        /*
+         * Quan trọng:
+         * không merge với item cũ.
+         */
+        cart.push(item);
 
 
         renderCart();
 
 
-        /* Animation */
-
+        /*
+         * Hiệu ứng click.
+         */
         card.classList.remove(
             'quick-added'
         );
@@ -379,24 +489,38 @@ document.addEventListener('DOMContentLoaded', function () {
      * ========================================================= */
 
     function changeCartQty(
-        id,
+        rowId,
         delta
     ) {
 
-        const item =
-            cart.get(id);
+        const index =
+            cart.findIndex(function (item) {
+
+                return (
+                    item.rowId === rowId
+                );
+
+            });
 
 
-        if (!item) return;
+        if (index === -1) return;
 
 
-        item.qty +=
-            delta;
+        cart[index].qty += delta;
 
 
-        if (item.qty <= 0) {
+        /*
+         * Quantity về 0
+         * => xóa riêng dòng đó.
+         */
+        if (
+            cart[index].qty <= 0
+        ) {
 
-            cart.delete(id);
+            cart.splice(
+                index,
+                1
+            );
 
         }
 
@@ -445,13 +569,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         ).trim();
 
 
-                    if (
-                        !id ||
-                        !text
-                    ) {
-
+                    if (!id || !text) {
                         return '';
-
                     }
 
 
@@ -459,31 +578,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         <label
                             class="mini-note-item"
-                            for="mini-comment-${escapeHtml(id)}"
-                        >
+                            for="mini-comment-${escapeHtml(id)}">
 
                             <input
-                                class="
-                                    mini-note-checkbox
-                                    chkComment
-                                "
+                                class="mini-note-checkbox chkComment"
                                 type="checkbox"
                                 id="mini-comment-${escapeHtml(id)}"
-                                value="${escapeHtml(text)}"
-                            >
+                                value="${escapeHtml(text)}">
 
 
                             <span class="mini-note-box">
-
                                 ✓
-
                             </span>
 
 
                             <span class="mini-note-text">
-
                                 ${escapeHtml(text)}
-
                             </span>
 
                         </label>
@@ -497,21 +607,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-     * CREATE MODAL
+     * CREATE PRODUCT MODAL
      * ========================================================= */
 
     function createProductModal() {
 
-        if (
+        const existing =
             document.getElementById(
                 'mini-product-modal'
-            )
-        ) {
+            );
+
+
+        if (existing) {
 
             miniModal =
-                document.getElementById(
-                    'mini-product-modal'
-                );
+                existing;
 
             return;
 
@@ -523,23 +633,20 @@ document.addEventListener('DOMContentLoaded', function () {
             <div
                 id="mini-product-modal"
                 class="mini-modal"
-                aria-hidden="true"
-            >
+                aria-hidden="true">
+
 
                 <div
                     class="mini-modal-overlay"
-                    data-mini-modal-close
-                ></div>
+                    data-mini-modal-close>
+                </div>
 
 
                 <div
                     class="mini-modal-dialog"
                     role="dialog"
-                    aria-modal="true"
-                >
+                    aria-modal="true">
 
-
-                    <!-- HEADER -->
 
                     <div class="mini-modal-header">
 
@@ -547,16 +654,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             <div
                                 id="mini-modal-product-name"
-                                class="mini-modal-header-name"
-                            >
+                                class="mini-modal-header-name">
                                 Chi tiết món
                             </div>
 
 
                             <div
                                 id="mini-modal-product-price"
-                                class="mini-modal-header-price"
-                            >
+                                class="mini-modal-header-price">
                                 0đ
                             </div>
 
@@ -566,26 +671,17 @@ document.addEventListener('DOMContentLoaded', function () {
                         <button
                             type="button"
                             class="mini-modal-close"
-                            data-mini-modal-close
-                        >
+                            data-mini-modal-close>
                             ×
                         </button>
 
                     </div>
 
 
-                    <!-- BODY -->
-
                     <div class="mini-modal-body">
 
 
-                        <!-- SỐ LƯỢNG + GIẢM GIÁ -->
-
-                        <div
-                            class="
-                                mini-modal-two-col-top
-                            "
-                        >
+                        <div class="mini-modal-two-col-top">
 
 
                             <!-- SỐ LƯỢNG -->
@@ -597,17 +693,12 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </label>
 
 
-                                <div
-                                    class="
-                                        mini-modal-quantity
-                                    "
-                                >
+                                <div class="mini-modal-quantity">
 
                                     <button
                                         type="button"
                                         id="mini-qty-minus"
-                                        class="mini-qty-btn"
-                                    >
+                                        class="mini-qty-btn">
                                         −
                                     </button>
 
@@ -618,15 +709,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                         class="mini-qty-input"
                                         value="1"
                                         min="1"
-                                        inputmode="numeric"
-                                    >
+                                        inputmode="numeric">
 
 
                                     <button
                                         type="button"
                                         id="mini-qty-plus"
-                                        class="mini-qty-btn"
-                                    >
+                                        class="mini-qty-btn">
                                         +
                                     </button>
 
@@ -644,51 +733,32 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </label>
 
 
-                                <div
-                                    class="
-                                        mini-discount-control
-                                    "
-                                >
+                                <div class="mini-discount-control">
 
 
-                                    <div
-                                        class="
-                                            mini-discount-stepper
-                                        "
-                                    >
+                                    <div class="mini-discount-stepper">
 
                                         <button
                                             type="button"
                                             id="mini-discount-minus"
-                                            class="
-                                                mini-discount-step-btn
-                                            "
-                                        >
+                                            class="mini-discount-step-btn">
                                             −
                                         </button>
 
 
-                                        <div
-                                            class="
-                                                mini-input-money
-                                            "
-                                        >
+                                        <div class="mini-input-money">
 
                                             <input
                                                 type="text"
                                                 id="pdiscount"
-                                                class="
-                                                    mini-modal-input
-                                                "
+                                                class="mini-modal-input"
                                                 value="0"
                                                 autocomplete="off"
-                                                inputmode="numeric"
-                                            >
+                                                inputmode="numeric">
 
 
                                             <span
-                                                id="mini-discount-suffix"
-                                            >
+                                                id="mini-discount-suffix">
                                                 đ
                                             </span>
 
@@ -698,41 +768,27 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <button
                                             type="button"
                                             id="mini-discount-plus"
-                                            class="
-                                                mini-discount-step-btn
-                                            "
-                                        >
+                                            class="mini-discount-step-btn">
                                             +
                                         </button>
 
                                     </div>
 
 
-                                    <div
-                                        class="
-                                            mini-discount-type
-                                        "
-                                    >
+                                    <div class="mini-discount-type">
 
                                         <button
                                             type="button"
-                                            class="
-                                                mini-discount-type-btn
-                                                active
-                                            "
-                                            data-discount-type="amount"
-                                        >
+                                            class="mini-discount-type-btn active"
+                                            data-discount-type="amount">
                                             đ
                                         </button>
 
 
                                         <button
                                             type="button"
-                                            class="
-                                                mini-discount-type-btn
-                                            "
-                                            data-discount-type="percent"
-                                        >
+                                            class="mini-discount-type-btn"
+                                            data-discount-type="percent">
                                             %
                                         </button>
 
@@ -745,21 +801,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
 
 
-                        <!-- GHI CHÚ + TÊN LY -->
+                        <div class="mini-modal-two-col-bottom">
 
-                        <div
-                            class="
-                                mini-modal-two-col-bottom
-                            "
-                        >
 
+                            <!-- GHI CHÚ -->
 
                             <div class="mini-modal-field">
 
                                 <label for="icomment">
-
                                     Ghi chú món
-
                                 </label>
 
 
@@ -769,20 +819,17 @@ document.addEventListener('DOMContentLoaded', function () {
                                     class="mini-modal-input"
                                     maxlength="500"
                                     autocomplete="off"
-                                    placeholder="
-                                        Chọn ghi chú hoặc nhập thêm...
-                                    "
-                                >
+                                    placeholder="Chọn ghi chú hoặc nhập thêm...">
 
                             </div>
 
 
+                            <!-- TÊN DÁN LY -->
+
                             <div class="mini-modal-field">
 
                                 <label for="icommentname">
-
                                     Tên dán ly
-
                                 </label>
 
 
@@ -792,8 +839,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     class="mini-modal-input"
                                     maxlength="100"
                                     autocomplete="off"
-                                    placeholder="Tên khách..."
-                                >
+                                    placeholder="Tên khách...">
 
                             </div>
 
@@ -802,49 +848,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         <!-- GHI CHÚ NHANH -->
 
-                        <div
-                            class="
-                                mini-modal-section
-                            "
-                        >
+                        <div class="mini-modal-section">
 
-                            <div
-                                class="
-                                    mini-modal-label
-                                "
-                            >
-
+                            <div class="mini-modal-label">
                                 Ghi chú nhanh
-
                             </div>
 
 
                             <div
                                 id="mini-quick-notes-list"
-                                class="mini-note-grid"
-                            ></div>
+                                class="mini-note-grid">
+                            </div>
 
                         </div>
+
 
                     </div>
 
 
-                    <!-- FOOTER -->
-
-                    <div
-                        class="
-                            mini-modal-footer
-                        "
-                    >
+                    <div class="mini-modal-footer">
 
                         <button
                             type="button"
-                            class="
-                                mini-modal-btn
-                                mini-modal-btn-cancel
-                            "
-                            data-mini-modal-close
-                        >
+                            class="mini-modal-btn mini-modal-btn-cancel"
+                            data-mini-modal-close>
                             HỦY
                         </button>
 
@@ -852,15 +879,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         <button
                             type="button"
                             id="mini-modal-add"
-                            class="
-                                mini-modal-btn
-                                mini-modal-btn-primary
-                            "
-                        >
+                            class="mini-modal-btn mini-modal-btn-primary">
                             THÊM VÀO ĐƠN
                         </button>
 
                     </div>
+
 
                 </div>
 
@@ -884,8 +908,9 @@ document.addEventListener('DOMContentLoaded', function () {
         renderQuickNotes();
 
 
-        /* Đóng */
-
+        /*
+         * Đóng modal.
+         */
         miniModal
             .querySelectorAll(
                 '[data-mini-modal-close]'
@@ -900,8 +925,9 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
 
-        /* Quantity */
-
+        /*
+         * Quantity -
+         */
         document
             .getElementById(
                 'mini-qty-minus'
@@ -910,14 +936,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 'click',
                 function () {
 
-                    changeModalQuantity(
-                        -1
-                    );
+                    changeModalQuantity(-1);
 
                 }
             );
 
 
+        /*
+         * Quantity +
+         */
         document
             .getElementById(
                 'mini-qty-plus'
@@ -926,9 +953,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 'click',
                 function () {
 
-                    changeModalQuantity(
-                        1
-                    );
+                    changeModalQuantity(1);
 
                 }
             );
@@ -944,8 +969,9 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
 
-        /* Discount */
-
+        /*
+         * Discount -
+         */
         document
             .getElementById(
                 'mini-discount-minus'
@@ -954,14 +980,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 'click',
                 function () {
 
-                    changeMiniDiscount(
-                        -1
-                    );
+                    changeMiniDiscount(-1);
 
                 }
             );
 
 
+        /*
+         * Discount +
+         */
         document
             .getElementById(
                 'mini-discount-plus'
@@ -970,16 +997,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 'click',
                 function () {
 
-                    changeMiniDiscount(
-                        1
-                    );
+                    changeMiniDiscount(1);
 
                 }
             );
 
 
-        /* Add */
-
+        /*
+         * Add to order.
+         */
         document
             .getElementById(
                 'mini-modal-add'
@@ -990,8 +1016,9 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
 
-        /* ESC */
-
+        /*
+         * ESC đóng modal.
+         */
         document.addEventListener(
             'keydown',
             function (event) {
@@ -1015,7 +1042,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-     * GET DISCOUNT
+     * DISCOUNT
      * ========================================================= */
 
     function getDiscountValue() {
@@ -1060,32 +1087,21 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    /* =========================================================
-     * UPDATE MODAL PRICE
-     * ========================================================= */
-
     function updateMiniModalPrice() {
 
         const value =
             getDiscountValue();
 
 
-        let discount =
-            miniDiscountType ===
-            'percent'
-
+        const discount =
+            miniDiscountType === 'percent'
                 ? miniBasePrice *
-                  value /
-                  100
-
-                : value;
-
-
-        discount =
-            Math.min(
-                miniBasePrice,
-                discount
-            );
+                    value /
+                    100
+                : Math.min(
+                    miniBasePrice,
+                    value
+                );
 
 
         const priceEl =
@@ -1098,8 +1114,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             priceEl.textContent =
                 money(
-                    miniBasePrice -
-                    discount
+                    Math.max(
+                        0,
+                        miniBasePrice -
+                        discount
+                    )
                 );
 
         }
@@ -1124,13 +1143,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    /* =========================================================
-     * DISCOUNT TYPE
-     * ========================================================= */
-
-    function setMiniDiscountType(
-        type
-    ) {
+    function setMiniDiscountType(type) {
 
         miniDiscountType =
             type === 'percent'
@@ -1146,8 +1159,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (input) {
 
-            input.value =
-                0;
+            input.value = 0;
 
 
             input.max =
@@ -1172,17 +1184,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 .querySelectorAll(
                     '.mini-discount-type-btn'
                 )
-                .forEach(
-                    function (button) {
+                .forEach(function (button) {
 
-                        button.classList.toggle(
-                            'active',
-                            button.dataset.discountType ===
+                    button.classList.toggle(
+                        'active',
+                        button.dataset
+                            .discountType ===
                             miniDiscountType
-                        );
+                    );
 
-                    }
-                );
+                });
 
         }
 
@@ -1191,10 +1202,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-
-    /* =========================================================
-     * DISCOUNT − / +
-     * ========================================================= */
 
     function changeMiniDiscount(
         direction
@@ -1210,8 +1217,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         const step =
-            miniDiscountType ===
-            'percent'
+            miniDiscountType === 'percent'
                 ? 1
                 : 1000;
 
@@ -1222,8 +1228,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     input.value
                 ) || 0
             ) +
-            direction *
-            step;
+            direction * step;
 
 
         value =
@@ -1247,8 +1252,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
 
-        input.value =
-            value;
+        input.value = value;
 
 
         updateMiniModalPrice();
@@ -1257,7 +1261,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-     * UPDATE COMMENT
+     * QUICK COMMENT
      * ========================================================= */
 
     function updateMiniNoteField() {
@@ -1268,18 +1272,12 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
 
-        if (
-            !input ||
-            !miniModal
-        ) {
-
+        if (!input || !miniModal) {
             return;
-
         }
 
 
         const quick = [];
-
         const known = [];
 
 
@@ -1287,93 +1285,72 @@ document.addEventListener('DOMContentLoaded', function () {
             .querySelectorAll(
                 '.chkComment'
             )
-            .forEach(
-                function (box) {
+            .forEach(function (box) {
 
-                    const value =
-                        box.value.trim();
-
-
-                    if (value) {
-
-                        known.push(
-                            value
-                        );
-
-                    }
+                const value =
+                    box.value.trim();
 
 
-                    if (
-                        box.checked &&
-                        value
-                    ) {
+                if (value) {
+                    known.push(value);
+                }
 
-                        quick.push(
-                            value
-                        );
 
-                    }
+                if (
+                    box.checked &&
+                    value
+                ) {
+
+                    quick.push(value);
 
                 }
-            );
+
+            });
 
 
         const manual =
             input.value
                 .split(',')
-                .map(
-                    function (x) {
+                .map(function (x) {
 
-                        return x.trim();
+                    return x.trim();
 
-                    }
-                )
-                .filter(
-                    function (x) {
+                })
+                .filter(function (x) {
 
-                        return (
-                            x &&
-                            known.indexOf(
-                                x
-                            ) === -1
-                        );
+                    return (
+                        x &&
+                        known.indexOf(x) === -1
+                    );
 
-                    }
-                );
+                });
 
 
         input.value =
             manual
-                .concat(
-                    quick
-                )
-                .join(
-                    ', '
-                );
+                .concat(quick)
+                .join(', ');
 
     }
 
 
     /* =========================================================
-     * OPEN MODAL
+     * OPEN PRODUCT MODAL
      * ========================================================= */
 
-    function openProductModal(
-        card
-    ) {
+    function openProductModal(card) {
 
         createProductModal();
 
 
         miniBasePrice =
             parseFloat(
-                card.dataset.price ||
-                0
+                card.dataset.price || 0
             ) || 0;
 
 
         miniModal.dataset.productId =
-            card.dataset.productId;
+            card.dataset.productId || '';
 
 
         document
@@ -1381,54 +1358,46 @@ document.addEventListener('DOMContentLoaded', function () {
                 'mini-modal-product-name'
             )
             .textContent =
-            card.dataset.name ||
-            '';
+            card.dataset.name || '';
 
 
         document
             .getElementById(
                 'mini-qty'
             )
-            .value =
-            1;
+            .value = 1;
 
 
         document
             .getElementById(
                 'pdiscount'
             )
-            .value =
-            0;
+            .value = 0;
 
 
         document
             .getElementById(
                 'icomment'
             )
-            .value =
-            '';
+            .value = '';
 
 
         document
             .getElementById(
                 'icommentname'
             )
-            .value =
-            '';
+            .value = '';
 
 
         miniModal
             .querySelectorAll(
                 '.chkComment'
             )
-            .forEach(
-                function (box) {
+            .forEach(function (box) {
 
-                    box.checked =
-                        false;
+                box.checked = false;
 
-                }
-            );
+            });
 
 
         setMiniDiscountType(
@@ -1465,19 +1434,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     value =
                         Math.round(
-                            value /
-                            1000
-                        ) *
-                        1000;
+                            value / 1000
+                        ) * 1000;
 
                 } else {
 
                     value =
                         Math.min(
                             100,
-                            Math.round(
-                                value
-                            )
+                            Math.round(value)
                         );
 
                 }
@@ -1496,34 +1461,31 @@ document.addEventListener('DOMContentLoaded', function () {
             .querySelectorAll(
                 '.mini-discount-type-btn'
             )
-            .forEach(
-                function (button) {
+            .forEach(function (button) {
 
-                    button.onclick =
-                        function () {
+                button.onclick =
+                    function () {
 
-                            setMiniDiscountType(
-                                this.dataset.discountType
-                            );
+                        setMiniDiscountType(
+                            this.dataset
+                                .discountType
+                        );
 
-                        };
+                    };
 
-                }
-            );
+            });
 
 
         miniModal
             .querySelectorAll(
                 '.chkComment'
             )
-            .forEach(
-                function (box) {
+            .forEach(function (box) {
 
-                    box.onchange =
-                        updateMiniNoteField;
+                box.onchange =
+                    updateMiniNoteField;
 
-                }
-            );
+            });
 
 
         updateMiniModalPrice();
@@ -1546,10 +1508,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-
-    /* =========================================================
-     * CLOSE MODAL
-     * ========================================================= */
 
     function closeProductModal() {
 
@@ -1574,10 +1532,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    /* =========================================================
-     * MODAL QUANTITY
-     * ========================================================= */
-
     function changeModalQuantity(
         amount
     ) {
@@ -1599,8 +1553,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         input.value,
                         10
                     ) || 1
-                ) +
-                amount
+                ) + amount
             );
 
     }
@@ -1630,7 +1583,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-     * ADD FROM MODAL
+     * MODAL ADD
      * ========================================================= */
 
     function handleModalAdd() {
@@ -1648,7 +1601,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const card =
             grid.querySelector(
                 '.mini-product-card[data-product-id="' +
-                id +
+                CSS.escape(id) +
                 '"]'
             );
 
@@ -1660,11 +1613,9 @@ document.addEventListener('DOMContentLoaded', function () {
             Math.max(
                 1,
                 parseInt(
-                    document
-                        .getElementById(
-                            'mini-qty'
-                        )
-                        .value,
+                    document.getElementById(
+                        'mini-qty'
+                    ).value,
                     10
                 ) || 1
             );
@@ -1672,7 +1623,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
         addToCart(
             card,
-            qty
+            qty,
+            {
+                discount:
+                    getDiscountValue(),
+
+                discountType:
+                    miniDiscountType,
+
+                comment:
+                    document
+                        .getElementById(
+                            'icomment'
+                        )
+                        ?.value
+                        .trim() || '',
+
+                commentName:
+                    document
+                        .getElementById(
+                            'icommentname'
+                        )
+                        ?.value
+                        .trim() || ''
+            }
         );
 
 
@@ -1689,66 +1663,68 @@ document.addEventListener('DOMContentLoaded', function () {
         .querySelectorAll(
             '.mini-product-card'
         )
-        .forEach(
-            function (card) {
+        .forEach(function (card) {
 
 
-                /* Click món */
+            /*
+             * Click vào card:
+             * thêm ngay 1 dòng.
+             */
+            card.addEventListener(
+                'click',
+                function (event) {
 
-                card.addEventListener(
+                    if (
+                        event.target.closest(
+                            '.mini-product-edit'
+                        )
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    addToCart(
+                        this,
+                        1
+                    );
+
+                }
+            );
+
+
+            /*
+             * Click cây bút:
+             * mở modal.
+             */
+            const edit =
+                card.querySelector(
+                    '.mini-product-edit'
+                );
+
+
+            if (edit) {
+
+                edit.addEventListener(
                     'click',
                     function (event) {
 
-                        if (
-                            event.target.closest(
-                                '.mini-product-edit'
-                            )
-                        ) {
+                        event.preventDefault();
 
-                            return;
-
-                        }
+                        event.stopPropagation();
 
 
-                        addToCart(
-                            this,
-                            1
+                        openProductModal(
+                            card
                         );
 
                     }
                 );
 
-
-                /* Edit */
-
-                const edit =
-                    card.querySelector(
-                        '.mini-product-edit'
-                    );
-
-
-                if (edit) {
-
-                    edit.addEventListener(
-                        'click',
-                        function (event) {
-
-                            event.preventDefault();
-
-                            event.stopPropagation();
-
-
-                            openProductModal(
-                                card
-                            );
-
-                        }
-                    );
-
-                }
-
             }
-        );
+
+        });
 
 
     /* =========================================================
@@ -1779,22 +1755,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     );
 
 
-                if (
-                    !button ||
-                    !row
-                ) {
-
+                if (!button || !row) {
                     return;
-
                 }
 
 
                 changeCartQty(
-                    String(
-                        row.dataset.productId
-                    ),
-                    button.dataset.cartAction ===
-                        'plus'
+                    row.dataset.rowId,
+
+                    button.dataset.cartAction === 'plus'
                         ? 1
                         : -1
                 );
@@ -1803,6 +1772,269 @@ document.addEventListener('DOMContentLoaded', function () {
         );
 
     }
+
+
+    /* =========================================================
+     * HEADER ORDER MODE
+     * ========================================================= */
+
+    document
+        .querySelectorAll(
+            '.mini-header-mode'
+        )
+        .forEach(function (button) {
+
+            button.addEventListener(
+                'click',
+                function () {
+
+
+                    document
+                        .querySelectorAll(
+                            '.mini-header-mode'
+                        )
+                        .forEach(
+                            function (item) {
+
+                                item.classList
+                                    .remove(
+                                        'active'
+                                    );
+
+                            }
+                        );
+
+
+                    this.classList.add(
+                        'active'
+                    );
+
+
+                    const mode =
+                        this.dataset
+                            .orderMode ||
+                        'table';
+
+
+                    const modeEl =
+                        document.getElementById(
+                            'mini-order-info-mode'
+                        );
+
+
+                    const mainEl =
+                        document.getElementById(
+                            'mini-order-info-main'
+                        );
+
+
+                    const subEl =
+                        document.getElementById(
+                            'mini-order-info-sub'
+                        );
+
+
+                    if (modeEl) {
+
+                        modeEl.textContent =
+                            mode === 'table'
+                                ? 'BÀN'
+                                : mode === 'dinein'
+                                    ? 'TẠI CHỖ'
+                                    : 'MANG ĐI';
+
+                    }
+
+
+                    if (
+                        mode ===
+                        'table'
+                    ) {
+
+                        if (mainEl) {
+
+                            mainEl.textContent =
+                                'Chưa chọn bàn';
+
+                        }
+
+
+                        if (subEl) {
+
+                            subEl.textContent =
+                                'Khách: Khách lẻ';
+
+                        }
+
+                    }
+
+
+                    else if (
+                        mode ===
+                        'dinein'
+                    ) {
+
+                        if (mainEl) {
+
+                            mainEl.textContent =
+                                'Tại chỗ';
+
+                        }
+
+
+                        if (subEl) {
+
+                            subEl.textContent =
+                                'Khách: Khách lẻ';
+
+                        }
+
+                    }
+
+
+                    else {
+
+                        if (mainEl) {
+
+                            mainEl.textContent =
+                                'Khách mang đi';
+
+                        }
+
+
+                        if (subEl) {
+
+                            subEl.textContent =
+                                'Chưa nhập thông tin khách';
+
+                        }
+
+                    }
+
+                }
+            );
+
+        });
+
+
+    /* =========================================================
+     * CATEGORY FILTER
+     * ========================================================= */
+
+    document
+        .querySelectorAll(
+            '.mini-category'
+        )
+        .forEach(function (button) {
+
+            button.addEventListener(
+                'click',
+                function () {
+
+
+                    document
+                        .querySelectorAll(
+                            '.mini-category'
+                        )
+                        .forEach(
+                            function (item) {
+
+                                item.classList
+                                    .remove(
+                                        'active'
+                                    );
+
+                            }
+                        );
+
+
+                    this.classList.add(
+                        'active'
+                    );
+
+
+                    const category =
+                        this.dataset.category ||
+                        'all';
+
+
+                    grid
+                        .querySelectorAll(
+                            '.mini-product-card'
+                        )
+                        .forEach(
+                            function (card) {
+
+                                card.style.display =
+                                    (
+                                        category ===
+                                            'all' ||
+                                        category ===
+                                            card.dataset
+                                                .category
+                                    )
+                                        ? ''
+                                        : 'none';
+
+                            }
+                        );
+
+
+                    grid.scrollLeft = 0;
+
+
+                    updateSwiperPages();
+
+                }
+            );
+
+        });
+
+
+    /* =========================================================
+     * CATEGORY SCROLL
+     * ========================================================= */
+
+    document
+        .querySelectorAll(
+            '[data-category-scroll]'
+        )
+        .forEach(function (button) {
+
+            button.addEventListener(
+                'click',
+                function () {
+
+
+                    const categories =
+                        document.querySelector(
+                            '.mini-categories'
+                        );
+
+
+                    if (!categories) {
+                        return;
+                    }
+
+
+                    categories.scrollBy({
+
+                        left:
+                            this.dataset
+                                .categoryScroll ===
+                            'left'
+                                ? -240
+                                : 240,
+
+                        behavior:
+                            'smooth'
+
+                    });
+
+                }
+            );
+
+        });
 
 
     /* =========================================================
@@ -1821,6 +2053,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'input',
             function () {
 
+
                 const keyword =
                     this.value
                         .toLowerCase()
@@ -1834,9 +2067,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     .forEach(
                         function (card) {
 
+
                             const name =
                                 (
-                                    card.dataset.name ||
+                                    card.dataset
+                                        .name ||
+                                    ''
+                                )
+                                    .toLowerCase();
+
+
+                            const code =
+                                (
+                                    card.dataset
+                                        .code ||
                                     ''
                                 )
                                     .toLowerCase();
@@ -1847,6 +2091,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                     !keyword ||
                                     name.indexOf(
                                         keyword
+                                    ) !== -1 ||
+                                    code.indexOf(
+                                        keyword
                                     ) !== -1
                                 )
                                     ? ''
@@ -1855,6 +2102,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     );
 
+
+                grid.scrollLeft = 0;
+
+
+                updateSwiperPages();
+
             }
         );
 
@@ -1862,113 +2115,197 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-     * CATEGORY
+     * SWIPER-LIKE HORIZONTAL PAGING
      * ========================================================= */
 
-    document
-        .querySelectorAll(
-            '.mini-category'
-        )
-        .forEach(
-            function (button) {
+    function getVisibleProductCards() {
 
-                button.addEventListener(
-                    'click',
-                    function () {
+        return Array.from(
+            grid.querySelectorAll(
+                '.mini-product-card'
+            )
+        ).filter(function (card) {
 
-                        document
-                            .querySelectorAll(
-                                '.mini-category'
-                            )
-                            .forEach(
-                                function (item) {
+            return (
+                card.style.display !==
+                'none'
+            );
 
-                                    item.classList.remove(
-                                        'active'
-                                    );
+        });
 
-                                }
-                            );
+    }
 
 
-                        this.classList.add(
-                            'active'
-                        );
+    function getSwiperPageWidth() {
+
+        return Math.max(
+            1,
+            grid.clientWidth
+        );
+
+    }
 
 
-                        const category =
-                            this.dataset.category;
+    function getSwiperPageCount() {
+
+        const visible =
+            getVisibleProductCards();
 
 
-                        grid
-                            .querySelectorAll(
-                                '.mini-product-card'
-                            )
-                            .forEach(
-                                function (card) {
+        if (!visible.length) {
+            return 1;
+        }
 
-                                    card.style.display =
-                                        (
-                                            category ===
-                                                'all' ||
-                                            category ===
-                                                card.dataset.category
-                                        )
-                                            ? ''
-                                            : 'none';
 
-                                }
-                            );
+        const pageWidth =
+            getSwiperPageWidth();
 
-                    }
+
+        const scrollWidth =
+            grid.scrollWidth;
+
+
+        return Math.max(
+            1,
+            Math.ceil(
+                scrollWidth /
+                pageWidth
+            )
+        );
+
+    }
+
+
+    function getCurrentSwiperPage() {
+
+        const pageWidth =
+            getSwiperPageWidth();
+
+
+        return Math.min(
+            getSwiperPageCount(),
+
+            Math.floor(
+                (
+                    grid.scrollLeft +
+                    pageWidth * .5
+                ) /
+                pageWidth
+            ) + 1
+
+        );
+
+    }
+
+
+    function updateSwiperPages() {
+
+        const label =
+            document.getElementById(
+                'mini-page-label'
+            );
+
+
+        if (!label) return;
+
+
+        label.textContent =
+            getCurrentSwiperPage() +
+            ' / ' +
+            getSwiperPageCount();
+
+    }
+
+
+    function scrollProducts(
+        direction
+    ) {
+
+        const amount =
+            getSwiperPageWidth() *
+            (
+                direction === 'next'
+                    ? 1
+                    : -1
+            );
+
+
+        grid.scrollBy({
+
+            left:
+                amount,
+
+            behavior:
+                'smooth'
+
+        });
+
+    }
+
+
+    const prevPage =
+        document.getElementById(
+            'mini-prev-page'
+        );
+
+
+    const nextPage =
+        document.getElementById(
+            'mini-next-page'
+        );
+
+
+    if (prevPage) {
+
+        prevPage.addEventListener(
+            'click',
+            function () {
+
+                scrollProducts(
+                    'prev'
                 );
 
             }
         );
 
-
-    /* =========================================================
-     * CATEGORY SCROLL
-     * ========================================================= */
-
-    document
-        .querySelectorAll(
-            '[data-category-scroll]'
-        )
-        .forEach(
-            function (button) {
-
-                button.addEventListener(
-                    'click',
-                    function () {
-
-                        const categories =
-                            document.querySelector(
-                                '.mini-categories'
-                            );
+    }
 
 
-                        if (!categories) return;
+    if (nextPage) {
 
+        nextPage.addEventListener(
+            'click',
+            function () {
 
-                        categories.scrollBy(
-                            {
-                                left:
-                                    this.dataset.categoryScroll ===
-                                        'left'
-                                        ? -220
-                                        : 220,
-
-                                behavior:
-                                    'smooth'
-                            }
-                        );
-
-                    }
+                scrollProducts(
+                    'next'
                 );
 
             }
         );
+
+    }
+
+
+    grid.addEventListener(
+        'scroll',
+        function () {
+
+            window.requestAnimationFrame(
+                updateSwiperPages
+            );
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    window.addEventListener(
+        'resize',
+        updateSwiperPages
+    );
 
 
     /* =========================================================
@@ -1987,7 +2324,10 @@ document.addEventListener('DOMContentLoaded', function () {
             'click',
             function () {
 
-                if (!cart.size) return;
+
+                if (!cart.length) {
+                    return;
+                }
 
 
                 if (
@@ -1996,7 +2336,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     )
                 ) {
 
-                    cart.clear();
+                    cart.length = 0;
 
                     renderCart();
 
@@ -2023,6 +2363,7 @@ document.addEventListener('DOMContentLoaded', function () {
         payment.addEventListener(
             'click',
             function () {
+
 
                 const total =
                     document
@@ -2052,6 +2393,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'keydown',
         function (event) {
 
+
             if (
                 (
                     event.ctrlKey ||
@@ -2065,9 +2407,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                 if (search) {
-
                     search.focus();
-
                 }
 
             }
@@ -2081,5 +2421,14 @@ document.addEventListener('DOMContentLoaded', function () {
      * ========================================================= */
 
     renderCart();
+
+
+    window.requestAnimationFrame(
+        function () {
+
+            updateSwiperPages();
+
+        }
+    );
 
 });
