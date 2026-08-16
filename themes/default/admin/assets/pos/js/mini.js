@@ -352,12 +352,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                     )}
                                 </strong>
 
-                                <small>
-                                    ${escapeHtml(
-                                        item.code || ''
-                                    )}
-                                </small>
-
                                 ${
                                     noteText
                                         ? `
@@ -1904,6 +1898,77 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
+    /* =========================================================
+    * CLOSE CART WHEN TOUCH / CLICK OUTSIDE
+    * ========================================================= */
+
+    document.addEventListener(
+        'pointerdown',
+        function (event) {
+
+            /*
+            * Chỉ áp dụng mobile / tablet.
+            */
+            if (
+                window.innerWidth > 800
+            ) {
+                return;
+            }
+
+
+            /*
+            * Cart hiện tại.
+            */
+            if (!miniOrder) {
+                return;
+            }
+
+
+            /*
+            * Cart chưa mở -> bỏ qua.
+            */
+            if (
+                !miniOrder.classList.contains(
+                    'mini-order-open'
+                )
+            ) {
+                return;
+            }
+
+
+            /*
+            * Nếu chạm bên trong cart
+            * thì giữ nguyên.
+            */
+            if (
+                miniOrder.contains(
+                    event.target
+                )
+            ) {
+                return;
+            }
+
+
+            /*
+            * QUAN TRỌNG:
+            * Chặn event để không xuyên xuống
+            * product card bên dưới.
+            */
+            event.preventDefault();
+            event.stopPropagation();
+
+
+            /*
+            * Đóng cart.
+            */
+            miniOrder.classList.remove(
+                'mini-order-open'
+            );
+
+        },
+        true
+    );
+
 
     /* =========================================================
      * MODAL QUANTITY
@@ -2235,23 +2300,21 @@ document.addEventListener('DOMContentLoaded', function () {
     /* =========================================================
     * CART SWIPE / DRAG TO DELETE
     *
-    * MOBILE / TABLET:
-    *   Vuốt sang trái  -> hiện XÓA
-    *
-    * DESKTOP:
-    *   Giữ chuột + kéo sang trái -> hiện XÓA
-    *
-    * XÓA chỉ xảy ra khi bấm nút XÓA.
+    * Dùng Pointer Events:
+    * - Touch mobile
+    * - Touch laptop
+    * - Mouse desktop
     * ========================================================= */
 
-    let cartGestureStartX = 0;
-    let cartGestureStartY = 0;
-    let cartGestureRow = null;
-    let cartGestureTracking = false;
+    let cartPointerRow = null;
+    let cartPointerStartX = 0;
+    let cartPointerStartY = 0;
+    let cartPointerMoved = false;
+    let cartPointerActive = false;
 
 
     /* ---------------------------------------------------------
-    * Đóng tất cả row đang mở
+    * Đóng các row đang mở
     * --------------------------------------------------------- */
 
     function closeSwipedCartRows(exceptRow) {
@@ -2281,156 +2344,47 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-    * TOUCH - MOBILE / TABLET
+    * POINTER DOWN
+    * Touch + Mouse đều vào đây
     * ========================================================= */
 
     if (cartList) {
 
         cartList.addEventListener(
-            'touchstart',
+            'pointerdown',
             function (event) {
+
+                /*
+                * Chỉ xử lý:
+                * - touch
+                * - pen
+                * - chuột trái
+                */
+
+                if (
+                    event.pointerType === 'mouse' &&
+                    event.button !== 0
+                ) {
+
+                    return;
+
+                }
+
 
                 const row =
                     event.target.closest(
                         '.mini-cart-row'
                     );
 
+
                 if (!row) {
                     return;
                 }
 
-                cartGestureRow = row;
-
-                cartGestureStartX =
-                    event.touches[0].clientX;
-
-                cartGestureStartY =
-                    event.touches[0].clientY;
-
-                cartGestureTracking = true;
-
-            },
-            {
-                passive: true
-            }
-        );
-
-
-        cartList.addEventListener(
-            'touchend',
-            function (event) {
-
-                if (
-                    !cartGestureTracking ||
-                    !cartGestureRow
-                ) {
-
-                    cartGestureTracking = false;
-
-                    return;
-
-                }
-
-
-                const endX =
-                    event.changedTouches[0].clientX;
-
-                const endY =
-                    event.changedTouches[0].clientY;
-
-
-                const deltaX =
-                    endX -
-                    cartGestureStartX;
-
-                const deltaY =
-                    endY -
-                    cartGestureStartY;
-
-
-                cartGestureTracking = false;
-
 
                 /*
-                * Nếu vuốt dọc nhiều hơn ngang
-                * thì bỏ qua để không ảnh hưởng scroll.
-                */
-
-                if (
-                    Math.abs(deltaX) <=
-                    Math.abs(deltaY)
-                ) {
-
-                    cartGestureRow = null;
-
-                    return;
-
-                }
-
-
-                /*
-                * Vuốt trái
-                */
-
-                if (deltaX < -50) {
-
-                    closeSwipedCartRows(
-                        cartGestureRow
-                    );
-
-                    cartGestureRow.classList.add(
-                        'swiped'
-                    );
-
-                }
-
-
-                /*
-                * Vuốt phải
-                */
-
-                else if (deltaX > 30) {
-
-                    cartGestureRow.classList.remove(
-                        'swiped'
-                    );
-
-                }
-
-
-                cartGestureRow = null;
-
-            },
-            {
-                passive: true
-            }
-        );
-
-    }
-
-
-    /* =========================================================
-    * MOUSE DRAG - DESKTOP
-    * ========================================================= */
-
-    if (cartList) {
-
-        cartList.addEventListener(
-            'mousedown',
-            function (event) {
-
-                /*
-                * Chỉ nhận chuột trái.
-                */
-
-                if (event.button !== 0) {
-                    return;
-                }
-
-
-                /*
-                * Không bắt đầu drag khi đang bấm
-                * trực tiếp vào button.
+                * Nếu đang bấm vào button
+                * thì không bắt đầu gesture.
                 */
 
                 if (
@@ -2444,47 +2398,54 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
 
-                const row =
-                    event.target.closest(
-                        '.mini-cart-row'
-                    );
+                cartPointerRow = row;
 
-
-                if (!row) {
-                    return;
-                }
-
-
-                cartGestureRow = row;
-
-                cartGestureStartX =
+                cartPointerStartX =
                     event.clientX;
 
-                cartGestureStartY =
+                cartPointerStartY =
                     event.clientY;
 
-                cartGestureTracking = true;
+                cartPointerMoved = false;
+
+                cartPointerActive = true;
 
 
                 /*
-                * Cho biết đang kéo.
+                * Pointer capture giúp laptop
+                * cảm ứng không bị mất pointer
+                * khi ngón tay kéo ra khỏi row.
                 */
 
-                row.classList.add(
-                    'dragging'
-                );
+                if (
+                    row.setPointerCapture
+                ) {
+
+                    try {
+
+                        row.setPointerCapture(
+                            event.pointerId
+                        );
+
+                    } catch (e) {}
+
+                }
 
             }
         );
 
 
+        /* =====================================================
+        * POINTER MOVE
+        * ===================================================== */
+
         cartList.addEventListener(
-            'mouseup',
+            'pointermove',
             function (event) {
 
                 if (
-                    !cartGestureTracking ||
-                    !cartGestureRow
+                    !cartPointerActive ||
+                    !cartPointerRow
                 ) {
 
                     return;
@@ -2492,32 +2453,98 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
 
-                const endX =
-                    event.clientX;
-
-                const endY =
-                    event.clientY;
-
-
                 const deltaX =
-                    endX -
-                    cartGestureStartX;
+                    event.clientX -
+                    cartPointerStartX;
 
                 const deltaY =
-                    endY -
-                    cartGestureStartY;
-
-
-                cartGestureTracking = false;
-
-
-                cartGestureRow.classList.remove(
-                    'dragging'
-                );
+                    event.clientY -
+                    cartPointerStartY;
 
 
                 /*
-                * Chỉ xử lý kéo ngang.
+                * Chưa đủ khoảng cách
+                */
+
+                if (
+                    Math.abs(deltaX) < 10 &&
+                    Math.abs(deltaY) < 10
+                ) {
+
+                    return;
+
+                }
+
+
+                cartPointerMoved = true;
+
+
+                /*
+                * Nếu đang cuộn dọc thì bỏ qua.
+                */
+
+                if (
+                    Math.abs(deltaY) >
+                    Math.abs(deltaX)
+                ) {
+
+                    return;
+
+                }
+
+
+                /*
+                * Vuốt ngang.
+                */
+
+                if (
+                    event.cancelable
+                ) {
+
+                    event.preventDefault();
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+        * POINTER UP
+        * ===================================================== */
+
+        cartList.addEventListener(
+            'pointerup',
+            function (event) {
+
+                if (
+                    !cartPointerActive ||
+                    !cartPointerRow
+                ) {
+
+                    return;
+
+                }
+
+
+                const row =
+                    cartPointerRow;
+
+
+                const deltaX =
+                    event.clientX -
+                    cartPointerStartX;
+
+                const deltaY =
+                    event.clientY -
+                    cartPointerStartY;
+
+
+                cartPointerActive = false;
+
+
+                /*
+                * Chỉ xử lý swipe ngang.
                 */
 
                 if (
@@ -2525,7 +2552,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     Math.abs(deltaY)
                 ) {
 
-                    cartGestureRow = null;
+                    cartPointerRow = null;
 
                     return;
 
@@ -2533,16 +2560,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                 /*
-                * Kéo trái
+                * Vuốt sang trái
+                * => mở XÓA
                 */
 
-                if (deltaX < -50) {
+                if (
+                    deltaX < -50
+                ) {
 
                     closeSwipedCartRows(
-                        cartGestureRow
+                        row
                     );
 
-                    cartGestureRow.classList.add(
+                    row.classList.add(
                         'swiped'
                     );
 
@@ -2550,47 +2580,46 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                 /*
-                * Kéo phải
+                * Vuốt sang phải
+                * => đóng XÓA
                 */
 
-                else if (deltaX > 30) {
+                else if (
+                    deltaX > 30
+                ) {
 
-                    cartGestureRow.classList.remove(
+                    row.classList.remove(
                         'swiped'
                     );
 
                 }
 
 
-                cartGestureRow = null;
+                cartPointerRow = null;
 
             }
         );
 
 
-        /*
-        * Nếu thả chuột bên ngoài cart
-        * thì hủy trạng thái kéo.
-        */
+        /* =====================================================
+        * POINTER CANCEL
+        * ===================================================== */
 
-        document.addEventListener(
-            'mouseup',
+        cartList.addEventListener(
+            'pointercancel',
             function () {
 
-                if (
-                    cartGestureTracking &&
-                    cartGestureRow
-                ) {
+                cartPointerActive = false;
 
-                    cartGestureTracking = false;
+                if (cartPointerRow) {
 
-                    cartGestureRow.classList.remove(
+                    cartPointerRow.classList.remove(
                         'dragging'
                     );
 
-                    cartGestureRow = null;
-
                 }
+
+                cartPointerRow = null;
 
             }
         );
@@ -2599,7 +2628,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-    * CLICK RA NGOÀI
+    * CLICK RA NGOÀI CART
     * ========================================================= */
 
     document.addEventListener(

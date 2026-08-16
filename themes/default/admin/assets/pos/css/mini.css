@@ -481,6 +481,8 @@ button {
 
     border-bottom:
         1px dashed #e1e4e7;
+
+    touch-action: pan-y;
 }
 
 
@@ -4244,6 +4246,7 @@ body.mini-modal-open {
     .mini-cart-row.dragging {
         cursor: grabbing;
         user-select: none;
+        -webkit-user-select: none;
     }
 
 
