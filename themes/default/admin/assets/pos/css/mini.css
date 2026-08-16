@@ -3489,7 +3489,7 @@ body.mini-modal-open {
     .mini-note-grid {
 
         grid-template-columns:
-            repeat(3,minmax(0,1fr));
+            repeat(2,minmax(0,1fr));
     }
 
 }
