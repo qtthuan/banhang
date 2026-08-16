@@ -2233,25 +2233,32 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
     /* =========================================================
-    * MOBILE CART SWIPE TO DELETE
+    * CART SWIPE / DRAG TO DELETE
     *
-    * Mobile only:
-    * - Vuốt trái: hiện nút XÓA.
-    * - Bấm XÓA: mới xóa món.
-    * - Chạm ra ngoài dòng: đóng nút XÓA.
+    * MOBILE / TABLET:
+    *   Vuốt sang trái  -> hiện XÓA
+    *
+    * DESKTOP:
+    *   Giữ chuột + kéo sang trái -> hiện XÓA
+    *
+    * XÓA chỉ xảy ra khi bấm nút XÓA.
     * ========================================================= */
 
-    let swipeStartX = 0;
-    let swipeStartY = 0;
-    let swipeTracking = false;
+    let cartGestureStartX = 0;
+    let cartGestureStartY = 0;
+    let cartGestureRow = null;
+    let cartGestureTracking = false;
 
+
+    /* ---------------------------------------------------------
+    * Đóng tất cả row đang mở
+    * --------------------------------------------------------- */
 
     function closeSwipedCartRows(exceptRow) {
 
         if (!cartList) {
             return;
         }
-
 
         cartList
             .querySelectorAll(
@@ -2270,9 +2277,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 }
             );
-
     }
 
+
+    /* =========================================================
+    * TOUCH - MOBILE / TABLET
+    * ========================================================= */
 
     if (cartList) {
 
@@ -2280,34 +2290,24 @@ document.addEventListener('DOMContentLoaded', function () {
             'touchstart',
             function (event) {
 
-                if (
-                    window.innerWidth >
-                    800
-                ) {
-                    return;
-                }
-
-
                 const row =
                     event.target.closest(
                         '.mini-cart-row'
                     );
 
-
                 if (!row) {
                     return;
                 }
 
+                cartGestureRow = row;
 
-                swipeStartX =
+                cartGestureStartX =
                     event.touches[0].clientX;
 
-
-                swipeStartY =
+                cartGestureStartY =
                     event.touches[0].clientY;
 
-
-                swipeTracking = true;
+                cartGestureTracking = true;
 
             },
             {
@@ -2321,12 +2321,123 @@ document.addEventListener('DOMContentLoaded', function () {
             function (event) {
 
                 if (
-                    !swipeTracking ||
-                    window.innerWidth >
-                    800
+                    !cartGestureTracking ||
+                    !cartGestureRow
                 ) {
 
-                    swipeTracking = false;
+                    cartGestureTracking = false;
+
+                    return;
+
+                }
+
+
+                const endX =
+                    event.changedTouches[0].clientX;
+
+                const endY =
+                    event.changedTouches[0].clientY;
+
+
+                const deltaX =
+                    endX -
+                    cartGestureStartX;
+
+                const deltaY =
+                    endY -
+                    cartGestureStartY;
+
+
+                cartGestureTracking = false;
+
+
+                /*
+                * Nếu vuốt dọc nhiều hơn ngang
+                * thì bỏ qua để không ảnh hưởng scroll.
+                */
+
+                if (
+                    Math.abs(deltaX) <=
+                    Math.abs(deltaY)
+                ) {
+
+                    cartGestureRow = null;
+
+                    return;
+
+                }
+
+
+                /*
+                * Vuốt trái
+                */
+
+                if (deltaX < -50) {
+
+                    closeSwipedCartRows(
+                        cartGestureRow
+                    );
+
+                    cartGestureRow.classList.add(
+                        'swiped'
+                    );
+
+                }
+
+
+                /*
+                * Vuốt phải
+                */
+
+                else if (deltaX > 30) {
+
+                    cartGestureRow.classList.remove(
+                        'swiped'
+                    );
+
+                }
+
+
+                cartGestureRow = null;
+
+            },
+            {
+                passive: true
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+    * MOUSE DRAG - DESKTOP
+    * ========================================================= */
+
+    if (cartList) {
+
+        cartList.addEventListener(
+            'mousedown',
+            function (event) {
+
+                /*
+                * Chỉ nhận chuột trái.
+                */
+
+                if (event.button !== 0) {
+                    return;
+                }
+
+
+                /*
+                * Không bắt đầu drag khi đang bấm
+                * trực tiếp vào button.
+                */
+
+                if (
+                    event.target.closest(
+                        'button'
+                    )
+                ) {
 
                     return;
 
@@ -2340,8 +2451,41 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                 if (!row) {
+                    return;
+                }
 
-                    swipeTracking = false;
+
+                cartGestureRow = row;
+
+                cartGestureStartX =
+                    event.clientX;
+
+                cartGestureStartY =
+                    event.clientY;
+
+                cartGestureTracking = true;
+
+
+                /*
+                * Cho biết đang kéo.
+                */
+
+                row.classList.add(
+                    'dragging'
+                );
+
+            }
+        );
+
+
+        cartList.addEventListener(
+            'mouseup',
+            function (event) {
+
+                if (
+                    !cartGestureTracking ||
+                    !cartGestureRow
+                ) {
 
                     return;
 
@@ -2349,29 +2493,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                 const endX =
-                    event.changedTouches[0].clientX;
-
+                    event.clientX;
 
                 const endY =
-                    event.changedTouches[0].clientY;
+                    event.clientY;
 
 
                 const deltaX =
                     endX -
-                    swipeStartX;
-
+                    cartGestureStartX;
 
                 const deltaY =
                     endY -
-                    swipeStartY;
+                    cartGestureStartY;
 
 
-                swipeTracking = false;
+                cartGestureTracking = false;
+
+
+                cartGestureRow.classList.remove(
+                    'dragging'
+                );
 
 
                 /*
-                * Chỉ nhận vuốt ngang,
-                * không ảnh hưởng cuộn dọc.
+                * Chỉ xử lý kéo ngang.
                 */
 
                 if (
@@ -2379,22 +2525,24 @@ document.addEventListener('DOMContentLoaded', function () {
                     Math.abs(deltaY)
                 ) {
 
+                    cartGestureRow = null;
+
                     return;
 
                 }
 
 
                 /*
-                * Vuốt sang trái
+                * Kéo trái
                 */
 
                 if (deltaX < -50) {
 
                     closeSwipedCartRows(
-                        row
+                        cartGestureRow
                     );
 
-                    row.classList.add(
+                    cartGestureRow.classList.add(
                         'swiped'
                     );
 
@@ -2402,47 +2550,61 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                 /*
-                * Vuốt sang phải
-                * => đóng nút XÓA
+                * Kéo phải
                 */
 
-                else if (
-                    deltaX > 30
-                ) {
+                else if (deltaX > 30) {
 
-                    row.classList.remove(
+                    cartGestureRow.classList.remove(
                         'swiped'
                     );
 
                 }
 
-            },
-            {
-                passive: true
+
+                cartGestureRow = null;
+
+            }
+        );
+
+
+        /*
+        * Nếu thả chuột bên ngoài cart
+        * thì hủy trạng thái kéo.
+        */
+
+        document.addEventListener(
+            'mouseup',
+            function () {
+
+                if (
+                    cartGestureTracking &&
+                    cartGestureRow
+                ) {
+
+                    cartGestureTracking = false;
+
+                    cartGestureRow.classList.remove(
+                        'dragging'
+                    );
+
+                    cartGestureRow = null;
+
+                }
+
             }
         );
 
     }
 
 
-    /*
-    * Chạm ra ngoài row
-    * => đóng tất cả nút XÓA
-    */
+    /* =========================================================
+    * CLICK RA NGOÀI
+    * ========================================================= */
 
     document.addEventListener(
         'click',
         function (event) {
-
-            if (
-                window.innerWidth >
-                800
-            ) {
-
-                return;
-
-            }
-
 
             if (
                 event.target.closest(

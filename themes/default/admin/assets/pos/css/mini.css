@@ -4241,6 +4241,11 @@ body.mini-modal-open {
             translateX(-78px);
     }
 
+    .mini-cart-row.dragging {
+        cursor: grabbing;
+        user-select: none;
+    }
+
 
     .mini-cart-delete {
 
