@@ -1900,15 +1900,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* =========================================================
     * CLOSE CART WHEN TOUCH / CLICK OUTSIDE
+    *
+    * Khi cart đang mở:
+    * - Chạm ngoài cart -> đóng cart
+    * - Chặn luôn click tiếp theo
+    * - Không cho product bên dưới nhận click
     * ========================================================= */
+
+    let miniSuppressNextClick = false;
+
 
     document.addEventListener(
         'pointerdown',
         function (event) {
 
-            /*
-            * Chỉ áp dụng mobile / tablet.
-            */
             if (
                 window.innerWidth > 800
             ) {
@@ -1916,16 +1921,13 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
 
-            /*
-            * Cart hiện tại.
-            */
             if (!miniOrder) {
                 return;
             }
 
 
             /*
-            * Cart chưa mở -> bỏ qua.
+            * Cart chưa mở.
             */
             if (
                 !miniOrder.classList.contains(
@@ -1937,8 +1939,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             /*
-            * Nếu chạm bên trong cart
-            * thì giữ nguyên.
+            * Chạm bên trong cart
+            * => giữ nguyên.
             */
             if (
                 miniOrder.contains(
@@ -1950,12 +1952,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             /*
-            * QUAN TRỌNG:
-            * Chặn event để không xuyên xuống
-            * product card bên dưới.
+            * ĐÁNH DẤU:
+            * click phát sinh sau pointerdown này
+            * phải bị bỏ qua.
             */
-            event.preventDefault();
-            event.stopPropagation();
+            miniSuppressNextClick = true;
 
 
             /*
@@ -1964,6 +1965,43 @@ document.addEventListener('DOMContentLoaded', function () {
             miniOrder.classList.remove(
                 'mini-order-open'
             );
+
+
+            /*
+            * Chặn pointer event hiện tại.
+            */
+            event.preventDefault();
+            event.stopPropagation();
+
+        },
+        true
+    );
+
+
+    /*
+    * Chặn click được sinh ra sau khi
+    * người dùng chạm ngoài cart.
+    */
+    document.addEventListener(
+        'click',
+        function (event) {
+
+            if (
+                !miniSuppressNextClick
+            ) {
+                return;
+            }
+
+
+            miniSuppressNextClick = false;
+
+
+            /*
+            * Không cho click xuyên xuống
+            * product card.
+            */
+            event.preventDefault();
+            event.stopPropagation();
 
         },
         true
