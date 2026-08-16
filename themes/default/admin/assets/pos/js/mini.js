@@ -20,6 +20,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let miniDiscountType = 'amount';
 
+    /*
+    * Row đang được edit.
+    * null = đang thêm món mới.
+    */
+    let miniEditingRowId = null;
+
 
     /*
      * Array thay cho Map.
@@ -1665,8 +1671,9 @@ document.addEventListener('DOMContentLoaded', function () {
      * OPEN MODAL
      * ========================================================= */
 
-    function openProductModal(
-        card
+   function openProductModal(
+        card,
+        editItem = null
     ) {
 
         createProductModal();
@@ -1699,34 +1706,98 @@ document.addEventListener('DOMContentLoaded', function () {
             '';
 
 
+        /*
+        * Xác định đang:
+        * - thêm món mới
+        * - hay chỉnh sửa row cũ
+        */
+        miniEditingRowId =
+            editItem
+                ? editItem.rowId
+                : null;
+
+
+        miniModal.dataset.editRowId =
+            editItem
+                ? editItem.rowId
+                : '';
+
+
+        /*
+        * Mặc định là form thêm món mới.
+        */
         document
             .getElementById(
                 'mini-qty'
             )
-            .value = 1;
+            .value =
+            editItem
+                ? editItem.qty
+                : 1;
 
 
+        setMiniDiscountType(
+            editItem &&
+            editItem.discountType
+                ? editItem.discountType
+                : 'amount'
+        );
+
+
+        /*
+        * Sau setMiniDiscountType()
+        * mới set lại giá trị discount,
+        * vì hàm trên reset input về 0.
+        */
         document
             .getElementById(
                 'pdiscount'
             )
-            .value = 0;
+            .value =
+            editItem
+                ? (
+                    Number(
+                        editItem.discount
+                    ) || 0
+                )
+                : 0;
 
 
+        /*
+        * Ghi chú món.
+        */
         document
             .getElementById(
                 'icomment'
             )
-            .value = '';
+            .value =
+            editItem
+                ? (
+                    editItem.comment ||
+                    ''
+                )
+                : '';
 
 
+        /*
+        * Tên dán ly.
+        */
         document
             .getElementById(
                 'icommentname'
             )
-            .value = '';
+            .value =
+            editItem
+                ? (
+                    editItem.commentName ||
+                    ''
+                )
+                : '';
 
 
+        /*
+        * Reset checkbox.
+        */
         miniModal
             .querySelectorAll(
                 '.chkComment'
@@ -1741,9 +1812,70 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
 
-        setMiniDiscountType(
-            'amount'
-        );
+        /*
+        * Nếu đang edit:
+        * tick lại những ghi chú nhanh
+        * đã có trong món.
+        */
+        if (editItem) {
+
+            const currentNotes =
+                String(
+                    editItem.comment ||
+                    ''
+                )
+                .split(',')
+                .map(
+                    function (value) {
+                        return value
+                            .trim()
+                            .toLowerCase();
+                    }
+                )
+                .filter(Boolean);
+
+
+            miniModal
+                .querySelectorAll(
+                    '.chkComment'
+                )
+                .forEach(
+                    function (box) {
+
+                        const value =
+                            box.value
+                                .trim()
+                                .toLowerCase();
+
+
+                        box.checked =
+                            currentNotes.indexOf(
+                                value
+                            ) !== -1;
+
+                    }
+                );
+
+        }
+
+
+        /*
+        * Đổi chữ nút theo trạng thái.
+        */
+        const modalAddButton =
+            document.getElementById(
+                'mini-modal-add'
+            );
+
+
+        if (modalAddButton) {
+
+            modalAddButton.textContent =
+                editItem
+                    ? 'CẬP NHẬT'
+                    : 'THÊM VÀO ĐƠN';
+
+        }
 
 
         /*
@@ -2140,23 +2272,86 @@ document.addEventListener('DOMContentLoaded', function () {
             '';
 
 
-        addToCart(
-            card,
-            qty,
-            {
-                discount:
-                    discount,
+        /*
+        * =====================================================
+        * EDIT ROW CŨ
+        * =====================================================
+        */
 
-                discountType:
-                    miniDiscountType,
+        if (miniEditingRowId) {
 
-                comment:
-                    comment,
+            const index =
+                cart.findIndex(
+                    function (item) {
 
-                commentName:
-                    commentName
+                        return (
+                            item.rowId ===
+                            miniEditingRowId
+                        );
+
+                    }
+                );
+
+
+            if (index !== -1) {
+
+                /*
+                * Chỉ cập nhật row đang edit.
+                *
+                * Không tạo row mới.
+                */
+                cart[index].qty =
+                    qty;
+
+
+                cart[index].discount =
+                    discount;
+
+
+                cart[index].discountType =
+                    miniDiscountType;
+
+
+                cart[index].comment =
+                    comment;
+
+
+                cart[index].commentName =
+                    commentName;
+
+
+                renderCart();
+
             }
-        );
+
+
+        } else {
+
+            /*
+            * =================================================
+            * THÊM MÓN MỚI
+            * =================================================
+            */
+
+            addToCart(
+                card,
+                qty,
+                {
+                    discount:
+                        discount,
+
+                    discountType:
+                        miniDiscountType,
+
+                    comment:
+                        comment,
+
+                    commentName:
+                        commentName
+                }
+            );
+
+        }
 
 
         closeProductModal();
@@ -2329,6 +2524,92 @@ document.addEventListener('DOMContentLoaded', function () {
                         ? 1
                         : -1
                 );
+
+                /*
+                * =====================================================
+                * CLICK ROW -> EDIT
+                * =====================================================
+                */
+
+                if (
+                    !button &&
+                    row
+                ) {
+
+                    /*
+                    * Nếu row đang swipe mở nút XÓA
+                    * thì click lần này chỉ đóng XÓA,
+                    * không mở modal.
+                    */
+                    if (
+                        row.classList.contains(
+                            'swiped'
+                        )
+                    ) {
+
+                        row.classList.remove(
+                            'swiped'
+                        );
+
+                        return;
+
+                    }
+
+
+                    /*
+                    * Lấy row tương ứng trong cart.
+                    */
+                    const rowId =
+                        row.dataset.rowId;
+
+
+                    const item =
+                        cart.find(
+                            function (cartItem) {
+
+                                return (
+                                    cartItem.rowId ===
+                                    rowId
+                                );
+
+                            }
+                        );
+
+
+                    if (!item) {
+                        return;
+                    }
+
+
+                    /*
+                    * Tìm product card tương ứng.
+                    */
+                    const card =
+                        grid.querySelector(
+                            '.mini-product-card[data-product-id="' +
+                            CSS.escape(
+                                String(
+                                    item.id
+                                )
+                            ) +
+                            '"]'
+                        );
+
+
+                    if (!card) {
+                        return;
+                    }
+
+
+                    /*
+                    * Mở modal ở chế độ EDIT.
+                    */
+                    openProductModal(
+                        card,
+                        item
+                    );
+
+                }
 
             }
         );
