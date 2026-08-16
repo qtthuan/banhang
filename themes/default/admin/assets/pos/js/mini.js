@@ -2582,81 +2582,123 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-     * CATEGORY FILTER
-     * ========================================================= */
+    * CATEGORY FILTER
+    * Lọc product theo subcategory ID
+    *
+    * Button:
+    *   data-category = ID của subcategory
+    *
+    * Product:
+    *   data-category = category_id
+    *
+    * "all":
+    *   hiển thị toàn bộ sản phẩm
+    * ========================================================= */
 
-    document
-        .querySelectorAll(
+    const miniCategoryButtons =
+        document.querySelectorAll(
             '.mini-category'
-        )
-        .forEach(
-            function (button) {
-
-                button.addEventListener(
-                    'click',
-                    function () {
+        );
 
 
-                        document
-                            .querySelectorAll(
-                                '.mini-category'
-                            )
-                            .forEach(
-                                function (item) {
+    function applyMiniCategoryFilter(
+        selectedCategory
+    ) {
 
-                                    item.classList
-                                        .remove(
-                                            'active'
-                                        );
-
-                                }
-                            );
+        const category =
+            String(
+                selectedCategory || 'all'
+            );
 
 
-                        this.classList.add(
-                            'active'
+        grid
+            .querySelectorAll(
+                '.mini-product-card'
+            )
+            .forEach(
+                function (card) {
+
+                    const productCategory =
+                        String(
+                            card.dataset
+                                .category || ''
                         );
 
 
-                        const category =
-                            this.dataset
-                                .category ||
-                            'all';
+                    const show =
+                        category === 'all' ||
+                        productCategory === category;
 
 
-                        grid
-                            .querySelectorAll(
-                                '.mini-product-card'
-                            )
-                            .forEach(
-                                function (card) {
+                    card.style.display =
+                        show
+                            ? ''
+                            : 'none';
 
-                                    card.style.display =
-                                        (
-                                            category ===
-                                                'all' ||
-                                            category ===
-                                                card.dataset
-                                                    .category
-                                        )
-                                            ? ''
-                                            : 'none';
-
-                                }
-                            );
+                }
+            );
 
 
-                        grid.scrollLeft =
-                            0;
+        /*
+        * Sau khi đổi category:
+        * đưa product grid về đầu.
+        */
+        grid.scrollLeft = 0;
 
 
-                        updateSwiperPages();
+        /*
+        * Cập nhật lại pagination
+        * theo danh sách product đang hiển thị.
+        */
+        updateSwiperPages();
 
-                    }
-                );
+    }
 
-            }
-        );
+
+    miniCategoryButtons.forEach(
+        function (button) {
+
+            button.addEventListener(
+                'click',
+                function () {
+
+                    /*
+                    * Bỏ active ở tất cả category.
+                    */
+                    miniCategoryButtons
+                        .forEach(
+                            function (item) {
+
+                                item.classList
+                                    .remove(
+                                        'active'
+                                    );
+
+                            }
+                        );
+
+
+                    /*
+                    * Active category vừa chọn.
+                    */
+                    this.classList.add(
+                        'active'
+                    );
+
+
+                    /*
+                    * Lấy ID subcategory
+                    * từ data-category.
+                    */
+                    applyMiniCategoryFilter(
+                        this.dataset.category
+                    );
+
+                }
+            );
+
+        }
+    );
 
 
     /* =========================================================

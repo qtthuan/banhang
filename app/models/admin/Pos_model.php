@@ -510,7 +510,7 @@ class Pos_model extends CI_Model
     {
         $today = date('Y-m-d');
 
-        $this->db->select('id, code, name, price, image, category_id, promotion, promo_price, start_date, end_date');
+        $this->db->select('id, code, name, price, image, category_id, subcategory_id, promotion, promo_price, start_date, end_date');
         $this->db->from('products');
         $this->db->where('category_id', 38);  // Chỉ lấy sản phẩm thuộc nhóm mini
         $this->db->where('hide_pos', 0);        // Chỉ lấy sp POS

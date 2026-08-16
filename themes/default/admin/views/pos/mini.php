@@ -297,7 +297,7 @@
                                 class="mini-product-card"
                                 data-product-id="<?= (int) $product->id; ?>"
                                 data-code="<?= html_escape($product->code); ?>"
-                                data-category="<?= (int) $product->category_id; ?>"
+                                data-category="<?= (int) $product->subcategory_id; ?>"
                                 data-price="<?= (float) $product->price; ?>"
                                 data-name="<?= html_escape($product->name); ?>">
 

@@ -998,12 +998,12 @@ button {
     flex:
         0 0 auto;
 
-    min-width: 125px;
+    min-width: 105px;
 
     height: 66px;
 
     padding:
-        7px 12px;
+        7px 10px;
 
     border:
         1px solid #dfe3e6;
@@ -2239,7 +2239,7 @@ button {
     display: grid;
 
     grid-template-columns:
-        repeat(2,minmax(0,1fr));
+        repeat(3,minmax(0,1fr));
 
     gap:
         7px 10px;
@@ -3489,7 +3489,7 @@ body.mini-modal-open {
     .mini-note-grid {
 
         grid-template-columns:
-            repeat(2,minmax(0,1fr));
+            repeat(3,minmax(0,1fr));
     }
 
 }
