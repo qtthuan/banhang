@@ -342,85 +342,92 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                     row.innerHTML = `
+                        <div class="mini-cart-row-content">
 
-                        <div
-                            class="mini-cart-name">
+                            <div class="mini-cart-name">
 
-                            <strong>
-                                ${escapeHtml(
-                                    item.name
+                                <strong>
+                                    ${escapeHtml(
+                                        item.name
+                                    )}
+                                </strong>
+
+                                <small>
+                                    ${escapeHtml(
+                                        item.code || ''
+                                    )}
+                                </small>
+
+                                ${
+                                    noteText
+                                        ? `
+                                            <span
+                                                class="mini-cart-note">
+                                                ${escapeHtml(
+                                                    noteText
+                                                )}
+                                            </span>
+                                        `
+                                        : ''
+                                }
+
+                            </div>
+
+
+                            <div class="mini-cart-price">
+
+                                ${money(
+                                    getItemUnitNet(
+                                        item
+                                    )
                                 )}
-                            </strong>
 
-                            <small>
-                                ${escapeHtml(
-                                    item.code || ''
+                            </div>
+
+
+                            <div class="mini-cart-qty">
+
+                                <button
+                                    type="button"
+                                    data-cart-action="minus"
+                                    aria-label="Giảm">
+                                    −
+                                </button>
+
+                                <span>
+                                    ${item.qty}
+                                </span>
+
+                                <button
+                                    type="button"
+                                    data-cart-action="plus"
+                                    aria-label="Tăng">
+                                    +
+                                </button>
+
+                            </div>
+
+
+                            <div class="mini-cart-total">
+
+                                ${money(
+                                    getItemTotal(
+                                        item
+                                    )
                                 )}
-                            </small>
 
-                            ${
-                                noteText
-                                    ? `
-                                        <span
-                                            class="mini-cart-note">
-                                            ${escapeHtml(
-                                                noteText
-                                            )}
-                                        </span>
-                                    `
-                                    : ''
-                            }
+                            </div>
 
                         </div>
 
 
-                        <div
-                            class="mini-cart-price">
-
-                            ${money(
-                                getItemUnitNet(
-                                    item
-                                )
-                            )}
-
-                        </div>
-
-
-                        <div
-                            class="mini-cart-qty">
-
-                            <button
-                                type="button"
-                                data-cart-action="minus"
-                                aria-label="Giảm">
-                                −
-                            </button>
-
-                            <span>
-                                ${item.qty}
-                            </span>
-
-                            <button
-                                type="button"
-                                data-cart-action="plus"
-                                aria-label="Tăng">
-                                +
-                            </button>
-
-                        </div>
-
-
-                        <div
-                            class="mini-cart-total">
-
-                            ${money(
-                                getItemTotal(
-                                    item
-                                )
-                            )}
-
-                        </div>
-
+                        <button
+                            type="button"
+                            class="mini-cart-delete"
+                            data-cart-action="delete"
+                            aria-label="Xóa món">
+                            XÓA
+                        </button>
                     `;
 
 
@@ -2168,12 +2175,54 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
 
+                const action =
+                    button.dataset.cartAction;
+
+
+                /*
+                * XÓA MÓN
+                */
+
+                if (action === 'delete') {
+
+                    const index =
+                        cart.findIndex(
+                            function (item) {
+
+                                return (
+                                    item.rowId ===
+                                    row.dataset.rowId
+                                );
+
+                            }
+                        );
+
+
+                    if (index !== -1) {
+
+                        cart.splice(
+                            index,
+                            1
+                        );
+
+                        renderCart();
+
+                    }
+
+
+                    return;
+
+                }
+
+
+                /*
+                * TĂNG / GIẢM SỐ LƯỢNG
+                */
+
                 changeCartQty(
                     row.dataset.rowId,
 
-                    button.dataset
-                        .cartAction ===
-                        'plus'
+                    action === 'plus'
                         ? 1
                         : -1
                 );
@@ -2182,6 +2231,236 @@ document.addEventListener('DOMContentLoaded', function () {
         );
 
     }
+    
+    /* =========================================================
+    * MOBILE CART SWIPE TO DELETE
+    *
+    * Mobile only:
+    * - Vuốt trái: hiện nút XÓA.
+    * - Bấm XÓA: mới xóa món.
+    * - Chạm ra ngoài dòng: đóng nút XÓA.
+    * ========================================================= */
+
+    let swipeStartX = 0;
+    let swipeStartY = 0;
+    let swipeTracking = false;
+
+
+    function closeSwipedCartRows(exceptRow) {
+
+        if (!cartList) {
+            return;
+        }
+
+
+        cartList
+            .querySelectorAll(
+                '.mini-cart-row.swiped'
+            )
+            .forEach(
+                function (row) {
+
+                    if (row !== exceptRow) {
+
+                        row.classList.remove(
+                            'swiped'
+                        );
+
+                    }
+
+                }
+            );
+
+    }
+
+
+    if (cartList) {
+
+        cartList.addEventListener(
+            'touchstart',
+            function (event) {
+
+                if (
+                    window.innerWidth >
+                    800
+                ) {
+                    return;
+                }
+
+
+                const row =
+                    event.target.closest(
+                        '.mini-cart-row'
+                    );
+
+
+                if (!row) {
+                    return;
+                }
+
+
+                swipeStartX =
+                    event.touches[0].clientX;
+
+
+                swipeStartY =
+                    event.touches[0].clientY;
+
+
+                swipeTracking = true;
+
+            },
+            {
+                passive: true
+            }
+        );
+
+
+        cartList.addEventListener(
+            'touchend',
+            function (event) {
+
+                if (
+                    !swipeTracking ||
+                    window.innerWidth >
+                    800
+                ) {
+
+                    swipeTracking = false;
+
+                    return;
+
+                }
+
+
+                const row =
+                    event.target.closest(
+                        '.mini-cart-row'
+                    );
+
+
+                if (!row) {
+
+                    swipeTracking = false;
+
+                    return;
+
+                }
+
+
+                const endX =
+                    event.changedTouches[0].clientX;
+
+
+                const endY =
+                    event.changedTouches[0].clientY;
+
+
+                const deltaX =
+                    endX -
+                    swipeStartX;
+
+
+                const deltaY =
+                    endY -
+                    swipeStartY;
+
+
+                swipeTracking = false;
+
+
+                /*
+                * Chỉ nhận vuốt ngang,
+                * không ảnh hưởng cuộn dọc.
+                */
+
+                if (
+                    Math.abs(deltaX) <=
+                    Math.abs(deltaY)
+                ) {
+
+                    return;
+
+                }
+
+
+                /*
+                * Vuốt sang trái
+                */
+
+                if (deltaX < -50) {
+
+                    closeSwipedCartRows(
+                        row
+                    );
+
+                    row.classList.add(
+                        'swiped'
+                    );
+
+                }
+
+
+                /*
+                * Vuốt sang phải
+                * => đóng nút XÓA
+                */
+
+                else if (
+                    deltaX > 30
+                ) {
+
+                    row.classList.remove(
+                        'swiped'
+                    );
+
+                }
+
+            },
+            {
+                passive: true
+            }
+        );
+
+    }
+
+
+    /*
+    * Chạm ra ngoài row
+    * => đóng tất cả nút XÓA
+    */
+
+    document.addEventListener(
+        'click',
+        function (event) {
+
+            if (
+                window.innerWidth >
+                800
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                event.target.closest(
+                    '.mini-cart-row'
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            closeSwipedCartRows(
+                null
+            );
+
+        }
+    );
 
 
     /* =========================================================
