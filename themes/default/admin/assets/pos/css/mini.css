@@ -1018,7 +1018,7 @@ button {
     flex:
         0 0 auto;
 
-    min-width: 95px;
+    min-width: 105px;
 
     height: 66px;
 
@@ -2749,7 +2749,7 @@ body.mini-modal-open {
 
     .mini-category {
 
-        min-width: 105px;
+        min-width: 95px;
 
         height: 56px;
 
