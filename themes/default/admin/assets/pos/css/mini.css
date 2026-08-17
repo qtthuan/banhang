@@ -507,6 +507,8 @@ button {
     min-width: 0;
 
     padding-right: 5px;
+
+    cursor: pointer !important;
 }
 
 

@@ -430,6 +430,54 @@ document.addEventListener('DOMContentLoaded', function () {
                         </button>
                     `;
 
+                    /* =====================================================
+                    * CLICK / TOUCH TÊN MÓN -> EDIT
+                    * ===================================================== */
+
+                    const nameArea =
+                        row.querySelector(
+                            '.mini-cart-name'
+                        );
+
+
+                    if (nameArea) {
+
+                        nameArea.addEventListener(
+                            'click',
+                            function (event) {
+
+                                event.preventDefault();
+                                event.stopPropagation();
+
+
+                                /*
+                                * Nếu row đang swipe mở XÓA
+                                * thì click chỉ đóng XÓA.
+                                */
+                                if (
+                                    row.classList.contains(
+                                        'swiped'
+                                    )
+                                ) {
+
+                                    row.classList.remove(
+                                        'swiped'
+                                    );
+
+                                    return;
+
+                                }
+
+
+                                openCartRowEdit(
+                                    row
+                                );
+
+                            }
+                        );
+
+                    }
+
 
                     list.appendChild(
                         row
