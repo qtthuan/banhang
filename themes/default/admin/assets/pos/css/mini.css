@@ -4654,100 +4654,78 @@ body.mini-modal-open {
 }
 
 /* =========================================================
-   QUICK NOTE - BUTTON STYLE
+   QUICK NOTE - BUTTON SIZE / BORDER
    ========================================================= */
 
-.mini-note-box {
-    position: relative;
+.mini-note-btn {
+    width: 100% !important;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 36px !important;
+    height: 36px !important;
 
-    min-height: 42px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 
-    padding: 8px 14px;
+    padding: 5px 8px !important;
 
-    border: 1.5px solid #b9bec3;
-    border-radius: 9px;
+    border: 1.5px solid #69737c !important;
 
-    background: #ffffff;
+    border-radius: 7px !important;
 
-    color: #34383c;
+    background: #fff !important;
 
-    cursor: pointer;
+    color: #626b73 !important;
 
-    user-select: none;
+    font-size: 13px !important;
+    font-weight: 600 !important;
 
-    transition:
-        background .15s ease,
-        border-color .15s ease,
-        box-shadow .15s ease;
+    line-height: 1.15 !important;
+
+    white-space: normal !important;
 }
 
 
-/* Checkbox thật nhưng ẩn */
-.mini-note-box input.chkComment {
-    position: absolute;
+/* CHƯA CHỌN - VIỀN ĐẬM */
+.mini-note-checkbox:not(:checked)
++ .mini-note-btn {
 
-    opacity: 0;
+    background: #fff !important;
 
-    pointer-events: none;
+    border-color: #69737c !important;
+
+    color: #626b73 !important;
 }
 
 
-/* Trạng thái đang chọn */
-.mini-note-box:has(
-    input.chkComment:checked
-) {
+/* ĐÃ CHỌN */
+.mini-note-checkbox:checked
++ .mini-note-btn {
 
-    background: #e7edf2;
+    background: #2e6646 !important;
 
-    border-color: #68737c;
+    border-color: #28b765 !important;
 
-    color: #202428;
-
-    font-weight: 600;
+    color: #fff !important;
 
     box-shadow:
-        0 0 0 1px #68737c;
+        0 1px 3px rgba(0, 0, 0, .10) !important;
 }
 
 
-/* =========================================================
-   QUICK NOTE - CHECK CHỈ HIỆN KHI ĐƯỢC CHỌN
-   ========================================================= */
-
-.mini-note-box::after {
-    content: none !important;
+/* Hover / chạm */
+.mini-note-btn:hover {
+    border-color: #4f5961 !important;
 }
 
 
-/* Khi CHƯA chọn */
-.mini-note-checkbox:not(:checked)
-+ .mini-note-box {
-    color: transparent !important;
-}
-
-
-/* Khi ĐÃ chọn */
+/* Đã chọn hover */
 .mini-note-checkbox:checked
-+ .mini-note-box {
-    background: var(--mini-green) !important;
-    border-color: var(--mini-green) !important;
++ .mini-note-btn:hover {
+
+    background: #2e6646 !important;
+
+    border-color: #28b765 !important;
+
     color: #fff !important;
-}
-
-
-/* Dấu ✓ chỉ khi đã chọn */
-.mini-note-checkbox:checked
-+ .mini-note-box::after {
-
-    content: "" !important;
-
-    margin-left: 0;
-
-    font-size: 20px;
-
-    font-weight: 700;
 }

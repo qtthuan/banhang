@@ -833,27 +833,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         return `
 
-                            <label
-                                class="mini-note-item"
-                                for="mini-comment-${escapeHtml(id)}">
+                            <div class="mini-note-item">
 
                                 <input
-                                    class="mini-note-checkbox chkComment"
                                     type="checkbox"
+                                    class="btn-check mini-note-checkbox chkComment"
                                     id="mini-comment-${escapeHtml(id)}"
-                                    value="${escapeHtml(text)}">
+                                    value="${escapeHtml(text)}"
+                                    autocomplete="off">
 
-                                <span
-                                    class="mini-note-box">
-                                    ✓
-                                </span>
+                                <label
+                                    class="btn btn-outline-secondary mini-note-btn"
+                                    for="mini-comment-${escapeHtml(id)}">
 
-                                <span
-                                    class="mini-note-text">
                                     ${escapeHtml(text)}
-                                </span>
 
-                            </label>
+                                </label>
+
+                            </div>
 
                         `;
 
