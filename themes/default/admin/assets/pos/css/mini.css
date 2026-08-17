@@ -4652,3 +4652,102 @@ body.mini-modal-open {
     text-align: right !important;
     padding-right: 8px !important;
 }
+
+/* =========================================================
+   QUICK NOTE - BUTTON STYLE
+   ========================================================= */
+
+.mini-note-box {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 42px;
+
+    padding: 8px 14px;
+
+    border: 1.5px solid #b9bec3;
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #34383c;
+
+    cursor: pointer;
+
+    user-select: none;
+
+    transition:
+        background .15s ease,
+        border-color .15s ease,
+        box-shadow .15s ease;
+}
+
+
+/* Checkbox thật nhưng ẩn */
+.mini-note-box input.chkComment {
+    position: absolute;
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+
+/* Trạng thái đang chọn */
+.mini-note-box:has(
+    input.chkComment:checked
+) {
+
+    background: #e7edf2;
+
+    border-color: #68737c;
+
+    color: #202428;
+
+    font-weight: 600;
+
+    box-shadow:
+        0 0 0 1px #68737c;
+}
+
+
+/* =========================================================
+   QUICK NOTE - CHECK CHỈ HIỆN KHI ĐƯỢC CHỌN
+   ========================================================= */
+
+.mini-note-box::after {
+    content: none !important;
+}
+
+
+/* Khi CHƯA chọn */
+.mini-note-checkbox:not(:checked)
++ .mini-note-box {
+    color: transparent !important;
+}
+
+
+/* Khi ĐÃ chọn */
+.mini-note-checkbox:checked
++ .mini-note-box {
+    background: var(--mini-green) !important;
+    border-color: var(--mini-green) !important;
+    color: #fff !important;
+}
+
+
+/* Dấu ✓ chỉ khi đã chọn */
+.mini-note-checkbox:checked
++ .mini-note-box::after {
+
+    content: "" !important;
+
+    margin-left: 0;
+
+    font-size: 20px;
+
+    font-weight: 700;
+}
