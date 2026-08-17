@@ -4428,3 +4428,191 @@ body.mini-modal-open {
         font-size: 13px !important;
     }
 }
+
+/* =========================================================
+   MINI POS - HIGH CONTRAST BORDER
+   Chỉ tăng độ rõ đường viền / line cho màn hình POS
+   Không thay đổi layout / kích thước / chức năng
+   ========================================================= */
+
+:root {
+
+    /* Border chung */
+    --mini-border: #c9ced3;
+}
+
+
+/* =========================================================
+   PRODUCT CARD
+   ========================================================= */
+
+.mini-product-card {
+
+    border-color: #c5cbd0;
+}
+
+
+/* =========================================================
+   CATEGORY
+   ========================================================= */
+
+.mini-category {
+
+    border-color: #c5cbd0;
+}
+
+
+.mini-category-arrow {
+
+    border-color: #c5cbd0;
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.mini-search {
+
+    border-color: #c5cbd0;
+}
+
+
+/* =========================================================
+   CART
+   ========================================================= */
+
+.mini-cart-head {
+
+    border-bottom-color: #c5cbd0;
+}
+
+
+.mini-cart-row {
+
+    border-bottom-color: #c5cbd0;
+}
+
+
+/* =========================================================
+   CART BUTTON
+   ========================================================= */
+
+.mini-cart-qty button {
+
+    border: 1px solid rgba(0, 0, 0, .08);
+}
+
+
+/* =========================================================
+   TOOL BUTTON
+   ========================================================= */
+
+.mini-tool-btn {
+
+    border-right-color: #c5cbd0;
+}
+
+
+.mini-order-tools {
+
+    border-bottom-color: #c5cbd0;
+}
+
+
+/* =========================================================
+   MODAL INPUT
+   ========================================================= */
+
+.mini-modal-input {
+
+    border-color: #c5cbd0;
+}
+
+
+.mini-qty-btn {
+
+    border-color: #c5cbd0;
+}
+
+
+.mini-qty-input {
+
+    border-color: #c5cbd0;
+}
+
+
+.mini-discount-step-btn {
+
+    border-color: #c5cbd0;
+}
+
+
+.mini-discount-type {
+
+    border-color: #c5cbd0;
+}
+
+
+/* =========================================================
+   CHECKBOX
+   ========================================================= */
+
+.mini-note-box {
+
+    border-color: #aeb5bb;
+}
+
+
+/* =========================================================
+   MODAL LINE
+   ========================================================= */
+
+.mini-modal-header {
+
+    border-bottom-color: #c5cbd0;
+}
+
+
+.mini-modal-footer {
+
+    border-top-color: #c5cbd0;
+}
+
+
+/* =========================================================
+   GRAND TOTAL
+   ========================================================= */
+
+.mini-grand-total {
+
+    border-top-color: #c5cbd0;
+    border-bottom-color: #c5cbd0;
+}
+
+
+/* =========================================================
+   PRODUCT SCROLLBAR
+   ========================================================= */
+
+.mini-product-grid {
+
+    scrollbar-color:
+        #aeb5bb transparent;
+}
+
+
+.mini-product-grid::-webkit-scrollbar-thumb {
+
+    background: #aeb5bb;
+}
+
+
+/* =========================================================
+   CART SCROLLBAR
+   ========================================================= */
+
+.mini-cart-list::-webkit-scrollbar-thumb {
+
+    background: #aeb5bb;
+}
