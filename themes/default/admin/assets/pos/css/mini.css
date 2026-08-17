@@ -1554,7 +1554,7 @@ button {
         rgba(0,0,0,.13);
 
     color:
-        #555c63;
+        #fafafa;
 
     font-size: 17px;
 
@@ -1875,10 +1875,10 @@ button {
     border-radius: 50%;
 
     background:
-        #f0f2f3;
+        #2e586d;
 
     color:
-        #33383d;
+        #fcfcfc;
 
     font-size: 27px;
 
@@ -4635,8 +4635,20 @@ body.mini-modal-open {
     font-size: 20px !important;
     line-height: 42px !important;
 
-    background: #ffffff !important;
+    background: #00a651  !important;
 
     box-shadow:
         0 2px 6px rgba(0, 0, 0, .10) !important;
+}
+
+.mini-product-name {
+    width: 100% !important;
+    text-align: center !important;
+}
+
+.mini-product-price {
+    display: block !important;
+    width: 100% !important;
+    text-align: right !important;
+    padding-right: 8px !important;
 }

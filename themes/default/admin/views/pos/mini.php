@@ -285,6 +285,28 @@
 
                 <?php if (!empty($products)): ?>
 
+                    <?php
+                        function mini_display_product_name($name)
+                        {
+                            $name = trim((string) $name);
+
+                            /*
+                            * Bỏ prefix dạng:
+                            * A_Tên món
+                            * B_Tên món
+                            * C_Tên món
+                            *
+                            * Chỉ bỏ 1 ký tự chữ + dấu _
+                            * ở đầu tên.
+                            */
+                            return preg_replace(
+                                '/^[A-Za-z]_/',
+                                '',
+                                $name
+                            );
+                        }
+                    ?>
+
                     <?php foreach ($products as $product): ?>
 
                         <?php
@@ -322,7 +344,11 @@
                             </div>
 
                             <div class="mini-product-name">
-                                <?= html_escape($product->name); ?>
+                                <?= html_escape(
+                                    mini_display_product_name(
+                                        $product->name
+                                    )
+                                ); ?>
                             </div>
 
                             <div class="mini-product-price">

@@ -351,10 +351,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         <div class="mini-cart-row-content">
 
                             <div class="mini-cart-name">
-
                                 <strong>
                                     ${escapeHtml(
-                                        item.name
+                                        miniDisplayProductName(
+                                            item.name
+                                        )
                                     )}
                                 </strong>
 
@@ -1666,6 +1667,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
+    function miniDisplayProductName(name) {
+        name =
+            String(
+                name || ''
+            ).trim();
+
+
+        return name.replace(
+            /^[A-Za-z]_/,
+            ''
+        );
+
+    }
 
     /* =========================================================
      * OPEN MODAL
@@ -1696,14 +1710,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 'mini-modal-product-name'
             )
             .textContent =
-            card.dataset.name ||
-            card
-                .querySelector(
-                    '.mini-product-name'
-                )
-                ?.textContent
-                .trim() ||
-            '';
+            miniDisplayProductName(
+                card.dataset.name ||
+                card
+                    .querySelector(
+                        '.mini-product-name'
+                    )
+                    ?.textContent
+                    .trim() ||
+                ''
+            );
 
 
         /*
