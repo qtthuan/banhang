@@ -430,54 +430,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         </button>
                     `;
 
-                    /* =====================================================
-                    * CLICK / TOUCH TÊN MÓN -> EDIT
-                    * ===================================================== */
-
-                    const nameArea =
-                        row.querySelector(
-                            '.mini-cart-name'
-                        );
-
-
-                    if (nameArea) {
-
-                        nameArea.addEventListener(
-                            'click',
-                            function (event) {
-
-                                event.preventDefault();
-                                event.stopPropagation();
-
-
-                                /*
-                                * Nếu row đang swipe mở XÓA
-                                * thì click chỉ đóng XÓA.
-                                */
-                                if (
-                                    row.classList.contains(
-                                        'swiped'
-                                    )
-                                ) {
-
-                                    row.classList.remove(
-                                        'swiped'
-                                    );
-
-                                    return;
-
-                                }
-
-
-                                openCartRowEdit(
-                                    row
-                                );
-
-                            }
-                        );
-
-                    }
-
 
                     list.appendChild(
                         row
@@ -2484,8 +2436,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-     * CART EVENTS
-     * ========================================================= */
+    * CART EVENTS
+    * ========================================================= */
 
     const cartList =
         document.getElementById(
@@ -2493,26 +2445,15 @@ document.addEventListener('DOMContentLoaded', function () {
         );
 
 
-    /* =========================================================
-    * CART EVENTS
-    *
-    * - Click + / -  : thay đổi số lượng
-    * - Click XÓA    : xóa món
-    * - Click row    : mở modal edit
-    * ========================================================= */
-
     if (cartList) {
 
         cartList.addEventListener(
             'click',
             function (event) {
 
-                const button =
-                    event.target.closest(
-                        '[data-cart-action]'
-                    );
-
-
+                /*
+                * Tìm row được click.
+                */
                 const row =
                     event.target.closest(
                         '.mini-cart-row'
@@ -2520,187 +2461,195 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                 /*
-                * Không click trong cart row
-                * thì bỏ qua.
+                * Không nằm trong row thì bỏ qua.
                 */
                 if (!row) {
                     return;
                 }
 
 
-                /* =================================================
-                * CLICK VÀO ROW
-                * ================================================= */
-
-                if (!button) {
-
-                    /*
-                    * Nếu row đang mở nút XÓA
-                    * thì click lần này chỉ đóng XÓA.
-                    *
-                    * Không mở modal.
-                    */
-                    if (
-                        row.classList.contains(
-                            'swiped'
-                        )
-                    ) {
-
-                        row.classList.remove(
-                            'swiped'
-                        );
-
-                        return;
-
-                    }
-
-
-                    /*
-                    * Lấy rowId.
-                    */
-                    const rowId =
-                        row.dataset.rowId;
-
-
-                    /*
-                    * Tìm item thật trong cart.
-                    */
-                    const item =
-                        cart.find(
-                            function (cartItem) {
-
-                                return (
-                                    String(
-                                        cartItem.rowId
-                                    ) ===
-                                    String(
-                                        rowId
-                                    )
-                                );
-
-                            }
-                        );
-
-
-                    if (!item) {
-                        return;
-                    }
-
-
-                    /*
-                    * Tìm product card tương ứng.
-                    *
-                    * Không quan trọng card đang:
-                    * - hiện
-                    * - bị filter
-                    * - đang ở trang khác
-                    *
-                    * querySelector vẫn tìm được DOM card.
-                    */
-                    const card =
-                        grid.querySelector(
-                            '.mini-product-card[data-product-id="' +
-                            CSS.escape(
-                                String(
-                                    item.id
-                                )
-                            ) +
-                            '"]'
-                        );
-
-
-                    if (!card) {
-
-                        console.warn(
-                            'Không tìm thấy product card để edit:',
-                            item.id
-                        );
-
-                        return;
-
-                    }
-
-
-                    /*
-                    * Mở modal EDIT.
-                    */
-                    openProductModal(
-                        card,
-                        item
+                /*
+                * Tìm button nếu click vào button.
+                */
+                const button =
+                    event.target.closest(
+                        '[data-cart-action]'
                     );
-
-
-                    return;
-                }
 
 
                 /* =================================================
                 * CÓ BUTTON -> XỬ LÝ BUTTON
                 * ================================================= */
 
-                const action =
-                    button.dataset.cartAction;
+                if (button) {
+
+                    const action =
+                        button.dataset.cartAction;
 
 
-                /*
-                * XÓA MÓN
-                */
-                if (
-                    action === 'delete'
-                ) {
+                    /*
+                    * XÓA MÓN
+                    */
+                    if (
+                        action === 'delete'
+                    ) {
 
-                    const index =
-                        cart.findIndex(
-                            function (item) {
+                        const index =
+                            cart.findIndex(
+                                function (item) {
 
-                                return (
-                                    String(
-                                        item.rowId
-                                    ) ===
-                                    String(
-                                        row.dataset.rowId
-                                    )
-                                );
+                                    return (
+                                        String(
+                                            item.rowId
+                                        ) ===
+                                        String(
+                                            row.dataset.rowId
+                                        )
+                                    );
 
-                            }
-                        );
-
-
-                    if (index !== -1) {
-
-                        cart.splice(
-                            index,
-                            1
-                        );
+                                }
+                            );
 
 
-                        renderCart();
+                        if (index !== -1) {
 
+                            cart.splice(
+                                index,
+                                1
+                            );
+
+
+                            renderCart();
+
+                        }
+
+
+                        return;
                     }
 
 
+                    /*
+                    * TĂNG / GIẢM SỐ LƯỢNG
+                    *
+                    * Chỉ xử lý quantity,
+                    * không mở modal.
+                    */
+                    if (
+                        action === 'plus' ||
+                        action === 'minus'
+                    ) {
+
+                        changeCartQty(
+                            row.dataset.rowId,
+
+                            action === 'plus'
+                                ? 1
+                                : -1
+                        );
+
+
+                        return;
+                    }
+
+
+                    /*
+                    * Button khác nếu có:
+                    * không mở modal.
+                    */
+                    return;
+
+                }
+
+
+                /* =================================================
+                * CLICK BẤT KỲ VÙNG NÀO CỦA ROW -> EDIT
+                * ================================================= */
+
+                /*
+                * Nếu row đang swipe mở nút XÓA
+                * thì click lần này chỉ đóng trạng thái swipe.
+                */
+                if (
+                    row.classList.contains(
+                        'swiped'
+                    )
+                ) {
+
+                    row.classList.remove(
+                        'swiped'
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                * Lấy rowId.
+                */
+                const rowId =
+                    row.dataset.rowId;
+
+
+                /*
+                * Tìm item tương ứng trong cart.
+                */
+                const item =
+                    cart.find(
+                        function (cartItem) {
+
+                            return (
+                                String(
+                                    cartItem.rowId
+                                ) ===
+                                String(
+                                    rowId
+                                )
+                            );
+
+                        }
+                    );
+
+
+                if (!item) {
                     return;
                 }
 
 
                 /*
-                * TĂNG / GIẢM SỐ LƯỢNG
+                * Tìm product card tương ứng.
                 */
-                if (
-                    action === 'plus' ||
-                    action === 'minus'
-                ) {
+                const card =
+                    grid.querySelector(
+                        '.mini-product-card[data-product-id="' +
+                        CSS.escape(
+                            String(
+                                item.id
+                            )
+                        ) +
+                        '"]'
+                    );
 
-                    changeCartQty(
-                        row.dataset.rowId,
 
-                        action === 'plus'
-                            ? 1
-                            : -1
+                if (!card) {
+
+                    console.warn(
+                        'Không tìm thấy product card để edit:',
+                        item.id
                     );
 
                     return;
+
                 }
+
+
+                /*
+                * Mở modal EDIT.
+                */
+                openProductModal(
+                    card,
+                    item
+                );
 
             }
         );
