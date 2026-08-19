@@ -4729,3 +4729,213 @@ body.mini-modal-open {
 
     color: #fff !important;
 }
+
+/* =========================================================
+   QUICK ADD PRODUCT
+   ========================================================= */
+
+.mini-quick-add {
+    position: absolute;
+
+    right: 12px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 32px;
+    height: 32px;
+
+    padding: 0;
+    margin: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1.5px solid #69737c;
+    border-radius: 50%;
+
+    background: #fff;
+    color: #4f5961;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 24px;
+    font-weight: 400;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    z-index: 8;
+
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.mini-quick-add:hover {
+    background: #f1f3f5;
+    border-color: #4f5961;
+}
+
+.mini-search {
+    padding-right: 90px !important;
+}
+
+/* =========================================================
+ * QUICK ADD - SỐ LƯỢNG
+ * Giống Số lượng trong Edit modal
+ * ========================================================= */
+
+#mini-quick-add-modal .mini-qty-control {
+
+    display: flex;
+
+    width: 100%;
+
+    height: 52px;
+
+    border: 1px solid #aeb5bc;
+
+    border-radius: 8px;
+
+    overflow: hidden;
+
+    background: #fff;
+
+}
+
+
+#mini-quick-add-modal .mini-qty-control button {
+
+    width: 52px;
+
+    flex: 0 0 52px;
+
+    border: 0;
+
+    background: #fff;
+
+    color: #30363b;
+
+    font-size: 24px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+
+#mini-quick-add-modal .mini-qty-control button:hover {
+
+    background: #f1f3f5;
+
+}
+
+
+#mini-quick-add-modal .mini-qty-control input {
+
+    flex: 1;
+
+    min-width: 0;
+
+    border: 0;
+
+    border-left: 1px solid #aeb5bc;
+
+    border-right: 1px solid #aeb5bc;
+
+    border-radius: 0;
+
+    background: #fff;
+
+    text-align: center;
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+    color: #30363b;
+
+    outline: none;
+
+}
+
+
+#mini-quick-add-modal .mini-qty-control input:focus {
+
+    outline: none;
+
+    box-shadow: none;
+
+}
+
+/* =========================================================
+   GLOBAL MINI ALERT - FINAL
+   ========================================================= */
+
+#mini-global-alert {
+
+    position: fixed !important;
+
+    top: 24px !important;
+    left: 50% !important;
+
+    transform: translateX(-50%) !important;
+
+    width: max-content !important;
+
+    min-width: 280px !important;
+    max-width: 90vw !important;
+
+    margin: 0 !important;
+    padding: 11px 18px !important;
+
+    box-sizing: border-box !important;
+
+    border-radius: 8px !important;
+
+    font-size: 14px !important;
+    font-weight: 600 !important;
+
+    line-height: 1.4 !important;
+
+    text-align: center !important;
+
+    /*
+     * Quan trọng:
+     * Không cho layout nào của Mini che alert.
+     */
+    z-index: 2147483647 !important;
+
+    /*
+     * Đảm bảo nhìn thấy.
+     */
+    visibility: visible !important;
+
+    opacity: 1 !important;
+
+    pointer-events: none !important;
+
+    box-shadow:
+        0 5px 18px rgba(0, 0, 0, .22) !important;
+}
+
+
+/* Khi đang ẩn */
+#mini-global-alert.d-none {
+
+    display: none !important;
+}
+
+
+/* Khi hiện */
+#mini-global-alert.mini-alert-visible {
+
+    display: block !important;
+
+    visibility: visible !important;
+
+    opacity: 1 !important;
+}

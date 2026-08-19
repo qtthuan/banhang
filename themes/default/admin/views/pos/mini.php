@@ -281,7 +281,18 @@
                     ×
                 </button>
 
+                <button
+                type="button"
+                id="mini-quick-add"
+                class="mini-quick-add"
+                aria-label="Thêm món nhanh"
+                title="Thêm món nhanh">
+                +
+            </button>
+
             </div>
+
+            
 
 
             <!-- Product swiper ngang -->
@@ -429,8 +440,21 @@ window.miniOrderComments = <?= json_encode(
 ); ?>;
 </script>
 
+    <!-- =========================================================
+     GLOBAL MINI ALERT
+     ========================================================= -->
+
+    <div
+        id="mini-global-alert"
+        class="alert alert-danger mini-global-alert d-none"
+        role="alert"
+        aria-live="polite">
+    </div>
+
 <script type="text/javascript"
         src="<?=$assets?>pos/js/mini.js"></script>
+
+
 
 </body>
 </html>

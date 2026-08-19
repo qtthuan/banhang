@@ -860,6 +860,700 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
+    let miniAlertTimer = null;
+
+
+    function showMiniAlert(
+        message,
+        type = 'danger',
+        duration = 2500
+    ) {
+
+        const alertBox =
+            document.getElementById(
+                'mini-global-alert'
+            );
+
+
+        if (!alertBox) {
+            return;
+        }
+
+
+        if (miniAlertTimer) {
+
+            clearTimeout(
+                miniAlertTimer
+            );
+
+            miniAlertTimer = null;
+
+        }
+
+
+        /*
+        * Xóa trạng thái Bootstrap cũ.
+        */
+        alertBox.classList.remove(
+            'alert-danger',
+            'alert-warning',
+            'alert-success',
+            'alert-info',
+            'd-none'
+        );
+
+
+        /*
+        * Thêm màu Bootstrap.
+        */
+        alertBox.classList.add(
+            'alert-' + type,
+            'mini-alert-visible'
+        );
+
+
+        /*
+        * Nội dung.
+        */
+        alertBox.textContent =
+            message;
+
+
+        /*
+        * Ép hiển thị.
+        */
+        alertBox.style.setProperty(
+            'display',
+            'block',
+            'important'
+        );
+
+        alertBox.style.setProperty(
+            'visibility',
+            'visible',
+            'important'
+        );
+
+        alertBox.style.setProperty(
+            'opacity',
+            '1',
+            'important'
+        );
+
+
+        /*
+        * Tự ẩn.
+        */
+        miniAlertTimer =
+            setTimeout(
+                function () {
+
+                    alertBox.classList.remove(
+                        'mini-alert-visible'
+                    );
+
+
+                    alertBox.style.setProperty(
+                        'display',
+                        'none',
+                        'important'
+                    );
+
+
+                    alertBox.classList.add(
+                        'd-none'
+                    );
+
+                },
+                duration
+            );
+
+    }
+
+    /* =========================================================
+    * QUICK ADD PRODUCT MODAL
+    * ========================================================= */
+
+    function createQuickAddModal() {
+
+        if (
+            document.getElementById(
+                'mini-quick-add-modal'
+            )
+        ) {
+            return;
+        }
+
+
+        const html = `
+
+            <div
+                id="mini-quick-add-modal"
+                class="mini-modal"
+                aria-hidden="true">
+
+                <div
+                    class="mini-modal-overlay"
+                    data-quick-add-close>
+                </div>
+
+
+                <div
+                    class="mini-modal-dialog"
+                    role="dialog"
+                    aria-modal="true">
+
+                    <div class="mini-modal-header">
+
+                        <div>
+
+                            <div class="mini-modal-header-name">
+                                Thêm món nhanh
+                            </div>
+
+                            <div class="mini-modal-header-price">
+                                Món ngoài menu
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="mini-modal-close"
+                            data-quick-add-close>
+                            ×
+                        </button>
+
+                    </div>
+
+
+                    <div class="mini-modal-body">
+
+
+                        <!-- TÊN MÓN -->
+
+                        <div class="mini-modal-field">
+
+                            <label for="mini-quick-name">
+                                Tên món
+                            </label>
+
+                            <input
+                                type="text"
+                                id="mini-quick-name"
+                                class="mini-modal-input"
+                                placeholder="Nhập tên món..."
+                                autocomplete="off">
+
+                        </div>
+
+
+                        <!-- GIÁ + GIẢM GIÁ -->
+
+                        <div
+                            class="mini-modal-two-col">
+
+                            <div class="mini-modal-field">
+
+                                <label for="mini-quick-price">
+                                    Đơn giá
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="mini-quick-price"
+                                    class="mini-modal-input"
+                                    min="0"
+                                    step="1000"
+                                    inputmode="numeric"
+                                    placeholder="0">
+
+                            </div>
+
+
+                            <div class="mini-modal-field">
+
+                                <label for="mini-quick-discount">
+                                    Giảm giá
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="mini-quick-discount"
+                                    class="mini-modal-input"
+                                    min="0"
+                                    step="1000"
+                                    inputmode="numeric"
+                                    value="0">
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- SỐ LƯỢNG -->
+
+                        <div class="mini-modal-field">
+
+                            <label for="mini-quick-qty">
+                                Số lượng
+                            </label>
+
+                            <div class="mini-qty-control">
+
+                                <button
+                                    type="button"
+                                    id="mini-quick-qty-minus">
+                                    −
+                                </button>
+
+                                <input
+                                    type="number"
+                                    id="mini-quick-qty"
+                                    value="1"
+                                    min="1"
+                                    inputmode="numeric">
+
+                                <button
+                                    type="button"
+                                    id="mini-quick-qty-plus">
+                                    +
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mini-modal-footer">
+
+                        <button
+                            type="button"
+                            class="mini-modal-btn mini-modal-btn-cancel"
+                            data-quick-add-close>
+                            HỦY
+                        </button>
+
+                        <button
+                            type="button"
+                            id="mini-quick-add-submit"
+                            class="mini-modal-btn mini-modal-btn-primary">
+                            THÊM VÀO ĐƠN
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+
+        document.body.insertAdjacentHTML(
+            'beforeend',
+            html
+        );
+
+
+        const modal =
+            document.getElementById(
+                'mini-quick-add-modal'
+            );
+
+
+        /*
+        * Đóng modal.
+        */
+
+        modal
+            .querySelectorAll(
+                '[data-quick-add-close]'
+            )
+            .forEach(
+                function (button) {
+
+                    button.addEventListener(
+                        'click',
+                        closeQuickAddModal
+                    );
+
+                }
+            );
+
+
+        /*
+        * Quantity.
+        */
+
+        document
+            .getElementById(
+                'mini-quick-qty-minus'
+            )
+            .addEventListener(
+                'click',
+                function () {
+
+                    const input =
+                        document.getElementById(
+                            'mini-quick-qty'
+                        );
+
+                    input.value =
+                        Math.max(
+                            1,
+                            (
+                                parseInt(
+                                    input.value,
+                                    10
+                                ) || 1
+                            ) - 1
+                        );
+
+                }
+            );
+
+
+        document
+            .getElementById(
+                'mini-quick-qty-plus'
+            )
+            .addEventListener(
+                'click',
+                function () {
+
+                    const input =
+                        document.getElementById(
+                            'mini-quick-qty'
+                        );
+
+                    input.value =
+                        Math.max(
+                            1,
+                            (
+                                parseInt(
+                                    input.value,
+                                    10
+                                ) || 1
+                            ) + 1
+                        );
+
+                }
+            );
+
+
+        /*
+        * Thêm vào đơn.
+        */
+
+        document
+            .getElementById(
+                'mini-quick-add-submit'
+            )
+            .addEventListener(
+                'click',
+                handleQuickAddSubmit
+            );
+
+        /* =========================================================
+        * QUICK ADD - SELECT INPUT CONTENT
+        * ========================================================= */
+
+        [
+            'mini-quick-name',
+            'mini-quick-price',
+            'mini-quick-discount',
+            'mini-quick-qty'
+        ].forEach(
+            function (id) {
+
+                const input =
+                    document.getElementById(id);
+
+
+                if (!input) {
+                    return;
+                }
+
+
+                input.addEventListener(
+                    'focus',
+                    function () {
+
+                        /*
+                        * Select toàn bộ nội dung
+                        * khi chạm/click vào ô.
+                        */
+                        this.select();
+
+                    }
+                );
+
+            }
+        );
+
+    }
+
+    function openQuickAddModal() {
+
+        createQuickAddModal();
+
+
+        const modal =
+            document.getElementById(
+                'mini-quick-add-modal'
+            );
+
+
+        document
+            .getElementById(
+                'mini-quick-name'
+            )
+            .value = '';
+
+
+        document
+            .getElementById(
+                'mini-quick-price'
+            )
+            .value = '';
+
+
+        document
+            .getElementById(
+                'mini-quick-discount'
+            )
+            .value = '0';
+
+
+        document
+            .getElementById(
+                'mini-quick-qty'
+            )
+            .value = '1';
+
+
+        modal.classList.add(
+            'show'
+        );
+
+
+        modal.setAttribute(
+            'aria-hidden',
+            'false'
+        );
+
+
+        document.body.classList.add(
+            'mini-modal-open'
+        );
+
+
+        setTimeout(
+            function () {
+
+                document
+                    .getElementById(
+                        'mini-quick-name'
+                    )
+                    ?.focus();
+
+            },
+            50
+        );
+
+    }
+
+
+    function closeQuickAddModal() {
+
+        const modal =
+            document.getElementById(
+                'mini-quick-add-modal'
+            );
+
+
+        if (!modal) {
+            return;
+        }
+
+
+        modal.classList.remove(
+            'show'
+        );
+
+
+        modal.setAttribute(
+            'aria-hidden',
+            'true'
+        );
+
+
+        document.body.classList.remove(
+            'mini-modal-open'
+        );
+
+    }
+
+    function handleQuickAddSubmit() {
+
+        const name =
+            document
+                .getElementById(
+                    'mini-quick-name'
+                )
+                ?.value
+                .trim() || '';
+
+
+        const price =
+            Math.max(
+                0,
+                parseFloat(
+                    document
+                        .getElementById(
+                            'mini-quick-price'
+                        )
+                        ?.value
+                ) || 0
+            );
+
+
+        const discount =
+            Math.min(
+                price,
+                Math.max(
+                    0,
+                    parseFloat(
+                        document
+                            .getElementById(
+                                'mini-quick-discount'
+                            )
+                            ?.value
+                    ) || 0
+                )
+            );
+
+
+        const qty =
+            Math.max(
+                1,
+                parseInt(
+                    document
+                        .getElementById(
+                            'mini-quick-qty'
+                        )
+                        ?.value,
+                    10
+                ) || 1
+            );
+
+
+        /*
+        * Validate.
+        */
+
+        if (!name) {
+
+            showMiniAlert(
+                'Vui lòng nhập tên món.'
+            );
+
+            document
+                .getElementById(
+                    'mini-quick-name'
+                )
+                ?.focus();
+
+            return;
+
+        }
+
+        if (price <= 0) {
+
+            showMiniAlert(
+                'Vui lòng nhập đơn giá.'
+            );
+
+            document
+                .getElementById(
+                    'mini-quick-price'
+                )
+                ?.focus();
+
+            return;
+        }
+
+
+        /*
+        * Tạo dòng cart trực tiếp.
+        *
+        * Không cần product card.
+        * Không lưu vào database.
+        */
+
+        cart.push({
+
+            rowId:
+                createRowId(),
+
+            id:
+                'quick-' +
+                Date.now(),
+
+            code:
+                '',
+
+            name:
+                name,
+
+            price:
+                price,
+
+            qty:
+                qty,
+
+            discount:
+                discount,
+
+            discountType:
+                'amount',
+
+            comment:
+                '',
+
+            commentName:
+                '',
+
+            option:
+                '',
+
+            serial:
+                '',
+
+            isPromo:
+                0
+
+        });
+
+
+        /*
+        * Render lại cart.
+        */
+
+        renderCart();
+
+
+        /*
+        * Đóng modal.
+        */
+
+        closeQuickAddModal();
+
+    }
+
 
     /* =========================================================
      * CREATE PRODUCT MODAL
@@ -3808,13 +4502,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-     * PAYMENT
-     * ========================================================= */
+    * PAYMENT
+    * ========================================================= */
 
     const payment =
         document.getElementById(
             'mini-payment'
         );
+
+        console.log('PAYMENT ELEMENT:', payment);
 
 
     if (payment) {
@@ -3823,6 +4519,26 @@ document.addEventListener('DOMContentLoaded', function () {
             'click',
             function () {
 
+                console.log('ĐÃ CLICK THANH TOÁN');
+
+                /*
+                * Không có món
+                */
+                if (!cart.length) {
+
+                    showMiniAlert(
+                        'Vui lòng thêm món vào đơn.',
+                        'warning'
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                * Có món
+                */
                 const total =
                     document
                         .getElementById(
@@ -3832,9 +4548,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     '0đ';
 
 
-                window.alert(
-                    'Tổng thanh toán: ' +
-                    total
+                showMiniAlert(
+                    'Tổng thanh toán: ' + total,
+                    'success'
                 );
 
             }
@@ -3873,6 +4589,33 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
     );
+
+    /* =========================================================
+     * QUICK ADD BUTTON
+     * ========================================================= */
+
+    const quickAddButton =
+        document.getElementById(
+            'mini-quick-add'
+        );
+
+
+    if (quickAddButton) {
+
+        quickAddButton.addEventListener(
+            'click',
+            function (event) {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+                openQuickAddModal();
+
+            }
+        );
+
+    }
 
 
     /* =========================================================
