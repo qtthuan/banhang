@@ -48,6 +48,12 @@ class Products extends MY_Controller
 
     function getProducts($warehouse_id = NULL)
     {
+         echo '<pre>';
+    echo 'FUNCTION GETPRODUCTS CHAY';
+    echo "\nwarehouse_id = ";
+    var_dump($warehouse_id);
+    echo '</pre>';
+    die();
         $this->sma->checkPermissions('index', TRUE);
         $supplier = $this->input->get('supplier') ? $this->input->get('supplier') : NULL;
 
