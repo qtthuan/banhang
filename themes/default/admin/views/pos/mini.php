@@ -195,17 +195,17 @@
                 </div>
 
 
-                <div class="mini-order-actions">
+                <div class="mini-order-actions d-flex">
 
                     <button type="button"
                             id="mini-cancel-order"
-                            class="mini-action-cancel">
+                            class="mini-action-cancel btn flex-fill rounded-0">
                         HỦY
                     </button>
 
                     <button type="button"
                             id="mini-payment"
-                            class="mini-action-pay">
+                            class="mini-action-pay btn flex-fill rounded-0">
                         THANH TOÁN
                     </button>
 
