@@ -74,7 +74,7 @@
         <!-- =================================================
              ORDER / CART
              ================================================= -->
-        <section class="mini-order col-12 col-md-5">
+        <section class="mini-order">
 
             <!-- Thông tin động của đơn -->
             <div class="mini-order-info-panel">
@@ -219,7 +219,7 @@
         <!-- =================================================
              PRODUCTS
              ================================================= -->
-        <section class="mini-products col-12 col-md-7">
+        <section class="mini-products">
 
             <!-- Không còn MÓN / số món theo yêu cầu -->
 
