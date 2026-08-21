@@ -84,7 +84,8 @@ class Products extends MY_Controller
 		</div></div>';
         $this->load->library('datatables');
         if ($warehouse_id) {
-            exit('zzzzz');
+            echo 'zzzzz';
+            die();
             $this->datatables
             ->select($this->db->dbprefix('products') . ".id as productid, {$this->db->dbprefix('products')}.image as image, {$this->db->dbprefix('products')}.code as code, 
             SUBSTRING({$this->db->dbprefix('products')}.name FROM (LOCATE('_', {$this->db->dbprefix('products')}.name)+1)) as name, {$this->db->dbprefix('brands')}.name as cname, {$this->db->dbprefix('companies')}.company as supplier, cost as cost, price as price, promo_price, COALESCE(wp.quantity, 0) as quantity, wp.rack as rack", FALSE)
@@ -103,7 +104,8 @@ class Products extends MY_Controller
             ->join('brands', 'products.brand=brands.id', 'left');
             // ->group_by("products.id");
         } else {
-            exit('vvvvv');
+            echo 'vvvvv';
+            die();
             $this->datatables
                 ->select($this->db->dbprefix('products') . ".id as productid, {$this->db->dbprefix('products')}.image as image, {$this->db->dbprefix('products')}.code as code, 
                     SUBSTRING({$this->db->dbprefix('products')}.name FROM (LOCATE('_', {$this->db->dbprefix('products')}.name)+1)) as name, {$this->db->dbprefix('brands')}.name as cname, {$this->db->dbprefix('companies')}.company as supplier, cost as cost, price as price, promo_price, COALESCE(quantity, 0) as quantity, '' as rack", FALSE)
