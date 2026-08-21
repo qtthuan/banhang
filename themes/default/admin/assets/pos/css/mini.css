@@ -4950,39 +4950,19 @@ body.mini-modal-open {
 }
 
 /* =========================================================
-   SEARCH ROW - FINAL FIX
-   Ép ô tìm kiếm + nút + luôn nằm cùng một hàng
+   MINI POS - SEARCH ROW FINAL
+   Nút + phải nằm NGOÀI textbox, cùng một hàng
    ========================================================= */
 
-.mini-search-row {
-    width: 100% !important;
-
-    display: flex !important;
-    flex-direction: row !important;
-
-    align-items: center !important;
-
-    flex-wrap: nowrap !important;
-
-    gap: 8px !important;
-
-    margin-bottom: 10px !important;
-}
-
-.mini-search-wrap {
-    position: relative !important;
-
-    flex: 1 1 auto !important;
-
-    width: auto !important;
-    min-width: 0 !important;
-
-    height: 48px !important;
-    min-height: 48px !important;
-}
-
-.mini-quick-add {
+#mini-quick-add {
     position: static !important;
+
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+
+    transform: none !important;
 
     flex: 0 0 48px !important;
 
@@ -5003,14 +4983,42 @@ body.mini-modal-open {
     justify-content: center !important;
 
     box-sizing: border-box !important;
+
+    z-index: 5 !important;
 }
+
+
+#mini-search-row {
+    display: flex !important;
+
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+
+    align-items: center !important;
+
+    width: 100% !important;
+
+    gap: 8px !important;
+}
+
+
+#mini-search-row .mini-search-wrap {
+    position: relative !important;
+
+    flex: 1 1 auto !important;
+
+    width: auto !important;
+    min-width: 0 !important;
+
+    height: 48px !important;
+}
+
 
 @media (max-width: 800px) {
 
-    .mini-search-row {
+    #mini-search-row {
         display: flex !important;
         flex-direction: row !important;
-
         flex-wrap: nowrap !important;
 
         align-items: center !important;
@@ -5018,11 +5026,10 @@ body.mini-modal-open {
         width: 100% !important;
 
         gap: 7px !important;
-
-        margin-bottom: 8px !important;
     }
 
-    .mini-search-wrap {
+
+    #mini-search-row .mini-search-wrap {
         flex: 1 1 auto !important;
 
         width: auto !important;
@@ -5032,7 +5039,10 @@ body.mini-modal-open {
         min-height: 46px !important;
     }
 
-    .mini-quick-add {
+
+    #mini-quick-add {
+        position: static !important;
+
         flex: 0 0 46px !important;
 
         width: 46px !important;
@@ -5043,20 +5053,19 @@ body.mini-modal-open {
         min-height: 46px !important;
         max-height: 46px !important;
 
-        display: flex !important;
-
-        align-items: center !important;
-        justify-content: center !important;
+        transform: none !important;
     }
 }
 
+
 @media (max-width: 420px) {
 
-    .mini-search-row {
+    #mini-search-row {
         gap: 6px !important;
     }
 
-    .mini-quick-add {
+
+    #mini-quick-add {
         flex: 0 0 44px !important;
 
         width: 44px !important;
@@ -5066,14 +5075,5 @@ body.mini-modal-open {
         height: 44px !important;
         min-height: 44px !important;
         max-height: 44px !important;
-    }
-
-    .mini-search-wrap {
-        height: 44px !important;
-        min-height: 44px !important;
-    }
-
-    .mini-search {
-        height: 44px !important;
     }
 }

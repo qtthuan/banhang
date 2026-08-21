@@ -270,7 +270,7 @@
 
 
             <!-- Search -->
-            <div class="mini-search-row d-flex gap-2">
+            <div id="mini-search-row" class="mini-search-row d-flex gap-2">
 
                 <div class="mini-search-wrap flex-grow-1">
 
