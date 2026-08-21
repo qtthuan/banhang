@@ -1112,7 +1112,8 @@ button {
 
     background: #fff;
 
-    padding: 0 48px 0 46px;
+    padding:
+        0 46px 0 46px;
 
     color:
         var(--mini-text);
@@ -4946,4 +4947,133 @@ body.mini-modal-open {
     visibility: visible !important;
 
     opacity: 1 !important;
+}
+
+/* =========================================================
+   SEARCH ROW - FINAL FIX
+   Ép ô tìm kiếm + nút + luôn nằm cùng một hàng
+   ========================================================= */
+
+.mini-search-row {
+    width: 100% !important;
+
+    display: flex !important;
+    flex-direction: row !important;
+
+    align-items: center !important;
+
+    flex-wrap: nowrap !important;
+
+    gap: 8px !important;
+
+    margin-bottom: 10px !important;
+}
+
+.mini-search-wrap {
+    position: relative !important;
+
+    flex: 1 1 auto !important;
+
+    width: auto !important;
+    min-width: 0 !important;
+
+    height: 48px !important;
+    min-height: 48px !important;
+}
+
+.mini-quick-add {
+    position: static !important;
+
+    flex: 0 0 48px !important;
+
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    box-sizing: border-box !important;
+}
+
+@media (max-width: 800px) {
+
+    .mini-search-row {
+        display: flex !important;
+        flex-direction: row !important;
+
+        flex-wrap: nowrap !important;
+
+        align-items: center !important;
+
+        width: 100% !important;
+
+        gap: 7px !important;
+
+        margin-bottom: 8px !important;
+    }
+
+    .mini-search-wrap {
+        flex: 1 1 auto !important;
+
+        width: auto !important;
+        min-width: 0 !important;
+
+        height: 46px !important;
+        min-height: 46px !important;
+    }
+
+    .mini-quick-add {
+        flex: 0 0 46px !important;
+
+        width: 46px !important;
+        min-width: 46px !important;
+        max-width: 46px !important;
+
+        height: 46px !important;
+        min-height: 46px !important;
+        max-height: 46px !important;
+
+        display: flex !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+    }
+}
+
+@media (max-width: 420px) {
+
+    .mini-search-row {
+        gap: 6px !important;
+    }
+
+    .mini-quick-add {
+        flex: 0 0 44px !important;
+
+        width: 44px !important;
+        min-width: 44px !important;
+        max-width: 44px !important;
+
+        height: 44px !important;
+        min-height: 44px !important;
+        max-height: 44px !important;
+    }
+
+    .mini-search-wrap {
+        height: 44px !important;
+        min-height: 44px !important;
+    }
+
+    .mini-search {
+        height: 44px !important;
+    }
 }
