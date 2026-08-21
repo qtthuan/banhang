@@ -270,32 +270,38 @@
 
 
             <!-- Search -->
-            <div class="mini-search-wrap">
+            <div class="mini-search-row d-flex gap-2">
 
-                <span class="mini-search-icon">⌕</span>
+                <div class="mini-search-wrap flex-grow-1">
 
-                <input type="text"
-                       id="mini-product-search"
-                       class="mini-search"
-                       placeholder="Tìm món..."
-                       autocomplete="off">
+                    <span class="mini-search-icon">⌕</span>
+
+                    <input
+                        type="text"
+                        id="mini-product-search"
+                        class="mini-search form-control"
+                        placeholder="Tìm món..."
+                        autocomplete="off">
+
+                    <button
+                        type="button"
+                        id="mini-search-clear"
+                        class="mini-search-clear btn p-0"
+                        aria-label="Xóa tìm kiếm">
+                        ×
+                    </button>
+
+                </div>
+
 
                 <button
                     type="button"
-                    id="mini-search-clear"
-                    class="mini-search-clear"
-                    aria-label="Xóa tìm kiếm">
-                    ×
+                    id="mini-quick-add"
+                    class="mini-quick-add btn p-0 flex-shrink-0"
+                    aria-label="Thêm món nhanh"
+                    title="Thêm món nhanh">
+                    +
                 </button>
-
-                <button
-                type="button"
-                id="mini-quick-add"
-                class="mini-quick-add"
-                aria-label="Thêm món nhanh"
-                title="Thêm món nhanh">
-                +
-            </button>
 
             </div>
 
