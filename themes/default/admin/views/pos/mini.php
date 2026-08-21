@@ -69,12 +69,12 @@
     </header>
 
 
-    <main class="mini-main">
+    <main class="mini-main row g-0">
 
         <!-- =================================================
              ORDER / CART
              ================================================= -->
-        <section class="mini-order">
+        <section class="mini-order col-12 col-md-5">
 
             <!-- Thông tin động của đơn -->
             <div class="mini-order-info-panel">
@@ -219,7 +219,7 @@
         <!-- =================================================
              PRODUCTS
              ================================================= -->
-        <section class="mini-products">
+        <section class="mini-products col-12 col-md-7">
 
             <!-- Không còn MÓN / số món theo yêu cầu -->
 
