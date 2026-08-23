@@ -5057,6 +5057,15 @@ body.mini-modal-open {
         max-height: 46px !important;
 
         transform: none !important;
+
+        border:
+            1px solid #aad5bb;
+
+        border-radius: 13px;
+
+        background: #00a651;
+
+        color: #ffffff;
     }
 }
 
@@ -5078,5 +5087,14 @@ body.mini-modal-open {
         height: 44px !important;
         min-height: 44px !important;
         max-height: 44px !important;
+
+        border:
+            1px solid #aad5bb;
+
+        border-radius: 13px;
+
+        background: #00a651;
+
+        color: #ffffff;
     }
 }
