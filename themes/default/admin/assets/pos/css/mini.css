@@ -2493,7 +2493,6 @@ body.mini-modal-open {
         min-height: 36px;
 
         font-size: 12px;
-        transform: translateY(6px);
     }
 
 
@@ -3604,7 +3603,6 @@ body.mini-modal-open {
         min-height: 91px;
 
         flex-basis: 91px;
-        transform: translateY(10px);
     }
 
 
@@ -3618,7 +3616,6 @@ body.mini-modal-open {
 
         font-size: 11px;
 
-        transform: translateY(6px);
     }
 
 
