@@ -22,7 +22,7 @@
     <link
         rel="stylesheet"
         type="text/css"
-        href="<?=$assets?>pos/css/mini.css?v=20260821-3"
+        href="<?=$assets?>pos/css/mini.css?v=20260821-4"
     >
 </head>
 <body>
@@ -477,7 +477,7 @@ window.miniOrderComments = <?= json_encode(
     <!-- MINI POS -->
     <script
         type="text/javascript"
-        src="<?=$assets?>pos/js/mini.js">
+        src="<?=$assets?>pos/js/mini.js?v=20260821-4">
     </script>
 
 </body>
