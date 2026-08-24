@@ -1223,8 +1223,6 @@ button {
     align-items: center;
     justify-content: center;
 
-    box-sizing: border-box !important;
-
     border: 0 !important;
     border-radius: 50% !important;
 
@@ -1338,8 +1336,6 @@ button {
     display: flex;
 
     flex-direction: column;
-
-    box-sizing: border-box;
 
     overflow: hidden;
 
@@ -4790,8 +4786,6 @@ body.mini-modal-open {
 
     cursor: pointer;
 
-    box-sizing: border-box;
-
     appearance: none;
     -webkit-appearance: none;
 }
@@ -4955,8 +4949,6 @@ body.mini-modal-open {
 
     align-items: center !important;
     justify-content: center !important;
-
-    box-sizing: border-box !important;
 
     z-index: 5 !important;
 }
@@ -5146,15 +5138,12 @@ body.mini-modal-open {
 
 
     .mini-input-money {
-
         min-width: 0 !important;
     }
 
 
     .mini-input-money span {
-
         right: 8px;
-
         font-size: 14px;
     }
 }
