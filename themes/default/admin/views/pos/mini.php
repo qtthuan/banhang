@@ -22,7 +22,7 @@
     <link
         rel="stylesheet"
         type="text/css"
-        href="<?=$assets?>pos/css/mini.css?v=20260821-2"
+        href="<?=$assets?>pos/css/mini.css?v=20260821-3"
     >
 </head>
 <body>
