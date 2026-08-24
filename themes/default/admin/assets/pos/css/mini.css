@@ -3937,7 +3937,6 @@ body.mini-modal-open {
     }
 
     .mini-product-card {
-        width: 100% !important;
         height: 190px !important;
         min-height: 190px !important;
 
