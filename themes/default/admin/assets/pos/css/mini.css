@@ -5108,3 +5108,30 @@ body.mini-modal-open {
         color: #ffffff;
     }
 }
+/* =========================================================
+   2.5 - MOBILE CART SCROLL
+   Chỉ danh sách món được phép scroll.
+   Không cho gesture lọt xuống Product Grid phía sau.
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    /* Cart là một vùng độc lập */
+    .mini-order {
+        overflow: hidden !important;
+        overscroll-behavior: none !important;
+    }
+
+    /* Chỉ danh sách món được scroll */
+    .mini-cart-list {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+
+        overscroll-behavior-y: contain !important;
+        -webkit-overflow-scrolling: touch;
+
+        /* Rất quan trọng khi parent dùng flex */
+        min-height: 0 !important;
+    }
+
+}
