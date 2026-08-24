@@ -5109,29 +5109,43 @@ body.mini-modal-open {
     }
 }
 /* =========================================================
-   2.5 - MOBILE CART SCROLL
-   Chỉ danh sách món được phép scroll.
-   Không cho gesture lọt xuống Product Grid phía sau.
+   2.5 - MOBILE CART SCROLL LOCK
    ========================================================= */
 
 @media (max-width: 800px) {
 
-    /* Cart là một vùng độc lập */
-    .mini-order {
-        overflow: hidden !important;
+    /* Khi Cart mở: không cho vùng Cart truyền gesture xuống page */
+    .mini-order.mini-order-open {
+        touch-action: none !important;
         overscroll-behavior: none !important;
+        overflow: hidden !important;
     }
 
-    /* Chỉ danh sách món được scroll */
+    /* Header Cart: không scroll */
+    .mini-order.mini-order-open
+    .mini-order-info-panel {
+        touch-action: none !important;
+    }
+
+    /* Chỉ danh sách món được phép vuốt dọc */
+    .mini-order.mini-order-open
     .mini-cart-list {
+        touch-action: pan-y !important;
+
         overflow-y: auto !important;
         overflow-x: hidden !important;
 
         overscroll-behavior-y: contain !important;
         -webkit-overflow-scrolling: touch;
 
-        /* Rất quan trọng khi parent dùng flex */
         min-height: 0 !important;
+    }
+
+    /* Phần toolbar + tổng + thanh toán không scroll */
+    .mini-order.mini-order-open
+    .mini-order-bottom {
+        touch-action: none !important;
+        overscroll-behavior: none !important;
     }
 
 }
