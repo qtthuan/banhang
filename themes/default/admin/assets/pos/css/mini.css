@@ -5113,3 +5113,51 @@ body.mini-modal-open {
     }
 
 }
+
+/* =========================================================
+   MINI MODAL - DISCOUNT INPUT MOBILE
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    #pdiscount {
+
+        min-width: 0 !important;
+
+        height: 46px !important;
+
+        padding:
+            8px 30px 8px 8px !important;
+
+        font-size: 16px !important;
+
+        line-height: 1.2 !important;
+
+        text-align: center;
+
+        color:
+            var(--mini-text) !important;
+
+        -webkit-text-fill-color:
+            var(--mini-text) !important;
+
+        opacity: 1 !important;
+
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+
+    .mini-input-money {
+
+        min-width: 0 !important;
+    }
+
+
+    .mini-input-money span {
+
+        right: 8px;
+
+        font-size: 14px;
+    }
+}

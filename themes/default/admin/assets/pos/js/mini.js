@@ -2602,6 +2602,64 @@ document.addEventListener('DOMContentLoaded', function () {
         discountInput.oninput =
             function () {
 
+                /*
+                * Khi đang gõ:
+                * Không tự sửa giá trị input.
+                *
+                * Nếu vừa gõ "2" mà lập tức
+                * làm tròn thành 0 thì iPhone
+                * sẽ không thể nhập "2000".
+                */
+
+                let value =
+                    parseFloat(
+                        this.value
+                    );
+
+
+                if (
+                    Number.isNaN(value)
+                ) {
+
+                    value = 0;
+
+                }
+
+
+                value =
+                    Math.max(
+                        0,
+                        value
+                    );
+
+
+                if (
+                    miniDiscountType ===
+                    'percent'
+                ) {
+
+                    value =
+                        Math.min(
+                            100,
+                            value
+                        );
+
+                }
+
+
+                /*
+                * Chỉ cập nhật giá tạm tính.
+                * Không ghi đè this.value.
+                */
+
+                updateMiniModalPrice();
+
+            };
+
+        discountInput.addEventListener(
+            'blur',
+            function () {
+
                 let value =
                     parseFloat(
                         this.value
@@ -2646,7 +2704,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 updateMiniModalPrice();
 
-            };
+            }
+        );
 
 
         /*
