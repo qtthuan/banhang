@@ -1695,19 +1695,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                     class="mini-discount-control">
 
 
-                                    <div
-                                        class="mini-discount-stepper">
+                                    <div class="mini-discount-stepper">
 
-                                        <button
-                                            type="button"
-                                            id="mini-discount-minus"
-                                            class="mini-discount-step-btn">
-                                            −
-                                        </button>
-
-
-                                        <div
-                                            class="mini-input-money">
+                                        <div class="mini-input-money">
 
                                             <input
                                                 type="text"
@@ -1723,14 +1713,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                             </span>
 
                                         </div>
-
-
-                                        <button
-                                            type="button"
-                                            id="mini-discount-plus"
-                                            class="mini-discount-step-btn">
-                                            +
-                                        </button>
 
                                     </div>
 
@@ -1939,37 +1921,57 @@ document.addEventListener('DOMContentLoaded', function () {
                 normalizeModalQuantity
             );
 
-
         /*
-         * Discount.
-         */
+        * Số lượng:
+        * Khi focus vào ô,
+        * tự động chọn toàn bộ nội dung.
+        */
 
         document
             .getElementById(
-                'mini-discount-minus'
+                'mini-qty'
             )
             .addEventListener(
-                'click',
+                'focus',
                 function () {
 
-                    changeMiniDiscount(
-                        -1
+                    const input = this;
+
+                    setTimeout(
+                        function () {
+
+                            input.select();
+
+                        },
+                        0
                     );
 
                 }
             );
 
+        /*
+        * Giảm giá:
+        * Khi focus vào ô,
+        * tự động chọn toàn bộ nội dung.
+        */
 
         document
             .getElementById(
-                'mini-discount-plus'
+                'pdiscount'
             )
             .addEventListener(
-                'click',
+                'focus',
                 function () {
 
-                    changeMiniDiscount(
-                        1
+                    const input = this;
+
+                    setTimeout(
+                        function () {
+
+                            input.select();
+
+                        },
+                        0
                     );
 
                 }
