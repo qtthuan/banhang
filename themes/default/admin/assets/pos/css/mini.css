@@ -4894,11 +4894,10 @@ body.mini-modal-open {
 }
 
 /* =========================================================
-   GLOBAL MINI ALERT - FINAL
+   MINI POS - BOOTSTRAP GLOBAL ALERT
    ========================================================= */
 
 #mini-global-alert {
-
     position: fixed !important;
 
     top: 24px !important;
@@ -4912,55 +4911,15 @@ body.mini-modal-open {
     max-width: 90vw !important;
 
     margin: 0 !important;
-    padding: 11px 18px !important;
 
-    box-sizing: border-box !important;
-
-    border-radius: 8px !important;
-
-    font-size: 14px !important;
-    font-weight: 600 !important;
-
-    line-height: 1.4 !important;
-
-    text-align: center !important;
-
-    /*
-     * Quan trọng:
-     * Không cho layout nào của Mini che alert.
-     */
     z-index: 2147483647 !important;
-
-    /*
-     * Đảm bảo nhìn thấy.
-     */
-    visibility: visible !important;
-
-    opacity: 1 !important;
 
     pointer-events: none !important;
 
     box-shadow:
-        0 5px 18px rgba(0, 0, 0, .22) !important;
+        0 5px 18px rgba(0, 0, 0, .22);
 }
 
-
-/* Khi đang ẩn */
-#mini-global-alert.d-none {
-
-    display: none !important;
-}
-
-
-/* Khi hiện */
-#mini-global-alert.mini-alert-visible {
-
-    display: block !important;
-
-    visibility: visible !important;
-
-    opacity: 1 !important;
-}
 
 /* =========================================================
    MINI POS - SEARCH ROW FINAL

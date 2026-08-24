@@ -708,6 +708,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
         renderCart();
 
+        /* =====================================================
+        * DESKTOP: CUỘN TỚI MÓN VỪA THÊM
+        * ===================================================== */
+
+        if (
+            window.matchMedia('(min-width: 801px)').matches
+        ) {
+
+            const cartList =
+                document.getElementById(
+                    'mini-cart-list'
+                );
+
+            if (cartList) {
+
+                requestAnimationFrame(function () {
+
+                    cartList.scrollTo({
+                        top: cartList.scrollHeight,
+                        behavior: 'smooth'
+                    });
+
+                });
+
+            }
+
+        }
+
 
         /*
          * Animation.
@@ -880,6 +908,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
 
+        /*
+        * Hủy timer cũ nếu alert đang hiện.
+        */
         if (miniAlertTimer) {
 
             clearTimeout(
@@ -892,23 +923,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-        * Xóa trạng thái Bootstrap cũ.
+        * Xóa toàn bộ màu Bootstrap cũ.
         */
         alertBox.classList.remove(
             'alert-danger',
             'alert-warning',
             'alert-success',
-            'alert-info',
-            'd-none'
+            'alert-info'
         );
 
 
         /*
-        * Thêm màu Bootstrap.
+        * Thêm màu Bootstrap mới.
         */
         alertBox.classList.add(
-            'alert-' + type,
-            'mini-alert-visible'
+            'alert-' + type
         );
 
 
@@ -920,45 +949,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         /*
-        * Ép hiển thị.
+        * Bootstrap dùng d-none để ẩn.
+        * Xóa d-none => hiện alert.
         */
-        alertBox.style.setProperty(
-            'display',
-            'block',
-            'important'
-        );
-
-        alertBox.style.setProperty(
-            'visibility',
-            'visible',
-            'important'
-        );
-
-        alertBox.style.setProperty(
-            'opacity',
-            '1',
-            'important'
+        alertBox.classList.remove(
+            'd-none'
         );
 
 
         /*
-        * Tự ẩn.
+        * Tự ẩn sau duration.
         */
         miniAlertTimer =
             setTimeout(
                 function () {
-
-                    alertBox.classList.remove(
-                        'mini-alert-visible'
-                    );
-
-
-                    alertBox.style.setProperty(
-                        'display',
-                        'none',
-                        'important'
-                    );
-
 
                     alertBox.classList.add(
                         'd-none'
