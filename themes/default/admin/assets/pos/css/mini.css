@@ -674,8 +674,11 @@ button {
     grid-template-columns:
         repeat(5, 1fr);
 
-    border-bottom:
+    border-top:
         1px solid #e3e5e7;
+
+    border-bottom:
+        1px solid #d5d9dc;
 }
 
 
@@ -3342,6 +3345,12 @@ body.mini-modal-open {
     .mini-order-tools {
 
         height: 43px;
+
+        border-top:
+            1px solid #e3e5e7;
+
+        border-bottom:
+            1px solid #d5d9dc;
     }
 
 
