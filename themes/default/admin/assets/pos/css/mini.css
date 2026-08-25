@@ -3947,7 +3947,6 @@ body.mini-modal-open {
     }
 
     .mini-product-image-wrap {
-        width: 100% !important;
         height: 106px !important;
         min-height: 106px !important;
         flex: 0 0 106px !important;
@@ -4642,13 +4641,11 @@ body.mini-modal-open {
 }
 
 .mini-product-name {
-    width: 100% !important;
     text-align: center !important;
 }
 
 .mini-product-price {
     display: block !important;
-    width: 100% !important;
     text-align: right !important;
     padding-right: 8px !important;
 }
