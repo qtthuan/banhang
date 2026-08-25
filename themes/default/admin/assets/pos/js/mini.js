@@ -338,12 +338,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     const noteText = [
 
+                        item.optionName
+                            ? 'Size: ' +
+                            item.optionName
+                            : '',
+
                         item.comment ||
                             '',
 
                         item.commentName
                             ? 'Ly: ' +
-                              item.commentName
+                            item.commentName
                             : ''
 
                     ]
@@ -688,6 +693,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             option:
                 data.option || '',
+
+            optionName:
+                data.optionName || '',
 
 
             serial:
@@ -2506,7 +2514,7 @@ document.addEventListener('DOMContentLoaded', function () {
         list.innerHTML =
             variants
                 .map(
-                    function (variant) {
+                    function (variant, index) {
 
                         const id =
                             String(
@@ -2570,8 +2578,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     button.addEventListener(
                         'click',
-                        function () {
+                        function (event) {
 
+                            event.preventDefault();
+                            event.stopPropagation();
+
+
+                            /*
+                            * Bỏ active ở tất cả Size.
+                            */
                             list
                                 .querySelectorAll(
                                     '[data-mini-option-id]'
@@ -2583,23 +2598,37 @@ document.addEventListener('DOMContentLoaded', function () {
                                             'active'
                                         );
 
-                                        miniSelectedVariantId =
-                                            this.dataset.miniOptionId || '';
-
-                                        miniVariantPrice =
-                                            Number(
-                                                this.dataset.miniOptionPrice
-                                            ) || 0;
-
-                                        updateMiniModalPrice();
-
                                     }
                                 );
 
 
+                            /*
+                            * Active đúng Size vừa chọn.
+                            */
                             this.classList.add(
                                 'active'
                             );
+
+
+                            /*
+                            * Lưu variant đang chọn.
+                            */
+                            miniSelectedVariantId =
+                                this.dataset
+                                    .miniOptionId || '';
+
+
+                            miniVariantPrice =
+                                Number(
+                                    this.dataset
+                                        .miniOptionPrice
+                                ) || 0;
+
+
+                            /*
+                            * Cập nhật giá header modal ngay.
+                            */
+                            updateMiniModalPrice();
 
                         }
                     );
@@ -3294,19 +3323,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 .trim() ||
             '';
 
-        const selectedOption =
-            miniModal
-                .querySelector(
-                    '[data-mini-option-id].active'
-                )
-                ?.dataset
-                .miniOptionId ||
-            '';
+        /*
+        * =====================================================
+        * LẤY SIZE ĐANG CHỌN
+        * =====================================================
+        */
 
         const selectedOptionButton =
             miniModal.querySelector(
                 '[data-mini-option-id].active'
             );
+
+
+        const selectedOption =
+            selectedOptionButton
+                ?.dataset
+                .miniOptionId ||
+            '';
+
+
+        const selectedOptionName =
+            selectedOptionButton
+                ?.textContent
+                .trim() ||
+            '';
 
 
         const selectedVariantPrice =
@@ -3315,6 +3355,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     ?.dataset
                     .miniOptionPrice
             ) || 0;
+
 
         /*
         * =====================================================
@@ -3339,11 +3380,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (index !== -1) {
 
-                /*
-                * Chỉ cập nhật row đang edit.
-                *
-                * Không tạo row mới.
-                */
                 cart[index].qty =
                     qty;
 
@@ -3363,9 +3399,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 cart[index].commentName =
                     commentName;
 
-                cart[index].option =
-                    selectedOption; 
 
+                /*
+                * Cập nhật Size.
+                */
+                cart[index].option =
+                    selectedOption;
+
+
+                cart[index].optionName =
+                    selectedOptionName;
+
+
+                /*
+                * Cập nhật lại giá món + Size.
+                */
                 cart[index].price =
                     (
                         parseFloat(
@@ -3403,10 +3451,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     commentName:
                         commentName,
+
                     option:
                         selectedOption,
+
+                    optionName:
+                        selectedOptionName,
+
                     variantPrice:
-                        selectedVariantPrice,
+                        selectedVariantPrice
                 }
             );
 
@@ -3450,16 +3503,30 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
 
 
+                        const card =
+                            this;
+
+
+                        /*
+                        * Mặc định:
+                        * không có option.
+                        */
                         let option = '';
+
+                        let optionName = '';
 
                         let variantPrice = 0;
 
 
+                        /*
+                        * Nếu món có variants:
+                        * lấy variant ĐẦU TIÊN.
+                        */
                         try {
 
                             const variants =
                                 JSON.parse(
-                                    this.dataset.variants ||
+                                    card.dataset.variants ||
                                     '[]'
                                 );
 
@@ -3469,16 +3536,27 @@ document.addEventListener('DOMContentLoaded', function () {
                                 variants.length
                             ) {
 
+                                const firstVariant =
+                                    variants[0];
+
+
                                 option =
                                     String(
-                                        variants[0].id ||
+                                        firstVariant.id ||
                                         ''
                                     );
 
 
+                                optionName =
+                                    String(
+                                        firstVariant.name ||
+                                        ''
+                                    ).trim();
+
+
                                 variantPrice =
                                     Number(
-                                        variants[0].price
+                                        firstVariant.price
                                     ) || 0;
 
                             }
@@ -3487,17 +3565,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             option = '';
 
+                            optionName = '';
+
                             variantPrice = 0;
 
                         }
 
 
+                        /*
+                        * Thêm món trực tiếp.
+                        * Nếu có option:
+                        * tự lấy Size đầu tiên.
+                        */
                         addToCart(
-                            this,
+                            card,
                             1,
                             {
                                 option:
                                     option,
+
+                                optionName:
+                                    optionName,
 
                                 variantPrice:
                                     variantPrice
