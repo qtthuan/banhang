@@ -22,7 +22,7 @@
     <link
         rel="stylesheet"
         type="text/css"
-        href="<?=$assets?>pos/css/mini.css?v=20260821-7"
+        href="<?=$assets?>pos/css/mini.css?v=20260821-5"
     >
 </head>
 <body>
@@ -128,44 +128,46 @@
 
             <!-- Khu dưới giỏ -->
             <div class="mini-order-bottom">
+                <input type="hidden"
+                    id="mini_delivery_fee"
+                    name="delivery_fee"
+                    value="0">
+
+                <input type="hidden"
+                    id="mini_order_discount_value"
+                    name="order_discount_value"
+                    value="0">
+
+                <input type="hidden"
+                    id="mini_order_discount_type"
+                    name="order_discount_type"
+                    value="amount">
+
+                <input type="hidden"
+                    id="mini_order_discount_amount"
+                    name="order_discount_amount"
+                    value="0">
+
+                <input type="hidden"
+                    id="mini_order_note"
+                    name="order_note"
+                    value="">
 
                 <div class="mini-order-tools">
 
-                    <button
-                        type="button"
-                        id="mini-order-shipping"
-                        class="mini-tool-btn">
-
+                    <button type="button" class="mini-tool-btn" data-order-tool="ship">
                         <span>🚚</span>
                         <small>Ship</small>
-
                     </button>
 
-                    <button
-                        type="button"
-                        id="mini-order-discount"
-                        class="mini-tool-btn">
-
+                    <button type="button" class="mini-tool-btn" data-order-tool="discount">
                         <span>🏷</span>
                         <small>Giảm</small>
-
                     </button>
 
-                    <button
-                        type="button"
-                        id="mini-order-note"
-                        class="mini-tool-btn">
-
+                    <button type="button" class="mini-tool-btn" data-order-tool="note">
                         <span>📝</span>
                         <small>Ghi</small>
-
-                        <span
-                            id="mini-order-note-badge"
-                            class="mini-order-note-badge"
-                            hidden>
-                            ✓
-                        </span>
-
                     </button>
 
                     <button type="button" class="mini-tool-btn">
@@ -500,7 +502,7 @@ window.miniOrderComments = <?= json_encode(
     <!-- MINI POS -->
     <script
         type="text/javascript"
-        src="<?=$assets?>pos/js/mini.js?v=20260821-7">
+        src="<?=$assets?>pos/js/mini.js?v=20260821-6">
     </script>
 
 </body>

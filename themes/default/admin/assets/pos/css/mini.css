@@ -4486,31 +4486,6 @@ body.mini-modal-open {
 .mini-tool-btn {
 
     border-right-color: #c5cbd0;
-    position: relative;
-}
-
-.mini-order-note-badge {
-    position: absolute;
-    top: 4px;
-    right: calc(50% - 19px);
-
-    min-width: 15px;
-    height: 15px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 0 3px;
-
-    border-radius: 50%;
-
-    background: var(--mini-green);
-    color: #fff;
-
-    font-size: 9px;
-    font-weight: 800;
-    line-height: 1;
 }
 
 
@@ -5207,127 +5182,344 @@ body.mini-modal-open {
     font-size: 15px;
     font-weight: 600;
 }
-
 /* =========================================================
    ORDER TOOL MODAL
-   Z-INDEX + MOBILE
    ========================================================= */
 
-#mini-order-tool-modal {
-    z-index: 20000 !important;
-}
-
-#mini-order-tool-modal .modal-dialog {
-    position: relative;
-    z-index: 20001 !important;
-}
-
-.modal-backdrop {
-    z-index: 19990 !important;
+.mini-order-tool-modal {
+    z-index: 99999;
 }
 
 
-@media (max-width: 800px) {
+.mini-order-tool-modal .modal-dialog {
+    margin: 0;
 
-    #mini-order-tool-modal {
-        z-index: 20000 !important;
-    }
+    width: min(
+        430px,
+        calc(100vw - 30px)
+    );
 
-    #mini-order-tool-modal .modal-dialog {
-        width: calc(100vw - 30px);
-        max-width: 420px;
-        margin: auto;
+    max-width: none;
 
-        z-index: 20001 !important;
-    }
+    position: fixed;
 
+    pointer-events: none;
+
+    /*
+     * Không cho Bootstrap transform
+     * dialog từ vị trí mặc định sang vị trí mới.
+     */
+    transform: none !important;
+
+    transition: none !important;
+
+    pointer-events: none;
 }
 
-/* =========================================================
-   ORDER TOOL MODAL
-   BORDER ĐẬM - POS LOW RESOLUTION
-   ========================================================= */
 
-#mini-order-tool-modal .form-control {
+.mini-order-tool-modal .modal-content {
+    pointer-events: auto;
+
+    border: 1px solid #aeb5bb;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 18px 50px
+        rgba(0, 0, 0, .24);
+}
+
+
+/* HEADER */
+
+.mini-order-tool-modal .modal-header {
+    min-height: 56px;
+
+    padding:
+        11px
+        14px
+        11px
+        16px;
+
+    border-bottom:
+        1px solid #aeb5bb;
+}
+
+
+.mini-order-tool-modal .modal-title {
+    color: var(--mini-text);
+
+    font-size: 17px;
+
+    font-weight: 800;
+}
+
+
+/* BODY */
+
+.mini-order-tool-modal .modal-body {
+    padding: 16px;
+}
+
+
+.mini-order-tool-pane {
+    display: none;
+}
+
+
+.mini-order-tool-pane .form-label {
+    margin-bottom: 7px;
+
+    color: #30353a;
+
+    font-size: 13px;
+
+    font-weight: 800;
+}
+
+
+/* INPUT */
+
+.mini-order-tool-input {
+    height: 46px;
+
+    border-color: #aeb5bb;
+
+    color: var(--mini-text);
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+    text-align: center;
+
+    box-shadow: none;
+}
+
+
+.mini-order-tool-input:focus {
+    border-color: var(--mini-green);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(0,166,81,.10);
+}
+
+
+.mini-order-tool-modal
+.input-group-text {
+    min-width: 68px;
+
+    height: 46px;
+
+    justify-content: center;
+
+    background: #f0f2f3;
+
+    border-color: #aeb5bb;
+
+    color: #4e555c;
+
+    font-size: 13px;
+
+    font-weight: 800;
+}
+
+
+/* HINT */
+
+.mini-order-tool-hint {
+    margin-top: 6px;
+
+    color: #70777e;
+
+    font-size: 11px;
+}
+
+
+/* DISCOUNT */
+
+.mini-order-tool-discount-row {
+    display: flex;
+
+    align-items: stretch;
+
+    gap: 8px;
+}
+
+
+.mini-order-tool-type {
+    flex: 0 0 82px;
+
+    height: 46px;
+}
+
+
+.mini-order-tool-type-btn {
+    min-width: 41px;
 
     border:
-        2px solid #9da4aa !important;
+        1px solid #aeb5bb !important;
 
-    border-radius: 9px !important;
+    background: #f0f2f3;
 
-    color:
-        var(--mini-text) !important;
+    color: #555c63;
 
-    background:
-        #fff !important;
+    font-size: 15px;
+
+    font-weight: 800;
 }
 
 
-#mini-order-tool-modal .form-control:focus {
-
+.mini-order-tool-type-btn.active {
     border-color:
         var(--mini-green) !important;
 
-    box-shadow:
-        0 0 0 2px
-        rgba(0,166,81,.10) !important;
+    background:
+        var(--mini-green);
+
+    color: #fff;
 }
 
 
-/* Ô số tiền + ký hiệu đ */
+.mini-order-tool-info {
+    margin-top: 10px;
 
-#mini-order-tool-modal .input-group-text {
+    padding: 9px 10px;
 
     border:
-        2px solid #9da4aa !important;
+        1px solid #b8bec3;
 
-    background:
-        #f3f4f5 !important;
+    border-radius: 8px;
 
-    color:
-        #555d64 !important;
+    background: #f6f7f8;
 
-    font-weight:
-        700;
+    color: #5f666d;
+
+    font-size: 11px;
+
+    line-height: 1.4;
 }
 
 
-/*
- * Vì input-group có 2 phần,
- * tránh đường viền ở giữa bị quá dày.
- */
+/* NOTE */
 
-#mini-order-tool-modal
-.input-group .form-control {
+.mini-order-tool-textarea {
+    min-height: 100px;
 
-    border-right:
-        0 !important;
+    resize: vertical;
+
+    border-color: #aeb5bb;
+
+    font-size: 15px;
+
+    box-shadow: none;
 }
 
 
-#mini-order-tool-modal
-.input-group .input-group-text {
+.mini-order-tool-textarea:focus {
+    border-color:
+        var(--mini-green);
 
-    border-left:
-        1px solid #9da4aa !important;
+    box-shadow:
+        0 0 0 3px
+        rgba(0,166,81,.10);
 }
 
 
-/* =========================================================
-   MODAL LINE
-   ========================================================= */
+/* FOOTER */
 
-#mini-order-tool-modal .modal-header {
+.mini-order-tool-modal .modal-footer {
+    gap: 8px;
 
-    border-bottom:
-        2px solid #c5cbd0 !important;
-}
-
-
-#mini-order-tool-modal .modal-footer {
+    padding:
+        11px
+        16px
+        13px;
 
     border-top:
-        2px solid #c5cbd0 !important;
+        1px solid #aeb5bb;
+}
+
+
+.mini-order-tool-modal
+.modal-footer .btn {
+    flex: 1;
+
+    min-height: 42px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    font-weight: 800;
+}
+
+
+.mini-order-tool-cancel {
+    border:
+        1px solid #aeb5bb;
+
+    background: #eef0f1;
+
+    color: #4e555c;
+}
+
+
+.mini-order-tool-save {
+    border:
+        1px solid var(--mini-green);
+
+    background:
+        var(--mini-green);
+
+    color: #fff;
+}
+
+
+/* BADGE GHI CHÚ */
+
+.mini-tool-btn {
+    position: relative;
+}
+
+
+.mini-tool-badge {
+    position: absolute;
+
+    top: 3px;
+
+    right: 5px;
+
+    min-width: 17px;
+
+    height: 17px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 0 4px;
+
+    border:
+        2px solid #f2f3f0;
+
+    border-radius: 999px;
+
+    background:
+        var(--mini-green);
+
+    color: #fff;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    line-height: 1;
 }
 
 
@@ -5335,17 +5527,24 @@ body.mini-modal-open {
    MOBILE
    ========================================================= */
 
-@media (max-width: 800px) {
+@media (
+    max-width: 800px
+) {
 
-    #mini-order-tool-modal .form-control {
+    .mini-order-tool-modal
+    .modal-dialog {
 
-        height: 48px !important;
+        position: relative;
 
-        border-width:
-            2px !important;
+        width: calc(
+            100% - 30px
+        );
 
-        font-size:
-            17px !important;
+        max-width: 430px;
+
+        margin:
+            1.75rem auto;
+
     }
 
 }

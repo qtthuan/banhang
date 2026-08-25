@@ -24,19 +24,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let miniDiscountType = 'amount';
 
+    /* =========================================================
+    * ORDER TOOL
+    * ========================================================= */
+
+    let miniDeliveryFee = 0;
+
+    let miniOrderDiscountValue = 0;
+
+    let miniOrderDiscountType = 'amount';
+
+    let miniOrderDiscountAmount = 0;
+
+    let miniOrderNote = '';
+
+    let miniOrderToolType = '';
+
+    let miniOrderToolTrigger = null;
+
+    let miniOrderToolModal = null;
+
     /*
     * Row đang được edit.
     * null = đang thêm món mới.
     */
     let miniEditingRowId = null;
-
-    let miniOrderDeliveryFee = 0;
-
-    let miniOrderDiscount = 0;
-
-    let miniOrderNote = '';
-
-    let miniOrderToolType = '';
 
 
     /*
@@ -49,6 +61,79 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const cart = [];
 
+    function getMiniHiddenValue(
+        id,
+        fallback = ''
+    ) {
+
+        const input =
+            document.getElementById(id);
+
+        return input
+            ? input.value
+            : fallback;
+
+    }
+
+
+    function syncMiniOrderToolStateFromHidden() {
+
+        miniDeliveryFee =
+            Math.max(
+                0,
+                parseInt(
+                    getMiniHiddenValue(
+                        'mini_delivery_fee',
+                        '0'
+                    ),
+                    10
+                ) || 0
+            );
+
+
+        miniOrderDiscountValue =
+            Math.max(
+                0,
+                parseFloat(
+                    getMiniHiddenValue(
+                        'mini_order_discount_value',
+                        '0'
+                    )
+                ) || 0
+            );
+
+
+        miniOrderDiscountType =
+            getMiniHiddenValue(
+                'mini_order_discount_type',
+                'amount'
+            ) === 'percent'
+                ? 'percent'
+                : 'amount';
+
+
+        miniOrderDiscountAmount =
+            Math.max(
+                0,
+                parseFloat(
+                    getMiniHiddenValue(
+                        'mini_order_discount_amount',
+                        '0'
+                    )
+                ) || 0
+            );
+
+
+        miniOrderNote =
+            getMiniHiddenValue(
+                'mini_order_note',
+                ''
+            ).trim();
+
+    }
+
+
+    syncMiniOrderToolStateFromHidden();
 
     /* =========================================================
      * MONEY
@@ -496,14 +581,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         const deliveryFee =
-            0;
+            miniDeliveryFee;
+
+
+        const orderDiscountAmount =
+            calculateCurrentOrderDiscount();
+
+
+        miniOrderDiscountAmount =
+            orderDiscountAmount;
 
 
         const grandTotal =
             Math.max(
                 0,
                 subtotal -
-                discount +
+                discount -
+                orderDiscountAmount +
                 deliveryFee
             );
 
@@ -1585,305 +1679,6 @@ document.addEventListener('DOMContentLoaded', function () {
         */
 
         closeQuickAddModal();
-
-    }
-
-    function createOrderToolModal() {
-
-        if (
-            document.getElementById(
-                'mini-order-tool-modal'
-            )
-        ) {
-            return;
-        }
-
-
-        const html = `
-
-            <div
-                id="mini-order-tool-modal"
-                class="modal fade"
-                tabindex="-1"
-                aria-hidden="true">
-
-                <div
-                    class="modal-dialog modal-dialog-centered modal-sm">
-
-                    <div
-                        class="modal-content">
-
-                        <div
-                            class="modal-header">
-
-                            <h5
-                                id="mini-order-tool-modal-title"
-                                class="modal-title">
-                                Cài đặt đơn hàng
-                            </h5>
-
-                            <button
-                                type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Đóng">
-                            </button>
-
-                        </div>
-
-
-                        <div
-                            class="modal-body">
-
-                            <div
-                                id="mini-order-tool-money-field">
-
-                                <div
-                                    class="input-group">
-
-                                    <input
-                                        type="text"
-                                        id="mini-order-tool-money"
-                                        class="form-control"
-                                        inputmode="numeric"
-                                        autocomplete="off"
-                                        value="0">
-
-                                    <span
-                                        class="input-group-text">
-                                        đ
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-
-                            <div
-                                id="mini-order-tool-note-field"
-                                style="display:none;">
-                                <input
-                                    type="text"
-                                    id="mini-order-tool-note"
-                                    class="form-control"
-                                    maxlength="500"
-                                    autocomplete="off"
-                                    placeholder="Nhập ghi chú...">
-
-                            </div>
-
-                        </div>
-
-
-                        <div
-                            class="modal-footer">
-
-                            <button
-                                type="button"
-                                class="btn btn-secondary"
-                                data-bs-dismiss="modal">
-                                HỦY
-                            </button>
-
-                            <button
-                                type="button"
-                                id="mini-order-tool-save"
-                                class="btn btn-success">
-                                LƯU
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-
-
-        document.body.insertAdjacentHTML(
-            'beforeend',
-            html
-        );
-
-    }
-
-    function openOrderToolModal(type) {
-
-        createOrderToolModal();
-
-
-        const modalElement =
-            document.getElementById(
-                'mini-order-tool-modal'
-            );
-
-
-        const title =
-            document.getElementById(
-                'mini-order-tool-modal-title'
-            );
-
-
-        const moneyField =
-            document.getElementById(
-                'mini-order-tool-money-field'
-            );
-
-
-        const moneyInput =
-            document.getElementById(
-                'mini-order-tool-money'
-            );
-
-
-        const noteField =
-            document.getElementById(
-                'mini-order-tool-note-field'
-            );
-
-
-        const noteInput =
-            document.getElementById(
-                'mini-order-tool-note'
-            );
-
-
-        if (
-            !modalElement ||
-            !title ||
-            !moneyInput ||
-            !noteInput
-        ) {
-            return;
-        }
-
-
-        miniOrderToolType =
-            type;
-
-
-        /*
-        * SHIP
-        */
-        if (
-            type === 'shipping'
-        ) {
-
-            title.textContent =
-                'Phí giao hàng';
-
-            moneyField.style.display =
-                '';
-
-            noteField.style.display =
-                'none';
-
-            moneyInput.value =
-                miniOrderDeliveryFee ||
-                0;
-
-        }
-
-
-        /*
-        * GIẢM
-        */
-        else if (
-            type === 'discount'
-        ) {
-
-            title.textContent =
-                'Giảm giá đơn hàng';
-
-            moneyField.style.display =
-                '';
-
-            noteField.style.display =
-                'none';
-
-            moneyInput.value =
-                miniOrderDiscount ||
-                0;
-
-        }
-
-
-        /*
-        * GHI CHÚ
-        */
-        else if (
-            type === 'note'
-        ) {
-
-            title.textContent =
-                'Ghi chú đơn hàng';
-
-            moneyField.style.display =
-                'none';
-
-            noteField.style.display =
-                '';
-
-            noteInput.value =
-                miniOrderNote ||
-                '';
-
-        }
-
-
-        const modal =
-            bootstrap.Modal.getOrCreateInstance(
-                modalElement
-            );
-
-        modal.show();
-
-
-        /*
-        * TỰ FOCUS + SELECT Ô NHẬP
-        * Mobile sẽ tự bật keyboard.
-        */
-        setTimeout(() => {
-
-            let inputToFocus = null;
-
-            if (type === 'shipping') {
-
-                inputToFocus = moneyInput;
-
-            }
-            else if (type === 'discount') {
-
-                inputToFocus = moneyInput;
-
-            }
-            else if (type === 'note') {
-
-                inputToFocus = noteInput;
-
-            }
-
-
-            if (!inputToFocus) {
-                return;
-            }
-
-
-            inputToFocus.focus({
-                preventScroll: true
-            });
-
-
-            /*
-            * Chọn toàn bộ nội dung hiện tại
-            * để gõ số/chữ mới sẽ thay luôn giá trị cũ.
-            */
-            inputToFocus.select();
-
-        }, 180);
 
     }
 
@@ -3417,6 +3212,1282 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.classList.remove(
             'mini-modal-open'
         );
+
+    }
+
+    function updateOrderDiscountTypeUI() {
+
+        const suffix =
+            document.getElementById(
+                'mini-order-tool-discount-suffix'
+            );
+
+        const hint =
+            document.getElementById(
+                'mini-order-tool-discount-hint'
+            );
+
+
+        document
+            .querySelectorAll(
+                '[data-order-discount-type]'
+            )
+            .forEach(
+                function (button) {
+
+                    button.classList.toggle(
+                        'active',
+                        button.dataset
+                            .orderDiscountType ===
+                        miniOrderDiscountType
+                    );
+
+                }
+            );
+
+
+        if (
+            miniOrderDiscountType ===
+            'percent'
+        ) {
+
+            if (suffix) {
+                suffix.textContent = '%';
+            }
+
+
+            if (hint) {
+                hint.textContent =
+                    'Chỉ giảm % trên món chưa có giảm riêng.';
+            }
+
+        } else {
+
+            if (suffix) {
+                suffix.textContent = 'nghìn';
+            }
+
+
+            if (hint) {
+                hint.textContent =
+                    'Gõ 1 = giảm 1.000đ';
+            }
+
+        }
+
+    }
+
+    /* =========================================================
+    * ORDER TOOL MODAL
+    * Ship / Giảm / Ghi chú
+    * ========================================================= */
+
+    function createOrderToolModal() {
+
+        if (
+            document.getElementById(
+                'mini-order-tool-modal'
+            )
+        ) {
+
+            miniOrderToolModal =
+                document.getElementById(
+                    'mini-order-tool-modal'
+                );
+
+            return;
+
+        }
+
+
+        const html = `
+            <div
+                id="mini-order-tool-modal"
+                class="modal fade mini-order-tool-modal"
+                tabindex="-1"
+                aria-hidden="true">
+
+                <div
+                    class="modal-dialog mini-order-tool-dialog">
+
+                    <div class="modal-content">
+
+                        <div
+                            class="modal-header">
+
+                            <h5
+                                id="mini-order-tool-title"
+                                class="modal-title">
+                                Phí ship
+                            </h5>
+
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Đóng">
+                            </button>
+
+                        </div>
+
+
+                        <div class="modal-body">
+
+                            <!-- SHIP -->
+
+                            <div
+                                id="mini-order-tool-ship"
+                                class="mini-order-tool-pane">
+
+                                <label
+                                    for="mini-order-tool-ship-input"
+                                    class="form-label">
+
+                                    Phí ship
+
+                                </label>
+
+
+                                <div class="input-group">
+
+                                    <input
+                                        type="number"
+                                        id="mini-order-tool-ship-input"
+                                        class="form-control mini-order-tool-input"
+                                        min="0"
+                                        step="1"
+                                        inputmode="numeric"
+                                        autocomplete="off"
+                                        placeholder="0">
+
+                                    <span class="input-group-text">
+                                        nghìn
+                                    </span>
+
+                                </div>
+
+
+                                <div class="mini-order-tool-hint">
+                                    Gõ 1 = 1.000đ
+                                </div>
+
+                            </div>
+
+
+                            <!-- DISCOUNT -->
+
+                            <div
+                                id="mini-order-tool-discount"
+                                class="mini-order-tool-pane">
+
+                                <label
+                                    for="mini-order-tool-discount-input"
+                                    class="form-label">
+
+                                    Giảm giá đơn hàng
+
+                                </label>
+
+
+                                <div class="mini-order-tool-discount-row">
+
+                                    <div
+                                        class="input-group flex-grow-1">
+
+                                        <input
+                                            type="number"
+                                            id="mini-order-tool-discount-input"
+                                            class="form-control mini-order-tool-input"
+                                            min="0"
+                                            step="1"
+                                            inputmode="decimal"
+                                            autocomplete="off"
+                                            placeholder="0">
+
+                                        <span
+                                            id="mini-order-tool-discount-suffix"
+                                            class="input-group-text">
+
+                                            nghìn
+
+                                        </span>
+
+                                    </div>
+
+
+                                    <div
+                                        class="btn-group mini-order-tool-type">
+
+                                        <button
+                                            type="button"
+                                            class="btn mini-order-tool-type-btn"
+                                            data-order-discount-type="amount">
+
+                                            đ
+
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            class="btn mini-order-tool-type-btn"
+                                            data-order-discount-type="percent">
+
+                                            %
+
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    id="mini-order-tool-discount-hint"
+                                    class="mini-order-tool-hint">
+
+                                    Gõ 1 = giảm 1.000đ
+
+                                </div>
+
+
+                                <div class="mini-order-tool-info">
+
+                                    Nếu chọn %, chỉ giảm
+                                    những món chưa có giảm giá riêng.
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- NOTE -->
+
+                            <div
+                                id="mini-order-tool-note"
+                                class="mini-order-tool-pane">
+
+                                <label
+                                    for="mini-order-tool-note-input"
+                                    class="form-label">
+
+                                    Ghi chú đơn hàng
+
+                                </label>
+
+
+                                <textarea
+                                    id="mini-order-tool-note-input"
+                                    class="form-control mini-order-tool-textarea"
+                                    rows="4"
+                                    autocomplete="off"
+                                    placeholder="Nhập ghi chú..."></textarea>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="modal-footer">
+
+                            <button
+                                type="button"
+                                class="btn mini-order-tool-cancel"
+                                data-bs-dismiss="modal">
+
+                                Hủy
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                id="mini-order-tool-save"
+                                class="btn mini-order-tool-save">
+
+                                Lưu
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+
+        document.body.insertAdjacentHTML(
+            'beforeend',
+            html
+        );
+
+
+        miniOrderToolModal =
+            document.getElementById(
+                'mini-order-tool-modal'
+            );
+
+
+        bindOrderToolModalEvents();
+
+    }
+
+    function calculateOrderDiscount() {
+
+        const value =
+            Math.max(
+                0,
+                parseFloat(
+                    document.getElementById(
+                        'mini-order-tool-discount-input'
+                    )?.value
+                ) || 0
+            );
+
+
+        /* =====================================================
+        * GIẢM THEO %
+        * ===================================================== */
+
+        if (
+            miniOrderDiscountType ===
+            'percent'
+        ) {
+
+            const percent =
+                Math.min(
+                    100,
+                    value
+                );
+
+
+            let eligibleTotal = 0;
+
+
+            cart.forEach(
+                function (item) {
+
+                    const price =
+                        Number(
+                            item.price
+                        ) || 0;
+
+
+                    const qty =
+                        Number(
+                            item.qty
+                        ) || 0;
+
+
+                    const ownDiscount =
+                        Number(
+                            item.discount
+                        ) || 0;
+
+
+                    /*
+                    * Có discount riêng
+                    * => KHÔNG được giảm tiếp.
+                    */
+
+                    if (
+                        ownDiscount > 0
+                    ) {
+                        return;
+                    }
+
+
+                    eligibleTotal +=
+                        price * qty;
+
+                }
+            );
+
+
+            return Math.round(
+                eligibleTotal *
+                percent /
+                100
+            );
+
+        }
+
+
+        /* =====================================================
+        * GIẢM THEO TIỀN
+        * ===================================================== */
+
+        return Math.round(
+            value * 1000
+        );
+
+    }
+
+    function calculateCurrentOrderDiscount() {
+
+        let amount = 0;
+
+
+        if (
+            miniOrderDiscountType ===
+            'percent'
+        ) {
+
+            let eligibleTotal = 0;
+
+
+            cart.forEach(
+                function (item) {
+
+                    const price =
+                        Number(
+                            item.price
+                        ) || 0;
+
+
+                    const qty =
+                        Number(
+                            item.qty
+                        ) || 0;
+
+
+                    const discount =
+                        Number(
+                            item.discount
+                        ) || 0;
+
+
+                    /*
+                    * Có giảm riêng rồi
+                    * => loại khỏi % cấp đơn.
+                    */
+
+                    if (
+                        discount > 0
+                    ) {
+                        return;
+                    }
+
+
+                    eligibleTotal +=
+                        price * qty;
+
+                }
+            );
+
+
+            amount =
+                Math.round(
+                    eligibleTotal *
+                    miniOrderDiscountValue /
+                    100
+                );
+
+        } else {
+
+            amount =
+                Number(
+                    miniOrderDiscountValue
+                ) || 0;
+
+        }
+
+
+        return Math.max(
+            0,
+            amount
+        );
+
+    }
+
+    function openOrderToolModal(
+        type,
+        trigger
+    ) {
+
+        createOrderToolModal();
+
+
+        miniOrderToolType =
+            type;
+
+
+        miniOrderToolTrigger =
+            trigger || null;
+
+
+        syncMiniOrderToolStateFromHidden();
+
+
+        const modalElement =
+            document.getElementById(
+                'mini-order-tool-modal'
+            );
+
+
+        if (!modalElement) {
+            return;
+        }
+
+
+        const title =
+            document.getElementById(
+                'mini-order-tool-title'
+            );
+
+
+        const shipPane =
+            document.getElementById(
+                'mini-order-tool-ship'
+            );
+
+
+        const discountPane =
+            document.getElementById(
+                'mini-order-tool-discount'
+            );
+
+
+        const notePane =
+            document.getElementById(
+                'mini-order-tool-note'
+            );
+
+
+        /*
+        * Ẩn cả 3 trước.
+        */
+
+        shipPane.style.display =
+            'none';
+
+        discountPane.style.display =
+            'none';
+
+        notePane.style.display =
+            'none';
+
+
+        /*
+        * SHIP
+        */
+
+        if (
+            type === 'ship'
+        ) {
+
+            title.textContent =
+                'Phí ship';
+
+
+            shipPane.style.display =
+                'block';
+
+
+            const input =
+                document.getElementById(
+                    'mini-order-tool-ship-input'
+                );
+
+
+            input.value =
+                miniDeliveryFee > 0
+                    ? miniDeliveryFee / 1000
+                    : '';
+
+
+            setTimeout(
+                function () {
+
+                    input.focus();
+
+                    input.select();
+
+                },
+                150
+            );
+
+        }
+
+
+        /*
+        * DISCOUNT
+        */
+
+        if (
+            type === 'discount'
+        ) {
+
+            title.textContent =
+                'Giảm giá đơn hàng';
+
+
+            discountPane.style.display =
+                'block';
+
+
+            const input =
+                document.getElementById(
+                    'mini-order-tool-discount-input'
+                );
+
+
+            if (
+                miniOrderDiscountType ===
+                'percent'
+            ) {
+
+                input.value =
+                    miniOrderDiscountValue || '';
+
+            } else {
+
+                input.value =
+                    miniOrderDiscountValue
+                        ? miniOrderDiscountValue / 1000
+                        : '';
+
+            }
+
+
+            updateOrderDiscountTypeUI();
+
+
+            setTimeout(
+                function () {
+
+                    input.focus();
+
+                    input.select();
+
+                },
+                150
+            );
+
+        }
+
+
+        /*
+        * NOTE
+        */
+
+        if (
+            type === 'note'
+        ) {
+
+            title.textContent =
+                'Ghi chú đơn hàng';
+
+
+            notePane.style.display =
+                'block';
+
+
+            const input =
+                document.getElementById(
+                    'mini-order-tool-note-input'
+                );
+
+
+            input.value =
+                miniOrderNote;
+
+
+            setTimeout(
+                function () {
+
+                    input.focus();
+
+                    input.select();
+
+                },
+                150
+            );
+
+        }
+
+
+        const modal =
+            bootstrap.Modal
+                .getOrCreateInstance(
+                    modalElement,
+                    {
+                        backdrop: true,
+                        keyboard: true
+                    }
+                );
+
+
+        /*
+        * Desktop:
+        * Đặt vị trí TRƯỚC khi Bootstrap render frame đầu tiên.
+        *
+        * Mobile:
+        * Bootstrap tự căn giữa.
+        */
+
+        if (
+            window.innerWidth > 800
+        ) {
+
+            /*
+            * Cho modal hiện trong DOM nhưng chưa để
+            * browser paint ra màn hình.
+            *
+            * Vì JS vẫn đang chạy cùng một frame,
+            * người dùng sẽ không thấy trạng thái
+            * "ở giữa rồi nhảy sang button".
+            */
+
+            modalElement.style.display =
+                'block';
+
+
+            positionOrderToolModal();
+
+
+            /*
+            * Bootstrap tiếp quản animation fade
+            * ngay sau đó.
+            */
+
+            const modal =
+                bootstrap.Modal
+                    .getOrCreateInstance(
+                        modalElement,
+                        {
+                            backdrop: true,
+                            keyboard: true
+                        }
+                    );
+
+
+            modal.show();
+
+        } else {
+
+            /*
+            * Mobile: Bootstrap căn giữa.
+            */
+
+            const modal =
+                bootstrap.Modal
+                    .getOrCreateInstance(
+                        modalElement,
+                        {
+                            backdrop: true,
+                            keyboard: true
+                        }
+                    );
+
+
+            modal.show();
+
+        }
+
+    }
+
+    function updateOrderToolNoteBadge() {
+
+        const button =
+            document.querySelector(
+                '[data-order-tool="note"]'
+            );
+
+
+        if (!button) {
+            return;
+        }
+
+
+        let badge =
+            button.querySelector(
+                '.mini-tool-badge'
+            );
+
+
+        if (!badge) {
+
+            badge =
+                document.createElement(
+                    'span'
+                );
+
+
+            badge.className =
+                'mini-tool-badge';
+
+
+            badge.textContent =
+                '✓';
+
+
+            button.appendChild(
+                badge
+            );
+
+        }
+
+
+        badge.classList.toggle(
+            'd-none',
+            !miniOrderNote
+        );
+
+    }
+
+    function saveOrderToolModal() {
+
+        /*
+        * =====================================================
+        * SHIP
+        * =====================================================
+        */
+
+        if (
+            miniOrderToolType ===
+            'ship'
+        ) {
+
+            const input =
+                document.getElementById(
+                    'mini-order-tool-ship-input'
+                );
+
+
+            const thousands =
+                Math.max(
+                    0,
+                    parseFloat(
+                        input?.value
+                    ) || 0
+                );
+
+
+            miniDeliveryFee =
+                Math.round(
+                    thousands * 1000
+                );
+
+
+            const hidden =
+                document.getElementById(
+                    'mini_delivery_fee'
+                );
+
+
+            if (
+                hidden
+            ) {
+
+                hidden.value =
+                    miniDeliveryFee;
+
+            }
+
+        }
+
+
+        /*
+        * =====================================================
+        * GIẢM
+        * =====================================================
+        */
+
+        if (
+            miniOrderToolType ===
+            'discount'
+        ) {
+
+            const input =
+                document.getElementById(
+                    'mini-order-tool-discount-input'
+                );
+
+
+            let value =
+                Math.max(
+                    0,
+                    parseFloat(
+                        input?.value
+                    ) || 0
+                );
+
+
+            if (
+                miniOrderDiscountType ===
+                'percent'
+            ) {
+
+                value =
+                    Math.min(
+                        100,
+                        value
+                    );
+
+
+                miniOrderDiscountValue =
+                    value;
+
+            } else {
+
+                miniOrderDiscountValue =
+                    Math.round(
+                        value * 1000
+                    );
+
+            }
+
+
+            miniOrderDiscountAmount =
+                calculateCurrentOrderDiscount();
+
+
+            document.getElementById(
+                'mini_order_discount_value'
+            ).value =
+                miniOrderDiscountValue;
+
+
+            document.getElementById(
+                'mini_order_discount_type'
+            ).value =
+                miniOrderDiscountType;
+
+
+            document.getElementById(
+                'mini_order_discount_amount'
+            ).value =
+                miniOrderDiscountAmount;
+
+        }
+
+
+        /*
+        * =====================================================
+        * GHI CHÚ
+        * =====================================================
+        */
+
+        if (
+            miniOrderToolType ===
+            'note'
+        ) {
+
+            const input =
+                document.getElementById(
+                    'mini-order-tool-note-input'
+                );
+
+
+            miniOrderNote =
+                input?.value.trim() || '';
+
+
+            document.getElementById(
+                'mini_order_note'
+            ).value =
+                miniOrderNote;
+
+        }
+
+
+        /*
+        * Render lại tổng.
+        */
+
+        renderCart();
+
+
+        updateOrderToolNoteBadge();
+
+
+        /*
+        * Đóng modal.
+        */
+
+        const modalElement =
+            document.getElementById(
+                'mini-order-tool-modal'
+            );
+
+
+        if (
+            modalElement
+        ) {
+
+            bootstrap.Modal
+                .getOrCreateInstance(
+                    modalElement
+                )
+                .hide();
+
+        }
+
+    }
+
+    function bindOrderToolModalEvents() {
+
+        document
+            .querySelectorAll(
+                '[data-order-discount-type]'
+            )
+            .forEach(
+                function (button) {
+
+                    button.addEventListener(
+                        'click',
+                        function () {
+
+                            miniOrderDiscountType =
+                                this.dataset
+                                    .orderDiscountType ===
+                                'percent'
+                                    ? 'percent'
+                                    : 'amount';
+
+
+                            updateOrderDiscountTypeUI();
+
+
+                            const input =
+                                document.getElementById(
+                                    'mini-order-tool-discount-input'
+                                );
+
+
+                            if (
+                                input
+                            ) {
+
+                                if (
+                                    miniOrderDiscountType ===
+                                    'percent'
+                                ) {
+
+                                    input.value =
+                                        miniOrderDiscountValue || '';
+
+                                } else {
+
+                                    input.value =
+                                        miniOrderDiscountValue
+                                            ? miniOrderDiscountValue / 1000
+                                            : '';
+
+                                }
+
+
+                                input.focus();
+
+                                input.select();
+
+                            }
+
+                        }
+                    );
+
+                }
+            );
+
+
+        /*
+        * LƯU
+        */
+
+        document
+            .getElementById(
+                'mini-order-tool-save'
+            )
+            .addEventListener(
+                'click',
+                saveOrderToolModal
+            );
+
+
+        /*
+        * Khi modal focus vào input
+        * => select toàn bộ.
+        */
+
+        document
+            .querySelectorAll(
+                '.mini-order-tool-input, #mini-order-tool-note-input'
+            )
+            .forEach(
+                function (input) {
+
+                    input.addEventListener(
+                        'focus',
+                        function () {
+
+                            const element =
+                                this;
+
+
+                            setTimeout(
+                                function () {
+
+                                    element.select();
+
+                                },
+                                0
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+    }
+
+    function positionOrderToolModal() {
+
+        const modalElement =
+            document.getElementById(
+                'mini-order-tool-modal'
+            );
+
+
+        if (!modalElement) {
+            return;
+        }
+
+
+        const dialog =
+            modalElement.querySelector(
+                '.mini-order-tool-dialog'
+            );
+
+
+        if (!dialog) {
+            return;
+        }
+
+
+        /*
+        * MOBILE
+        * Bootstrap tự center.
+        */
+
+        if (
+            window.innerWidth <= 800
+        ) {
+
+            dialog.style.left = '';
+
+            dialog.style.top = '';
+
+            dialog.style.transform = '';
+
+            return;
+
+        }
+
+
+        /*
+        * DESKTOP
+        */
+
+        if (
+            !miniOrderToolTrigger
+        ) {
+            return;
+        }
+
+
+        const rect =
+            miniOrderToolTrigger
+                .getBoundingClientRect();
+
+
+        const width =
+            dialog.offsetWidth ||
+            430;
+
+
+        const height =
+            dialog.offsetHeight ||
+            250;
+
+
+        const gap = 8;
+
+
+        let left =
+            rect.left;
+
+
+        let top =
+            rect.bottom + gap;
+
+
+        /*
+        * Nếu tràn bên phải
+        */
+
+        if (
+            left + width >
+            window.innerWidth - 10
+        ) {
+
+            left =
+                window.innerWidth -
+                width -
+                10;
+
+        }
+
+
+        /*
+        * Nếu tràn bên dưới
+        * => mở phía trên button.
+        */
+
+        if (
+            top + height >
+            window.innerHeight - 10
+        ) {
+
+            top =
+                rect.top -
+                height -
+                gap;
+
+        }
+
+
+        /*
+        * Nếu vẫn vượt trên cùng
+        */
+
+        top =
+            Math.max(
+                10,
+                top
+            );
+
+
+        left =
+            Math.max(
+                10,
+                left
+            );
+
+
+        dialog.style.left =
+            left + 'px';
+
+
+        dialog.style.top =
+            top + 'px';
+
+
+        dialog.style.margin =
+            '0';
 
     }
 
@@ -5413,75 +6484,6 @@ document.addEventListener('DOMContentLoaded', function () {
     );
 
     /* =========================================================
-    * ORDER TOOLS
-    * ========================================================= */
-
-    const shippingButton =
-        document.getElementById(
-            'mini-order-shipping'
-        );
-
-
-    if (shippingButton) {
-
-        shippingButton.addEventListener(
-            'click',
-            function () {
-
-                openOrderToolModal(
-                    'shipping'
-                );
-
-            }
-        );
-
-    }
-
-
-    const discountButton =
-        document.getElementById(
-            'mini-order-discount'
-        );
-
-
-    if (discountButton) {
-
-        discountButton.addEventListener(
-            'click',
-            function () {
-
-                openOrderToolModal(
-                    'discount'
-                );
-
-            }
-        );
-
-    }
-
-
-    const noteButton =
-        document.getElementById(
-            'mini-order-note'
-        );
-
-
-    if (noteButton) {
-
-        noteButton.addEventListener(
-            'click',
-            function () {
-
-                openOrderToolModal(
-                    'note'
-                );
-
-            }
-        );
-
-    }
-
-    /* =========================================================
      * QUICK ADD BUTTON
      * ========================================================= */
 
@@ -5507,6 +6509,36 @@ document.addEventListener('DOMContentLoaded', function () {
         );
 
     }
+
+    document
+        .querySelectorAll(
+            '[data-order-tool]'
+        )
+        .forEach(
+            function (button) {
+
+                button.addEventListener(
+                    'click',
+                    function (event) {
+
+                        event.preventDefault();
+
+                        event.stopPropagation();
+
+
+                        openOrderToolModal(
+                            this.dataset.orderTool,
+                            this
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+    updateOrderToolNoteBadge();
 
 
     /* =========================================================
