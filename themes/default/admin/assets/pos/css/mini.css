@@ -690,7 +690,7 @@ button {
     border-right:
         1px solid #e3e5e7;
 
-    background: #fff;
+    background: #f2f3f0;
 
     color: #5e646b;
 
@@ -701,8 +701,6 @@ button {
     align-items: center;
 
     justify-content: center;
-
-    gap: 3px;
 
     cursor: pointer;
 }
@@ -716,13 +714,13 @@ button {
 
 .mini-tool-btn span {
 
-    font-size: 17px;
+    font-size: 23px;
 }
 
 
 .mini-tool-btn small {
 
-    font-size: 10px;
+    font-size: 16x;
     font-weight: 600;
 }
 
