@@ -3344,13 +3344,13 @@ body.mini-modal-open {
 
     .mini-order-tools {
 
-        height: 43px;
+        height: 45px;
 
         border-top:
             1px solid #e3e5e7;
 
         border-bottom:
-            2px solid #b5c8d6;
+            1px solid #d5d9dc;
     }
 
 
@@ -4314,9 +4314,6 @@ body.mini-modal-open {
         display: block !important;
     }
 
-    .mini-order-tools {
-        height: 43px !important;
-    }
 
     .mini-tool-btn {
         height: 43px !important;
