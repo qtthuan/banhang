@@ -131,19 +131,41 @@
 
                 <div class="mini-order-tools">
 
-                    <button type="button" class="mini-tool-btn">
+                    <button
+                        type="button"
+                        id="mini-order-shipping"
+                        class="mini-tool-btn">
+
                         <span>🚚</span>
                         <small>Ship</small>
+
                     </button>
 
-                    <button type="button" class="mini-tool-btn">
+                    <button
+                        type="button"
+                        id="mini-order-discount"
+                        class="mini-tool-btn">
+
                         <span>🏷</span>
                         <small>Giảm</small>
+
                     </button>
 
-                    <button type="button" class="mini-tool-btn">
+                    <button
+                        type="button"
+                        id="mini-order-note"
+                        class="mini-tool-btn">
+
                         <span>📝</span>
                         <small>Ghi</small>
+
+                        <span
+                            id="mini-order-note-badge"
+                            class="mini-order-note-badge"
+                            hidden>
+                            ✓
+                        </span>
+
                     </button>
 
                     <button type="button" class="mini-tool-btn">

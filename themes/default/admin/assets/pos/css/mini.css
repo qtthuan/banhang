@@ -4486,6 +4486,31 @@ body.mini-modal-open {
 .mini-tool-btn {
 
     border-right-color: #c5cbd0;
+    position: relative;
+}
+
+.mini-order-note-badge {
+    position: absolute;
+    top: 4px;
+    right: calc(50% - 19px);
+
+    min-width: 15px;
+    height: 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 3px;
+
+    border-radius: 50%;
+
+    background: var(--mini-green);
+    color: #fff;
+
+    font-size: 9px;
+    font-weight: 800;
+    line-height: 1;
 }
 
 

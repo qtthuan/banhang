@@ -30,6 +30,14 @@ document.addEventListener('DOMContentLoaded', function () {
     */
     let miniEditingRowId = null;
 
+    let miniOrderDeliveryFee = 0;
+
+    let miniOrderDiscount = 0;
+
+    let miniOrderNote = '';
+
+    let miniOrderToolType = '';
+
 
     /*
      * Array thay cho Map.
@@ -1577,6 +1585,287 @@ document.addEventListener('DOMContentLoaded', function () {
         */
 
         closeQuickAddModal();
+
+    }
+
+    function createOrderToolModal() {
+
+        if (
+            document.getElementById(
+                'mini-order-tool-modal'
+            )
+        ) {
+            return;
+        }
+
+
+        const html = `
+
+            <div
+                id="mini-order-tool-modal"
+                class="modal fade"
+                tabindex="-1"
+                aria-hidden="true">
+
+                <div
+                    class="modal-dialog modal-dialog-centered modal-sm">
+
+                    <div
+                        class="modal-content">
+
+                        <div
+                            class="modal-header">
+
+                            <h5
+                                id="mini-order-tool-modal-title"
+                                class="modal-title">
+                                Cài đặt đơn hàng
+                            </h5>
+
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Đóng">
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            class="modal-body">
+
+                            <div
+                                id="mini-order-tool-money-field">
+
+                                <label
+                                    id="mini-order-tool-money-label"
+                                    class="form-label">
+                                    Số tiền
+                                </label>
+
+                                <div
+                                    class="input-group">
+
+                                    <input
+                                        type="text"
+                                        id="mini-order-tool-money"
+                                        class="form-control"
+                                        inputmode="numeric"
+                                        autocomplete="off"
+                                        value="0">
+
+                                    <span
+                                        class="input-group-text">
+                                        đ
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                id="mini-order-tool-note-field"
+                                style="display:none;">
+
+                                <label
+                                    for="mini-order-tool-note"
+                                    class="form-label">
+                                    Ghi chú đơn hàng
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="mini-order-tool-note"
+                                    class="form-control"
+                                    maxlength="500"
+                                    autocomplete="off"
+                                    placeholder="Nhập ghi chú...">
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="modal-footer">
+
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                                HỦY
+                            </button>
+
+                            <button
+                                type="button"
+                                id="mini-order-tool-save"
+                                class="btn btn-success">
+                                LƯU
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        document.body.insertAdjacentHTML(
+            'beforeend',
+            html
+        );
+
+    }
+
+    function openOrderToolModal(type) {
+
+        createOrderToolModal();
+
+
+        const modalElement =
+            document.getElementById(
+                'mini-order-tool-modal'
+            );
+
+
+        const title =
+            document.getElementById(
+                'mini-order-tool-modal-title'
+            );
+
+
+        const moneyField =
+            document.getElementById(
+                'mini-order-tool-money-field'
+            );
+
+
+        const moneyLabel =
+            document.getElementById(
+                'mini-order-tool-money-label'
+            );
+
+
+        const moneyInput =
+            document.getElementById(
+                'mini-order-tool-money'
+            );
+
+
+        const noteField =
+            document.getElementById(
+                'mini-order-tool-note-field'
+            );
+
+
+        const noteInput =
+            document.getElementById(
+                'mini-order-tool-note'
+            );
+
+
+        if (
+            !modalElement ||
+            !title ||
+            !moneyInput ||
+            !noteInput
+        ) {
+            return;
+        }
+
+
+        miniOrderToolType =
+            type;
+
+
+        /*
+        * SHIP
+        */
+        if (
+            type === 'shipping'
+        ) {
+
+            title.textContent =
+                'Phí giao hàng';
+
+            moneyLabel.textContent =
+                'Phí ship';
+
+            moneyField.style.display =
+                '';
+
+            noteField.style.display =
+                'none';
+
+            moneyInput.value =
+                miniOrderDeliveryFee ||
+                0;
+
+        }
+
+
+        /*
+        * GIẢM
+        */
+        else if (
+            type === 'discount'
+        ) {
+
+            title.textContent =
+                'Giảm giá đơn hàng';
+
+            moneyLabel.textContent =
+                'Giảm giá';
+
+            moneyField.style.display =
+                '';
+
+            noteField.style.display =
+                'none';
+
+            moneyInput.value =
+                miniOrderDiscount ||
+                0;
+
+        }
+
+
+        /*
+        * GHI CHÚ
+        */
+        else if (
+            type === 'note'
+        ) {
+
+            title.textContent =
+                'Ghi chú đơn hàng';
+
+            moneyField.style.display =
+                'none';
+
+            noteField.style.display =
+                '';
+
+            noteInput.value =
+                miniOrderNote ||
+                '';
+
+        }
+
+
+        const modal =
+            bootstrap.Modal.getOrCreateInstance(
+                modalElement
+            );
+
+
+        modal.show();
 
     }
 
@@ -5104,6 +5393,75 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
     );
+
+    /* =========================================================
+    * ORDER TOOLS
+    * ========================================================= */
+
+    const shippingButton =
+        document.getElementById(
+            'mini-order-shipping'
+        );
+
+
+    if (shippingButton) {
+
+        shippingButton.addEventListener(
+            'click',
+            function () {
+
+                openOrderToolModal(
+                    'shipping'
+                );
+
+            }
+        );
+
+    }
+
+
+    const discountButton =
+        document.getElementById(
+            'mini-order-discount'
+        );
+
+
+    if (discountButton) {
+
+        discountButton.addEventListener(
+            'click',
+            function () {
+
+                openOrderToolModal(
+                    'discount'
+                );
+
+            }
+        );
+
+    }
+
+
+    const noteButton =
+        document.getElementById(
+            'mini-order-note'
+        );
+
+
+    if (noteButton) {
+
+        noteButton.addEventListener(
+            'click',
+            function () {
+
+                openOrderToolModal(
+                    'note'
+                );
+
+            }
+        );
+
+    }
 
     /* =========================================================
      * QUICK ADD BUTTON
