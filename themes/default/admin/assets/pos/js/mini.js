@@ -338,16 +338,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     const noteText = [
 
-                        item.optionName
-                            ? 'Size: ' +
-                            item.optionName
-                            : '',
-
                         item.comment ||
                             '',
 
                         item.commentName
-                            ? 'Ly: ' +
+                            ? '' +
                             item.commentName
                             : ''
 
@@ -365,7 +360,15 @@ document.addEventListener('DOMContentLoaded', function () {
                                         miniDisplayProductName(
                                             item.name
                                         )
-                                    )}
+                                    )}${
+                                        item.optionName
+                                            ? ' (' +
+                                            escapeHtml(
+                                                item.optionName
+                                            ) +
+                                            ')'
+                                            : ''
+                                    }
                                 </strong>
 
                                 ${
@@ -1800,10 +1803,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <input
                                     type="text"
                                     id="icomment"
-                                    class="mini-modal-input"
+                                    class="mini-modal-input form-control text-uppercase"
                                     maxlength="500"
                                     autocomplete="off"
-                                    placeholder="Chọn ghi chú hoặc nhập thêm...">
+                                    placeholder="Ghi chú...">
 
                             </div>
 
@@ -1822,7 +1825,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <input
                                     type="text"
                                     id="icommentname"
-                                    class="mini-modal-input"
+                                    class="mini-modal-input form-control text-uppercase"
                                     maxlength="100"
                                     autocomplete="off"
                                     placeholder="Tên khách...">
@@ -1883,6 +1886,38 @@ document.addEventListener('DOMContentLoaded', function () {
             'beforeend',
             html
         );
+
+        const commentInput =
+            document.getElementById(
+                'icomment'
+            );
+
+        const commentNameInput =
+            document.getElementById(
+                'icommentname'
+            );
+
+
+        if (commentInput) {
+            commentInput.addEventListener(
+                'input',
+                function () {
+                    this.value =
+                        this.value.toUpperCase();
+                }
+            );
+        }
+
+
+        if (commentNameInput) {
+            commentNameInput.addEventListener(
+                'input',
+                function () {
+                    this.value =
+                        this.value.toUpperCase();
+                }
+            );
+        }
 
 
         miniModal =
