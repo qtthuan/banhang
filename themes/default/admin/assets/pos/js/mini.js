@@ -1662,10 +1662,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             class="mini-modal-field mini-modal-options-center"
                             style="display:none;">
 
-                            <label>
-                                Size
-                            </label>
-
                             <div
                                 id="mini-option-list"
                                 class="btn-group"
