@@ -5242,3 +5242,110 @@ body.mini-modal-open {
     }
 
 }
+
+/* =========================================================
+   ORDER TOOL MODAL
+   BORDER ĐẬM - POS LOW RESOLUTION
+   ========================================================= */
+
+#mini-order-tool-modal .form-control {
+
+    border:
+        2px solid #9da4aa !important;
+
+    border-radius: 9px !important;
+
+    color:
+        var(--mini-text) !important;
+
+    background:
+        #fff !important;
+}
+
+
+#mini-order-tool-modal .form-control:focus {
+
+    border-color:
+        var(--mini-green) !important;
+
+    box-shadow:
+        0 0 0 2px
+        rgba(0,166,81,.10) !important;
+}
+
+
+/* Ô số tiền + ký hiệu đ */
+
+#mini-order-tool-modal .input-group-text {
+
+    border:
+        2px solid #9da4aa !important;
+
+    background:
+        #f3f4f5 !important;
+
+    color:
+        #555d64 !important;
+
+    font-weight:
+        700;
+}
+
+
+/*
+ * Vì input-group có 2 phần,
+ * tránh đường viền ở giữa bị quá dày.
+ */
+
+#mini-order-tool-modal
+.input-group .form-control {
+
+    border-right:
+        0 !important;
+}
+
+
+#mini-order-tool-modal
+.input-group .input-group-text {
+
+    border-left:
+        1px solid #9da4aa !important;
+}
+
+
+/* =========================================================
+   MODAL LINE
+   ========================================================= */
+
+#mini-order-tool-modal .modal-header {
+
+    border-bottom:
+        2px solid #c5cbd0 !important;
+}
+
+
+#mini-order-tool-modal .modal-footer {
+
+    border-top:
+        2px solid #c5cbd0 !important;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    #mini-order-tool-modal .form-control {
+
+        height: 48px !important;
+
+        border-width:
+            2px !important;
+
+        font-size:
+            17px !important;
+    }
+
+}

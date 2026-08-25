@@ -1638,12 +1638,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div
                                 id="mini-order-tool-money-field">
 
-                                <label
-                                    id="mini-order-tool-money-label"
-                                    class="form-label">
-                                    Số tiền
-                                </label>
-
                                 <div
                                     class="input-group">
 
@@ -1746,12 +1740,6 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
 
-        const moneyLabel =
-            document.getElementById(
-                'mini-order-tool-money-label'
-            );
-
-
         const moneyInput =
             document.getElementById(
                 'mini-order-tool-money'
@@ -1794,9 +1782,6 @@ document.addEventListener('DOMContentLoaded', function () {
             title.textContent =
                 'Phí giao hàng';
 
-            moneyLabel.textContent =
-                'Phí ship';
-
             moneyField.style.display =
                 '';
 
@@ -1819,9 +1804,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             title.textContent =
                 'Giảm giá đơn hàng';
-
-            moneyLabel.textContent =
-                'Giảm giá';
 
             moneyField.style.display =
                 '';
@@ -1864,8 +1846,51 @@ document.addEventListener('DOMContentLoaded', function () {
                 modalElement
             );
 
-
         modal.show();
+
+
+        /*
+        * TỰ FOCUS + SELECT Ô NHẬP
+        * Mobile sẽ tự bật keyboard.
+        */
+        setTimeout(() => {
+
+            let inputToFocus = null;
+
+            if (type === 'shipping') {
+
+                inputToFocus = moneyInput;
+
+            }
+            else if (type === 'discount') {
+
+                inputToFocus = moneyInput;
+
+            }
+            else if (type === 'note') {
+
+                inputToFocus = noteInput;
+
+            }
+
+
+            if (!inputToFocus) {
+                return;
+            }
+
+
+            inputToFocus.focus({
+                preventScroll: true
+            });
+
+
+            /*
+            * Chọn toàn bộ nội dung hiện tại
+            * để gõ số/chữ mới sẽ thay luôn giá trị cũ.
+            */
+            inputToFocus.select();
+
+        }, 180);
 
     }
 
