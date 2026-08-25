@@ -3404,14 +3404,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                 if (!card) {
-
-                    console.warn(
-                        'Không tìm thấy product card để edit:',
-                        item.id
-                    );
-
                     return;
-
                 }
 
 
@@ -3440,7 +3433,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let cartPointerRow = null;
     let cartPointerStartX = 0;
     let cartPointerStartY = 0;
-    let cartPointerMoved = false;
     let cartPointerActive = false;
 
 
@@ -3537,8 +3529,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 cartPointerStartY =
                     event.clientY;
 
-                cartPointerMoved = false;
-
                 cartPointerActive = true;
 
 
@@ -3605,10 +3595,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
 
                 }
-
-
-                cartPointerMoved = true;
-
 
                 /*
                 * Nếu đang cuộn dọc thì bỏ qua.
@@ -4246,6 +4232,15 @@ document.addEventListener('DOMContentLoaded', function () {
         */
         grid.scrollLeft = 0;
 
+        grid.classList.remove(
+            'mini-category-changing'
+        );
+
+        void grid.offsetWidth;
+
+        grid.classList.add(
+            'mini-category-changing'
+        );
 
         /*
         * Cập nhật lại pagination
@@ -4403,6 +4398,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     function updateSwiperPages() {
+
+        if (window.innerWidth <= 800) {
+            return;
+        }
 
         const label =
             document.getElementById(
@@ -4575,16 +4574,12 @@ document.addEventListener('DOMContentLoaded', function () {
             'mini-payment'
         );
 
-        console.log('PAYMENT ELEMENT:', payment);
-
 
     if (payment) {
 
         payment.addEventListener(
             'click',
             function () {
-
-                console.log('ĐÃ CLICK THANH TOÁN');
 
                 /*
                 * Không có món
