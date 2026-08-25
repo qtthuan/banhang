@@ -350,7 +350,8 @@
                                 data-code="<?= html_escape($product->code); ?>"
                                 data-category="<?= (int) $product->subcategory_id; ?>"
                                 data-price="<?= (float) $product->price; ?>"
-                                data-name="<?= html_escape($product->name); ?>">
+                                data-name="<?= html_escape($product->name); ?>"
+                                data-variants="<?= html_escape(json_encode($product->variants ?? [], JSON_UNESCAPED_UNICODE)); ?>">
 
                             <?php if (!empty($product->is_promo)): ?>
                                 <span class="mini-promo">KM</span>

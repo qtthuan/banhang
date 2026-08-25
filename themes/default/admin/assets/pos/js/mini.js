@@ -1636,6 +1636,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                         <div
+                            id="mini-modal-options"
+                            class="mini-modal-field"
+                            style="display:none;">
+
+                            <label>
+                                Size
+                            </label>
+
+                            <div
+                                id="mini-option-list"
+                                class="btn-group"
+                                role="group"
+                                aria-label="Chọn size">
+                            </div>
+
+                        </div>
+
+
+                        <div
                             class="mini-modal-two-col-top">
 
 
@@ -2364,6 +2383,172 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
+    function renderMiniOptions(
+        card,
+        selectedOption = ''
+    ) {
+
+        const wrapper =
+            document.getElementById(
+                'mini-modal-options'
+            );
+
+        const list =
+            document.getElementById(
+                'mini-option-list'
+            );
+
+
+        if (!wrapper || !list) {
+            return;
+        }
+
+
+        let variants = [];
+
+
+        /*
+        * Lấy variants từ product card.
+        */
+        try {
+
+            variants =
+                JSON.parse(
+                    card.dataset.variants ||
+                    '[]'
+                );
+
+        } catch (error) {
+
+            variants = [];
+
+        }
+
+
+        /*
+        * Không có size
+        * => ẩn cụm Size.
+        */
+        if (
+            !Array.isArray(variants) ||
+            !variants.length
+        ) {
+
+            wrapper.style.display =
+                'none';
+
+            list.innerHTML =
+                '';
+
+            return;
+
+        }
+
+
+        /*
+        * Hiện cụm Size.
+        */
+        wrapper.style.display =
+            'block';
+
+
+        /*
+        * Tạo button Bootstrap.
+        */
+        list.innerHTML =
+            variants
+                .map(
+                    function (variant) {
+
+                        const id =
+                            String(
+                                variant.id ||
+                                ''
+                            );
+
+
+                        const name =
+                            String(
+                                variant.name ||
+                                ''
+                            ).trim();
+
+
+                        if (!name) {
+                            return '';
+                        }
+
+
+                        const active =
+                            id ===
+                            String(
+                                selectedOption
+                            );
+
+
+                        return `
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-primary ${
+                                    active
+                                        ? 'active'
+                                        : ''
+                                }"
+                                data-mini-option-id="${escapeHtml(id)}">
+
+                                ${escapeHtml(name)}
+
+                            </button>
+
+                        `;
+
+                    }
+                )
+                .join('');
+
+
+        /*
+        * Click chọn Size.
+        */
+        list
+            .querySelectorAll(
+                '[data-mini-option-id]'
+            )
+            .forEach(
+                function (button) {
+
+                    button.addEventListener(
+                        'click',
+                        function () {
+
+                            list
+                                .querySelectorAll(
+                                    '[data-mini-option-id]'
+                                )
+                                .forEach(
+                                    function (item) {
+
+                                        item.classList.remove(
+                                            'active'
+                                        );
+
+                                    }
+                                );
+
+
+                            this.classList.add(
+                                'active'
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+    }
+
     function miniDisplayProductName(name) {
         name =
             String(
@@ -2428,6 +2613,13 @@ document.addEventListener('DOMContentLoaded', function () {
             editItem
                 ? editItem.rowId
                 : null;
+
+        renderMiniOptions(
+            card,
+            editItem
+                ? editItem.option
+                : ''
+        );
 
 
         miniModal.dataset.editRowId =
@@ -3043,6 +3235,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 .trim() ||
             '';
 
+        const selectedOption =
+            miniModal
+                .querySelector(
+                    '[data-mini-option-id].active'
+                )
+                ?.dataset
+                .miniOptionId ||
+            '';
+
 
         /*
         * =====================================================
@@ -3091,6 +3292,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 cart[index].commentName =
                     commentName;
 
+                cart[index].option =
+                    selectedOption; 
+
 
                 renderCart();
 
@@ -3119,7 +3323,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         comment,
 
                     commentName:
-                        commentName
+                        commentName,
+                    option:
+                        selectedOption,
                 }
             );
 
