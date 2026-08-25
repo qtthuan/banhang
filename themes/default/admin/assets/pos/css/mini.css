@@ -5096,12 +5096,11 @@ body.mini-modal-open {
         font-size: 14px;
     }
 }
-/* Category change animation */
 .mini-product-grid.mini-category-changing {
-    animation: miniProductsSlide .22s ease-out;
+    animation: miniCategorySlide .22s ease-out;
 }
 
-@keyframes miniProductsSlide {
+@keyframes miniCategorySlide {
     from {
         opacity: .35;
         transform: translateX(18px);
@@ -5112,6 +5111,47 @@ body.mini-modal-open {
         transform: translateX(0);
     }
 }
+
+
+/* TABLET */
+@media (max-width: 800px) {
+    .mini-product-grid.mini-category-changing {
+        animation-duration: .20s;
+    }
+
+    @keyframes miniCategorySlide {
+        from {
+            opacity: .35;
+            transform: translateX(12px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+}
+
+
+/* MOBILE NHỎ */
+@media (max-width: 420px) {
+    .mini-product-grid.mini-category-changing {
+        animation-duration: .18s;
+    }
+
+    @keyframes miniCategorySlide {
+        from {
+            opacity: .35;
+            transform: translateX(9px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+}
+
 
 @media (prefers-reduced-motion: reduce) {
     .mini-product-grid.mini-category-changing {
