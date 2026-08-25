@@ -1662,13 +1662,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div
                                 id="mini-order-tool-note-field"
                                 style="display:none;">
-
-                                <label
-                                    for="mini-order-tool-note"
-                                    class="form-label">
-                                    Ghi chú đơn hàng
-                                </label>
-
                                 <input
                                     type="text"
                                     id="mini-order-tool-note"
