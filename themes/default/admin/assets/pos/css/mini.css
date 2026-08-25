@@ -5207,3 +5207,38 @@ body.mini-modal-open {
     font-size: 15px;
     font-weight: 600;
 }
+
+/* =========================================================
+   ORDER TOOL MODAL
+   Z-INDEX + MOBILE
+   ========================================================= */
+
+#mini-order-tool-modal {
+    z-index: 20000 !important;
+}
+
+#mini-order-tool-modal .modal-dialog {
+    position: relative;
+    z-index: 20001 !important;
+}
+
+.modal-backdrop {
+    z-index: 19990 !important;
+}
+
+
+@media (max-width: 800px) {
+
+    #mini-order-tool-modal {
+        z-index: 20000 !important;
+    }
+
+    #mini-order-tool-modal .modal-dialog {
+        width: calc(100vw - 30px);
+        max-width: 420px;
+        margin: auto;
+
+        z-index: 20001 !important;
+    }
+
+}
