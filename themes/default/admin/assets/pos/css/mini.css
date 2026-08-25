@@ -5158,3 +5158,23 @@ body.mini-modal-open {
         animation: none;
     }
 }
+
+.mini-modal-options-center {
+    text-align: center;
+}
+
+.mini-modal-options-center label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+#mini-option-list {
+    display: inline-flex;
+}
+
+#mini-option-list .btn {
+    min-width: 100px;
+    padding: 10px 18px;
+    font-size: 15px;
+    font-weight: 600;
+}

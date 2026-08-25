@@ -18,6 +18,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let miniBasePrice = 0;
 
+    let miniVariantPrice = 0;
+
+    let miniSelectedVariantId = '';
+
     let miniDiscountType = 'amount';
 
     /*
@@ -636,9 +640,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             price:
-                parseFloat(
-                    card.dataset.price || 0
-                ) || 0,
+                (
+                    parseFloat(
+                        card.dataset.price || 0
+                    ) || 0
+                ) +
+                (
+                    Number(
+                        data.variantPrice
+                    ) || 0
+                ),
 
 
             qty:
@@ -1637,7 +1648,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         <div
                             id="mini-modal-options"
-                            class="mini-modal-field"
+                            class="mini-modal-field mini-modal-options-center"
                             style="display:none;">
 
                             <label>
@@ -2092,6 +2103,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const value =
             getDiscountValue();
 
+        const currentPrice = miniBasePrice + miniVariantPrice;
 
         let discount;
 
@@ -2101,10 +2113,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'percent'
         ) {
 
-            discount =
-                miniBasePrice *
-                value /
-                100;
+            discount = currentPrice * value / 100;
 
         } else {
 
@@ -2114,11 +2123,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
 
-        discount =
-            Math.min(
-                miniBasePrice,
-                discount
-            );
+        discount = Math.min(currentPrice, discount);
 
 
         const priceEl =
@@ -2129,11 +2134,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (priceEl) {
 
-            priceEl.textContent =
-                money(
-                    miniBasePrice -
-                    discount
-                );
+            priceEl.textContent = money(currentPrice - discount);
 
         }
 
@@ -2444,6 +2445,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
 
+        /*
+        * Nếu chưa có Size được chọn:
+        * mặc định lấy variant đầu tiên.
+        */
+        if (!selectedOption) {
+
+            selectedOption =
+                String(
+                    variants[0].id || ''
+                );
+
+        }
+
 
         /*
         * Hiện cụm Size.
@@ -2451,6 +2465,40 @@ document.addEventListener('DOMContentLoaded', function () {
         wrapper.style.display =
             'block';
 
+
+        const selectedVariant =
+            variants.find(
+                function (variant) {
+
+                    return (
+                        String(
+                            variant.id
+                        ) ===
+                        String(
+                            selectedOption
+                        )
+                    );
+
+                }
+            );
+
+
+        miniSelectedVariantId =
+            selectedVariant
+                ? String(
+                    selectedVariant.id
+                )
+                : '';
+
+
+        miniVariantPrice =
+            selectedVariant
+                ? (
+                    Number(
+                        selectedVariant.price
+                    ) || 0
+                )
+                : 0;
 
         /*
         * Tạo button Bootstrap.
@@ -2480,10 +2528,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                         const active =
-                            id ===
-                            String(
-                                selectedOption
-                            );
+                            selectedOption
+                                ? id === String(selectedOption)
+                                : index === 0;
 
 
                         return `
@@ -2495,7 +2542,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                         ? 'active'
                                         : ''
                                 }"
-                                data-mini-option-id="${escapeHtml(id)}">
+                                data-mini-option-id="${escapeHtml(id)}"
+                                data-mini-option-price="${escapeHtml(
+                                    variant.price || 0
+                                )}">
 
                                 ${escapeHtml(name)}
 
@@ -2532,6 +2582,16 @@ document.addEventListener('DOMContentLoaded', function () {
                                         item.classList.remove(
                                             'active'
                                         );
+
+                                        miniSelectedVariantId =
+                                            this.dataset.miniOptionId || '';
+
+                                        miniVariantPrice =
+                                            Number(
+                                                this.dataset.miniOptionPrice
+                                            ) || 0;
+
+                                        updateMiniModalPrice();
 
                                     }
                                 );
@@ -2575,12 +2635,11 @@ document.addEventListener('DOMContentLoaded', function () {
         createProductModal();
 
 
-        miniBasePrice =
-            parseFloat(
-                card.dataset.price ||
-                0
-            ) || 0;
+        miniBasePrice = parseFloat(card.dataset.price || 0) || 0;
 
+        miniVariantPrice = 0;
+
+        miniSelectedVariantId = '';
 
         miniModal.dataset.productId =
             card.dataset.productId ||
@@ -3244,6 +3303,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 .miniOptionId ||
             '';
 
+        const selectedOptionButton =
+            miniModal.querySelector(
+                '[data-mini-option-id].active'
+            );
+
+
+        const selectedVariantPrice =
+            Number(
+                selectedOptionButton
+                    ?.dataset
+                    .miniOptionPrice
+            ) || 0;
 
         /*
         * =====================================================
@@ -3295,6 +3366,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 cart[index].option =
                     selectedOption; 
 
+                cart[index].price =
+                    (
+                        parseFloat(
+                            card.dataset.price || 0
+                        ) || 0
+                    ) +
+                    selectedVariantPrice;
+
 
                 renderCart();
 
@@ -3326,6 +3405,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         commentName,
                     option:
                         selectedOption,
+                    variantPrice:
+                        selectedVariantPrice,
                 }
             );
 
@@ -3369,9 +3450,58 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
 
 
+                        let option = '';
+
+                        let variantPrice = 0;
+
+
+                        try {
+
+                            const variants =
+                                JSON.parse(
+                                    this.dataset.variants ||
+                                    '[]'
+                                );
+
+
+                            if (
+                                Array.isArray(variants) &&
+                                variants.length
+                            ) {
+
+                                option =
+                                    String(
+                                        variants[0].id ||
+                                        ''
+                                    );
+
+
+                                variantPrice =
+                                    Number(
+                                        variants[0].price
+                                    ) || 0;
+
+                            }
+
+                        } catch (error) {
+
+                            option = '';
+
+                            variantPrice = 0;
+
+                        }
+
+
                         addToCart(
                             this,
-                            1
+                            1,
+                            {
+                                option:
+                                    option,
+
+                                variantPrice:
+                                    variantPrice
+                            }
                         );
 
                     }
