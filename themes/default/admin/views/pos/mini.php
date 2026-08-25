@@ -478,7 +478,7 @@ window.miniOrderComments = <?= json_encode(
     <!-- MINI POS -->
     <script
         type="text/javascript"
-        src="<?=$assets?>pos/js/mini.js?v=20260821-4">
+        src="<?=$assets?>pos/js/mini.js?v=20260821-5">
     </script>
 
 </body>
