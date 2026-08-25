@@ -1206,14 +1206,11 @@ button {
 
     transform: translateY(-50%) !important;
 
-    width: 30px !important;
-    height: 30px !important;
+    min-width: 33px !important;
+    max-width: 33px !important;
 
-    min-width: 30px !important;
-    max-width: 30px !important;
-
-    min-height: 30px !important;
-    max-height: 30px !important;
+    min-height: 33px !important;
+    max-height: 33px !important;
 
     margin: 0 !important;
     padding: 0 !important;
@@ -1226,8 +1223,8 @@ button {
     border: 0 !important;
     border-radius: 50% !important;
 
-    background: #eef0f2 !important;
-    color: #697078 !important;
+    background: #d9dcdf !important;
+    color: #0d0d0e !important;
 
     font-family:
         'Inter',
