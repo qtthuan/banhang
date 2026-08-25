@@ -3864,13 +3864,8 @@ body.mini-modal-open {
     }
 
     .mini-categories {
-        overflow-x: auto;
         overflow-y: hidden;
         flex-wrap: nowrap;
-    }
-
-    .mini-category {
-        flex: 0 0 auto;
     }
 
     
