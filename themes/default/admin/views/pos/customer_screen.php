@@ -120,9 +120,15 @@
             <!-- ADS / WAITING -->
             <div id="waiting-screen" class="screen-layer active">
 
-                <div id="ads-bg"></div>
+                <!-- Background blur: dùng 2 layer để chuyển mượt -->
+                <div id="ads-bg-1" class="ads-bg active"></div>
+                <div id="ads-bg-2" class="ads-bg"></div>
 
-                <img id="ads-image">
+                <!-- 2 ảnh chồng lên nhau để crossfade -->
+                <div id="ads-slideshow">
+                    <img id="ads-image-1" class="ads-image active" draggable="false">
+                    <img id="ads-image-2" class="ads-image" draggable="false">
+                </div>
 
                 <div id="waiting-overlay"></div>
 

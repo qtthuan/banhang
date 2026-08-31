@@ -21,6 +21,14 @@ var CS = {
 
     adsTimer : null,
 
+    adsCurrent : 1,
+
+    adsPreloaded : [],
+
+    adsStarted : false,
+
+    adsTransitioning : false,
+
     pollTime    : 500,
 
     loading     : false
@@ -35,6 +43,9 @@ var CS = {
 $(function(){
 
     console.log('init screen: ');
+
+    /* Preload toàn bộ ảnh quảng cáo */
+    preloadAds();
 
     updateClock();
 
@@ -300,82 +311,319 @@ function processScreenData(res)
 
 }
 
-function startAds()
+/* ----------------------------------------------------------
+    ADS PRELOAD
+---------------------------------------------------------- */
+
+function preloadAds()
 {
-    if(CS.adsTimer) return;
-
-    if(customerScreen.ads.length===0) return;
-
-    showAds();
-
-    if(customerScreen.ads.length==1){
+    if(!customerScreen.ads || customerScreen.ads.length === 0){
         return;
     }
 
-    CS.adsTimer=setInterval(nextAds,5000);
+    $.each(customerScreen.ads, function(i, file){
+
+        var url = customerScreen.adsUrl + file;
+
+        var img = new Image();
+
+        img.src = url;
+
+        CS.adsPreloaded[i] = img;
+
+    });
+
 }
+
+/* ----------------------------------------------------------
+    ADS
+---------------------------------------------------------- */
+
+
+/* Khởi động quảng cáo */
+
+function startAds()
+{
+    if(CS.adsStarted){
+        return;
+    }
+
+    if(!customerScreen.ads || customerScreen.ads.length === 0){
+        return;
+    }
+
+    CS.adsStarted = true;
+
+    CS.adsIndex = 0;
+
+    CS.adsCurrent = 1;
+
+    showFirstAd();
+
+    if(customerScreen.ads.length > 1){
+
+        CS.adsTimer = setInterval(function(){
+
+            nextAds();
+
+        }, 5000);
+
+    }
+
+}
+
+
+/* Dừng timer quảng cáo */
 
 function stopAds()
 {
-    clearInterval(CS.adsTimer);
+    if(CS.adsTimer){
 
-    CS.adsTimer=null;
+        clearInterval(CS.adsTimer);
+
+        CS.adsTimer = null;
+
+    }
+
+    CS.adsStarted = false;
+
+    CS.adsTransitioning = false;
+
 }
+
+
+/* Hiện ảnh đầu tiên */
+
+function showFirstAd()
+{
+    var file = customerScreen.ads[CS.adsIndex];
+
+    var url = customerScreen.adsUrl + file;
+
+    var $img1 = $("#ads-image-1");
+
+    var $img2 = $("#ads-image-2");
+
+    var $bg1 = $("#ads-bg-1");
+
+    var $bg2 = $("#ads-bg-2");
+
+
+    /* Xác định ảnh dọc hay ngang */
+
+    var preloaded = CS.adsPreloaded[CS.adsIndex];
+
+    var portrait = false;
+
+    if(preloaded && preloaded.naturalHeight > preloaded.naturalWidth){
+
+        portrait = true;
+
+    }
+
+
+    /* Reset ảnh */
+
+    $img1
+        .removeClass("portrait landscape")
+        .addClass(portrait ? "portrait" : "landscape")
+        .attr("src", url)
+        .css({
+            opacity : 1,
+            transform : "translate(-50%,-50%) scale(1)"
+        })
+        .addClass("active");
+
+
+    $img2
+        .removeClass("active")
+        .css({
+            opacity : 0,
+            transform : "translate(-50%,-50%) scale(1)"
+        });
+
+
+    /* Background */
+
+    $bg1
+        .css("background-image", "url('" + url + "')")
+        .addClass("active");
+
+
+    $bg2
+        .removeClass("active");
+
+
+    CS.adsCurrent = 1;
+
+
+    /* Zoom nhẹ */
+
+    requestAnimationFrame(function(){
+
+        requestAnimationFrame(function(){
+
+            $img1.css(
+                "transform",
+                "translate(-50%,-50%) scale(1.03)"
+            );
+
+        });
+
+    });
+
+}
+
+
+/* Chuyển sang ảnh tiếp theo */
 
 function nextAds()
 {
-    CS.adsIndex++;
-
-    if(CS.adsIndex>=customerScreen.ads.length){
-        CS.adsIndex=0;
+    if(CS.adsTransitioning){
+        return;
     }
 
-    $("#ads-image").css("opacity",0);
+    if(customerScreen.ads.length <= 1){
+        return;
+    }
+
+
+    CS.adsTransitioning = true;
+
+
+    /* Ảnh tiếp theo */
+
+    var nextIndex = CS.adsIndex + 1;
+
+    if(nextIndex >= customerScreen.ads.length){
+
+        nextIndex = 0;
+
+    }
+
+
+    var file = customerScreen.ads[nextIndex];
+
+    var url = customerScreen.adsUrl + file;
+
+
+    /* Xác định ảnh dọc / ngang */
+
+    var preloaded = CS.adsPreloaded[nextIndex];
+
+    var portrait = false;
+
+    if(preloaded && preloaded.naturalHeight > preloaded.naturalWidth){
+
+        portrait = true;
+
+    }
+
+
+    /* Xác định ảnh đang hiện và ảnh kế tiếp */
+
+    var currentNumber = CS.adsCurrent;
+
+    var nextNumber = currentNumber === 1 ? 2 : 1;
+
+
+    var $currentImg = $("#ads-image-" + currentNumber);
+
+    var $nextImg = $("#ads-image-" + nextNumber);
+
+    var $currentBg = $("#ads-bg-" + currentNumber);
+
+    var $nextBg = $("#ads-bg-" + nextNumber);
+
+
+    /* Chuẩn bị ảnh mới ở phía sau */
+
+    $nextImg
+        .removeClass("portrait landscape")
+        .addClass(portrait ? "portrait" : "landscape")
+        .attr("src", url)
+        .removeClass("active")
+        .css({
+            opacity : 0,
+            transform : "translate(-50%,-50%) scale(1)"
+        });
+
+
+    /* Chuẩn bị background mới */
+
+    $nextBg
+        .css("background-image", "url('" + url + "')")
+        .removeClass("active");
+
+
+    /*
+        Ép browser render trạng thái mới trước
+        rồi mới bắt đầu crossfade
+    */
+
+    requestAnimationFrame(function(){
+
+        requestAnimationFrame(function(){
+
+
+            /* Ảnh cũ fade out */
+
+            $currentImg
+                .removeClass("active")
+                .css({
+                    opacity : 0,
+                    transform : "translate(-50%,-50%) scale(1.03)"
+                });
+
+
+            /* Ảnh mới fade in */
+
+            $nextImg
+                .addClass("active")
+                .css({
+                    opacity : 1,
+                    transform : "translate(-50%,-50%) scale(1)"
+                });
+
+
+            /* Background chuyển cùng lúc */
+
+            $currentBg.removeClass("active");
+
+            $nextBg.addClass("active");
+
+
+            /* Bắt đầu zoom nhẹ ảnh mới */
+
+            setTimeout(function(){
+
+                $nextImg.css(
+                    "transform",
+                    "translate(-50%,-50%) scale(1.03)"
+                );
+
+            }, 50);
+
+
+        });
+
+    });
+
+
+    /* Lưu ảnh hiện tại */
+
+    CS.adsIndex = nextIndex;
+
+    CS.adsCurrent = nextNumber;
+
+
+    /* Mở khóa sau khi animation xong */
 
     setTimeout(function(){
 
-        showAds();
+        CS.adsTransitioning = false;
 
-        $("#ads-image")
-            .css({
-                opacity:1,
-                transform:"translate(-50%,-50%) scale(1.06)"
-            });
-
-    },800);
-}
-
-function showAds()
-{
-    var file=customerScreen.ads[CS.adsIndex];
-
-    var url=customerScreen.adsUrl+file;
-
-    $("#ads-bg").css(
-        "background-image",
-        "url('"+url+"')"
-    );
-
-    var img=new Image();
-
-    img.onload=function(){
-
-        let portrait=this.height>this.width;
-
-        $("#ads-image")
-            .removeClass("portrait landscape")
-            .addClass(
-                portrait?"portrait":"landscape"
-            )
-            .attr("src",url)
-            .css({
-                opacity:1,
-                transform:"translate(-50%,-50%) scale(1)"
-            });
-
-    }
-
-    img.src=url;
+    }, 900);
 
 }
 

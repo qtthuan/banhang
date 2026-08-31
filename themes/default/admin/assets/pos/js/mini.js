@@ -595,10 +595,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const grandTotal =
             Math.max(
                 0,
-                subtotal -
-                discount -
-                orderDiscountAmount +
-                deliveryFee
+                subtotal
+                - discount
+                - orderDiscountAmount
+                + deliveryFee
             );
 
 
@@ -669,7 +669,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (discountEl) {
 
             discountEl.textContent =
-                money(discount);
+                money(
+                    discount +
+                    orderDiscountAmount
+                );
 
         }
 
@@ -3215,17 +3218,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-    function updateOrderDiscountTypeUI() {
-
-        const suffix =
-            document.getElementById(
-                'mini-order-tool-discount-suffix'
-            );
-
-        const hint =
-            document.getElementById(
-                'mini-order-tool-discount-hint'
-            );
+    function updateOrderDiscountTypeUI() {     
 
 
         document
@@ -3245,35 +3238,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             );
 
-
-        if (
-            miniOrderDiscountType ===
-            'percent'
-        ) {
-
-            if (suffix) {
-                suffix.textContent = '%';
-            }
-
-
-            if (hint) {
-                hint.textContent =
-                    'Chỉ giảm % trên món chưa có giảm riêng.';
-            }
-
-        } else {
-
-            if (suffix) {
-                suffix.textContent = 'nghìn';
-            }
-
-
-            if (hint) {
-                hint.textContent =
-                    'Gõ 1 = giảm 1.000đ';
-            }
-
-        }
 
     }
 
@@ -3339,15 +3303,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                 id="mini-order-tool-ship"
                                 class="mini-order-tool-pane">
 
-                                <label
-                                    for="mini-order-tool-ship-input"
-                                    class="form-label">
-
-                                    Phí ship
-
-                                </label>
-
-
                                 <div class="input-group">
 
                                     <input
@@ -3361,14 +3316,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                         placeholder="0">
 
                                     <span class="input-group-text">
-                                        nghìn
+                                        đ
                                     </span>
 
-                                </div>
-
-
-                                <div class="mini-order-tool-hint">
-                                    Gõ 1 = 1.000đ
                                 </div>
 
                             </div>
@@ -3379,15 +3329,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div
                                 id="mini-order-tool-discount"
                                 class="mini-order-tool-pane">
-
-                                <label
-                                    for="mini-order-tool-discount-input"
-                                    class="form-label">
-
-                                    Giảm giá đơn hàng
-
-                                </label>
-
 
                                 <div class="mini-order-tool-discount-row">
 
@@ -3403,14 +3344,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                             inputmode="decimal"
                                             autocomplete="off"
                                             placeholder="0">
-
-                                        <span
-                                            id="mini-order-tool-discount-suffix"
-                                            class="input-group-text">
-
-                                            nghìn
-
-                                        </span>
 
                                     </div>
 
@@ -3437,23 +3370,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </button>
 
                                     </div>
-
-                                </div>
-
-
-                                <div
-                                    id="mini-order-tool-discount-hint"
-                                    class="mini-order-tool-hint">
-
-                                    Gõ 1 = giảm 1.000đ
-
-                                </div>
-
-
-                                <div class="mini-order-tool-info">
-
-                                    Nếu chọn %, chỉ giảm
-                                    những món chưa có giảm giá riêng.
 
                                 </div>
 
@@ -3653,19 +3569,19 @@ document.addEventListener('DOMContentLoaded', function () {
                         ) || 0;
 
 
-                    const discount =
-                        Number(
-                            item.discount
-                        ) || 0;
+                    const itemDiscount =
+                        getItemDiscount(
+                            item
+                        );
 
 
                     /*
-                    * Có giảm riêng rồi
-                    * => loại khỏi % cấp đơn.
+                    * Món đã có giảm riêng
+                    * thì không giảm % cấp đơn nữa.
                     */
 
                     if (
-                        discount > 0
+                        itemDiscount > 0
                     ) {
                         return;
                     }
@@ -3688,7 +3604,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
 
             amount =
-                Number(
+                Math.round(
                     miniOrderDiscountValue
                 ) || 0;
 
@@ -3793,9 +3709,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             input.value =
-                miniDeliveryFee > 0
-                    ? miniDeliveryFee / 1000
-                    : '';
+                miniDeliveryFee || '';
 
 
             setTimeout(
@@ -3845,26 +3759,12 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
 
                 input.value =
-                    miniOrderDiscountValue
-                        ? miniOrderDiscountValue / 1000
-                        : '';
+                    miniOrderDiscountValue || '';
 
             }
 
 
             updateOrderDiscountTypeUI();
-
-
-            setTimeout(
-                function () {
-
-                    input.focus();
-
-                    input.select();
-
-                },
-                150
-            );
 
         }
 
@@ -3893,18 +3793,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             input.value =
                 miniOrderNote;
-
-
-            setTimeout(
-                function () {
-
-                    input.focus();
-
-                    input.select();
-
-                },
-                150
-            );
 
         }
 
@@ -3987,6 +3875,67 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
 
+        modalElement.addEventListener(
+            'shown.bs.modal',
+            function focusOrderToolOnce() {
+
+                modalElement.removeEventListener(
+                    'shown.bs.modal',
+                    focusOrderToolOnce
+                );
+
+
+                let input = null;
+
+
+                if (
+                    miniOrderToolType ===
+                    'ship'
+                ) {
+
+                    input =
+                        document.getElementById(
+                            'mini-order-tool-ship-input'
+                        );
+
+                } else if (
+                    miniOrderToolType ===
+                    'discount'
+                ) {
+
+                    input =
+                        document.getElementById(
+                            'mini-order-tool-discount-input'
+                        );
+
+                } else if (
+                    miniOrderToolType ===
+                    'note'
+                ) {
+
+                    input =
+                        document.getElementById(
+                            'mini-order-tool-note-input'
+                        );
+
+                }
+
+
+                if (!input) {
+                    return;
+                }
+
+
+                input.focus({
+                    preventScroll: true
+                });
+
+
+                input.select();
+
+            }
+        );
+
     }
 
     function updateOrderToolNoteBadge() {
@@ -4057,18 +4006,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 );
 
 
-            const thousands =
+            miniDeliveryFee =
                 Math.max(
                     0,
-                    parseFloat(
-                        input?.value
-                    ) || 0
-                );
-
-
-            miniDeliveryFee =
-                Math.round(
-                    thousands * 1000
+                    Math.round(
+                        parseFloat(
+                            input?.value
+                        ) || 0
+                    )
                 );
 
 
@@ -4135,7 +4080,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 miniOrderDiscountValue =
                     Math.round(
-                        value * 1000
+                        value
                     );
 
             }
