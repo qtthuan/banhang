@@ -374,6 +374,8 @@
                                 data-code="<?= html_escape($product->code); ?>"
                                 data-category="<?= (int) $product->subcategory_id; ?>"
                                 data-price="<?= (float) $product->price; ?>"
+                                data-original-price="<?= isset($product->original_price) ? (float) $product->original_price : (float) $product->price; ?>"
+                                data-promo="<?= !empty($product->is_promo) ? 1 : 0; ?>"
                                 data-name="<?= html_escape($product->name); ?>"
                                 data-variants="<?= html_escape(json_encode($product->variants ?? [], JSON_UNESCAPED_UNICODE)); ?>">
 

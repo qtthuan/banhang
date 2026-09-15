@@ -1674,8 +1674,22 @@ var lang = {
             calculateTotals();
             $('#amount_val_<?=$i?>').val($(this).val());
         });
-        $('#paymentModal').on('select2-close', '#paid_by_<?=$i?>', function (e) {
-            $('#paid_by_val_<?=$i?>').val($(this).val());
+        // $('#paymentModal').on('select2-close', '#paid_by_<?=$i?>', function (e) {
+        //     console.log('xxxxxxx: ' + $(this).val());
+        //     $('#paid_by_val_<?=$i?>').val($(this).val());
+        // });
+        $('#paymentModal').on('change', '#paid_by_<?=$i?>', function (e) {
+
+            var value = $(this).val();
+
+            $('#paid_by_val_<?=$i?>').val(value);
+
+            console.log(
+                'PAYMENT METHOD',
+                <?=$i?>,
+                value
+            );
+
         });
         $('#paymentModal').on('change', '#pcc_no_<?=$i?>', function (e) {
             $('#cc_no_val_<?=$i?>').val($(this).val());
@@ -2685,12 +2699,11 @@ var lang = {
                 $('.pts_' + pa_no).hide();
                 $('.pcc_' + pa_no).show();
 
-                // Điền tiền trước
-                $("#amount_" + pa_no)
-                    .val(formatDecimal(gtotal))
-                    .prop("readonly", true);
-
-                $(".quick-cash").addClass("disabled");
+                 /*
+                * Tự động click nút Quick Cash đầu tiên
+                * để chạy đúng toàn bộ event như khi người dùng click.
+                */
+                $('.quick-cash').first().trigger('click');
 
                 $('#swipe_' + pa_no).focus();
 

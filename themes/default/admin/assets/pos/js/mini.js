@@ -482,11 +482,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             <div class="mini-cart-price">
 
-                                ${money(
-                                    getItemUnitNet(
-                                        item
-                                    )
-                                )}
+                                ${
+                                    item.isPromo &&
+                                    Number(item.originalPrice) >
+                                    Number(item.price)
+                                        ? `
+                                            <span class="mini-cart-old-price">
+                                                ${money(
+                                                    item.originalPrice
+                                                )}
+                                            </span>
+                                        `
+                                        : ''
+                                }
+
+                                <span class="mini-cart-current-price">
+                                    ${money(
+                                        getItemUnitNet(
+                                            item
+                                        )
+                                    )}
+                                </span>
 
                             </div>
 
@@ -756,6 +772,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 (
                     parseFloat(
                         card.dataset.price || 0
+                    ) || 0
+                ) +
+                (
+                    Number(
+                        data.variantPrice
+                    ) || 0
+                ),
+
+            originalPrice:
+                (
+                    parseFloat(
+                        card.dataset.originalPrice ||
+                        card.dataset.price ||
+                        0
                     ) || 0
                 ) +
                 (
@@ -3575,13 +3605,31 @@ document.addEventListener('DOMContentLoaded', function () {
                         );
 
 
+                    const isPromoItem =
+                        Number(
+                            item.isPromo
+                        ) === 1 ||
+                        (
+                            Number(
+                                item.originalPrice
+                            ) >
+                            Number(
+                                item.price
+                            )
+                        );
+
+
                     /*
-                    * Món đã có giảm riêng
-                    * thì không giảm % cấp đơn nữa.
+                    * Loại khỏi giảm % cấp đơn nếu:
+                    *
+                    * 1. Món đã có giảm riêng
+                    * HOẶC
+                    * 2. Món đang KM / có giá gạch
                     */
 
                     if (
-                        itemDiscount > 0
+                        itemDiscount > 0 ||
+                        isPromoItem
                     ) {
                         return;
                     }

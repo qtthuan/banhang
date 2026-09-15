@@ -5548,3 +5548,49 @@ body.mini-modal-open {
     }
 
 }
+
+/* =========================================================
+   CART PROMOTION PRICE
+   ========================================================= */
+
+.mini-cart-price {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+
+.mini-cart-old-price {
+    color: #8a9096;
+
+    font-size: 11px;
+
+    font-weight: 500;
+
+    text-decoration: line-through;
+
+    text-decoration-thickness: 1px;
+}
+
+
+.mini-cart-current-price {
+    color: #666;
+
+    font-weight: 600;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 800px) {
+
+    .mini-cart-price {
+        gap: 4px;
+    }
+
+
+    .mini-cart-old-price {
+        font-size: 9px;
+    }
+
+}
