@@ -180,9 +180,29 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                 </ul>
 
                 <ul class="nav navbar-nav pull-right">
+
+                    <!-- THỜI GIAN -->
                     <li class="dropdown">
-                        <a class="btn bblack" style="cursor: default;"><span id="display_time"></span></a>
+                        <a class="btn bblack" style="cursor: default;">
+                            <span id="display_time"></span>
+                        </a>
                     </li>
+
+                    <!-- ĐƠN HÀNG -->
+                    <li class="dropdown">
+                        <a
+                            href="#"
+                            id="btn_order_list"
+                            class="btn bblue pos-tip"
+                            title="Đơn hàng trong ngày"
+                            data-container="body"
+                            data-placement="bottom"
+                        >
+                            <i class="fa fa-list-alt"></i>
+                            <span class="order-list-title"> ĐƠN HÀNG</span>
+                        </a>
+                    </li>
+
                 </ul>
             </div>
             
@@ -248,9 +268,41 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                                     </div> -->
                                 </div>
                                 <div style="clear:both;"></div>
-                                <div class="form-group">
-                                <?php echo form_input('customer_name', '', 'class="form-control customer_name" id="customer_name" data-placement="top" placeholder="' . $this->lang->line("enter_customer_name") . '" title=""'); ?>
+                                <div class="form-group customer-type-wrapper">
+
+                                    <div class="customer-name-box">
+                                        <?php echo form_input(
+                                            'customer_name',
+                                            '',
+                                            'class="form-control customer_name" id="customer_name" data-placement="top" placeholder="' . $this->lang->line("enter_customer_name") . '" title="" autocomplete="off"'
+                                        ); ?>
+                                    </div>
+
+                                    <div class="customer-type-buttons">
+
+                                        <button
+                                            type="button"
+                                            id="btn_mang_di"
+                                            class="customer-type-btn"
+                                        >
+                                            MANG ĐI
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            id="btn_ban"
+                                            class="customer-type-btn"
+                                        >
+                                            BÀN
+                                        </button>
+
+                                    </div>
+
                                 </div>
+
+                                <!-- Dữ liệu loại đơn -->
+                                <input type="hidden" name="order_type" id="order_type" value="">
+                                <input type="hidden" name="table_id" id="table_id" value="">
                             </div>
                             <div class="no-print">
                                 <?php if ($Owner || $Admin || !$this->session->userdata('warehouse_id')) {
@@ -1329,6 +1381,46 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
     <table id="bill-total-table" class="prT table" style="margin-bottom:0; font-size: 11px;" width="100%"></table>
     <span id="bill_footer"></span>
 </div>
+<!-- MODAL CHỌN BÀN -->
+<div class="modal fade" id="tableModal" tabindex="-1" role="dialog" aria-labelledby="tableModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-hidden="true">
+                    &times;
+                </button>
+
+                <h4 class="modal-title" id="tableModalLabel">
+                    CHỌN BÀN
+                </h4>
+
+            </div>
+
+            <div class="modal-body">
+
+                <div id="tableList" class="table-list">
+                    <div class="text-center">
+                        Đang tải danh sách bàn...
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- /MODAL CHỌN BÀN -->
 <div class="modal fade in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true"></div>
 <div class="modal fade in" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2"
@@ -1403,12 +1495,166 @@ var lang = {
         $(".btn-cat-con").hide();
         $("#col_return").show();
     }
+
+    function loadTableList() {
+
+        $('#tableList').html(
+            '<div class="text-center">Đang tải danh sách bàn...</div>'
+        );
+
+        $.ajax({
+            type: 'GET',
+
+            url: "<?=admin_url('pos/getTables');?>",
+
+            dataType: 'json',
+
+            success: function (data) {
+
+                if (!data || !data.success) {
+
+                    $('#tableList').html(
+                        '<div class="text-danger text-center">' +
+                        'Không lấy được danh sách bàn' +
+                        '</div>'
+                    );
+
+                    return;
+                }
+
+                var html = '';
+
+                $.each(data.tables, function (index, table) {
+
+                    html +=
+                        '<button type="button" ' +
+                        'class="table-select-btn" ' +
+                        'data-id="' + table.id + '" ' +
+                        'data-name="' + $('<div>').text(table.table_name).html() + '">' +
+                        table.table_name +
+                        '</button>';
+                });
+
+                if (html === '') {
+
+                    html =
+                        '<div class="text-center">' +
+                        'Chưa có bàn nào' +
+                        '</div>';
+                }
+
+                $('#tableList').html(html);
+            },
+
+            error: function () {
+
+                $('#tableList').html(
+                    '<div class="text-danger text-center">' +
+                    'Lỗi kết nối máy chủ' +
+                    '</div>'
+                );
+            }
+        });
+    }
+
+    $(document).on('click', '.table-select-btn', function () {
+
+        var tableId = $(this).data('id');
+        var tableName = $(this).data('name');
+
+        // Loại đơn
+        $('#order_type').val('TABLE');
+
+        // ID bàn
+        $('#table_id').val(tableId);
+
+        // Tên bàn đưa vào textbox
+        $('#customer_name').val(tableName);
+
+        // Lưu lại
+        localStorage.setItem('order_type', 'TABLE');
+        localStorage.setItem('table_id', tableId);
+
+        // Đóng modal
+        $('#tableModal').modal('hide');
+    });
+
     $(document).ready(function () {
 
         $('#view-customer').click(function(){
             $('#myModal').modal({remote: site.base_url + 'customers/view/' + $("input[name=customer]").val()});
             $('#myModal').modal('show');
         });
+
+        /* =====================================================
+        MANG ĐI / BÀN
+        ===================================================== */
+
+        // Chọn MANG ĐI
+        $('#btn_mang_di').on('click', function () {
+
+            $('#btn_ban').removeClass('active');
+            $(this).addClass('active');
+
+            $('#customer_name').val('MANG ĐI');
+        });
+
+
+        // Chọn BÀN
+        $('#btn_ban').on('click', function () {
+
+            // Sáng nút BÀN
+            $('#btn_mang_di').removeClass('active');
+            $(this).addClass('active');
+
+            // Mở modal
+            $('#tableModal').modal('show');
+
+            // Lấy danh sách bàn
+            loadTableList();
+        });
+
+        /* =====================================================
+        KHÔI PHỤC MANG ĐI / BÀN
+        ===================================================== */
+
+        var savedOrderType = localStorage.getItem('order_type');
+        var savedTableId = localStorage.getItem('table_id');
+
+        if (savedOrderType === 'TAKEAWAY') {
+
+            $('#order_type').val('TAKEAWAY');
+            $('#table_id').val('');
+
+            $('#btn_mang_di').addClass('active');
+            $('#btn_ban').removeClass('active');
+
+            $('#customer_name').val('MANG ĐI');
+
+        } else if (savedOrderType === 'TABLE' && savedTableId) {
+
+            $('#order_type').val('TABLE');
+            $('#table_id').val(savedTableId);
+
+            $('#btn_mang_di').removeClass('active');
+            $('#btn_ban').addClass('active');
+
+            // Lấy lại tên bàn từ DB thay vì lưu customer_name
+            $.ajax({
+                type: 'GET',
+                url: "<?=admin_url('pos/getTableById');?>/" + savedTableId,
+                dataType: 'json',
+                success: function (data) {
+
+                    if (data && data.success) {
+                        $('#customer_name').val(data.table.table_name);
+                    }
+
+                }
+            });
+        }
+
+
         $('textarea').keydown(function (e) {
             if (e.which == 13) {
                var s = $(this).val();
@@ -1455,6 +1701,13 @@ var lang = {
         }
         if (localStorage.getItem('customer_name')) {
             localStorage.removeItem('customer_name');
+        }
+        if (localStorage.getItem('order_type')) {
+            localStorage.removeItem('order_type');
+        }
+
+        if (localStorage.getItem('table_id')) {
+            localStorage.removeItem('table_id');
         }
         if (localStorage.getItem('posbiller')) {
             localStorage.removeItem('posbiller');
@@ -3182,5 +3435,1055 @@ if (isset($print) && !empty($print)) {
     include 'remote_printing.php';
 }
 ?>
+
+<!-- =========================================================
+     MODAL DANH SÁCH ĐƠN HÀNG
+========================================================= -->
+
+<div
+    class="modal fade"
+    id="orderListModal"
+    tabindex="-1"
+    role="dialog"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <!-- HEADER -->
+            <div class="modal-header">
+
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                >
+                    <span>&times;</span>
+                </button>
+
+                <h4 class="modal-title text-center">
+                    <i class="fa fa-list-alt"></i>
+                    ĐƠN HÀNG TRONG NGÀY
+                </h4>
+
+            </div>
+
+
+            <!-- BODY -->
+            <div class="modal-body">
+
+                <!-- VÙNG SWIPE -->
+                <div id="orderListSwipeArea">
+
+                    <div id="orderListContainer">
+
+                        <div class="text-center">
+                            Đang tải đơn hàng...
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PHÂN TRANG -->
+                <div class="order-list-footer">
+
+                    <button
+                        type="button"
+                        id="orderPrevPage"
+                        class="order-page-arrow"
+                    >
+                        <i class="fa fa-chevron-left"></i>
+                    </button>
+
+
+                    <span
+                        id="orderPageInfo"
+                        class="order-page-info"
+                    >
+                        1 / 1
+                    </span>
+
+
+                    <button
+                        type="button"
+                        id="orderNextPage"
+                        class="order-page-arrow"
+                    >
+                        <i class="fa fa-chevron-right"></i>
+                    </button>
+
+                </div>
+
+
+                <div class="order-swipe-hint">
+                    Vuốt trái / phải để chuyển trang
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     MODAL GÁN / ĐỔI BÀN
+========================================================= -->
+
+<div
+    class="modal fade"
+    id="orderTableModal"
+    tabindex="-1"
+    role="dialog"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                >
+                    <span>&times;</span>
+                </button>
+
+                <h4 class="modal-title text-center">
+                    GÁN / ĐỔI BÀN
+                </h4>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <input
+                    type="hidden"
+                    id="change_table_sale_id"
+                    value=""
+                >
+
+
+                <div id="orderTableList">
+
+                    <div class="text-center">
+                        Đang tải danh sách bàn...
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<script type="text/javascript">
+
+/* =========================================================
+   ĐƠN HÀNG TRONG NGÀY
+   16 đơn / trang
+   4 x 4
+========================================================= */
+
+var currentOrderListPage = 1;
+
+var totalOrderListPages = 1;
+
+var orderSwipeStartX = 0;
+
+var orderSwipeStartY = 0;
+
+
+/* =========================================================
+   MỞ DANH SÁCH ĐƠN
+========================================================= */
+
+$(document).on('click', '#btn_order_list', function (e) {
+
+    e.preventDefault();
+
+    currentOrderListPage = 1;
+
+    $('#orderListModal').modal('show');
+
+    loadTodayOrders(currentOrderListPage);
+
+});
+
+
+/* =========================================================
+   LOAD ĐƠN HÀNG
+========================================================= */
+
+function loadTodayOrders(page) {
+
+    $('#orderListContainer').html(
+        '<div class="text-center" style="padding:40px 0;">' +
+            '<i class="fa fa-spinner fa-spin fa-2x"></i>' +
+            '<br><br>' +
+            'Đang tải đơn hàng...' +
+        '</div>'
+    );
+
+
+    $.ajax({
+
+        type: 'GET',
+
+        url: "<?=admin_url('pos/getTodayOrders');?>",
+
+        data: {
+            page: page
+        },
+
+        dataType: 'json',
+
+
+        success: function (data) {
+
+            if (!data || !data.status) {
+
+                $('#orderListContainer').html(
+                    '<div class="text-danger text-center" style="padding:40px 0;">' +
+                    'Không lấy được danh sách đơn hàng.' +
+                    '</div>'
+                );
+
+                return;
+            }
+
+
+            currentOrderListPage =
+                parseInt(data.page, 10) || 1;
+
+
+            totalOrderListPages =
+                parseInt(data.total_pages, 10) || 1;
+
+
+            renderTodayOrders(data.orders || []);
+
+
+            updateOrderPagination();
+
+        },
+
+
+        error: function(xhr, status, error) {
+
+            console.log('AJAX ERROR');
+            console.log('status:', xhr.status);
+            console.log('statusText:', status);
+            console.log('error:', error);
+            console.log('response:', xhr.responseText);
+
+            $('#orderListContainer').html(
+                '<div class="text-center text-danger" style="padding:30px;">' +
+                '<b>Lỗi máy chủ</b><br>' +
+                'HTTP: ' + xhr.status + '<br>' +
+                '<pre style="text-align:left; white-space:pre-wrap; margin-top:15px;">' +
+                $('<div>').text(xhr.responseText).html() +
+                '</pre>' +
+                '</div>'
+            );
+        }
+
+    });
+
+}
+
+
+/* =========================================================
+   RENDER 16 ĐƠN
+========================================================= */
+
+function renderTodayOrders(orders) {
+
+    var html = '';
+
+    html += '<div class="order-list-grid">';
+
+
+    if (!orders.length) {
+
+        html +=
+            '<div style="grid-column:1/-1;" ' +
+            'class="text-center text-muted">' +
+            'Hôm nay chưa có đơn hàng.' +
+            '</div>';
+
+    }
+
+
+    $.each(orders, function (index, order) {
+
+        var saleId = parseInt(order.id, 10);
+
+        var customer =
+            order.customer ?
+            order.customer :
+            'KHÁCH';
+
+
+        var total =
+            parseFloat(order.grand_total || 0);
+
+
+        var paymentStatus =
+            (order.payment_status || '').toLowerCase();
+
+
+        var paidBy =
+            (order.paid_by || '').toLowerCase();
+
+
+        html +=
+            '<div class="order-card" ' +
+            'data-sale-id="' + saleId + '">';
+
+
+        /* KHÁCH / BÀN */
+
+        html +=
+            '<div ' +
+            'class="order-customer order-customer-' + saleId + '" ' +
+            'title="' + escapeOrderHtml(customer) + '">' +
+
+                escapeOrderHtml(customer) +
+
+            '</div>';
+
+
+        /* TỔNG TIỀN */
+
+        html +=
+            '<div class="order-total">' +
+                formatOrderMoney(total) +
+            '</div>';
+
+
+        /* THANH TOÁN */
+
+        html +=
+            '<div class="order-payment-wrap">';
+
+
+        if (paymentStatus === 'due') {
+
+            html +=
+
+                '<button ' +
+                'type="button" ' +
+                'class="order-payment-status order-payment-due" ' +
+                'data-sale-id="' + saleId + '">' +
+
+                    'Chưa TT' +
+
+                '</button>';
+
+
+            html +=
+
+                '<div ' +
+                'class="order-payment-menu" ' +
+                'data-sale-id="' + saleId + '">' +
+
+
+                    '<button ' +
+                    'type="button" ' +
+                    'class="order-pay-btn" ' +
+                    'data-sale-id="' + saleId + '" ' +
+                    'data-paid-by="cash">' +
+
+                        '<i class="fa fa-money"></i> Tiền mặt' +
+
+                    '</button>' +
+
+
+                    '<button ' +
+                    'type="button" ' +
+                    'class="order-pay-btn" ' +
+                    'data-sale-id="' + saleId + '" ' +
+                    'data-paid-by="cc">' +
+
+                        '<i class="fa fa-credit-card"></i> Chuyển khoản' +
+
+                    '</button>' +
+
+
+                '</div>';
+
+        }
+
+
+        else {
+
+            var paidText = 'Đã TT';
+
+
+            if (paidBy === 'cash') {
+
+                paidText = 'Tiền mặt';
+
+            }
+
+            else if (paidBy === 'cc') {
+
+                paidText = 'Chuyển khoản';
+
+            }
+
+            else if (paidBy === 'cod') {
+
+                paidText = 'COD';
+
+            }
+
+
+            html +=
+
+                '<span ' +
+                'class="order-payment-status order-payment-paid">' +
+
+                    escapeOrderHtml(paidText) +
+
+                '</span>';
+
+        }
+
+
+        html += '</div>';
+
+
+        /* GÁN / ĐỔI BÀN */
+
+        html +=
+
+            '<button ' +
+            'type="button" ' +
+            'class="order-table-button change-order-table" ' +
+            'data-sale-id="' + saleId + '">' +
+
+                '<i class="fa fa-cutlery"></i> ' +
+                'GÁN / ĐỔI BÀN' +
+
+            '</button>';
+
+
+        html += '</div>';
+
+    });
+
+
+    html += '</div>';
+
+
+    $('#orderListContainer').html(html);
+
+}
+
+
+/* =========================================================
+   FORMAT TIỀN
+========================================================= */
+
+function formatOrderMoney(number) {
+
+    number = parseFloat(number || 0);
+
+    return number.toLocaleString('vi-VN') + 'đ';
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeOrderHtml(text) {
+
+    return $('<div>')
+        .text(text || '')
+        .html();
+
+}
+
+
+/* =========================================================
+   PHÂN TRANG
+========================================================= */
+
+function updateOrderPagination() {
+
+    $('#orderPageInfo').text(
+        currentOrderListPage +
+        ' / ' +
+        totalOrderListPages
+    );
+
+
+    $('#orderPrevPage').prop(
+        'disabled',
+        currentOrderListPage <= 1
+    );
+
+
+    $('#orderNextPage').prop(
+        'disabled',
+        currentOrderListPage >= totalOrderListPages
+    );
+
+}
+
+
+/* =========================================================
+   TRANG TRƯỚC
+========================================================= */
+
+$(document).on('click', '#orderPrevPage', function () {
+
+    if (currentOrderListPage <= 1) {
+        return;
+    }
+
+
+    currentOrderListPage--;
+
+    loadTodayOrders(currentOrderListPage);
+
+});
+
+
+/* =========================================================
+   TRANG SAU
+========================================================= */
+
+$(document).on('click', '#orderNextPage', function () {
+
+    if (currentOrderListPage >= totalOrderListPages) {
+        return;
+    }
+
+
+    currentOrderListPage++;
+
+    loadTodayOrders(currentOrderListPage);
+
+});
+
+
+/* =========================================================
+   CLICK "CHƯA TT"
+========================================================= */
+
+$(document).on(
+    'click',
+    '.order-payment-due',
+    function (e) {
+
+        e.stopPropagation();
+
+
+        var saleId =
+            $(this).data('sale-id');
+
+
+        $('.order-payment-menu')
+            .not('[data-sale-id="' + saleId + '"]')
+            .hide();
+
+
+        $('.order-payment-menu[data-sale-id="' + saleId + '"]')
+            .toggle();
+
+    }
+);
+
+
+/* =========================================================
+   CHỌN TIỀN MẶT / CHUYỂN KHOẢN
+========================================================= */
+
+$(document).on(
+    'click',
+    '.order-pay-btn',
+    function (e) {
+
+        e.stopPropagation();
+
+
+        var saleId =
+            $(this).data('sale-id');
+
+
+        var paidBy =
+            $(this).data('paid-by');
+
+
+        updateOrderPayment(
+            saleId,
+            paidBy
+        );
+
+    }
+);
+
+
+/* =========================================================
+   CẬP NHẬT THANH TOÁN
+========================================================= */
+
+function updateOrderPayment(
+    saleId,
+    paidBy
+) {
+
+    $.ajax({
+
+        type: 'POST',
+
+        url: "<?=admin_url('pos/updateOrderPayment');?>",
+
+        data: {
+
+            sale_id: saleId,
+
+            paid_by: paidBy
+
+        },
+
+        dataType: 'json',
+
+
+        success: function (data) {
+
+            if (!data || !data.status) {
+
+                alert(
+                    data && data.message ?
+                    data.message :
+                    'Không cập nhật được thanh toán.'
+                );
+
+                return;
+            }
+
+
+            var text = 'Đã TT';
+
+
+            if (paidBy === 'cash') {
+
+                text = 'Tiền mặt';
+
+            }
+
+            else if (paidBy === 'cc') {
+
+                text = 'Chuyển khoản';
+
+            }
+
+
+            var card =
+                $('.order-card[data-sale-id="' + saleId + '"]');
+
+
+            card.find('.order-payment-wrap')
+                .html(
+
+                    '<span ' +
+                    'class="order-payment-status order-payment-paid">' +
+
+                        text +
+
+                    '</span>'
+
+                );
+
+        },
+
+
+        error: function () {
+
+            alert(
+                'Lỗi kết nối máy chủ.'
+            );
+
+        }
+
+    });
+
+}
+
+
+/* =========================================================
+   CLICK GÁN / ĐỔI BÀN
+========================================================= */
+
+$(document).on(
+    'click',
+    '.change-order-table',
+    function () {
+
+        var saleId =
+            $(this).data('sale-id');
+
+
+        $('#change_table_sale_id')
+            .val(saleId);
+
+
+        $('#orderTableModal')
+            .modal('show');
+
+
+        loadOrderTableList();
+
+    }
+);
+
+
+/* =========================================================
+   LOAD DANH SÁCH BÀN
+   DÙNG LUÔN getTables() ĐANG CÓ
+========================================================= */
+
+function loadOrderTableList() {
+
+    $('#orderTableList').html(
+
+        '<div class="text-center" ' +
+        'style="grid-column:1/-1;padding:20px;">' +
+
+            '<i class="fa fa-spinner fa-spin"></i>' +
+            ' Đang tải...' +
+
+        '</div>'
+
+    );
+
+
+    $.ajax({
+
+        type: 'GET',
+
+        url: "<?=admin_url('pos/getTables');?>",
+
+        dataType: 'json',
+
+
+        success: function (data) {
+
+            if (!data || !data.success) {
+
+                $('#orderTableList').html(
+
+                    '<div class="text-danger text-center" ' +
+                    'style="grid-column:1/-1;">' +
+
+                        'Không lấy được danh sách bàn.' +
+
+                    '</div>'
+
+                );
+
+                return;
+            }
+
+
+            var html = '';
+
+
+            $.each(
+                data.tables,
+                function (index, table) {
+
+                    html +=
+
+                        '<button ' +
+                        'type="button" ' +
+                        'class="order-change-table-btn" ' +
+                        'data-id="' + table.id + '">' +
+
+                            escapeOrderHtml(
+                                table.table_name
+                            ) +
+
+                        '</button>';
+
+                }
+            );
+
+
+            if (!html) {
+
+                html =
+                    '<div class="text-center" ' +
+                    'style="grid-column:1/-1;">' +
+
+                        'Chưa có bàn nào.' +
+
+                    '</div>';
+
+            }
+
+
+            $('#orderTableList')
+                .html(html);
+
+        },
+
+
+        error: function () {
+
+            $('#orderTableList').html(
+
+                '<div class="text-danger text-center" ' +
+                'style="grid-column:1/-1;">' +
+
+                    'Lỗi kết nối máy chủ.' +
+
+                '</div>'
+
+            );
+
+        }
+
+    });
+
+}
+
+
+/* =========================================================
+   CHỌN BÀN
+========================================================= */
+
+$(document).on(
+    'click',
+    '.order-change-table-btn',
+    function () {
+
+        var saleId =
+            $('#change_table_sale_id').val();
+
+
+        var tableId =
+            $(this).data('id');
+
+
+        var tableName =
+            $(this).text().trim();
+
+
+        $.ajax({
+
+            type: 'POST',
+
+            url: "<?=admin_url('pos/changeOrderTable');?>",
+
+            data: {
+
+                sale_id: saleId,
+
+                table_id: tableId
+
+            },
+
+            dataType: 'json',
+
+
+            success: function (data) {
+
+                if (!data || !data.status) {
+
+                    alert(
+                        data && data.message ?
+                        data.message :
+                        'Không cập nhật được bàn.'
+                    );
+
+                    return;
+                }
+
+
+                /* ĐỔI NGAY TRÊN THẺ ĐƠN */
+
+                $('.order-customer-' + saleId)
+                    .text(data.customer);
+
+
+                /* Đóng modal bàn */
+
+                $('#orderTableModal')
+                    .modal('hide');
+
+            },
+
+
+            error: function () {
+
+                alert(
+                    'Lỗi kết nối máy chủ.'
+                );
+
+            }
+
+        });
+
+    }
+);
+
+
+/* =========================================================
+   CLICK RA NGOÀI -> ĐÓNG MENU THANH TOÁN
+========================================================= */
+
+$(document).on('click', function () {
+
+    $('.order-payment-menu').hide();
+
+});
+
+
+/* =========================================================
+   SWIPE TRÁI / PHẢI
+========================================================= */
+
+var orderSwipeArea =
+    document.getElementById(
+        'orderListSwipeArea'
+    );
+
+
+$(document).on(
+    'touchstart',
+    '#orderListSwipeArea',
+    function (e) {
+
+        var touch =
+            e.originalEvent.touches[0];
+
+
+        orderSwipeStartX =
+            touch.clientX;
+
+
+        orderSwipeStartY =
+            touch.clientY;
+
+    }
+);
+
+
+$(document).on(
+    'touchend',
+    '#orderListSwipeArea',
+    function (e) {
+
+        var touch =
+            e.originalEvent.changedTouches[0];
+
+
+        var endX =
+            touch.clientX;
+
+
+        var endY =
+            touch.clientY;
+
+
+        var diffX =
+            endX - orderSwipeStartX;
+
+
+        var diffY =
+            endY - orderSwipeStartY;
+
+
+        /*
+         * Chỉ tính là swipe nếu:
+         * - ngang ít nhất 60px
+         * - ngang lớn hơn dọc
+         */
+
+        if (
+            Math.abs(diffX) < 60 ||
+            Math.abs(diffX) < Math.abs(diffY)
+        ) {
+
+            return;
+
+        }
+
+
+        /* VUỐT TRÁI -> TRANG SAU */
+
+        if (diffX < 0) {
+
+            if (
+                currentOrderListPage <
+                totalOrderListPages
+            ) {
+
+                currentOrderListPage++;
+
+                loadTodayOrders(
+                    currentOrderListPage
+                );
+
+            }
+
+        }
+
+
+        /* VUỐT PHẢI -> TRANG TRƯỚC */
+
+        else {
+
+            if (
+                currentOrderListPage > 1
+            ) {
+
+                currentOrderListPage--;
+
+                loadTodayOrders(
+                    currentOrderListPage
+                );
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   KHI MỞ MODAL -> ĐẢM BẢO MENU ĐÃ ĐÓNG
+========================================================= */
+
+$('#orderListModal').on(
+    'hidden.bs.modal',
+    function () {
+
+        $('.order-payment-menu').hide();
+
+    }
+);
+
+</script>
 </body>
 </html>

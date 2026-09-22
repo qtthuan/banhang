@@ -337,6 +337,326 @@ class Pos extends MY_Controller
         echo $this->datatables->generate();
     }
 
+    public function getTodayOrders()
+    {
+        $this->sma->checkPermissions('index');
+
+        $page = (int) $this->input->get('page');
+
+        if ($page < 1) {
+            $page = 1;
+        }
+
+        $per_page = 16;
+        $offset   = ($page - 1) * $per_page;
+        $today    = date('Y-m-d');
+
+        // Đếm tổng đơn hôm nay
+        $this->db->from('sales');
+        $this->db->where(
+            'DATE(date) = ' . $this->db->escape($today),
+            NULL,
+            FALSE
+        );
+        $this->db->where('pos', 1);
+
+        $total = $this->db->count_all_results();
+
+        // Lấy 16 đơn
+        $this->db->select('
+            id,
+            date,
+            customer,
+            grand_total,
+            payment_status,
+            reference_no
+        ');
+
+        $this->db->from('sales');
+
+        $this->db->where(
+            'DATE(date) = ' . $this->db->escape($today),
+            NULL,
+            FALSE
+        );
+
+        $this->db->where('pos', 1);
+
+        $this->db->order_by('date', 'DESC');
+        $this->db->order_by('id', 'DESC');
+
+        $this->db->limit($per_page, $offset);
+
+        $query = $this->db->get();
+
+        if (!$query) {
+            $error = $this->db->error();
+
+            echo json_encode([
+                'status'  => false,
+                'message' => $error['message']
+            ]);
+
+            return;
+        }
+
+        $orders = $query->result();
+
+        // Lấy phương thức thanh toán gần nhất
+        foreach ($orders as $order) {
+
+            $payment = $this->db
+                ->select('paid_by')
+                ->from('payments')
+                ->where('sale_id', $order->id)
+                ->order_by('id', 'DESC')
+                ->limit(1)
+                ->get()
+                ->row();
+
+            $order->paid_by = $payment ? $payment->paid_by : '';
+        }
+
+        echo json_encode([
+            'status'      => true,
+            'orders'      => $orders,
+            'page'        => $page,
+            'per_page'    => $per_page,
+            'total'       => $total,
+            'total_pages' => ($total > 0) ? ceil($total / $per_page) : 1
+        ]);
+    }
+
+    public function updateOrderPayment()
+    {
+        $sale_id = (int) $this->input->post('sale_id');
+
+        $paid_by = $this->input->post('paid_by');
+
+
+        /*
+        * Chỉ cho phép 2 hình thức
+        */
+        if (
+            !$sale_id ||
+            !in_array($paid_by, ['cash', 'cc'])
+        ) {
+
+            echo json_encode([
+                'status'  => false,
+                'message' => 'Dữ liệu thanh toán không hợp lệ.'
+            ]);
+
+            return;
+        }
+
+
+        /*
+        * Lấy đơn hàng
+        */
+        $sale = $this->db
+            ->where('id', $sale_id)
+            ->get('sales')
+            ->row();
+
+
+        if (!$sale) {
+
+            echo json_encode([
+                'status'  => false,
+                'message' => 'Không tìm thấy đơn hàng.'
+            ]);
+
+            return;
+        }
+
+
+        $this->db->trans_start();
+
+
+        /*
+        * Cập nhật trạng thái đơn
+        */
+        $this->db
+            ->where('id', $sale_id)
+            ->update(
+                'sales',
+                [
+                    'payment_status' => 'paid',
+                    'paid'           => $sale->grand_total
+                ]
+            );
+
+
+        /*
+        * Tìm payment mới nhất
+        */
+        $payment = $this->db
+            ->where('sale_id', $sale_id)
+            ->order_by('id', 'DESC')
+            ->limit(1)
+            ->get('payments')
+            ->row();
+
+
+        if ($payment) {
+
+            /*
+            * Đã có payment
+            * chỉ đổi paid_by
+            */
+
+            $this->db
+                ->where('id', $payment->id)
+                ->update(
+                    'payments',
+                    [
+                        'paid_by' => $paid_by
+                    ]
+                );
+
+        }
+
+        else {
+
+            /*
+            * Chưa có payment
+            * tạo payment mới
+            */
+
+            $payment_data = [
+
+                'date' => date(
+                    'Y-m-d H:i:s'
+                ),
+
+                'sale_id' => $sale_id,
+
+                'reference_no' =>
+                    $sale->reference_no,
+
+                'amount' =>
+                    $sale->grand_total,
+
+                'paid_by' =>
+                    $paid_by,
+
+                'pos_paid' =>
+                    $sale->grand_total,
+
+                'type' =>
+                    'received',
+
+                'created_by' =>
+                    $this->session->userdata(
+                        'user_id'
+                    )
+            ];
+
+
+            $this->db->insert(
+                'payments',
+                $payment_data
+            );
+
+        }
+
+
+        $this->db->trans_complete();
+
+
+        if ($this->db->trans_status() === FALSE) {
+
+            echo json_encode([
+                'status'  => false,
+                'message' => 'Không thể cập nhật thanh toán.'
+            ]);
+
+            return;
+        }
+
+
+        echo json_encode([
+            'status'  => true,
+            'paid_by' => $paid_by
+        ]);
+    }
+
+    public function changeOrderTable()
+    {
+        $sale_id = (int) $this->input->post('sale_id');
+
+        $table_id = (int) $this->input->post('table_id');
+
+
+        if (!$sale_id || !$table_id) {
+
+            echo json_encode([
+                'status'  => false,
+                'message' => 'Thiếu thông tin đơn hàng hoặc bàn.'
+            ]);
+
+            return;
+        }
+
+
+        /*
+        * Lấy bàn
+        */
+        $table = $this->db
+            ->where('id', $table_id)
+            ->get('tables')
+            ->row();
+
+
+        if (!$table) {
+
+            echo json_encode([
+                'status'  => false,
+                'message' => 'Không tìm thấy bàn.'
+            ]);
+
+            return;
+        }
+
+
+        /*
+        * Cập nhật customer trong sales
+        *
+        * Ví dụ:
+        * BÀN 3
+        * BÀN CAO 2
+        * BÀN MINI 1
+        */
+
+        $this->db
+            ->where('id', $sale_id)
+            ->update(
+                'sales',
+                [
+                    'customer' => $table->table_name
+                ]
+            );
+
+
+        if ($this->db->affected_rows() < 0) {
+
+            echo json_encode([
+                'status'  => false,
+                'message' => 'Không thể cập nhật bàn.'
+            ]);
+
+            return;
+        }
+
+
+        echo json_encode([
+            'status'   => true,
+            'customer' => $table->table_name,
+            'table_id' => $table->id
+        ]);
+    }
+
     public function get_customer_info($id)
     {
         echo json_encode($this->pos_model->get_customer_info($id));
@@ -1054,6 +1374,32 @@ class Pos extends MY_Controller
             }
 
         }
+    }
+
+    public function getTables()
+    {
+        $tables = $this->db
+            ->order_by('sort_order', 'ASC')
+            ->get('tables')
+            ->result();
+
+        $data = [];
+
+        foreach ($tables as $table) {
+
+            $data[] = [
+                'id' => (int) $table->id,
+                'table_name' => $table->table_name,
+                'sort_order' => (int) $table->sort_order
+            ];
+        }
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode([
+                'success' => true,
+                'tables' => $data
+            ], JSON_UNESCAPED_UNICODE));
     }
 
 
