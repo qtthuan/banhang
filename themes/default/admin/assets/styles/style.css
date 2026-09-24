@@ -2846,3 +2846,236 @@ animation: blink 1s steps(2, start) infinite;
     background: #428BCA;
     color: #fff;
 }
+
+/* =========================================================
+   ĐƠN HÀNG TRONG NGÀY - CARD
+========================================================= */
+
+.order-card {
+    position: relative;
+
+    min-height: 145px;
+
+    padding: 11px;
+
+    
+
+    border: 4px solid #428BCA;
+
+    border-radius: 8px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #f5f9fd 100%
+        );
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,.08);
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease;
+
+    overflow: visible;
+}
+
+
+.order-card:nth-child(4n + 1) {
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #f2f8ff 100%
+        );
+}
+
+
+.order-card:nth-child(4n + 2) {
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #f3fbf5 100%
+        );
+}
+
+
+.order-card:nth-child(4n + 3) {
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #fff9ed 100%
+        );
+}
+
+
+.order-card:nth-child(4n + 4) {
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #fff4f4 100%
+        );
+}
+
+
+.order-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 5px 13px rgba(0,0,0,.13);
+}
+
+/* =========================================================
+   ORDER LIST - PAGE SLIDE
+========================================================= */
+
+#orderListContainer {
+    transform: translateX(0);
+    opacity: 1;
+
+    transition:
+        transform .18s ease,
+        opacity .16s ease;
+
+    will-change:
+        transform,
+        opacity;
+}
+
+
+#orderListContainer.order-page-out-next {
+    transform: translateX(-38px);
+    opacity: 0;
+}
+
+
+#orderListContainer.order-page-out-prev {
+    transform: translateX(38px);
+    opacity: 0;
+}
+
+
+#orderListContainer.order-page-in-next {
+    transform: translateX(38px);
+    opacity: 0;
+}
+
+
+#orderListContainer.order-page-in-prev {
+    transform: translateX(-38px);
+    opacity: 0;
+}
+
+/* =========================================================
+   NÚT THAO TÁC ĐƠN HÀNG
+========================================================= */
+
+.order-card-actions {
+    display: flex;
+
+    gap: 6px;
+
+    width: 100%;
+
+    margin-top: 9px;
+}
+
+
+/* GÁN / ĐỔI BÀN */
+
+.order-card-actions .order-table-button {
+
+    flex: 1;
+
+    min-width: 0;
+
+    height: 35px;
+
+    margin-top: 0;
+
+    padding: 0 6px;
+
+    border: 1px solid #428BCA;
+
+    background: #fff;
+
+    color: #428BCA;
+
+    font-weight: bold;
+
+    font-size: 12px;
+
+    border-radius: 3px;
+
+    white-space: nowrap;
+
+    transition:
+        background .15s ease,
+        color .15s ease;
+
+}
+
+
+.order-card-actions
+.order-table-button:hover {
+
+    background: #428BCA;
+
+    color: #fff;
+
+}
+
+
+/* IN BILL */
+
+.order-print-button {
+
+    flex: 0 0 82px;
+
+    height: 35px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 4px;
+
+    padding: 0 6px;
+
+    border: 1px solid #00a651;
+
+    background: #fff;
+
+    color: #00a651;
+
+    font-weight: bold;
+
+    font-size: 12px;
+
+    border-radius: 3px;
+
+    text-decoration: none !important;
+
+    white-space: nowrap;
+
+    transition:
+        background .15s ease,
+        color .15s ease;
+
+}
+
+
+.order-print-button:hover {
+
+    background: #00a651;
+
+    color: #fff;
+
+}

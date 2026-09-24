@@ -577,8 +577,9 @@ class Pos extends MY_Controller
 
 
         echo json_encode([
-            'status'  => true,
-            'paid_by' => $paid_by
+            'status'    => true,
+            'paid_by'   => $paid_by,
+            'csrf_hash' => $this->security->get_csrf_hash()
         ]);
     }
 
@@ -639,7 +640,7 @@ class Pos extends MY_Controller
             );
 
 
-        if ($this->db->affected_rows() < 0) {
+        if ($this->db->affected_rows() === false) {
 
             echo json_encode([
                 'status'  => false,
@@ -651,9 +652,10 @@ class Pos extends MY_Controller
 
 
         echo json_encode([
-            'status'   => true,
-            'customer' => $table->table_name,
-            'table_id' => $table->id
+            'status'    => true,
+            'customer'  => $table->table_name,
+            'table_id'  => $table->id,
+            'csrf_hash' => $this->security->get_csrf_hash()
         ]);
     }
 

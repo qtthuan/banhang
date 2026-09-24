@@ -3627,80 +3627,270 @@ $(document).on('click', '#btn_order_list', function (e) {
    LOAD ĐƠN HÀNG
 ========================================================= */
 
-function loadTodayOrders(page) {
-
-    $('#orderListContainer').html(
-        '<div class="text-center" style="padding:40px 0;">' +
-            '<i class="fa fa-spinner fa-spin fa-2x"></i>' +
-            '<br><br>' +
-            'Đang tải đơn hàng...' +
-        '</div>'
-    );
+var orderListLoading = false;
 
 
-    $.ajax({
+function loadTodayOrders(
+    page,
+    direction
+) {
 
-        type: 'GET',
-
-        url: "<?=admin_url('pos/getTodayOrders');?>",
-
-        data: {
-            page: page
-        },
-
-        dataType: 'json',
+    if (orderListLoading) {
+        return;
+    }
 
 
-        success: function (data) {
+    orderListLoading = true;
 
-            if (!data || !data.status) {
 
-                $('#orderListContainer').html(
-                    '<div class="text-danger text-center" style="padding:40px 0;">' +
-                    'Không lấy được danh sách đơn hàng.' +
-                    '</div>'
+    var $container =
+        $('#orderListContainer');
+
+
+    var hasContent =
+        $container.children().length > 0;
+
+
+    /*
+     * Animation OUT
+     */
+    if (
+        direction &&
+        hasContent
+    ) {
+
+        $container
+            .removeClass(
+                'order-page-out-next ' +
+                'order-page-out-prev ' +
+                'order-page-in-next ' +
+                'order-page-in-prev'
+            )
+            .addClass(
+                direction === 'next'
+                    ? 'order-page-out-next'
+                    : 'order-page-out-prev'
+            );
+
+    }
+
+
+    function requestOrders() {
+
+        $.ajax({
+
+            type: 'GET',
+
+            url:
+                "<?=admin_url('pos/getTodayOrders');?>",
+
+            data: {
+
+                page: page
+
+            },
+
+            dataType: 'json',
+
+
+            success: function (data) {
+
+                if (
+                    !data ||
+                    !data.status
+                ) {
+
+                    $container.html(
+
+                        '<div ' +
+                        'class="text-danger text-center" ' +
+                        'style="padding:40px 0;">' +
+
+                            'Không lấy được danh sách đơn hàng.' +
+
+                        '</div>'
+
+                    );
+
+                    orderListLoading =
+                        false;
+
+                    return;
+                }
+
+
+                currentOrderListPage =
+                    parseInt(
+                        data.page,
+                        10
+                    ) || 1;
+
+
+                totalOrderListPages =
+                    parseInt(
+                        data.total_pages,
+                        10
+                    ) || 1;
+
+
+                renderTodayOrders(
+                    data.orders || []
                 );
 
-                return;
+
+                updateOrderPagination();
+
+
+                /*
+                 * Animation IN
+                 */
+                if (direction) {
+
+                    var enterClass =
+                        direction === 'next'
+                            ? 'order-page-in-next'
+                            : 'order-page-in-prev';
+
+
+                    $container
+                        .removeClass(
+                            'order-page-out-next ' +
+                            'order-page-out-prev'
+                        )
+                        .addClass(
+                            enterClass
+                        );
+
+
+                    /*
+                     * Ép browser nhận trạng thái
+                     * trước khi chạy transition.
+                     */
+                    void $container[0].offsetWidth;
+
+
+                    requestAnimationFrame(
+                        function () {
+
+                            $container
+                                .removeClass(
+                                    enterClass
+                                );
+
+                        }
+                    );
+
+                }
+
+
+                orderListLoading =
+                    false;
+
+            },
+
+
+            error: function (
+                xhr,
+                status,
+                error
+            ) {
+
+                console.log(
+                    'AJAX ERROR'
+                );
+
+                console.log(
+                    'status:',
+                    xhr.status
+                );
+
+                console.log(
+                    'statusText:',
+                    status
+                );
+
+                console.log(
+                    'error:',
+                    error
+                );
+
+                console.log(
+                    'response:',
+                    xhr.responseText
+                );
+
+
+                $container
+                    .removeClass(
+                        'order-page-out-next ' +
+                        'order-page-out-prev ' +
+                        'order-page-in-next ' +
+                        'order-page-in-prev'
+                    );
+
+
+                $container.html(
+
+                    '<div ' +
+                    'class="text-center text-danger" ' +
+                    'style="padding:30px;">' +
+
+                        '<b>Lỗi máy chủ</b><br>' +
+
+                        'HTTP: ' +
+                        xhr.status +
+
+                        '<br>' +
+
+                        '<pre ' +
+                        'style="text-align:left; ' +
+                        'white-space:pre-wrap; ' +
+                        'margin-top:15px;">' +
+
+                            $('<div>')
+                                .text(
+                                    xhr.responseText
+                                )
+                                .html() +
+
+                        '</pre>' +
+
+                    '</div>'
+
+                );
+
+
+                orderListLoading =
+                    false;
+
             }
 
+        });
 
-            currentOrderListPage =
-                parseInt(data.page, 10) || 1;
-
-
-            totalOrderListPages =
-                parseInt(data.total_pages, 10) || 1;
+    }
 
 
-            renderTodayOrders(data.orders || []);
+    /*
+     * Cho card cũ chạy ra trước,
+     * rồi mới lấy trang mới.
+     */
+    if (
+        direction &&
+        hasContent
+    ) {
 
+        setTimeout(
+            requestOrders,
+            150
+        );
 
-            updateOrderPagination();
+    }
 
-        },
+    else {
 
+        requestOrders();
 
-        error: function(xhr, status, error) {
-
-            console.log('AJAX ERROR');
-            console.log('status:', xhr.status);
-            console.log('statusText:', status);
-            console.log('error:', error);
-            console.log('response:', xhr.responseText);
-
-            $('#orderListContainer').html(
-                '<div class="text-center text-danger" style="padding:30px;">' +
-                '<b>Lỗi máy chủ</b><br>' +
-                'HTTP: ' + xhr.status + '<br>' +
-                '<pre style="text-align:left; white-space:pre-wrap; margin-top:15px;">' +
-                $('<div>').text(xhr.responseText).html() +
-                '</pre>' +
-                '</div>'
-            );
-        }
-
-    });
+    }
 
 }
 
@@ -3869,9 +4059,13 @@ function renderTodayOrders(orders) {
 
         /* GÁN / ĐỔI BÀN */
 
-        html +=
+        /* GÁN / ĐỔI BÀN */
 
-            '<button ' +
+html +=
+
+    '<div class="order-card-actions">' +
+
+        '<button ' +
             'type="button" ' +
             'class="order-table-button change-order-table" ' +
             'data-sale-id="' + saleId + '">' +
@@ -3879,7 +4073,24 @@ function renderTodayOrders(orders) {
                 '<i class="fa fa-cutlery"></i> ' +
                 'GÁN / ĐỔI BÀN' +
 
-            '</button>';
+            '</button>' +
+
+
+            '<a ' +
+            'class="order-print-button" ' +
+            'href="<?=admin_url('pos/view/'); ?>' +
+                saleId +
+                '?print=' +
+                saleId +
+            '" ' +
+            'target="_blank">' +
+
+                '<i class="fa fa-print"></i> ' +
+                'In Bill' +
+
+            '</a>' +
+
+        '</div>';
 
 
         html += '</div>';
@@ -3947,41 +4158,85 @@ function updateOrderPagination() {
 
 }
 
+function goOrderListPage(
+    direction
+) {
+
+    if (orderListLoading) {
+        return;
+    }
+
+
+    if (
+        direction === 'next'
+    ) {
+
+        if (
+            currentOrderListPage >=
+            totalOrderListPages
+        ) {
+            return;
+        }
+
+
+        currentOrderListPage++;
+
+    }
+
+    else {
+
+        if (
+            currentOrderListPage <= 1
+        ) {
+            return;
+        }
+
+
+        currentOrderListPage--;
+
+    }
+
+
+    loadTodayOrders(
+        currentOrderListPage,
+        direction
+    );
+
+}
+
 
 /* =========================================================
    TRANG TRƯỚC
 ========================================================= */
 
-$(document).on('click', '#orderPrevPage', function () {
+$(document).on(
+    'click',
+    '#orderPrevPage',
+    function () {
 
-    if (currentOrderListPage <= 1) {
-        return;
+        goOrderListPage(
+            'prev'
+        );
+
     }
-
-
-    currentOrderListPage--;
-
-    loadTodayOrders(currentOrderListPage);
-
-});
+);
 
 
 /* =========================================================
    TRANG SAU
 ========================================================= */
 
-$(document).on('click', '#orderNextPage', function () {
+$(document).on(
+    'click',
+    '#orderNextPage',
+    function () {
 
-    if (currentOrderListPage >= totalOrderListPages) {
-        return;
+        goOrderListPage(
+            'next'
+        );
+
     }
-
-
-    currentOrderListPage++;
-
-    loadTodayOrders(currentOrderListPage);
-
-});
+);
 
 
 /* =========================================================
@@ -4050,26 +4305,47 @@ function updateOrderPayment(
     paidBy
 ) {
 
+    var postData = {
+
+        sale_id: saleId,
+
+        paid_by: paidBy
+
+    };
+
+    /* CSRF */
+    postData[csrfName] = csrfHash;
+
+
     $.ajax({
 
         type: 'POST',
 
         url: "<?=admin_url('pos/updateOrderPayment');?>",
 
-        data: {
-
-            sale_id: saleId,
-
-            paid_by: paidBy
-
-        },
+        data: postData,
 
         dataType: 'json',
 
 
         success: function (data) {
 
-            if (!data || !data.status) {
+            /* Cập nhật CSRF mới nếu server trả về */
+            if (
+                data &&
+                data.csrf_hash
+            ) {
+
+                csrfHash =
+                    data.csrf_hash;
+
+            }
+
+
+            if (
+                !data ||
+                !data.status
+            ) {
 
                 alert(
                     data && data.message ?
@@ -4098,7 +4374,9 @@ function updateOrderPayment(
 
 
             var card =
-                $('.order-card[data-sale-id="' + saleId + '"]');
+                $('.order-card[data-sale-id="' +
+                    saleId +
+                '"]');
 
 
             card.find('.order-payment-wrap')
@@ -4116,7 +4394,13 @@ function updateOrderPayment(
         },
 
 
-        error: function () {
+        error: function (xhr) {
+
+            console.log(
+                'updateOrderPayment ERROR:',
+                xhr.status,
+                xhr.responseText
+            );
 
             alert(
                 'Lỗi kết nối máy chủ.'
@@ -4288,26 +4572,48 @@ $(document).on(
             $(this).text().trim();
 
 
+        var postData = {
+
+            sale_id: saleId,
+
+            table_id: tableId
+
+        };
+
+
+        /* CSRF */
+        postData[csrfName] = csrfHash;
+
+
         $.ajax({
 
             type: 'POST',
 
             url: "<?=admin_url('pos/changeOrderTable');?>",
 
-            data: {
-
-                sale_id: saleId,
-
-                table_id: tableId
-
-            },
+            data: postData,
 
             dataType: 'json',
 
 
             success: function (data) {
 
-                if (!data || !data.status) {
+                /* Cập nhật CSRF mới */
+                if (
+                    data &&
+                    data.csrf_hash
+                ) {
+
+                    csrfHash =
+                        data.csrf_hash;
+
+                }
+
+
+                if (
+                    !data ||
+                    !data.status
+                ) {
 
                     alert(
                         data && data.message ?
@@ -4319,13 +4625,15 @@ $(document).on(
                 }
 
 
-                /* ĐỔI NGAY TRÊN THẺ ĐƠN */
+                /* Đổi ngay tên trên card */
 
                 $('.order-customer-' + saleId)
-                    .text(data.customer);
+                    .text(
+                        data.customer
+                    );
 
 
-                /* Đóng modal bàn */
+                /* Đóng modal */
 
                 $('#orderTableModal')
                     .modal('hide');
@@ -4333,7 +4641,13 @@ $(document).on(
             },
 
 
-            error: function () {
+            error: function (xhr) {
+
+                console.log(
+                    'changeOrderTable ERROR:',
+                    xhr.status,
+                    xhr.responseText
+                );
 
                 alert(
                     'Lỗi kết nối máy chủ.'
@@ -4394,7 +4708,8 @@ $(document).on(
     function (e) {
 
         var touch =
-            e.originalEvent.changedTouches[0];
+            e.originalEvent
+                .changedTouches[0];
 
 
         var endX =
@@ -4406,22 +4721,22 @@ $(document).on(
 
 
         var diffX =
-            endX - orderSwipeStartX;
+            endX -
+            orderSwipeStartX;
 
 
         var diffY =
-            endY - orderSwipeStartY;
+            endY -
+            orderSwipeStartY;
 
 
         /*
-         * Chỉ tính là swipe nếu:
-         * - ngang ít nhất 60px
-         * - ngang lớn hơn dọc
+         * Không phải swipe ngang
          */
-
         if (
             Math.abs(diffX) < 60 ||
-            Math.abs(diffX) < Math.abs(diffY)
+            Math.abs(diffX) <
+            Math.abs(diffY)
         ) {
 
             return;
@@ -4429,41 +4744,30 @@ $(document).on(
         }
 
 
-        /* VUỐT TRÁI -> TRANG SAU */
+        /*
+         * Vuốt trái
+         * => trang sau
+         */
+        if (
+            diffX < 0
+        ) {
 
-        if (diffX < 0) {
-
-            if (
-                currentOrderListPage <
-                totalOrderListPages
-            ) {
-
-                currentOrderListPage++;
-
-                loadTodayOrders(
-                    currentOrderListPage
-                );
-
-            }
+            goOrderListPage(
+                'next'
+            );
 
         }
 
 
-        /* VUỐT PHẢI -> TRANG TRƯỚC */
-
+        /*
+         * Vuốt phải
+         * => trang trước
+         */
         else {
 
-            if (
-                currentOrderListPage > 1
-            ) {
-
-                currentOrderListPage--;
-
-                loadTodayOrders(
-                    currentOrderListPage
-                );
-
-            }
+            goOrderListPage(
+                'prev'
+            );
 
         }
 
