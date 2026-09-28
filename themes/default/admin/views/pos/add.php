@@ -48,8 +48,19 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
 <div id="wrapper">
     <header id="header" class="navbar">
         <div class="container">
-            
-            <a class="navbar-brand" href="<?=admin_url()?>"><span class="logo"><span class="pos-logo-lg"><?=$Settings->site_name?></span><span class="pos-logo-sm"><?=lang('pos')?></span></span></a>
+            <div class="header-left">
+                <a
+                    href="#"
+                    id="btn_order_list"
+                    class="btn bblue pos-tip order-header-button"
+                    title="Đơn hàng trong ngày"
+                    data-container="body"
+                    data-placement="bottom"
+                >
+                    <i class="fa fa-list-alt"></i>
+                    <span class="order-list-title"> ĐƠN HÀNG</span>
+                </a>
+            </div>
             <div class="header-nav">
                 
                 <ul class="nav navbar-nav pull-right">                    
@@ -187,22 +198,6 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                             <span id="display_time"></span>
                         </a>
                     </li>
-
-                    <!-- ĐƠN HÀNG -->
-                    <li class="dropdown">
-                        <a
-                            href="#"
-                            id="btn_order_list"
-                            class="btn bblue pos-tip"
-                            title="Đơn hàng trong ngày"
-                            data-container="body"
-                            data-placement="bottom"
-                        >
-                            <i class="fa fa-list-alt"></i>
-                            <span class="order-list-title"> ĐƠN HÀNG</span>
-                        </a>
-                    </li>
-
                 </ul>
             </div>
             

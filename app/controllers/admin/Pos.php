@@ -347,9 +347,10 @@ class Pos extends MY_Controller
             $page = 1;
         }
 
-        $per_page = 16;
+        $per_page = 15;
         $offset   = ($page - 1) * $per_page;
-        $today    = date('Y-m-d');
+        //$today    = date('Y-m-d');
+        $today = '2026-09-25';
 
         // Đếm tổng đơn hôm nay
         $this->db->from('sales');
@@ -359,6 +360,7 @@ class Pos extends MY_Controller
             FALSE
         );
         $this->db->where('pos', 1);
+        $this->db->where('is_ingredient', 0);
 
         $total = $this->db->count_all_results();
 
@@ -381,6 +383,8 @@ class Pos extends MY_Controller
         );
 
         $this->db->where('pos', 1);
+        $this->db->where('is_ingredient', 0);
+
 
         $this->db->order_by('date', 'DESC');
         $this->db->order_by('id', 'DESC');
