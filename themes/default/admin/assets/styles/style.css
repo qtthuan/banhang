@@ -2495,10 +2495,10 @@ animation: blink 1s steps(2, start) infinite;
 ========================================================= */
 
 #orderListModal .modal-dialog {
-    width: 1280px;
+    width: 1450px;
+    max-width: 95vw;
     margin-top: 20px;
 }
-
 
 #orderListModal .modal-content {
     border-radius: 6px;
@@ -2519,92 +2519,6 @@ animation: blink 1s steps(2, start) infinite;
 
 #orderListModal .modal-body {
     padding: 15px;
-}
-
-
-/* =========================================================
-   GRID 5 CỘT
-========================================================= */
-
-.order-list-grid {
-    display: grid;
-
-    grid-template-columns: repeat(5, 1fr);
-
-    gap: 13px;
-}
-
-
-/* =========================================================
-   CARD ĐƠN HÀNG
-========================================================= */
-
-.order-card {
-    position: relative;
-
-    min-height: 190px;
-
-    border: 2px solid #428BCA;
-
-    background: #fff;
-
-    padding: 14px;
-
-    border-radius: 7px;
-
-    box-shadow:
-        0 2px 7px rgba(0,0,0,.13);
-
-    transition:
-        border-color .15s ease,
-        box-shadow .15s ease,
-        transform .15s ease;
-}
-
-
-.order-card:hover {
-    border-color: #246da8;
-
-    box-shadow:
-        0 4px 12px rgba(0,0,0,.20);
-
-    transform: translateY(-1px);
-}
-
-
-/* =========================================================
-   KHÁCH / BÀN
-========================================================= */
-
-.order-customer {
-    font-size: 20px;
-
-    font-weight: bold;
-
-    color: #333;
-
-    white-space: nowrap;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-
-    margin-bottom: 10px;
-}
-
-
-/* =========================================================
-   TỔNG TIỀN
-========================================================= */
-
-.order-total {
-    font-size: 22px;
-
-    font-weight: bold;
-
-    color: #d9534f;
-
-    margin-bottom: 10px;
 }
 
 
@@ -2642,13 +2556,13 @@ animation: blink 1s steps(2, start) infinite;
 ========================================================= */
 
 .order-payment-due {
-    background: #fff0b3;
+    background: #e7190f;
 
-    color: #8a5a00;
+    color: #efeeec;
 
     border: 2px solid #d99a00;
 
-    font-size: 15px;
+    font-size: 16px;
 
     font-weight: 900;
 
@@ -2660,9 +2574,9 @@ animation: blink 1s steps(2, start) infinite;
 
 
 .order-payment-due:hover {
-    background: #ffd966;
+    background: #f14f3d;
 
-    color: #704800;
+    color: #fdfcfc;
 
     border-color: #c78600;
 }
@@ -2698,34 +2612,6 @@ animation: blink 1s steps(2, start) infinite;
 }
 
 
-/* GÁN / ĐỔI BÀN */
-
-.order-card-actions .order-table-button {
-    flex: 1;
-
-    min-width: 0;
-
-    height: 42px;
-
-    margin-top: 0;
-
-    padding: 0 6px;
-
-    border: 2px solid #2878b8;
-
-    background: #fff;
-
-    color: #17679f;
-
-    font-size: 14px;
-
-    font-weight: bold;
-
-    border-radius: 5px;
-
-    white-space: nowrap;
-}
-
 
 .order-card-actions .order-table-button:hover {
     background: #2878b8;
@@ -2733,40 +2619,6 @@ animation: blink 1s steps(2, start) infinite;
     color: #fff;
 }
 
-
-/* IN BILL */
-
-.order-print-button {
-    flex: 0 0 94px;
-
-    height: 42px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 5px;
-
-    padding: 0 6px;
-
-    border: 2px solid #009b4d;
-
-    background: #fff;
-
-    color: #00833f;
-
-    font-size: 14px;
-
-    font-weight: bold;
-
-    border-radius: 5px;
-
-    text-decoration: none !important;
-
-    white-space: nowrap;
-}
 
 
 .order-print-button:hover {
@@ -2795,44 +2647,17 @@ animation: blink 1s steps(2, start) infinite;
 
 .order-list-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
 }
-
-
-/* =========================================================
-   THẺ ĐƠN HÀNG
-========================================================= */
-
-.order-card {
-    position: relative;
-
-    min-height: 145px;
-
-    border: 1px solid #ccc;
-    background: #fff;
-
-    padding: 10px;
-
-    border-radius: 4px;
-
-    box-shadow: 0 1px 3px rgba(0,0,0,.08);
-
-    transition: .15s;
-}
-
-.order-card:hover {
-    border-color: #428BCA;
-    box-shadow: 0 2px 7px rgba(0,0,0,.15);
-}
-
 
 /* =========================================================
    KHÁCH / BÀN
 ========================================================= */
 
 .order-customer {
-    font-size: 17px;
+    font-size: 19px;
     font-weight: bold;
 
     color: #333;
@@ -2850,7 +2675,7 @@ animation: blink 1s steps(2, start) infinite;
 ========================================================= */
 
 .order-total {
-    font-size: 18px;
+    font-size: 22px;
     font-weight: bold;
 
     color: #d9534f;
@@ -2873,7 +2698,7 @@ animation: blink 1s steps(2, start) infinite;
 
     min-width: 90px;
 
-    padding: 5px 9px;
+    padding: 8px 9px;
 
     border: 0;
     border-radius: 3px;
@@ -2884,16 +2709,6 @@ animation: blink 1s steps(2, start) infinite;
     text-align: center;
 }
 
-.order-payment-due {
-    background: #fcf8e3;
-    color: #8a6d3b;
-
-    cursor: pointer;
-}
-
-.order-payment-due:hover {
-    background: #f5e79e;
-}
 
 .order-payment-paid {
     background: #dff0d8;
@@ -2938,11 +2753,12 @@ animation: blink 1s steps(2, start) infinite;
 
     border: 1px solid #ddd;
 
-    background: #f8f8f8;
+    background: #32642c;
 
     font-weight: bold;
 
     border-radius: 3px;
+    color: white;
 }
 
 .order-payment-menu button:last-child {
@@ -3114,9 +2930,9 @@ animation: blink 1s steps(2, start) infinite;
 .order-card {
     position: relative;
 
-    min-height: 145px;
+    min-height: 190px;
 
-    padding: 11px;
+    padding: 14px;
 
     
 
@@ -3254,13 +3070,13 @@ animation: blink 1s steps(2, start) infinite;
 
     min-width: 0;
 
-    height: 35px;
+    height: 42px;
 
     margin-top: 0;
 
     padding: 0 6px;
 
-    border: 1px solid #428BCA;
+    border: 2px solid #428BCA;
 
     background: #fff;
 
@@ -3268,7 +3084,7 @@ animation: blink 1s steps(2, start) infinite;
 
     font-weight: bold;
 
-    font-size: 12px;
+    font-size: 14px;
 
     border-radius: 3px;
 
@@ -3297,7 +3113,7 @@ animation: blink 1s steps(2, start) infinite;
 
     flex: 0 0 82px;
 
-    height: 35px;
+    height: 42px;
 
     display: flex;
 
@@ -3309,7 +3125,7 @@ animation: blink 1s steps(2, start) infinite;
 
     padding: 0 6px;
 
-    border: 1px solid #00a651;
+    border: 2px solid #00a651;
 
     background: #fff;
 
@@ -3317,7 +3133,7 @@ animation: blink 1s steps(2, start) infinite;
 
     font-weight: bold;
 
-    font-size: 12px;
+    font-size: 14px;
 
     border-radius: 3px;
 

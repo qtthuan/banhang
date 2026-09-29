@@ -349,8 +349,8 @@ class Pos extends MY_Controller
 
         $per_page = 15;
         $offset   = ($page - 1) * $per_page;
-        $today    = date('Y-m-d');
-        //$today = '2026-09-25';
+        //$today    = date('Y-m-d');
+        $today = '2026-09-25';
 
         // Đếm tổng đơn hôm nay
         $this->db->from('sales');
