@@ -431,6 +431,38 @@ class Pos extends MY_Controller
         ]);
     }
 
+    public function getOrderItems()
+    {
+        $this->sma->checkPermissions('index');
+
+        $sale_id = (int) $this->input->get('sale_id');
+
+        if (!$sale_id) {
+
+            echo json_encode([
+                'status'  => false,
+                'message' => 'Thiếu mã đơn hàng.'
+            ]);
+
+            return;
+        }
+
+
+        $items = $this->db
+            ->select('product_name, quantity')
+            ->from('sale_items')
+            ->where('sale_id', $sale_id)
+            ->order_by('id', 'ASC')
+            ->get()
+            ->result();
+
+
+        echo json_encode([
+            'status' => true,
+            'items'  => $items
+        ]);
+    }
+
     public function updateOrderPayment()
     {
         $sale_id = (int) $this->input->post('sale_id');

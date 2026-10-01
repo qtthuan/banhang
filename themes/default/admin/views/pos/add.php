@@ -3938,6 +3938,19 @@ function renderTodayOrders(orders) {
             '<div class="order-card" ' +
             'data-sale-id="' + saleId + '">';
 
+        /* ICON XEM NHANH MÓN */
+
+        html +=
+            '<button ' +
+            'type="button" ' +
+            'class="order-items-preview" ' +
+            'data-sale-id="' + saleId + '" ' +
+            'title="Xem món trong đơn">' +
+
+                '<i class="fa fa-eye"></i>' +
+
+            '</button>';
+
 
         /* KHÁCH / BÀN */
 
@@ -3947,6 +3960,29 @@ function renderTodayOrders(orders) {
             'title="' + escapeOrderHtml(customer) + '">' +
 
                 escapeOrderHtml(customer) +
+
+            '</div>';
+
+        /* NGÀY + MÃ HÓA ĐƠN */
+
+        var orderDate = order.date
+            ? order.date.substring(11, 16)
+            : '';
+
+        var referenceNo = order.reference_no
+            ? order.reference_no
+            : '';
+
+        html +=
+            '<div class="order-meta">' +
+
+                '<span class="order-date">' +
+                    escapeOrderHtml(orderDate) +
+                '</span>' +
+
+                '<span class="order-reference">' +
+                    escapeOrderHtml(referenceNo) +
+                '</span>' +
 
             '</div>';
 
@@ -4099,6 +4135,458 @@ html +=
     $('#orderListContainer').html(html);
 
 }
+
+/* =========================================================
+   XEM NHANH MÓN TRONG ĐƠN
+========================================================= */
+
+var orderItemsCache = {};
+
+var orderItemsTimer = null;
+
+
+function loadOrderItemsPreview(
+    saleId,
+    $button
+) {
+
+    if (orderItemsCache[saleId]) {
+
+        showOrderItemsPreview(
+            saleId,
+            $button,
+            orderItemsCache[saleId]
+        );
+
+        return;
+    }
+
+
+    showOrderItemsPreview(
+        saleId,
+        $button,
+        null,
+        true
+    );
+
+
+    $.ajax({
+
+        type: 'GET',
+
+        url:
+            "<?=admin_url('pos/getOrderItems');?>",
+
+        data: {
+            sale_id: saleId
+        },
+
+        dataType: 'json',
+
+        success: function (data) {
+
+            if (
+                !data ||
+                !data.status
+            ) {
+
+                showOrderItemsPreview(
+                    saleId,
+                    $button,
+                    []
+                );
+
+                return;
+            }
+
+
+            orderItemsCache[saleId] =
+                data.items || [];
+
+
+            showOrderItemsPreview(
+                saleId,
+                $button,
+                data.items || []
+            );
+
+        },
+
+        error: function () {
+
+            showOrderItemsPreview(
+                saleId,
+                $button,
+                []
+            );
+
+        }
+
+    });
+
+}
+
+function showOrderItemsPreview(
+    saleId,
+    $button,
+    items,
+    loading
+) {
+
+    /*
+     * Xóa popup cũ
+     */
+
+    $('.order-items-tooltip')
+        .remove();
+
+
+    var html = '';
+
+    html +=
+        '<div class="order-items-tooltip">';
+
+
+    if (loading) {
+
+        html +=
+            '<div class="order-items-loading">' +
+                '<i class="fa fa-spinner fa-spin"></i> ' +
+                'Đang tải món...' +
+            '</div>';
+
+    }
+
+    else if (
+        !items ||
+        !items.length
+    ) {
+
+        html +=
+            '<div class="order-items-empty">' +
+                'Không có món.' +
+            '</div>';
+
+    }
+
+    else {
+
+        html +=
+            '<div class="order-items-title">' +
+                '<i class="fa fa-cutlery"></i> ' +
+                'Món trong đơn' +
+            '</div>';
+
+
+        html +=
+            '<div class="order-items-list">';
+
+
+        $.each(
+            items,
+            function (index, item) {
+
+                var qty =
+                    parseFloat(
+                        item.quantity || 0
+                    );
+
+
+                html +=
+                    '<div class="order-item-row">' +
+
+                        '<span class="order-item-name">' +
+                            escapeOrderHtml(
+                                item.product_name
+                            ) +
+                        '</span>' +
+
+                        '<span class="order-item-qty">' +
+                            '× ' +
+                            qty +
+                        '</span>' +
+
+                    '</div>';
+
+            }
+        );
+
+
+        html += '</div>';
+
+    }
+
+
+    html += '</div>';
+
+
+    $('body').append(html);
+
+
+    positionOrderItemsTooltip(
+        $button
+    );
+
+
+    /*
+     * Nếu hover desktop:
+     * giữ popup khi chuột đi từ icon
+     * sang popup.
+     */
+
+    $('.order-items-tooltip')
+        .data(
+            'sale-id',
+            saleId
+        );
+
+}
+
+function positionOrderItemsTooltip(
+    $button
+) {
+
+    var $tooltip =
+        $('.order-items-tooltip');
+
+
+    if (
+        !$tooltip.length
+    ) {
+        return;
+    }
+
+
+    var offset =
+        $button.offset();
+
+
+    var buttonWidth =
+        $button.outerWidth();
+
+
+    var buttonHeight =
+        $button.outerHeight();
+
+
+    var tooltipWidth =
+        $tooltip.outerWidth();
+
+
+    var tooltipHeight =
+        $tooltip.outerHeight();
+
+
+    var left =
+        offset.left +
+        buttonWidth -
+        tooltipWidth;
+
+
+    var top =
+        offset.top -
+        tooltipHeight -
+        8;
+
+
+    /*
+     * Nếu phía trên không đủ chỗ
+     * thì mở xuống dưới.
+     */
+
+    if (
+        top < $(window).scrollTop() + 10
+    ) {
+
+        top =
+            offset.top +
+            buttonHeight +
+            8;
+
+    }
+
+
+    /*
+     * Không cho tràn bên phải
+     */
+
+    var maxLeft =
+        $(window).width() -
+        tooltipWidth -
+        10;
+
+
+    if (
+        left > maxLeft
+    ) {
+
+        left = maxLeft;
+
+    }
+
+
+    if (left < 10) {
+
+        left = 10;
+
+    }
+
+
+    $tooltip.css({
+
+        left: left,
+
+        top: top
+
+    });
+
+}
+$(document).on(
+    'mouseenter',
+    '.order-items-preview',
+    function () {
+
+        var $button =
+            $(this);
+
+        var saleId =
+            $button.data(
+                'sale-id'
+            );
+
+
+        clearTimeout(
+            orderItemsTimer
+        );
+
+
+        loadOrderItemsPreview(
+            saleId,
+            $button
+        );
+
+    }
+);
+$(document).on(
+    'mouseleave',
+    '.order-items-preview',
+    function () {
+
+        var $button =
+            $(this);
+
+
+        orderItemsTimer =
+            setTimeout(
+                function () {
+
+                    if (
+                        !$('.order-items-tooltip:hover')
+                            .length
+                    ) {
+
+                        $('.order-items-tooltip')
+                            .remove();
+
+                    }
+
+                },
+                150
+            );
+
+    }
+);
+$(document).on(
+    'mouseleave',
+    '.order-items-tooltip',
+    function () {
+
+        var $tooltip =
+            $(this);
+
+
+        orderItemsTimer =
+            setTimeout(
+                function () {
+
+                    $tooltip.remove();
+
+                },
+                100
+            );
+
+    }
+);
+
+$(document).on(
+    'click',
+    '.order-items-preview',
+    function (e) {
+
+        e.preventDefault();
+
+        e.stopPropagation();
+
+
+        var $button =
+            $(this);
+
+        var saleId =
+            $button.data(
+                'sale-id'
+            );
+
+
+        /*
+         * Nếu popup của chính icon này
+         * đang mở -> đóng
+         */
+
+        var currentSaleId =
+            $('.order-items-tooltip')
+                .data('sale-id');
+
+
+        if (
+            currentSaleId ==
+            saleId
+        ) {
+
+            $('.order-items-tooltip')
+                .remove();
+
+            return;
+
+        }
+
+
+        loadOrderItemsPreview(
+            saleId,
+            $button
+        );
+
+    }
+);
+
+$(document).on(
+    'click',
+    function (e) {
+
+        if (
+            !$(e.target)
+                .closest(
+                    '.order-items-preview, .order-items-tooltip'
+                )
+                .length
+        ) {
+
+            $('.order-items-tooltip')
+                .remove();
+
+        }
+
+    }
+);
 
 
 /* =========================================================
