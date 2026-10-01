@@ -2495,7 +2495,7 @@ animation: blink 1s steps(2, start) infinite;
 ========================================================= */
 
 #orderListModal .modal-dialog {
-    width: 1450px;
+    width: 1550px;
     max-width: 95vw;
     margin-top: 20px;
 }
@@ -2517,7 +2517,7 @@ animation: blink 1s steps(2, start) infinite;
 
 
 #orderListModal .modal-body {
-    padding: 15px;
+    padding: 15px 5px;
 }
 
 #orderListModal .close {
@@ -2680,7 +2680,7 @@ animation: blink 1s steps(2, start) infinite;
 .order-list-grid {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 12px;
+    gap: 8px;
     width: 100%;
 }
 
@@ -3092,7 +3092,7 @@ animation: blink 1s steps(2, start) infinite;
 
     background: #fff;
 
-    border: 1px solid #d5dce3;
+    border: 2px solid #191f24;
 
     border-radius: 9px;
 
@@ -3131,11 +3131,11 @@ animation: blink 1s steps(2, start) infinite;
 
     margin-bottom: 7px;
 
-    border-bottom: 2px solid #428BCA;
+    border-bottom: 2px solid #193e5e;
 
-    color: #333;
+    color: #35090d;
 
-    font-size: 15px;
+    font-size: 16px;
 
     font-weight: bold;
 }
@@ -3491,3 +3491,8 @@ animation: blink 1s steps(2, start) infinite;
     color: #fff !important;
 }
 
+.btn-pos-view {
+    height: 45px;
+    font-size: 16px;
+    padding-top: 10px;
+}

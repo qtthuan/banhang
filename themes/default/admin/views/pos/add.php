@@ -4271,10 +4271,26 @@ function showOrderItemsPreview(
 
     else {
 
+        var totalQty = 0;
+
+        $.each(
+            items,
+            function (index, item) {
+
+                totalQty +=
+                    parseFloat(
+                        item.quantity || 0
+                    );
+
+            }
+        );
+
+
         html +=
             '<div class="order-items-title">' +
                 '<i class="fa fa-cutlery"></i> ' +
-                'Món trong đơn' +
+                totalQty +
+                ' MÓN' +
             '</div>';
 
 

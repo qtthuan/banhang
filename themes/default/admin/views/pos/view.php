@@ -74,7 +74,7 @@
                     ?>
                     <span class="col-xs-12">
                    
-                        <a class="btn btn-block btn-warning" href="<?= admin_url('pos'); ?>"><?= lang("back_to_pos"); ?></a>
+                        <a class="btn btn-block btn-warning btn-pos-view" href="<?= admin_url('pos'); ?>"><?= lang("back_to_pos"); ?></a>
                    
 
                     <?php
@@ -769,22 +769,22 @@
                 <span class="pull-right col-xs-12">
                     <?php
                     if ($pos->remote_printing == 1) {                      
-                        echo '<button onclick="window.print();" class="btn btn-block btn-primary">'.lang("print").'</button>';
+                        echo '<button onclick="window.print();" class="btn btn-block btn-primary btn-pos-view">'.lang("print").'</button>';
                         if ($inv->warehouse_id == 3) {
-                            echo '<button type="button" id="printLabel" data-action="labels" name="printLabel" class="btn btn-block btn-success" style="text-transform:uppercase;"><li class="fa fa-barcode" style="margin-right: 10px;"></li>'.lang("print_labels").'</button>';
+                            echo '<button type="button" id="printLabel" data-action="labels" name="printLabel" class="btn btn-block btn-success btn-pos-view" style="text-transform:uppercase;"><li class="fa fa-barcode" style="margin-right: 10px;"></li>'.lang("print_labels").'</button>';
                         }
                     ?>
                         
                     <?php
                     } else {
-                        echo '<button onclick="return printReceipt()" class="btn btn-block btn-primary">'.lang("print").'</button>';
-                        echo '<button onclick="return openCashDrawer()" class="btn btn-block btn-default">'.lang("open_cash_drawer").'</button>';
+                        echo '<button onclick="return printReceipt()" class="btn btn-block btn-primary btn-pos-view">'.lang("print").'</button>';
+                        echo '<button onclick="return openCashDrawer()" class="btn btn-block btn-default btn-pos-view">'.lang("open_cash_drawer").'</button>';
                     }
                     ?>
                 </span>
                 <span class="col-xs-12">
                 
-                    <a class="btn btn-block btn-warning" href="<?= admin_url('pos'); ?>"><?= lang("back_to_pos"); ?></a>
+                    <a class="btn btn-block btn-warning btn-pos-view" href="<?= admin_url('pos'); ?>"><?= lang("back_to_pos"); ?></a>
                 
                 </span>
                 <?php
