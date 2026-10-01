@@ -153,17 +153,24 @@ class Sales_model extends CI_Model
 
     public function getLastestMiniInvoice()
     {
+        $query = "SELECT 
+                    sales.*,
+                    companies.customer_group_id
+                FROM " . $this->db->dbprefix('sales') . " AS sales
+                LEFT JOIN " . $this->db->dbprefix('companies') . " AS companies
+                    ON companies.id = sales.customer_id
+                WHERE sales.warehouse_id = 3 
+                    AND sales.is_ingredient = 0
+                ORDER BY sales.id DESC 
+                LIMIT 24";
 
-        $query = "SELECT * FROM " . $this->db->dbprefix('sales') . " AS sales";
-        $query .= " WHERE warehouse_id = 3 AND is_ingredient = 0 ORDER BY id DESC LIMIT 21 ";
-
-        //exit($query);
+        // exit($query);
 
         $q = $this->db->query($query);
+
         if ($q->num_rows() > 0) {
             return $q->result();
         }
-        
     }
 
     public function getAllInvoiceItems($sale_id, $return_id = NULL)

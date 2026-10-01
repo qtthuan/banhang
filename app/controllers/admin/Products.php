@@ -448,6 +448,7 @@ class Products extends MY_Controller
 
         $lastest_bills = $this->sales_model->getLastestMiniInvoice();
         $this->data['sales'] = $lastest_bills;
+        $this->data['customer_group_id_app'] = $this->config->item('customer_group_id_app');
         for ($i=0; $i < count($lastest_bills); $i++) {
             $items = $this->sales_model->getAllInvoiceItems($lastest_bills[$i]->id);
 

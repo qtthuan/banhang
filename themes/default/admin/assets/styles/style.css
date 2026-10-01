@@ -2521,6 +2521,39 @@ animation: blink 1s steps(2, start) infinite;
     padding: 15px;
 }
 
+#orderListModal .close {
+    width: 37px;
+    height: 37px;
+
+    padding: 0;
+    margin: 0;
+
+    border: 0;
+    border-radius: 50%;
+
+    background: #0b6d39e8;
+    color: #fff;
+
+    font-size: 30px;
+    font-weight: bold;
+
+    line-height: 30px;
+    text-align: center;
+
+    opacity: 1;
+
+    text-shadow: none;
+
+    transition: background .15s ease;
+}
+
+
+#orderListModal .close:hover {
+    background: #555;
+    color: #fff;
+
+    opacity: 1;
+}
 
 /* =========================================================
    THANH TOÁN
@@ -3230,3 +3263,4 @@ animation: blink 1s steps(2, start) infinite;
 
     color: #fff !important;
 }
+

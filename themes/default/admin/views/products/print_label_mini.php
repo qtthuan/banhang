@@ -38,7 +38,11 @@
                         echo '<button type="button" style="height: 46px; font-size: 22px" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print').'</button>';
                         echo '<div style="text-align: center; margin: 5px 0" class="no-print">';
                         $i = 0;
+                        $hide_price_by_sale = [];
                         foreach ($sales as $sale) {
+
+                        $hide_price_by_sale[$sale->id] =
+                                ((int)$sale->customer_group_id === (int)$customer_group_id_app);
                            
                             $customer_name = trim($sale->customer); // bỏ khoảng trắng đầu/cuối
                             if (mb_strlen($customer_name, 'UTF-8') > 31) {
@@ -72,7 +76,9 @@
                                 $display_btn = ' style="display: none;"';
                             }
                             //$this->sma->print_arrays($values);
-                            echo '<div class="barcode_mini div'.$key.'"'.$display_btn.'>';
+                            $hide_price = !empty($hide_price_by_sale[$key]);
+                            echo '<div class="barcode_mini div'.$key.'"'.$display_btn.' data-hide-price="' . ($hide_price ? '1' : '0') . '">';
+                            //echo '<div class="barcode_mini div'.$key.'"'.$display_btn.'>';
                             
                             foreach ($values as $item) {
                                 
@@ -290,6 +296,16 @@
             $('.customer_name').toggle();
         });
 
+        function applyPriceVisibility(div_id) {
+            var container = $('.div' + div_id);
+
+            if (container.attr('data-hide-price') == '1') {
+                container.find('.text_price').hide();
+            } else {
+                container.find('.text_price').show();
+            }
+        }
+
         function fillTotalItems(total) {
             $("#total_items").html("<span style='font-size: 40px;'><strong>1-" + Math.round(total) + "<strong></span>")
         }
@@ -312,6 +328,7 @@
             });
             
         }
+        applyPriceVisibility($('.bills:first').attr('id'));
         fillTotalItems($('.barcode_mini:first>div').length);
 
 
@@ -331,6 +348,7 @@
                 //reference_no = $('.div' + id).find('.hidd_reference_no').val();
                 $(this).removeClass('btn-danger');
                 $('.div' + div_id).show();
+                applyPriceVisibility(div_id);
                 $(this).addClass('btn-success');
                 //$('.reference_no').text($('#' + div_id).find('.hidd_reference_no').val());
                 $('.reference_no').text($('#' + div_id).find('.hidd_customer_name').val());
