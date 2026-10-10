@@ -270,3 +270,4 @@ input:checked + .slider:before {
   60% { transform: scale(.9); }
   100% { transform: scale(1); }
 }
+

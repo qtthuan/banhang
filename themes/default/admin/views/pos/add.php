@@ -649,17 +649,7 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                                 }
                         	}
                         ?>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <?=form_textarea('sale_note', '', 'id="sale_note" class="form-control kb-text skip" style="height: 85px; color: #006400;" placeholder="' . lang('sale_note') . '" maxlength="500"');?>
-                                </div>
-                                <div class="col-sm-6">
-                                    <?=form_textarea('staffnote', '', 'id="staffnote" class="form-control kb-text skip" style="height: 85px; color: #006400;" placeholder="' . lang('staff_note') . '" maxlength="500"');?>
-                                </div>
-                            </div>
-
-                        </div>
+                        
                         <div class="clearfir"></div>
 
                         <div id="payments">
@@ -792,6 +782,19 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                         <div id="multi-payment"></div>
                         <button type="button" class="btn btn-primary col-md-12 addButton"><i
                                 class="fa fa-plus"></i> <?=lang('add_more_payments')?></button>
+                        <div class="clearfir"></div>
+                        <div class="form-group" style="margin-top: 8px;">
+                            <div class="row">
+                                <div class="col-sm-6" style="padding-top: 15px;">
+                                    <?=form_textarea('sale_note', '', 'id="sale_note" class="form-control kb-text skip" style="height: 85px; color: #006400;" placeholder="' . lang('sale_note') . '" maxlength="500"');?>
+                                </div>
+                                <div class="col-sm-6" style="padding-top: 15px;">
+                                    <?=form_textarea('staffnote', '', 'id="staffnote" class="form-control kb-text skip" style="height: 85px; color: #006400;" placeholder="' . lang('staff_note') . '" maxlength="500"');?>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="clearfir"></div>
                         <div class="font16">
                             <table class="table table-bordered table-condensed table-striped" style="margin-bottom: 0;">
                                 <tbody>
@@ -822,7 +825,7 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                     <div class="col-md-2 col-sm-3 text-center">
                         <span style="font-size: 1.2em; font-weight: bold;"><?=lang('quick_cash');?></span>
 
-                        <div class="btn-group btn-group-vertical">
+                        <div class="btn-group btn-group-vertical quick-cash-group">
                             <button type="button" class="btn btn-lg btn-info quick-cash" id="quick-payable">0.00
                             </button>
                             <?php
@@ -3681,7 +3684,8 @@ function loadTodayOrders(
 
             data: {
 
-                page: page
+                page: page,
+                warehouse_id: $('#poswarehouse').val() || ''
 
             },
 

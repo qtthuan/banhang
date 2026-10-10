@@ -337,42 +337,99 @@ class Pos extends MY_Controller
         echo $this->datatables->generate();
     }
 
+    
     public function getTodayOrders()
     {
         $this->sma->checkPermissions('index');
 
         $page = (int) $this->input->get('page');
-
-        if ($page < 1) {
-            $page = 1;
-        }
+        $page = max(1, $page);
 
         $per_page = 15;
         $offset   = ($page - 1) * $per_page;
         $today    = date('Y-m-d');
-        //$today = '2026-09-25';
 
-        // Đếm tổng đơn hôm nay
+        // ==================================================
+        // PHÂN QUYỀN KHO THEO TÀI KHOẢN ĐĂNG NHẬP
+        // ==================================================
+
+        $user = $this->site->getUser();
+
+        // User có warehouse_id: chỉ được xem kho được gán.
+        // User không có warehouse_id: admin, được chọn kho.
+        $userWarehouseId = (
+            $user && isset($user->warehouse_id)
+        ) ? (int) $user->warehouse_id : 0;
+
+        $filterWarehouseId = NULL;
+
+        if ($userWarehouseId > 0) {
+
+            // User thường: bắt buộc lọc theo kho tài khoản.
+            $filterWarehouseId = $userWarehouseId;
+
+        } else {
+
+            // Admin: lấy kho đang chọn trên dropdown.
+            $selectedWarehouse = $this->input->get('warehouse_id');
+
+            if (
+                $selectedWarehouse !== NULL &&
+                $selectedWarehouse !== ''
+            ) {
+                $selectedWarehouse = (int) $selectedWarehouse;
+
+                $miniWarehouseId = (int)
+                    $this->config->item('mini_warehouse_id');
+
+                $baniWarehouseId = (int)
+                    $this->config->item('bani_warehouse_id');
+
+                // Chỉ chấp nhận hai kho đã cấu hình.
+                if (in_array(
+                    $selectedWarehouse,
+                    array($miniWarehouseId, $baniWarehouseId),
+                    TRUE
+                )) {
+                    $filterWarehouseId = $selectedWarehouse;
+                }
+            }
+
+            // Admin không chọn kho => NULL => xem tất cả.
+        }
+
+        // ==================================================
+        // ĐẾM TỔNG ĐƠN
+        // ==================================================
+
         $this->db->from('sales');
+
         $this->db->where(
             'DATE(date) = ' . $this->db->escape($today),
             NULL,
             FALSE
         );
+
         $this->db->where('pos', 1);
         $this->db->where('is_ingredient', 0);
+
+        if ($filterWarehouseId !== NULL) {
+            $this->db->where(
+                'warehouse_id',
+                $filterWarehouseId
+            );
+        }
 
         $total = $this->db->count_all_results();
 
-        // Lấy 16 đơn
-        $this->db->select('
-            id,
-            date,
-            customer,
-            grand_total,
-            payment_status,
-            reference_no
-        ');
+        // ==================================================
+        // LẤY DANH SÁCH ĐƠN
+        // ==================================================
+
+        $this->db->select(
+            'id, date, customer, grand_total,
+            payment_status, reference_no, warehouse_id'
+        );
 
         $this->db->from('sales');
 
@@ -385,10 +442,15 @@ class Pos extends MY_Controller
         $this->db->where('pos', 1);
         $this->db->where('is_ingredient', 0);
 
+        if ($filterWarehouseId !== NULL) {
+            $this->db->where(
+                'warehouse_id',
+                $filterWarehouseId
+            );
+        }
 
         $this->db->order_by('date', 'DESC');
         $this->db->order_by('id', 'DESC');
-
         $this->db->limit($per_page, $offset);
 
         $query = $this->db->get();
@@ -396,19 +458,18 @@ class Pos extends MY_Controller
         if (!$query) {
             $error = $this->db->error();
 
-            echo json_encode([
+            echo json_encode(array(
                 'status'  => false,
                 'message' => $error['message']
-            ]);
+            ));
 
             return;
         }
 
         $orders = $query->result();
 
-        // Lấy phương thức thanh toán gần nhất
+        // Lấy phương thức thanh toán gần nhất.
         foreach ($orders as $order) {
-
             $payment = $this->db
                 ->select('paid_by')
                 ->from('payments')
@@ -418,18 +479,23 @@ class Pos extends MY_Controller
                 ->get()
                 ->row();
 
-            $order->paid_by = $payment ? $payment->paid_by : '';
+            $order->paid_by = $payment
+                ? $payment->paid_by
+                : '';
         }
 
-        echo json_encode([
+        echo json_encode(array(
             'status'      => true,
             'orders'      => $orders,
             'page'        => $page,
             'per_page'    => $per_page,
             'total'       => $total,
-            'total_pages' => ($total > 0) ? ceil($total / $per_page) : 1
-        ]);
+            'total_pages' => ($total > 0)
+                ? (int) ceil($total / $per_page)
+                : 1
+        ));
     }
+
 
     public function getOrderItems()
     {

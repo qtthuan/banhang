@@ -396,3 +396,19 @@ body:before, body:after {
     .fa-bx { font-size: 22px; }
     .lb { display: block; height: 0; }
 }
+
+
+/* Tăng chiều cao các nút Quick Cash */
+.quick-cash-group .quick-cash,
+.quick-cash-group #clear-cash-notes {
+    height: 48px !important;
+    min-height: 48px;
+    padding: 10px 8px !important;
+    font-size: 17px !important;
+    line-height: 26px !important;
+}
+
+.quick-cash-group #quick-payable {
+    height: 52px !important;
+    min-height: 52px;
+}
