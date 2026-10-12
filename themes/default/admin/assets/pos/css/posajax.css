@@ -404,7 +404,7 @@ body:before, body:after {
     height: 48px !important;
     min-height: 48px;
     padding: 10px 8px !important;
-    font-size: 17px !important;
+    font-size: 21px !important;
     line-height: 26px !important;
 }
 
@@ -686,6 +686,7 @@ body:before, body:after {
     max-width: 30% !important;
     padding: 0 6px !important;
     min-width: 0 !important;
+    font-size: 17px;
 }
 
 /* Nút Trả bằng: tự chia đều theo số lựa chọn */
@@ -733,7 +734,7 @@ body:before, body:after {
 .pos-touch-amount {
     width: 100% !important;
     max-width: none !important;
-    height: 47px !important;
+    height: 46px !important;
     padding: 6px 8px !important;
     font-size: 21px !important;
     font-weight: 700 !important;
@@ -804,6 +805,7 @@ body:before, body:after {
     margin-top: 5px !important;
     box-sizing: border-box !important;
     resize: vertical;
+    text-transform: uppercase;
 }
 
 /* Màn hình nhỏ */
@@ -944,6 +946,7 @@ body:before, body:after {
     display: block;
     margin-bottom: 16px !important;
     line-height: 1.2 !important;
+    font-size: 17px;
 }
 
 #paymentModal .pos-payment-method-column .pos-touch-options {

@@ -774,7 +774,7 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                             </div>
                         </div>
                         <div id="multi-payment"></div>
-                        <button type="button" class="btn btn-primary col-md-12 addButton"><i
+                        <button type="button" class="btn btn-primary col-md-12 addButton" style="margin-bottom: 15px; height: 44px;"><i
                                 class="fa fa-plus"></i> <?=lang('add_more_payments')?></button>
                         <div class="clearfir"></div>
                         <div class="form-group pos-payment-notes" style="margin-top: 8px;">
@@ -793,7 +793,7 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                         </div>
                         <div class="clearfir"></div>
                         <div class="font16">
-                            <table class="table table-bordered table-condensed table-striped" style="margin-bottom: 0;">
+                            <table class="table table-bordered table-condensed table-striped" style="margin-bottom: 10px; margin-top: 25px;">
                                 <tbody>
                                 <tr>
                                     <td width="25%"><?=lang("total_items");?></td>
