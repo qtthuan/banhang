@@ -3002,7 +3002,7 @@ var lang = {
                 $('.pcash_' + pa_no).hide();
                 $('.gc_' + pa_no).hide();
                 $('.pts_' + pa_no).hide();
-                $('.pcc_' + pa_no).show();
+                //$('.pcc_' + pa_no).show();
 
                 // Chuyen khoan: tu dong dien dung so tien can thanh toan
                 $('#amount_' + pa_no)
