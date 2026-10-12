@@ -655,28 +655,22 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                         <div id="payments">
                             <div class="well well-sm well_1">
                                 <div class="payment">
-                                    <div class="row">
-                                        <div class="col-sm-3">
+                                    <div class="row pos-payment-main-row">
+                                        <div class="col-sm-5 pos-payment-method-column">
                                             <div class="form-group">
                                                 <?=lang("paying_by", "paid_by_1");?>
-                                                <select name="paid_by[]" id="paid_by_1" class="form-control paid_by">
+                                                <select name="paid_by[]" id="paid_by_1" class="form-control paid_by pos-native-select">
                                                     <?= $this->sma->paid_opts(); ?>
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-2 pos-payment-amount-column">
                                             <div class="form-group">
                                                 <?=lang("total_paying", "amount_1");?>
                                                 <input name="amount[]" type="text" id="amount_1"
-                                                       class="pa form-control kb-pad1 amount" value="0"/>
+                                                       class="pa form-control kb-pad1 amount pos-touch-amount" autocomplete="off" value="0"/>
                                             </div>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <?=lang("delivery_method", "delivery_method");?>
-                                            <select name="delivery" id="delivery" class="form-control delivery">
-                                                <?= $this->sma->delivery_method_opts(); ?>
-                                            </select>
-                                        </div>
+                                        </div>                                        
 
                                     </div>
 
@@ -783,14 +777,17 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                         <button type="button" class="btn btn-primary col-md-12 addButton"><i
                                 class="fa fa-plus"></i> <?=lang('add_more_payments')?></button>
                         <div class="clearfir"></div>
-                        <div class="form-group" style="margin-top: 8px;">
+                        <div class="form-group pos-payment-notes" style="margin-top: 8px;">
                             <div class="row">
-                                <div class="col-sm-6" style="padding-top: 15px;">
+                                <div class="col-sm-3 pos-delivery-area">
+                                    <?=lang("delivery_method", "delivery_method");?>
+                                    <select name="delivery" id="delivery" class="form-control delivery pos-native-select">
+                                        <?= $this->sma->delivery_method_opts(); ?>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6 pos-invoice-note-area" style="padding-top: 15px;">
                                     <?=form_textarea('sale_note', '', 'id="sale_note" class="form-control kb-text skip" style="height: 85px; color: #006400;" placeholder="' . lang('sale_note') . '" maxlength="500"');?>
-                                </div>
-                                <div class="col-sm-6" style="padding-top: 15px;">
-                                    <?=form_textarea('staffnote', '', 'id="staffnote" class="form-control kb-text skip" style="height: 85px; color: #006400;" placeholder="' . lang('staff_note') . '" maxlength="500"');?>
-                                </div>
+                                </div>                               
                             </div>
 
                         </div>
@@ -2050,31 +2047,33 @@ var lang = {
 
             } // Reset cột quick payable và phương thức thanh toán
 
-            $('#customer').select2({
-                minimumInputLength: 1,
-                ajax: {
-                    url: site.base_url + "customers/suggestions",
-                    dataType: 'json',
-                    quietMillis: 15,
-                    data: function (term, page) {
-                        return {
-                            term: term,
-                            limit: 10
-                        };
-                    },
-                    results: function (data, page) {
-                        if (data.results != null) {
-                            return {results: data.results};
-                        } else {
-                            return {results: [{id: '', text: 'No Match Found'}]};
+           if (!$('#customer').hasClass('select2-hidden-accessible')) {
+                $('#customer').select2({
+                    minimumInputLength: 1,
+                    ajax: {
+                        url: site.base_url + "customers/suggestions",
+                        dataType: 'json',
+                        quietMillis: 15,
+                        data: function (term, page) {
+                            return {
+                                term: term,
+                                limit: 10
+                            };
+                        },
+                        results: function (data, page) {
+                            if (data.results != null) {
+                                return {results: data.results};
+                            } else {
+                                return {results: [{id: '', text: 'No Match Found'}]};
+                            }
                         }
                     }
-                }
-            });
-
+                });
+            }
             console.log("shown paid_by_1 =", $("#paid_by_1").val());
 
             syncCustomerPaymentScreen();
+            refreshPosTouchControls();
 
         });
 
@@ -2152,18 +2151,68 @@ var lang = {
             });
         }
 
-
+        
+        
         var pi = 'amount_1', pa = 2;
+
+        window.posQuickCashUsed = false;
+
         $(document).on('click', '.quick-cash', function () {
             var $quick_cash = $(this);
+            var isQuickPayable = $quick_cash.attr('id') === 'quick-payable';
+            var $paymentSelect = $('#paid_by_1');
+
+            // Chi xac nhan khi bam Quick Payable ma chua chon tien mat
+            if (isQuickPayable &&
+                !$quick_cash.data('cash-confirmed-once') &&
+                $paymentSelect.val() === 'wait') {
+
+                bootbox.confirm(
+                    'Khách thanh toán tiền mặt đúng không?',
+                    function (res) {
+                        if (res === true) {
+                            // Tu dong chon Tien mat va highlight nut
+                            $paymentSelect.val('cash').trigger('change');
+
+                            // Chay lai Quick Payable, khong hoi lan nua
+                            $quick_cash
+                                .data('cash-confirmed-once', true)
+                                .trigger('click');
+                        }
+                    }
+                );
+
+                return false;
+            }
+
+            // Xoa co bo qua xac nhan sau lan click lap lai
+            if ($quick_cash.data('cash-confirmed-once')) {
+                $quick_cash.removeData('cash-confirmed-once');
+            }
+
+            // Da su dung Quick Cash trong hoa don
+            window.posQuickCashUsed = true;
+
+            // Dong bo lai nut neu dropdown da la Tien mat
+            if (isQuickPayable && $paymentSelect.val() === 'cash') {
+                renderPosTouchOptions($paymentSelect, 'payment');
+            }
+
+            // GIU NGUYEN LOGIC CONG TIEN CU
             var amt = $quick_cash.contents().filter(function () {
                 return this.nodeType == 3;
             }).text();
+
             var th = '.';
             var $pi = $('#' + pi);
-            amt = formatDecimal(amt.split(th).join("")) * 1 + $pi.val() * 1;
+
+            amt = formatDecimal(amt.split(th).join("")) * 1
+                + $pi.val() * 1;
+
             $pi.val(formatDecimal(amt)).focus();
+
             var note_count = $quick_cash.find('span');
+
             if (note_count.length == 0) {
                 $quick_cash.append('<span class="badge">1</span>');
             } else {
@@ -2175,8 +2224,13 @@ var lang = {
             $('.quick-cash').find('.badge').remove();
 
             $('#' + pi).val('0');
+
+            // Xoa trang thai da dung Quick Cash
+            window.posQuickCashUsed = false;
+
             syncCustomerPaymentScreen();
         });
+
 
 
         $(document).on('change', '.gift_card_no', function () {
@@ -2950,11 +3004,10 @@ var lang = {
                 $('.pts_' + pa_no).hide();
                 $('.pcc_' + pa_no).show();
 
-                 /*
-                * Tự động click nút Quick Cash đầu tiên
-                * để chạy đúng toàn bộ event như khi người dùng click.
-                */
-                $('.quick-cash').first().trigger('click');
+                // Chuyen khoan: tu dong dien dung so tien can thanh toan
+                $('#amount_' + pa_no)
+                    .val(formatDecimal(gtotal))
+                    .trigger('change');
 
                 $('#swipe_' + pa_no).focus();
 
@@ -3025,6 +3078,248 @@ var lang = {
                 syncCustomerPaymentScreen();
             }, 50);
         });
+        
+        /* =========================================
+        GIAO DIỆN THANH TOÁN DÀNH CHO MÀN HÌNH TOUCH
+        Giữ nguyên select và logic thanh toán cũ
+        ========================================= */
+
+        // CẤU HÌNH HIỆN NÚT ĐIỂM TÍCH LŨY
+        // true  = hiện nút
+        // false = ẩn nút
+        var POS_SHOW_AWARD_POINTS = false;
+
+        function renderPosTouchOptions($select, type) {
+            if (!$select.length) {
+                return;
+            }
+
+            var selectId = $select.attr('id');
+
+            if (!selectId) {
+                return;
+            }
+
+            var $wrap = $select.next('.pos-touch-options');
+
+            if (
+                !$wrap.length ||
+                $wrap.attr('data-target') !== selectId
+            ) {
+                $wrap = $('<div>', {
+                    'class': 'pos-touch-options ' +
+                        (type === 'delivery'
+                            ? 'pos-delivery-options'
+                            : 'pos-payment-options')
+                });
+
+                $wrap.attr('data-target', selectId);
+                $select.after($wrap);
+            }
+
+            $wrap.empty();
+
+            $select.find('option').each(function () {
+                var $option = $(this);
+                var value = $option.val();
+                var label = $.trim($option.text());
+                var textKey = (label + ' ' + value).toLowerCase();
+
+                if (value === undefined || label === '') {
+                    return;
+                }
+
+                // Ẩn nút Điểm tích lũy nếu cấu hình là false
+                if (
+                    type === 'payment' &&
+                    !POS_SHOW_AWARD_POINTS &&
+                    (
+                        textKey.includes('điểm tích lũy') ||
+                        textKey.includes('pts') ||
+                        textKey.includes('points')
+                    )
+                ) {
+                    return;
+                }
+
+                var $button = $('<button>', {
+                    type: 'button',
+                    'class': 'pos-touch-choice'
+                });
+
+                
+                $button.attr('data-value', value);
+
+                // Xác định icon theo loại và tên phương thức
+                var iconClass = 'fa-ellipsis-h';
+
+                if (type === 'delivery') {
+                    if (textKey.includes('shop') || textKey.includes('tại quầy')) {
+                        iconClass = 'fa-home';
+                    } else if (textKey.includes('giao hàng')) {
+                        iconClass = 'fa-truck';
+                    } else if (textKey.includes('shipper')) {
+                        iconClass = 'fa-motorcycle';
+                    }
+                } else {
+                    if (textKey.includes('chưa tt') || textKey.includes('wait')) {
+                        iconClass = 'fa-clock-o';
+                    } else if (textKey.includes('tiền mặt') || textKey.includes('cash')) {
+                        iconClass = 'fa-money';
+                    } else if (textKey.includes('điểm tích lũy') || textKey.includes('pts')) {
+                        iconClass = 'fa-star';
+                    } else if (textKey.includes('chuyển khoản') || textKey.includes('bank')) {
+                        iconClass = 'fa-university';
+                    } else if (textKey.includes('thẻ') || textKey.includes('card') || textKey.includes('cc')) {
+                        iconClass = 'fa-credit-card';
+                    }
+                }
+
+                // Tạo icon và chữ riêng để CSS căn giữa
+                var $icon = $('<i>', {
+                    'class': 'fa ' + iconClass + ' pos-choice-icon',
+                    'aria-hidden': 'true'
+                });
+
+                var $text = $('<span>', {
+                    'class': 'pos-choice-label',
+                    text: label
+                });
+
+                $button.empty().append($icon, $text);
+
+
+                if ($option.prop('disabled')) {
+                    $button.prop('disabled', true);
+                }
+
+                if (
+                    String($select.val()) === String(value)
+                ) {
+                    $button.addClass('active');
+                }
+
+                $wrap.append($button);
+            });
+        }
+
+        function refreshPosTouchControls() {
+
+            // Đồng bộ danh sách phương thức thanh toán.
+            $('#paymentModal .paid_by').each(function () {
+                renderPosTouchOptions($(this), 'payment');
+            });
+
+            // Đồng bộ hình thức nhận.
+            var $delivery = $('#paymentModal #delivery');
+
+            if ($delivery.length) {
+
+                var savedDelivery =
+                    localStorage.getItem('pos_delivery');
+
+                // Nếu hệ thống đã lưu hình thức nhận,
+                // giao diện phải phản ánh đúng lựa chọn đó.
+                if (savedDelivery !== null) {
+                    var $savedOption = $delivery.find('option')
+                        .filter(function () {
+                            return String(this.value) ===
+                                String(savedDelivery);
+                        });
+
+                    if ($savedOption.length) {
+                        $delivery.val(savedDelivery);
+                    }
+                }
+
+                renderPosTouchOptions($delivery, 'delivery');
+            }
+        }
+
+        // Bấm nút cảm ứng: cập nhật dropdown cũ,
+        // sau đó để các event thanh toán hiện tại xử lý.
+        $(document).on(
+            'click',
+            '#paymentModal .pos-touch-choice',
+            function () {
+
+                var $button = $(this);
+                var $wrap = $button.closest('.pos-touch-options');
+                var selectId = $wrap.attr('data-target');
+                var value = $button.attr('data-value');
+
+                var $select = $('#' + selectId);
+
+                if (!$select.length) {
+                    return;
+                }
+
+                
+                $select.val(value);
+
+                // Cập nhật màu nút trước khi đồng bộ dropdown.
+                $wrap.find('.pos-touch-choice')
+                    .removeClass('active');
+
+                $button.addClass('active');
+
+                // Lưu hình thức nhận.
+                if (selectId === 'delivery') {
+                    localStorage.setItem('pos_delivery', value);
+                }
+
+                // Kích hoạt logic thanh toán cũ.
+                // Danh sách nút sẽ tự đồng bộ theo giá trị mới.
+                $select.trigger('change');
+
+            }
+        );
+
+        // Nếu dropdown được thay đổi bởi code cũ,
+        // cập nhật lại trạng thái các nút.
+        
+        $(document).on(
+            'change',
+            '#paymentModal .paid_by, #paymentModal #delivery',
+            function () {
+                var $select = $(this);
+                var selectId = this.id;
+
+                if (selectId === 'delivery') {
+                    localStorage.setItem(
+                        'pos_delivery',
+                        $select.val()
+                    );
+                }
+
+                // Chỉ cập nhật nút đang chọn, không tạo lại toàn bộ nút.
+                var $wrap = $select.next('.pos-touch-options');
+
+                if (!$wrap.length) {
+                    return;
+                }
+
+                var selectedValue = String($select.val());
+
+                $wrap.find('.pos-touch-choice').each(function () {
+                    var isActive =
+                        String($(this).attr('data-value')) === selectedValue;
+
+                    $(this).toggleClass('active', isActive);
+                });
+            }
+        );
+
+
+        // Khởi tạo sau khi modal mở và các option
+        // điểm tích lũy đã được thêm/xóa theo khách hàng.
+        // $('#paymentModal').on(
+        //     'shown.bs.modal',
+        //     function () {
+        //         refreshPosTouchControls();
+        //     }
+        // );
+
 
 
         $(".ca_points").on('keyup', function (e) {
@@ -3061,6 +3356,59 @@ var lang = {
         });
 
         $(document).on('click', '#submit-sale', function () {
+            
+            // Da bam menh gia Quick Cash nhung chua chon Tien mat
+            if (
+                window.posQuickCashUsed &&
+                $('#paid_by_1').val() === 'wait'
+            ) {
+                bootbox.confirm(
+                    'Khách thanh toán tiền mặt đúng không?',
+                    function (res) {
+                        
+                        if (res === true) {
+
+                            // 1. Luu lai tien da nhap truoc khi doi phuong thuc
+                            var savedAmounts = [];
+
+                            $('#payments input.amount').each(function () {
+                                savedAmounts.push({
+                                    id: this.id,
+                                    value: $(this).val()
+                                });
+                            });
+
+                            // 2. Tu dong chon Tien mat
+                            // Event change cu co the reset amount ve 0
+                            $('#paid_by_1')
+                                .val('cash')
+                                .trigger('change');
+
+                            // 3. Khoi phuc lai toan bo so tien da nhap
+                            
+                            savedAmounts.forEach(function (item) {
+                                $('#' + item.id)
+                                    .val(item.value)
+                                    .trigger('change');
+                            });
+
+
+                            // 4. Cap nhat lai tong tien, con lai va tien thua
+                            calculateTotals();
+
+                            // 5. Cap nhat mau nut Tien mat
+                            refreshPosTouchControls();
+
+                            // 6. Tiep tuc quy trinh thanh toan
+                            $('#submit-sale').trigger('click');
+                        }
+
+                    }
+                );
+
+                return false;
+            }
+
             if (total_paid == 0 || total_paid < grand_total - cash_used) {
                 bootbox.confirm("<?=lang('paid_l_t_payable');?>", function (res) {
                     if (res == true) {
