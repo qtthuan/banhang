@@ -60,6 +60,20 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                     <i class="fa fa-list-alt"></i>
                     <span class="order-list-title"> ĐƠN HÀNG</span>
                 </a>
+                
+                <a
+                    class="btn blightOrange pos-tip order-header-button"
+                    id="opened_bills"
+                    title="Đơn tạm"
+                    data-container="body"
+                    data-placement="bottom"
+                    href="<?=admin_url('pos/opened_bills')?>"
+                    data-toggle="ajax"
+                >
+                    <i class="fa fa-th"></i>
+                    <span class="suspend_list_title">ĐƠN TẠM</span>
+                </a>
+
             </div>
             <div class="header-nav">
                 
@@ -137,11 +151,6 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                     <li class="dropdown">
                         <a class="btn pos-tip" title="<?=lang('view_bill_screen')?>" data-container="body" data-placement="bottom" href="<?=admin_url('pos/view_bill')?>" target="_blank">
                             <i class="fa fa-laptop"></i>
-                        </a>
-                    </li>
-                    <li class="dropdown">
-                        <a class="btn blightOrange pos-tip" id="opened_bills" title="<span><?=lang('suspended_sales')?></span>" data-container="body" data-placement="bottom" data-html="true" href="<?=admin_url('pos/opened_bills')?>" data-toggle="ajax">
-                            <i class="fa fa-th"></i>
                         </a>
                     </li>
                     <?php if ($Owner) {?>
@@ -269,8 +278,15 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                                         <?php echo form_input(
                                             'customer_name',
                                             '',
-                                            'class="form-control customer_name" id="customer_name" data-placement="top" placeholder="' . $this->lang->line("enter_customer_name") . '" title="" autocomplete="off"'
+                                            'class="form-control customer_name" id="customer_name" data-placement="top" placeholder="' . $this->lang->line("enter_customer_name") . '" title="" autocomplete="on"'
                                         ); ?>
+                                        
+                                        <div id="customer_name_suggestions"
+                                            style="display:none; position:absolute; z-index:9999;
+                                                    background:#fff; border:1px solid #3682c4;
+                                                    width:100%; max-height:220px; overflow-y:auto;">
+                                        </div>
+
                                     </div>
 
                                     <div class="customer-type-buttons">
@@ -453,27 +469,27 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                                 <div id="botbuttons" class="col-xs-12 text-center">
                                     <input type="hidden" name="biller" id="biller" value="<?= ($Owner || $Admin || !$this->session->userdata('biller_id')) ? $pos_settings->default_biller : $this->session->userdata('biller_id')?>"/>
                                     <div class="row">
-                                        <div class="col-xs-2-5" style="padding: 0;">
+                                        <div class="col-xs-3" style="padding: 0;">
                                             <button type="button" class="btn btn-danger btn-block" id="reset" style="height:57px; font-size: 20px;">
                                                 <i class="fa fa-times-circle" style="margin-right: 5px;"></i><?=lang('cancel_sale');?> (<strong><?=$pos_settings->cancel_sale?></strong>)
                                             </button>
                                         </div>
-                                        <div class="col-xs-2-5" style="padding: 0;">
+                                        <div class="col-xs-3" style="padding: 0;">
                                             <button type="button" class="btn btn-warning btn-block" id="suspend" style="height:57px; font-size: 20px;">
                                                 <i class="fa fa-sticky-note" style="margin-right: 5px;"></i><?=lang('suspend');?> (<strong><?=$pos_settings->suspend_sale?></strong>)
                                             </button>
                                         </div>
-                                        <div class="col-xs-2" style="padding: 0;">
+                                        <!-- <div class="col-xs-2" style="padding: 0;">
                                             <button type="button" class="btn btn-info btn-block" id="print_bill" style="height:57px; font-size: 20px;">
                                                 <i class="fa fa-th" style="margin-right: 5px;"></i><?=lang('bill');?>
                                             </button>
-                                        </div>
-                                        <div class="col-xs-2-5" style="padding: 0;">
+                                        </div> -->
+                                        <div class="col-xs-3" style="padding: 0;">
                                             <button type="button" class="btn btn-primary btn-block" id="quick_payment" style="height:57px; font-size: 20px;">
                                                 <i class="fa fa-money" style="margin-right: 5px;"></i>TT nhanh (<strong><?=$pos_settings->quick_finalize_sale?></strong>)
                                             </button>
                                         </div>
-                                        <div class="col-xs-2-5" style="padding: 0;">
+                                        <div class="col-xs-3" style="padding: 0;">
                                             <button type="button" class="btn btn-success btn-block" id="payment" style="height:57px; font-size: 20px;">
                                                 <i class="fa fa-money" style="margin-right: 5px;"></i><?=lang('payment');?> (<strong><?=$pos_settings->finalize_sale?></strong>)
                                             </button> 
@@ -2465,6 +2481,169 @@ var lang = {
             $('#customer_name').keyup(function(){
                 $(this).val($(this).val().toUpperCase());
             });
+            
+            
+            /* LỊCH SỬ TÊN KHÁCH LẺ */
+            function loadCustomerNameHistory(keyword) {
+                var names = [];
+
+                try {
+                    names = JSON.parse(
+                        localStorage.getItem('customer_name_history') || '[]'
+                    );
+                } catch (e) {
+                    names = [];
+                }
+
+                var key = $.trim(keyword || '').toUpperCase();
+                var $box = $('#customer_name_suggestions');
+
+                // Chưa gõ thì không hiện danh sách
+                if (!key) {
+                    $box.hide().empty();
+                    return;
+                }
+
+                // Chỉ lấy tên có chứa ký tự đang gõ
+                var matched = names.filter(function(name) {
+                    return name.toUpperCase().indexOf(key) !== -1;
+                }).slice(0, 10);
+
+                $box.empty();
+
+                if (matched.length === 0) {
+                    $box.hide();
+                    return;
+                }
+
+                matched.forEach(function(name) {
+                    
+                    $('<div>')
+                        .addClass('customer-suggestion')
+                        .text(name)
+                        .on('mouseenter', function() {
+                            $('#customer_name_suggestions .customer-suggestion')
+                                .removeClass('active');
+
+                            $(this).addClass('active');
+
+                            selectedCustomerIndex = $(this).index();
+                        })
+                        .on('mousedown', function(e) {
+                            e.preventDefault();
+
+                            $('#customer_name').val(name);
+                            $('#customer_name_suggestions').hide().empty();
+
+                            selectedCustomerIndex = -1;
+                        })
+                        .appendTo($box);
+
+                });
+
+                $box.show();
+            }
+
+            // Giữ nguyên hàm lưu tên khách
+            function saveCustomerNameHistory() {
+                var name = $.trim($('#customer_name').val()).toUpperCase();
+
+                if (!name || name === 'MANG ĐI' ||
+                    $('#order_type').val() === 'TABLE') {
+                    return;
+                }
+
+                var names = [];
+
+                try {
+                    names = JSON.parse(
+                        localStorage.getItem('customer_name_history') || '[]'
+                    );
+                } catch (e) {
+                    names = [];
+                }
+
+                names = names.filter(function(item) {
+                    return item !== name;
+                });
+
+                names.unshift(name);
+                names = names.slice(0, 100);
+
+                localStorage.setItem(
+                    'customer_name_history',
+                    JSON.stringify(names)
+                );
+            }
+
+            // Chỉ hiện gợi ý khi nhập ký tự
+            
+            var selectedCustomerIndex = -1;
+
+            // Gõ chữ để tìm tên khách
+            $('#customer_name')
+                .off('.nameHistory')
+                .on('input.nameHistory', function() {
+                    selectedCustomerIndex = -1;
+                    loadCustomerNameHistory($(this).val());
+                })
+
+                // Dùng phím lên, xuống và Enter
+                .on('keydown.nameHistory', function(e) {
+                    var $items = $('#customer_name_suggestions .customer-suggestion');
+
+                    if (!$items.length ||
+                        !$('#customer_name_suggestions').is(':visible')) {
+                        return;
+                    }
+
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        selectedCustomerIndex =
+                            Math.min(selectedCustomerIndex + 1, $items.length - 1);
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        selectedCustomerIndex =
+                            Math.max(selectedCustomerIndex - 1, 0);
+                    } else if (e.key === 'Enter' && selectedCustomerIndex >= 0) {
+                        e.preventDefault();
+
+                        $('#customer_name')
+                            .val($items.eq(selectedCustomerIndex).text());
+
+                        $('#customer_name_suggestions').hide().empty();
+                        selectedCustomerIndex = -1;
+                        return;
+                    } else if (e.key === 'Escape') {
+                        $('#customer_name_suggestions').hide();
+                        selectedCustomerIndex = -1;
+                        return;
+                    } else {
+                        return;
+                    }
+
+                    $items.removeClass('active');
+                    $items.eq(selectedCustomerIndex).addClass('active');
+
+                    // Giữ mục đang chọn trong vùng nhìn thấy
+                    if (selectedCustomerIndex >= 0) {
+                        $items[selectedCustomerIndex].scrollIntoView({
+                            block: 'nearest'
+                        });
+                    }
+                });
+
+
+            // Bấm ra ngoài thì đóng danh sách
+            $(document).on('mousedown.nameHistory', function(e) {
+                if (!$(e.target).closest(
+                    '#customer_name, #customer_name_suggestions'
+                ).length) {
+                    $('#customer_name_suggestions').hide();
+                }
+            });
+
+
             $('#mname').keyup(function(){
                 $(this).val($(this).val().toUpperCase());
             });
@@ -3416,6 +3595,7 @@ var lang = {
                         $('#staff_note').val(localStorage.getItem('staffnote'));
                         $('#delivery_method').val(localStorage.getItem('pos_delivery'));
                         $('#submit-sale').text('<?=lang('loading');?>').attr('disabled', true);
+                        saveCustomerNameHistory();
                         $('#pos-sale-form').submit();
                     }
                 });
@@ -3425,6 +3605,7 @@ var lang = {
                 $('#staff_note').val(localStorage.getItem('staffnote'));
                 $('#delivery_method').val(localStorage.getItem('pos_delivery'));
                 $(this).text('<?=lang('loading');?>').attr('disabled', true);
+                saveCustomerNameHistory();
                 $('#pos-sale-form').submit();
             }
         });
