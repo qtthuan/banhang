@@ -1487,7 +1487,7 @@ function loadItems() {
             } else {
                 tr_html += '<td class="text-right"><span class="text-right ssubtotal" id="subtotal_' + row_no + '">' + formatMoney(((parseFloat(item_price) + parseFloat(pr_tax_val)) * parseFloat(item_qty))) + '</span></td>';
             }
-            tr_html += '<td class="text-center"><i class="fa fa-times fa-2x tip pointer posdel" id="' + row_no + '" title="Xóa" style="cursor:pointer;"></i></td>';
+            tr_html += '<td class="text-center"><i class="fa fa-times fa-3x tip pointer posdel" id="' + row_no + '" title="Xóa" style="cursor:pointer;"></i></td>';
             newTr.html(tr_html);
             if (pos_settings.item_order == 1) {
                 newTr.appendTo("#posTable");

@@ -250,7 +250,7 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                                 <input name="sale_language" type="hidden" value="0" id="sale_language">
                                     <div class="input-group-addon no-print" style="padding: 2px 16px; border-left: 0;">
                                         <a href="#" id="toogle-customer-read-attr" class="external pos-tip" title="<?=lang('customer_selection')?>">
-                                            <i class="fa fa-pencil" id="addIcon" style="font-size: 1.7em;"></i>
+                                            <i class="fa fa-pencil fa-2x" id="addIcon" style="font-size: 1.7em;"></i>
                                         </a>
                                     </div>
                                     <div class="input-group-addon no-print" style="padding: 2px 15px; border-left: 0;">

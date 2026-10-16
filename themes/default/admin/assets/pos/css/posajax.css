@@ -1054,7 +1054,7 @@ body:before, body:after {
 
 /* Ô chọn khách hàng phía trên */
 #poscustomer + .select2-container .select2-selection--single {
-    height: 40px !important;
+    height: 46px !important;
 }
 
 #poscustomer + .select2-container .select2-selection__rendered {
@@ -1066,7 +1066,7 @@ body:before, body:after {
 .customer-name-box .form-control,
 .customer-type-wrapper input.form-control,
 #reference_note {
-    min-height: 40px;
+    min-height: 46px;
     font-size: 14px;
     padding: 8px 12px;
     box-sizing: border-box;
@@ -1074,7 +1074,7 @@ body:before, body:after {
 
 /* Nút MANG ĐI và BÀN */
 .customer-type-btn {
-    min-height: 40px !important;
+    min-height: 46px !important;
     font-size: 14px !important;
     font-weight: 600;
     padding: 8px 12px !important;
@@ -1085,7 +1085,7 @@ body:before, body:after {
 #toogle-customer-read-attr,
 #view-customer,
 #add-customer {
-    min-height: 40px;
+    min-height: 46px;
 }
 
 .customer-type-wrapper .input-group-addon i,
@@ -1098,9 +1098,5 @@ body:before, body:after {
 /* Nút dấu cộng ở ô ghi chú */
 #add_item + .input-group-addon,
 #add_item ~ .input-group-addon {
-    min-height: 40px;
-}
-
-#add_item ~ .input-group-addon i {
-    font-size: 22px !important;
+    min-height: 46px;
 }
