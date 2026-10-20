@@ -943,6 +943,29 @@ class Pos extends MY_Controller
             } else {
                 $customer = $customer_details->company != '-'  ? $customer_details->company : $customer_details->name;
             }
+
+            
+            /* Loại đơn và bàn được chọn trên POS */
+            $order_type = $this->input->post('order_type', TRUE);
+            $table_id = (int) $this->input->post('table_id');
+
+            if ($order_type === 'TABLE' && $table_id > 0) {
+                // Chỉ chấp nhận bàn thực sự tồn tại
+                $valid_table = $this->db
+                    ->where('id', $table_id)
+                    ->get('tables')
+                    ->row();
+
+                if (!$valid_table) {
+                    $order_type = 'TAKEAWAY';
+                    $table_id = NULL;
+                }
+            } else {
+                $order_type = 'TAKEAWAY';
+                $table_id = NULL;
+            }
+
+
             if ($this->Owner && $warehouse_id == $mini_warehouse_id) { // Neu dang nhap bang tai khoan qtthuan(admin) va ban tiem nuoc mini
                 $biller_id = 7283;
             }
@@ -1133,6 +1156,8 @@ class Pos extends MY_Controller
                           'customer_id'       => $customer_id,
                           'sale_language'     => $sale_language,
                           'customer'          => $customer,
+                          'order_type'        => $order_type,
+                          'table_id'          => $table_id,
                           'biller_id'         => $biller_id,
                           'biller'            => $biller,
                           'warehouse_id'      => $warehouse_id,
@@ -1156,7 +1181,10 @@ class Pos extends MY_Controller
                           'payment_status'    => $payment_status,
                           'payment_term'      => $payment_term,
                           'rounding'          => $rounding,
-                          'suspend_note'      => $this->input->post('suspend_note'),
+                          'suspend_note' => mb_strtoupper(
+                                                trim((string) $this->input->post('suspend_note')),
+                                                'UTF-8'
+                                            ),
                           'pos'               => 1,
                           'is_ingredient'     => ($warehouse_id == $mini_warehouse_id && $is_ingredient > 0) ? 1 : 0,
                           'paid'              => $this->input->post('amount-paid') ? $this->input->post('amount-paid') : 0,

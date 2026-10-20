@@ -1374,7 +1374,7 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
             <div class="modal-body">
 
                 <div class="form-group">
-                    <?= form_input('reference_note', (!empty($reference_note) ? $reference_note : ''), 'class="form-control kb-text" placeholder="' . $this->lang->line("reference_note").'" id="reference_note"'); ?>
+                    <?= form_input('reference_note', (!empty($reference_note) ? $reference_note : ''), 'class="form-control kb-text" placeholder="' . $this->lang->line("reference_note").'" style="text-transform: uppercase;" id="reference_note"'); ?>
                 </div>
 
             </div>
@@ -1579,12 +1579,15 @@ var lang = {
         // ID bàn
         $('#table_id').val(tableId);
 
-        // Tên bàn đưa vào textbox
-        $('#customer_name').val(tableName);
-
         // Lưu lại
         localStorage.setItem('order_type', 'TABLE');
         localStorage.setItem('table_id', tableId);
+
+        $('#btn_ban').text(tableName);
+        $('#btn_ban').addClass('active');
+        $('#btn_mang_di').removeClass('active');
+
+        localStorage.setItem('table_name', tableName);  
 
         // Đóng modal
         $('#tableModal').modal('hide');
@@ -1602,68 +1605,99 @@ var lang = {
         ===================================================== */
 
         // Chọn MANG ĐI
-        $('#btn_mang_di').on('click', function () {
+        
+        
+        $('#btn_mang_di').off('click').on('click', function () {
+            $('#btn_mang_di').addClass('active');
+            $('#btn_ban').removeClass('active').text('BÀN');
+            localStorage.removeItem('table_name');
 
-            $('#btn_ban').removeClass('active');
-            $(this).addClass('active');
+            $('#order_type').val('TAKEAWAY');
+            $('#table_id').val('');
 
-            $('#customer_name').val('MANG ĐI');
+            localStorage.setItem('order_type', 'TAKEAWAY');
+            localStorage.removeItem('table_id');
+            localStorage.removeItem('table_name');
+
+            // Không thay đổi tên khách lẻ
         });
+
+
 
 
         // Chọn BÀN
-        $('#btn_ban').on('click', function () {
-
-            // Sáng nút BÀN
+        
+        $('#btn_ban').off('click').on('click', function () {
+            $('#btn_ban').addClass('active');
             $('#btn_mang_di').removeClass('active');
-            $(this).addClass('active');
 
-            // Mở modal
+            // Hiện tên bàn đã chọn trước đó
+            var savedTableName = localStorage.getItem('table_name');
+
+            if (savedTableName) {
+                $(this).text(savedTableName);
+            } else {
+                $(this).text('BÀN');
+            }
+
+            // Lưu trạng thái chọn bàn
+            $('#order_type').val('TABLE');
+            localStorage.setItem('order_type', 'TABLE');
+
+            // Giữ bàn đã chọn trước đó nếu có
+            var savedTableId = localStorage.getItem('table_id');
+
+            if (savedTableId) {
+                $('#table_id').val(savedTableId);
+            } else {
+                $('#table_id').val('');
+            }
+
             $('#tableModal').modal('show');
-
-            // Lấy danh sách bàn
             loadTableList();
         });
+
 
         /* =====================================================
         KHÔI PHỤC MANG ĐI / BÀN
         ===================================================== */
 
+        
         var savedOrderType = localStorage.getItem('order_type');
         var savedTableId = localStorage.getItem('table_id');
 
         if (savedOrderType === 'TAKEAWAY') {
-
             $('#order_type').val('TAKEAWAY');
             $('#table_id').val('');
 
             $('#btn_mang_di').addClass('active');
-            $('#btn_ban').removeClass('active');
-
-            $('#customer_name').val('MANG ĐI');
+            $('#btn_ban').removeClass('active').text('BÀN');
 
         } else if (savedOrderType === 'TABLE' && savedTableId) {
-
             $('#order_type').val('TABLE');
             $('#table_id').val(savedTableId);
 
             $('#btn_mang_di').removeClass('active');
-            $('#btn_ban').addClass('active');
+            var savedTableName = localStorage.getItem('table_name');
 
-            // Lấy lại tên bàn từ DB thay vì lưu customer_name
-            $.ajax({
-                type: 'GET',
-                url: "<?=admin_url('pos/getTableById');?>/" + savedTableId,
-                dataType: 'json',
-                success: function (data) {
+            $('#btn_ban').addClass('active').text(
+                savedTableName || 'BÀN'
+            );
 
-                    if (data && data.success) {
-                        $('#customer_name').val(data.table.table_name);
-                    }
+        } else {
+            // Chưa có lựa chọn thì mặc định MANG ĐI
+            $('#order_type').val('TAKEAWAY');
+            $('#table_id').val('');
 
-                }
-            });
+            localStorage.setItem('order_type', 'TAKEAWAY');
+            localStorage.removeItem('table_id');
+
+            $('#btn_mang_di').addClass('active');
+            $('#btn_ban').removeClass('active').text('BÀN');
         }
+
+        // Không gọi AJAX để đưa tên bàn vào #customer_name
+
 
 
         $('textarea').keydown(function (e) {
@@ -1720,6 +1754,15 @@ var lang = {
         if (localStorage.getItem('table_id')) {
             localStorage.removeItem('table_id');
         }
+
+        localStorage.removeItem('table_name');
+
+        // Đưa nút về trạng thái ban đầu
+        $('#btn_mang_di').addClass('active');
+        $('#btn_ban').removeClass('active').text('BÀN');
+
+        $('#order_type').val('TAKEAWAY');
+        $('#table_id').val('');
         if (localStorage.getItem('posbiller')) {
             localStorage.removeItem('posbiller');
         }
@@ -1746,6 +1789,100 @@ var lang = {
         localStorage.setItem('poscustomer', '<?=$suspend_sale->customer_id;?>');
         localStorage.setItem('customer_name', '<?=$suspend_sale->customer;?>');
         $('#customer_name').val(localStorage.getItem('customer_name'));
+        
+        var suspendedOrderType = <?= json_encode(
+            !empty($suspend_sale->order_type)
+                ? $suspend_sale->order_type
+                : 'TAKEAWAY'
+        ) ?>;
+
+        var suspendedTableId = <?= json_encode(
+            !empty($suspend_sale->table_id)
+                ? (string) $suspend_sale->table_id
+                : ''
+        ) ?>;
+
+        // Khôi phục loại đơn và bàn từ đơn tạm trong database
+        $('#order_type').val(suspendedOrderType);
+        $('#table_id').val(suspendedTableId);
+
+        localStorage.setItem('order_type', suspendedOrderType);
+
+        if (suspendedTableId) {
+            localStorage.setItem('table_id', suspendedTableId);
+        } else {
+            localStorage.removeItem('table_id');
+        }
+
+        // Cập nhật giao diện theo đơn tạm vừa gọi lại
+        
+        if (suspendedOrderType === 'TABLE' && suspendedTableId) {
+
+            // Khôi phục đúng loại đơn và mã bàn
+            $('#order_type').val('TABLE');
+            $('#table_id').val(suspendedTableId);
+
+            $('#btn_mang_di').removeClass('active');
+            $('#btn_ban').addClass('active').text('ĐANG TẢI...');
+
+            // Lấy tên bàn theo ID từ database
+            
+            $.ajax({
+                type: 'GET',
+                url: "<?=admin_url('pos/getTables');?>",
+                dataType: 'json',
+
+                success: function (data) {
+                    if (!data || !data.success || !data.tables) {
+                        $('#btn_ban').text('BÀN');
+                        console.error('Không tải được danh sách bàn.');
+                        return;
+                    }
+
+                    // Tìm đúng bàn theo table_id của đơn tạm
+                    var selectedTable = data.tables.find(function (table) {
+                        return String(table.id) === String(suspendedTableId);
+                    });
+
+                    if (selectedTable) {
+                        var tableName = selectedTable.table_name;
+
+                        $('#btn_ban')
+                            .addClass('active')
+                            .text(tableName);
+
+                        $('#btn_mang_di').removeClass('active');
+
+                        localStorage.setItem('order_type', 'TABLE');
+                        localStorage.setItem('table_id', suspendedTableId);
+                        localStorage.setItem('table_name', tableName);
+                    } else {
+                        $('#btn_ban').text('BÀN');
+                        console.error('Không tìm thấy bàn ID:', suspendedTableId);
+                    }
+                },
+
+                error: function (xhr) {
+                    $('#btn_ban').text('BÀN');
+                    console.error('Lỗi tải danh sách bàn:', xhr.status);
+                }
+            });
+
+
+        } else {
+
+            $('#order_type').val('TAKEAWAY');
+            $('#table_id').val('');
+
+            $('#btn_mang_di').addClass('active');
+            $('#btn_ban').removeClass('active').text('BÀN');
+
+            localStorage.setItem('order_type', 'TAKEAWAY');
+            localStorage.removeItem('table_id');
+            localStorage.removeItem('table_name');
+        }
+
+
         $()
         localStorage.setItem('posbiller', '<?=$suspend_sale->biller_id;?>');
         localStorage.setItem('posshipping', '<?=$suspend_sale->shipping;?>');
@@ -3630,9 +3767,22 @@ var lang = {
                 suspend.html('<input type="hidden" name="suspend" value="yes" /><input type="hidden" name="suspend_note" value="' + ref + '" />');
                 <?php }
                 ?>
+                
                 suspend.appendTo("#hidesuspend");
                 $('#total_items').val(count - 1);
+
+                // Lưu đúng loại đơn và bàn đã chọn trước khi gửi form
+                $('#order_type').val(
+                    localStorage.getItem('order_type') || 'TAKEAWAY'
+                );
+
+                $('#table_id').val(
+                    localStorage.getItem('table_id') || ''
+                );
+
+                // Gửi dữ liệu lưu tạm lên server
                 $('#pos-sale-form').submit();
+
 
             }
         });

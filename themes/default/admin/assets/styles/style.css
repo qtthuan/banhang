@@ -2452,7 +2452,7 @@ animation: blink 1s steps(2, start) infinite;
 }
 
 .table-select-btn {
-    min-height: 60px;
+    min-height: 72px;
     padding: 8px 5px;
     border: 1px solid #ccc;
     background: #f8f8f8;

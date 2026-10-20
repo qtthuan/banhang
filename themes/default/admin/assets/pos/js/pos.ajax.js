@@ -295,7 +295,7 @@ if (localStorage.getItem('positems')) {
                                 }
                                 if (localStorage.getItem('poscustomer')) {
                                     localStorage.removeItem('poscustomer');
-                                }
+                                }                                
                                 if (localStorage.getItem('poscurrency')) {
                                     localStorage.removeItem('poscurrency');
                                 }
@@ -352,6 +352,18 @@ if (localStorage.getItem('positems')) {
                     if (localStorage.getItem('poscustomer')) {
                         localStorage.removeItem('poscustomer');
                     }
+                    if (localStorage.getItem('customer_name')) {
+                        localStorage.removeItem('customer_name');
+                    }
+                    if (localStorage.getItem('order_type')) {
+                        localStorage.removeItem('order_type');
+                    }
+
+                    if (localStorage.getItem('table_id')) {
+                        localStorage.removeItem('table_id');
+                    }
+
+                    localStorage.removeItem('table_name');
                     if (localStorage.getItem('poscurrency')) {
                         localStorage.removeItem('poscurrency');
                     }

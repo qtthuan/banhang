@@ -1100,3 +1100,19 @@ body:before, body:after {
 #add_item ~ .input-group-addon {
     min-height: 46px;
 }
+
+/* Trạng thái chọn MANG ĐI / TÊN BÀN */
+.customer-type-btn {
+    transition: background-color .15s ease, color .15s ease;
+}
+
+.customer-type-btn.active {
+    background: #428bca !important;
+    color: #fff !important;
+    border-color: #357ebd !important;
+}
+
+.customer-type-btn:not(.active) {
+    background: #fff;
+    color: #333;
+}

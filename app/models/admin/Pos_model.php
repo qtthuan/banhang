@@ -1402,6 +1402,13 @@ class Pos_model extends CI_Model
             'customer_id' => $data['customer_id'],
             'warehouse_id' => $data['warehouse_id'],
             'customer' => $data['customer'],
+            'order_type' => isset($data['order_type'])
+                ? $data['order_type']
+                : 'TAKEAWAY',
+
+            'table_id' => !empty($data['table_id'])
+                ? (int) $data['table_id']
+                : NULL,
             'date' => $data['date'],
             'suspend_note' => $data['suspend_note'],
             'total' => $data['grand_total'],
