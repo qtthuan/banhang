@@ -3746,61 +3746,145 @@ var lang = {
                 $('#pos-sale-form').submit();
             }
         });
-        $('#suspend').click(function () {
+        $('#suspend').off('click').on('click', function () {
             if (count <= 1) {
                 bootbox.alert('<?=lang('x_suspend');?>');
                 return false;
-            } else {
-                $('#susModal').modal();
             }
-        });
-        $('#suspend_sale').click(function () {
-            ref = $('#reference_note').val();
-            if (!ref || ref == '') {
-                bootbox.alert('<?=lang('type_reference_note');?>');
-                return false;
+
+            // Lấy tên khách đã nhập
+            var customerName = $.trim($('#customer_name').val() || '');
+
+            // Lấy loại đơn và bàn đã chọn
+            var orderType = localStorage.getItem('order_type') || '';
+            var tableId = localStorage.getItem('table_id') || '';
+            var tableName = localStorage.getItem('table_name') || '';
+
+            // Ưu tiên tên khách, tiếp theo là tên bàn, cuối cùng là Mang đi
+            var suspendNote = '';
+
+            if (customerName !== '') {
+                suspendNote = customerName;
+            } else if (orderType === 'TABLE') {
+                suspendNote = tableName || 'BÀN';
+            } else if (orderType === 'TAKEAWAY') {
+                suspendNote = 'MANG ĐI';
             } else {
-                suspend = $('<span></span>');
-                <?php if ($sid) {?>
-                suspend.html('<input type="hidden" name="delete_id" value="<?php echo $sid; ?>" /><input type="hidden" name="suspend" value="yes" /><input type="hidden" name="suspend_note" value="' + ref + '" />');
-                <?php } else {?>
-                suspend.html('<input type="hidden" name="suspend" value="yes" /><input type="hidden" name="suspend_note" value="' + ref + '" />');
-                <?php }
-                ?>
-                
-                suspend.appendTo("#hidesuspend");
-                $('#total_items').val(count - 1);
-
-                // Lưu đúng loại đơn và bàn đã chọn trước khi gửi form
-                $('#order_type').val(
-                    localStorage.getItem('order_type') || 'TAKEAWAY'
-                );
-
-                $('#table_id').val(
-                    localStorage.getItem('table_id') || ''
-                );
-
-                // Gửi dữ liệu lưu tạm lên server
-                $('#pos-sale-form').submit();
-
-
+                suspendNote = 'ĐƠN TẠM';
             }
+
+            suspendNote = suspendNote.toLocaleUpperCase('vi-VN');
+
+            // Tạo các trường ẩn để gửi lên server
+            $('#hidesuspend').empty();
+
+            var $hiddenFields = $('<span></span>');
+
+            <?php if ($sid) { ?>
+            $('<input>', {
+                type: 'hidden',
+                name: 'delete_id',
+                value: '<?= (int)$sid ?>'
+            }).appendTo($hiddenFields);
+            <?php } ?>
+
+            $('<input>', {
+                type: 'hidden',
+                name: 'suspend',
+                value: 'yes'
+            }).appendTo($hiddenFields);
+
+            $('<input>', {
+                type: 'hidden',
+                name: 'suspend_note',
+                value: suspendNote
+            }).appendTo($hiddenFields);
+
+            // Gửi loại đơn và ID bàn
+            $('#order_type').val(orderType);
+            $('#table_id').val(tableId);
+
+            $hiddenFields.appendTo('#hidesuspend');
+
+            $('#total_items').val(count - 1);
+
+            // Đồng bộ ghi chú và dữ liệu hiện tại
+            $('#pos_note').val(localStorage.getItem('posnote') || '');
+            $('#staff_note').val(localStorage.getItem('staffnote') || '');
+            $('#delivery_method').val(localStorage.getItem('pos_delivery') || 'Shop');
+
+            saveCustomerNameHistory();
+
+            // Hiện thông báo rồi tự động lưu
+            $('#suspendSuccessNote').text(suspendNote);
+
+            $('#suspendSuccessToast')
+                .stop(true, true)
+                .fadeIn(200)
+                .delay(650)
+                .fadeOut(250, function () {
+                    $('#pos-sale-form').submit();
+                });
+
+            // Tránh bấm liên tục khi đang xử lý
+            $('#suspend').prop('disabled', true);
+
+            return false;
         });
     });
  
     $(document).ready(function () {
 
+        function updateCustomerTypeButtons() {
+            var warehouseId = parseInt($('#poswarehouse').val(), 10);
+            var miniWarehouseId = parseInt(window.APP_CONFIG.MINI_WAREHOUSE_ID, 10);
+
+            if (warehouseId === miniWarehouseId) {
+                $('.customer-type-buttons').show();
+            } else {
+                $('.customer-type-buttons').hide();
+
+                // Xóa loại đơn và bàn cũ để không lưu nhầm đơn Bani
+                $('#order_type').val('');
+                $('#table_id').val('');
+
+                localStorage.removeItem('order_type');
+                localStorage.removeItem('table_id');
+                localStorage.removeItem('table_name');
+            }
+        }
+
         $('#poswarehouse').change(function () {
-            var v = $(this).val();
-            if (v != 3) {
+            var warehouseId = parseInt($(this).val(), 10);
+
+            updateCustomerTypeButtons();
+
+            if (warehouseId !== parseInt(window.APP_CONFIG.MINI_WAREHOUSE_ID, 10)) {
                 closeMini();
-                //console.log('222');
             } else {
                 openMini();
-                //console.log('1111');
             }
-
         });
+
+        // Cập nhật ngay khi mở POS
+        updateCustomerTypeButtons();
+
+        $("#poscustomer").change();
+
+        if (parseInt(localStorage.getItem('poswarehouse'), 10) !==
+            parseInt(window.APP_CONFIG.MINI_WAREHOUSE_ID, 10)) {
+            closeMini();
+        } else {
+            openMini();
+        }
+
+        if ($("#poswarehouse").is(":hidden") &&
+            parseInt($("#poswarehouse").val(), 10) ===
+            parseInt(window.APP_CONFIG.MINI_WAREHOUSE_ID, 10)) {
+            openMini();
+        }
+
+        // Giữ nguyên các đoạn xử lý khác bên dưới tại đây
         $("#poscustomer").change();
         if (localStorage.getItem('poswarehouse') != 3) {
             closeMini();
@@ -5971,5 +6055,45 @@ $('#orderListModal').on(
 );
 
 </script>
+<style>
+#suspendSuccessToast {
+    display: none;
+    position: fixed;
+    top: 35%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999999;
+    min-width: 320px;
+    max-width: 90%;
+    padding: 22px 30px;
+    background: rgba(255, 255, 255, 0.97);
+    border: 1px solid #d9eadc;
+    border-radius: 10px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+#suspendSuccessToast .toast-title {
+    color: #258746;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#suspendSuccessToast .toast-note {
+    margin-top: 10px;
+    color: #444;
+    font-size: 17px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+</style>
+
+<div id="suspendSuccessToast">
+    <div class="toast-title">
+        <i class="fa fa-check-circle"></i>
+        LƯU HÓA ĐƠN TẠM THÀNH CÔNG
+    </div>
+    <div class="toast-note" id="suspendSuccessNote"></div>
+</div>
 </body>
 </html>

@@ -141,14 +141,73 @@
                 echo "<p>";
                 ?>
             <?php
-                $bank_customer_info = 'Thanh toan ' . $inv->reference_no . ' tiem nuoc Mini';  
-                if ($inv->warehouse_id != 3 || ($inv->warehouse_id == 3 && $inv->customer != 'KHÁCH LẺ')) { 
-                    $bank_customer_info = $inv->customer . " chuyen khoan " . $inv->reference_no;  
-                ?>
-                <!--Nếu kho Ba-Ni hoặc (Tiệm Nước Mini và Có nhập tên) => Hiện Tên Khách-->
-                    <?=lang("customer") . ': <strong>' .  $inv->customer?></strong><span style="color:red; font-size: 13px; margin-left: 15px;" class="no-print"><a href="#" id="view-customer" class="external pos-tip" title="<?=lang('customers_info');?>" data-toggle="modal" data-target="#myModal2"><i class="fa fa-bars" id="addIcon" style="font-size: 1.7em;"></i></a></span>
+                $warehouse_id = (int)$inv->warehouse_id;
+
+                if ($warehouse_id === (int)$this->config->item('bani_warehouse_id')) {
+                    $store_name = 'BANI';
+                } else {
+                    $store_name = 'tiem nuoc Mini';
+                }
+
+                $bank_customer_info = 'Thanh toan ' . $inv->reference_no . ' ' . $store_name;
+                
+            
+                $display_customer = $inv->customer;
+                $show_customer_icon = true;
+
+                // Ưu tiên tên khách thật nếu có nhập
+                if (!empty($inv->customer) && mb_strtoupper(trim($inv->customer), 'UTF-8') != 'KHÁCH LẺ') {
+                    $display_customer = $inv->customer;
+                    $bank_customer_info = $inv->customer . ' thanh toan ' . $inv->reference_no;
+                } elseif (!empty($inv->order_type) && $inv->order_type == 'TABLE' && !empty($inv->table_id)) {
+                    // Lấy tên bàn theo table_id
+                    $table = $this->db
+                        ->select('table_name')
+                        ->where('id', (int)$inv->table_id)
+                        ->get('tables')
+                        ->row();
+
+                    $display_customer = $table ? $table->table_name : 'BÀN';
+                    $show_customer_icon = false;
+                } elseif (!empty($inv->order_type) && $inv->order_type == 'TAKEAWAY') {
+                    $display_customer = 'MANG ĐI';
+                    $show_customer_icon = false;
+                }
+
+                $mini_warehouse_id = $this->config->item('mini_warehouse_id');
+                $bani_warehouse_id = $this->config->item('bani_warehouse_id');
+
+                if ((int)$inv->warehouse_id === (int)$mini_warehouse_id) {
+            ?>
+                <?= lang("customer") . ': <strong>' . html_escape($display_customer) . '</strong>' ?>
+
+                <?php if ($show_customer_icon) { ?>
+                    <span style="color:red; font-size:13px; margin-left:15px;" class="no-print">
+                        <a href="#" id="view-customer" class="external pos-tip"
+                        title="<?= lang('customers_info'); ?>"
+                        data-toggle="modal" data-target="#myModal2">
+                            <i class="fa fa-bars" id="addIcon" style="font-size:1.7em;"></i>
+                        </a>
+                    </span>
+                <?php } ?>
+
+                <br>
+            <?php } else { ?>
+                <?= lang("customer") . ': <strong>' . html_escape($inv->customer) . '</strong>' ?>
+
+                <?php if ($show_customer_icon) { ?>
+                    <span style="color:red; font-size:13px; margin-left:15px;" class="no-print">
+                        <a href="#" id="view-customer" class="external pos-tip"
+                        title="<?= lang('customers_info'); ?>"
+                        data-toggle="modal" data-target="#myModal2">
+                            <i class="fa fa-bars" id="addIcon" style="font-size:1.7em;"></i>
+                        </a>
+                    </span>
+                <?php } ?>
+
                 <br>
             <?php } ?>
+
                 <?=$customer->customer_group_percent != 0 ?  lang("customers_group_txt") . ': <strong>' . $customer->customer_group_name . '</strong><br>' : ''?>
 
                 <?php

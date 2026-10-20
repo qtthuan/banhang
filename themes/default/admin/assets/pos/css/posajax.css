@@ -1116,3 +1116,38 @@ body:before, body:after {
     background: #fff;
     color: #333;
 }
+
+/* Khi ẩn nút MANG ĐI / BÀN, ô tên khách giãn hết chiều ngang */
+.customer-type-wrapper {
+    display: flex;
+    width: 100%;
+    gap: 0;
+}
+
+.customer-name-box {
+    flex: 1;
+    min-width: 0;
+}
+
+.customer-name-box input {
+    width: 100% !important;
+    box-sizing: border-box;
+}
+
+.customer-type-buttons {
+    display: flex;
+    flex: 1;
+}
+
+.customer-type-buttons button {
+    flex: 1;
+}
+
+.customer-type-wrapper.no-order-type .customer-name-box {
+    flex: 1 1 100%;
+    width: 100%;
+}
+
+.customer-type-wrapper.no-order-type .customer-type-buttons {
+    display: none !important;
+}
