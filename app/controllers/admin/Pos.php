@@ -300,7 +300,25 @@ class Pos extends MY_Controller
         $this->load->library('datatables');
         if ($warehouse_id) {
             $this->datatables
-                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no, customer, p.paid_by, (grand_total+COALESCE(rounding, 0)), actual_shipping, w.name, companies.email as cemail")
+                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no, 
+                CASE
+                    WHEN ".$this->db->dbprefix('sales').".order_type = 'TAKEAWAY'
+                        THEN 'MANG ĐI'
+
+                    WHEN ".$this->db->dbprefix('sales').".order_type = 'TABLE'
+                        THEN COALESCE(
+                            (
+                                SELECT t.table_name
+                                FROM ".$this->db->dbprefix('tables')." AS t
+                                WHERE t.id = ".$this->db->dbprefix('sales').".table_id
+                                LIMIT 1
+                            ),
+                            'BÀN'
+                        )
+
+                    ELSE ".$this->db->dbprefix('sales').".customer
+                END AS customer
+                , p.paid_by, (grand_total+COALESCE(rounding, 0)), actual_shipping, w.name, companies.email as cemail")
                 ->from('sales')
                 ->join('companies', 'companies.id=sales.customer_id', 'left')
                 ->join('warehouses w', 'w.id = sales.warehouse_id', 'left')
@@ -317,7 +335,25 @@ class Pos extends MY_Controller
                 ->group_by('sales.id');
         } else {
             $this->datatables
-                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no as reference_no, customer, p.paid_by, (grand_total+COALESCE(rounding, 0)), actual_shipping, w.name, companies.email as cemail")
+                ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no as reference_no, 
+                CASE
+                    WHEN ".$this->db->dbprefix('sales').".order_type = 'TAKEAWAY'
+                        THEN 'MANG ĐI'
+
+                    WHEN ".$this->db->dbprefix('sales').".order_type = 'TABLE'
+                        THEN COALESCE(
+                            (
+                                SELECT t.table_name
+                                FROM ".$this->db->dbprefix('tables')." AS t
+                                WHERE t.id = ".$this->db->dbprefix('sales').".table_id
+                                LIMIT 1
+                            ),
+                            'BÀN'
+                        )
+
+                    ELSE ".$this->db->dbprefix('sales').".customer
+                END AS customer
+                , p.paid_by, (grand_total+COALESCE(rounding, 0)), actual_shipping, w.name, companies.email as cemail")
                 ->from('sales')
                 ->join('warehouses w', 'w.id = sales.warehouse_id', 'left')
                 ->join('companies', 'companies.id=sales.customer_id', 'left')     
