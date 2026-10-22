@@ -314,9 +314,9 @@ class Pos extends MY_Controller
                     WHEN ".$this->db->dbprefix('sales').".order_type = 'TABLE'
                         THEN COALESCE(
                             (
-                                SELECT t.table_name
-                                FROM ".$this->db->dbprefix('tables')." AS t
-                                WHERE t.id = ".$this->db->dbprefix('sales').".table_id
+                                SELECT ".$this->db->dbprefix('tables').".table_name
+                                FROM ".$this->db->dbprefix('tables')."
+                                WHERE ".$this->db->dbprefix('tables').".id = ".$this->db->dbprefix('sales').".table_id
                                 LIMIT 1
                             ),
                             'BÀN'
@@ -356,9 +356,9 @@ class Pos extends MY_Controller
                     WHEN ".$this->db->dbprefix('sales').".order_type = 'TABLE'
                         THEN COALESCE(
                             (
-                                SELECT t.table_name
-                                FROM ".$this->db->dbprefix('tables')." AS t
-                                WHERE t.id = ".$this->db->dbprefix('sales').".table_id
+                                SELECT ".$this->db->dbprefix('tables').".table_name
+                                FROM ".$this->db->dbprefix('tables')." 
+                                WHERE ".$this->db->dbprefix('tables').".id = ".$this->db->dbprefix('sales').".table_id
                                 LIMIT 1
                             ),
                             'BÀN'
