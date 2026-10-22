@@ -301,7 +301,13 @@ class Pos extends MY_Controller
         if ($warehouse_id) {
             $this->datatables
                 ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no, 
+                
                 CASE
+                    WHEN ".$this->db->dbprefix('sales').".order_type = 'TAKEAWAY'
+                        AND TRIM(".$this->db->dbprefix('sales').".customer) != ''
+                        AND UPPER(TRIM(".$this->db->dbprefix('sales').".customer)) NOT IN ('KHÁCH LẺ', 'KHACH LE')
+                        THEN ".$this->db->dbprefix('sales').".customer
+
                     WHEN ".$this->db->dbprefix('sales').".order_type = 'TAKEAWAY'
                         THEN 'MANG ĐI'
 
@@ -318,6 +324,7 @@ class Pos extends MY_Controller
 
                     ELSE ".$this->db->dbprefix('sales').".customer
                 END AS customer
+
                 , p.paid_by, (grand_total+COALESCE(rounding, 0)), actual_shipping, w.name, companies.email as cemail")
                 ->from('sales')
                 ->join('companies', 'companies.id=sales.customer_id', 'left')
@@ -336,7 +343,13 @@ class Pos extends MY_Controller
         } else {
             $this->datatables
                 ->select($this->db->dbprefix('sales') . ".id as id, DATE_FORMAT(" . $this->db->dbprefix('sales') . ".date, '%Y-%m-%d %T') as date," . $this->db->dbprefix('sales') . ".reference_no as reference_no, 
+                
                 CASE
+                    WHEN ".$this->db->dbprefix('sales').".order_type = 'TAKEAWAY'
+                        AND TRIM(".$this->db->dbprefix('sales').".customer) != ''
+                        AND UPPER(TRIM(".$this->db->dbprefix('sales').".customer)) NOT IN ('KHÁCH LẺ', 'KHACH LE')
+                        THEN ".$this->db->dbprefix('sales').".customer
+
                     WHEN ".$this->db->dbprefix('sales').".order_type = 'TAKEAWAY'
                         THEN 'MANG ĐI'
 
@@ -353,6 +366,7 @@ class Pos extends MY_Controller
 
                     ELSE ".$this->db->dbprefix('sales').".customer
                 END AS customer
+
                 , p.paid_by, (grand_total+COALESCE(rounding, 0)), actual_shipping, w.name, companies.email as cemail")
                 ->from('sales')
                 ->join('warehouses w', 'w.id = sales.warehouse_id', 'left')
@@ -462,10 +476,35 @@ class Pos extends MY_Controller
         // LẤY DANH SÁCH ĐƠN
         // ==================================================
 
+        
         $this->db->select(
-            'id, date, customer, grand_total,
-            payment_status, reference_no, warehouse_id'
+            "id, date,
+            CASE
+                WHEN order_type = 'TAKEAWAY'
+                    AND TRIM(customer) != ''
+                    AND UPPER(TRIM(customer)) NOT IN ('KHÁCH LẺ', 'KHACH LE')
+                    THEN customer
+
+                WHEN order_type = 'TAKEAWAY'
+                    THEN 'MANG ĐI'
+
+                WHEN order_type = 'TABLE'
+                    THEN COALESCE(
+                        (
+                            SELECT t.table_name
+                            FROM ".$this->db->dbprefix('tables')." AS t
+                            WHERE t.id = ".$this->db->dbprefix('sales').".table_id
+                            LIMIT 1
+                        ),
+                        'BÀN'
+                    )
+
+                ELSE customer
+            END AS customer,
+            grand_total, payment_status, reference_no, warehouse_id",
+            FALSE
         );
+
 
         $this->db->from('sales');
 
@@ -981,11 +1020,20 @@ class Pos extends MY_Controller
             }
 
             
+            
             /* Loại đơn và bàn được chọn trên POS */
+            $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id');
+            $bani_warehouse_id = (int) $this->config->item('bani_warehouse_id');
+
             $order_type = $this->input->post('order_type', TRUE);
             $table_id = (int) $this->input->post('table_id');
 
-            if ($order_type === 'TABLE' && $table_id > 0) {
+            if ((int) $warehouse_id === $bani_warehouse_id) {
+                // Kho Ba-Ni bán quần áo, không sử dụng loại đơn TAKEAWAY/BÀN
+                $order_type = NULL;
+                $table_id = NULL;
+
+            } elseif ($order_type === 'TABLE' && $table_id > 0) {
                 // Chỉ chấp nhận bàn thực sự tồn tại
                 $valid_table = $this->db
                     ->where('id', $table_id)
@@ -996,10 +1044,29 @@ class Pos extends MY_Controller
                     $order_type = 'TAKEAWAY';
                     $table_id = NULL;
                 }
+
             } else {
+                // Kho Mini: không chọn bàn thì mặc định MANG ĐI
                 $order_type = 'TAKEAWAY';
                 $table_id = NULL;
             }
+
+
+            // if ($order_type === 'TABLE' && $table_id > 0) {
+            //     // Chỉ chấp nhận bàn thực sự tồn tại
+            //     $valid_table = $this->db
+            //         ->where('id', $table_id)
+            //         ->get('tables')
+            //         ->row();
+
+            //     if (!$valid_table) {
+            //         $order_type = 'TAKEAWAY';
+            //         $table_id = NULL;
+            //     }
+            // } else {
+            //     $order_type = 'TAKEAWAY';
+            //     $table_id = NULL;
+            // }
 
 
             if ($this->Owner && $warehouse_id == $mini_warehouse_id) { // Neu dang nhap bang tai khoan qtthuan(admin) va ban tiem nuoc mini
