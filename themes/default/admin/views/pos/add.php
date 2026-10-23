@@ -278,7 +278,7 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                                         <?php echo form_input(
                                             'customer_name',
                                             '',
-                                            'class="form-control customer_name" id="customer_name" data-placement="top" placeholder="' . $this->lang->line("enter_customer_name") . '" title="" autocomplete="on"'
+                                            'class="form-control customer_name" id="customer_name" data-placement="top" placeholder="' . $this->lang->line("enter_customer_name") . '" title="" autocomplete="off"'
                                         ); ?>
                                         
                                         <div id="customer_name_suggestions"
