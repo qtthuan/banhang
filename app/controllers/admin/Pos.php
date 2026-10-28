@@ -760,81 +760,84 @@ class Pos extends MY_Controller
         ]);
     }
 
+    
     public function changeOrderTable()
     {
-        $sale_id = (int) $this->input->post('sale_id');
-
+        $sale_id  = (int) $this->input->post('sale_id');
         $table_id = (int) $this->input->post('table_id');
 
+        $bani_warehouse_id = (int) $this->config->item('bani_warehouse_id');
 
         if (!$sale_id || !$table_id) {
-
             echo json_encode([
                 'status'  => false,
                 'message' => 'Thiếu thông tin đơn hàng hoặc bàn.'
             ]);
-
             return;
         }
 
+        // Lấy đơn hàng
+        $sale = $this->db
+            ->where('id', $sale_id)
+            ->where('pos', 1)
+            ->get('sales')
+            ->row();
 
-        /*
-        * Lấy bàn
-        */
+        if (!$sale) {
+            echo json_encode([
+                'status'  => false,
+                'message' => 'Không tìm thấy đơn hàng.'
+            ]);
+            return;
+        }
+
+        // Không cho gán bàn ở kho Ba-Ni
+        if ((int) $sale->warehouse_id === $bani_warehouse_id) {
+            echo json_encode([
+                'status'  => false,
+                'message' => 'Kho Ba-Ni không sử dụng chức năng gán bàn.'
+            ]);
+            return;
+        }
+
+        // Kiểm tra bàn
         $table = $this->db
             ->where('id', $table_id)
             ->get('tables')
             ->row();
 
-
         if (!$table) {
-
             echo json_encode([
                 'status'  => false,
                 'message' => 'Không tìm thấy bàn.'
             ]);
-
             return;
         }
 
-
-        /*
-        * Cập nhật customer trong sales
-        *
-        * Ví dụ:
-        * BÀN 3
-        * BÀN CAO 2
-        * BÀN MINI 1
-        */
-
+        // Chỉ cập nhật loại đơn và mã bàn, KHÔNG sửa customer
         $this->db
             ->where('id', $sale_id)
-            ->update(
-                'sales',
-                [
-                    'customer' => $table->table_name
-                ]
-            );
+            ->update('sales', [
+                'order_type' => 'TABLE',
+                'table_id'   => $table->id
+            ]);
 
-
-        if ($this->db->affected_rows() === false) {
-
+        if ($this->db->affected_rows() < 0) {
             echo json_encode([
                 'status'  => false,
                 'message' => 'Không thể cập nhật bàn.'
             ]);
-
             return;
         }
 
-
         echo json_encode([
-            'status'    => true,
-            'customer'  => $table->table_name,
-            'table_id'  => $table->id,
-            'csrf_hash' => $this->security->get_csrf_hash()
+            'status'      => true,
+            'table_id'    => (int) $table->id,
+            'table_name'  => $table->table_name,
+            'csrf_hash'   => $this->security->get_csrf_hash()
         ]);
     }
+
 
     public function get_customer_info($id)
     {

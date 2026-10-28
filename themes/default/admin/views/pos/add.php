@@ -73,7 +73,6 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                     <i class="fa fa-th"></i>
                     <span class="suspend_list_title">ĐƠN TẠM</span>
                 </a>
-
             </div>
             <div class="header-nav">
                 
@@ -4350,6 +4349,8 @@ if (isset($print) && !empty($print)) {
     </div>
 
 </div>
+
+
 <script type="text/javascript">
 
 /* =========================================================
@@ -4660,7 +4661,8 @@ function loadTodayOrders(
 /* =========================================================
    RENDER 16 ĐƠN
 ========================================================= */
-
+var BANI_WAREHOUSE_ID =
+    <?= (int) $this->config->item('bani_warehouse_id') ?>;
 function renderTodayOrders(orders) {
 
     var html = '';
@@ -4857,22 +4859,25 @@ function renderTodayOrders(orders) {
 
         /* GÁN / ĐỔI BÀN */
 
-        /* GÁN / ĐỔI BÀN */
-
 html +=
 
-    '<div class="order-card-actions">' +
+    '<div class="order-card-actions">';
 
-        '<button ' +
-            'type="button" ' +
-            'class="order-table-button change-order-table" ' +
-            'data-sale-id="' + saleId + '">' +
+        
+        /* GÁN / ĐỔI BÀN: chỉ hiện ở kho không phải Ba-Ni */
 
-                '<i class="fa fa-cutlery"></i> ' +
-                'GÁN / ĐỔI BÀN' +
-
-            '</button>' +
-
+        if (parseInt(order.warehouse_id, 10) !== BANI_WAREHOUSE_ID) {
+            html +=
+                '<button ' +
+                    'type="button" ' +
+                    'class="order-table-button change-order-table" ' +
+                    'data-sale-id="' + saleId + '">' +
+                    '<i class="fa fa-cutlery"></i> ' +
+                    'GÁN / ĐỔI BÀN' +
+                '</button>';
+        }
+ 
+html +=
 
             '<a ' +
             'class="order-print-button" ' +
@@ -5894,9 +5899,8 @@ $(document).on(
                 /* Đổi ngay tên trên card */
 
                 $('.order-customer-' + saleId)
-                    .text(
-                        data.customer
-                    );
+                .text(data.table_name)
+                .attr('title', data.table_name);
 
 
                 /* Đóng modal */
