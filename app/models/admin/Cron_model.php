@@ -96,13 +96,6 @@ class Cron_model extends CI_Model
 
         $this->deleteExpiredCustomers();
 
-        $deletedMiniCashSales = $this->deleteMiniCashSalesDaily();
-
-        if ($deletedMiniCashSales > 0) {
-            $m .= '<p>Đã xóa ' . $deletedMiniCashSales
-                . ' hóa đơn tiền mặt kho Mini.</p>';
-        }
-
         // Xóa sản phẩm ko có nơi sản xuất theo nhóm hàng
         //$this->deleteProductTemp(4);
 
@@ -161,100 +154,6 @@ class Cron_model extends CI_Model
             }
         }
         return $success;
-    }
-
-    
-    /**
-     * Xóa hóa đơn tiền mặt của kho Mini theo ngày chốt.
-     * Ghi log trước khi xóa; nếu xóa thất bại thì bỏ log đó.
-     */
-    public function deleteMiniCashSalesDaily()
-    {
-        // Đổi tên key này nếu config của bạn dùng tên khác.
-        $miniWarehouseId = (int) $this->config->item('mini_warehouse_id');
-
-        if ($miniWarehouseId <= 0) {
-            log_message('error', 'Mini warehouse ID chưa được cấu hình.');
-            return 0;
-        }
-
-        // Dùng ngày hôm nay nếu cron chạy trước 00:00.
-        $targetDate = date('Y-m-d');
-        $startDate = $targetDate . ' 00:00:00';
-        $endDate = date('Y-m-d 00:00:00', strtotime($targetDate . ' +1 day'));
-
-        $this->db->select("
-            s.id,
-            s.date AS sale_date,
-            s.customer AS customer_name,
-            s.grand_total,
-            s.warehouse_id,
-            COALESCE(SUM(si.quantity), 0) AS quantity
-        ", false);
-
-        $this->db->from('sales s');
-        $this->db->join('sale_items si', 'si.sale_id = s.id', 'left');
-
-        $this->db->where('s.warehouse_id', $miniWarehouseId);
-        $this->db->where('s.date >=', $startDate);
-        $this->db->where('s.date <', $endDate);
-        $this->db->where("s.sale_status !=", 'returned');
-
-        // Phải có ít nhất một khoản thanh toán bằng tiền mặt.
-        $this->db->where("
-            EXISTS (
-                SELECT 1
-                FROM {$this->db->dbprefix('payments')} p
-                WHERE p.sale_id = s.id
-                AND p.paid_by = 'cash'
-            )
-        ", null, false);
-
-        // Không xóa hóa đơn có thêm phương thức thanh toán khác tiền mặt.
-        $this->db->where("
-            NOT EXISTS (
-                SELECT 1
-                FROM {$this->db->dbprefix('payments')} p2
-                WHERE p2.sale_id = s.id
-                AND p2.paid_by <> 'cash'
-            )
-        ", null, false);
-
-        $this->db->group_by('s.id');
-        $sales = $this->db->get()->result();
-        exit('DEBUG Mini cash sales found: ' . count($sales));
-
-        $deleted = 0;
-
-        foreach ($sales as $sale) {
-            $logData = array(
-                'sale_id'      => $sale->id,
-                'deleted_at'   => date('Y-m-d H:i:s'),
-                'sale_date'    => $sale->sale_date,
-                'customer_name'=> $sale->customer_name,
-                'quantity'     => $sale->quantity,
-                'grand_total'  => $sale->grand_total,
-                'warehouse_id' => $sale->warehouse_id,
-            );
-
-            // Ghi lại thông tin trước khi xóa hóa đơn.
-            if (!$this->db->insert('sale_logs', $logData)) {
-                log_message('error', 'Không ghi được sale_logs cho sale ID ' . $sale->id);
-                continue;
-            }
-
-            $logId = $this->db->insert_id();
-
-            if ($this->sales_model->deleteSale($sale->id)) {
-                $deleted++;
-            } else {
-                // Xóa thất bại thì không giữ log như thể đã xóa thành công.
-                $this->db->delete('sale_logs', array('id' => $logId));
-                log_message('error', 'Không xóa được sale ID ' . $sale->id);
-            }
-        }
-
-        return $deleted;
     }
 
 
