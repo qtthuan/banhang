@@ -3759,17 +3759,27 @@ var lang = {
             var tableId = localStorage.getItem('table_id') || '';
             var tableName = localStorage.getItem('table_name') || '';
 
-            // Ưu tiên tên khách, tiếp theo là tên bàn, cuối cùng là Mang đi
+            // Ưu tiên tên bàn trước tên khách
             var suspendNote = '';
 
-            if (customerName !== '') {
+            if (orderType === 'TABLE' && tableId !== '') {
+
+                suspendNote = tableName || $.trim($('#btn_ban').text()) || 'BÀN';
+
+            } else if (
+                customerName !== '' &&
+                customerName.toLocaleUpperCase('vi-VN') !== 'KHÁCH LẺ'
+            ) {
+
                 suspendNote = customerName;
-            } else if (orderType === 'TABLE') {
-                suspendNote = tableName || 'BÀN';
+
             } else if (orderType === 'TAKEAWAY') {
+
                 suspendNote = 'MANG ĐI';
+
             } else {
-                suspendNote = 'ĐƠN TẠM';
+
+                suspendNote = 'KHÁCH LẺ';
             }
 
             suspendNote = suspendNote.toLocaleUpperCase('vi-VN');
@@ -3820,7 +3830,7 @@ var lang = {
             $('#suspendSuccessToast')
                 .stop(true, true)
                 .fadeIn(200)
-                .delay(650)
+                .delay(950)
                 .fadeOut(250, function () {
                     $('#pos-sale-form').submit();
                 });
@@ -6063,15 +6073,15 @@ $('#orderListModal').on(
 #suspendSuccessToast {
     display: none;
     position: fixed;
-    top: 35%;
-    left: 50%;
+    top: 27%;
+    left: 48%;
     transform: translateX(-50%);
     z-index: 999999;
     min-width: 320px;
     max-width: 90%;
     padding: 22px 30px;
     background: rgba(255, 255, 255, 0.97);
-    border: 1px solid #d9eadc;
+    border: 2px solid #213d25;
     border-radius: 10px;
     box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
     text-align: center;
@@ -6085,8 +6095,8 @@ $('#orderListModal').on(
 
 #suspendSuccessToast .toast-note {
     margin-top: 10px;
-    color: #444;
-    font-size: 17px;
+    color: #fc0000;
+    font-size: 20px;
     font-weight: bold;
     overflow-wrap: anywhere;
 }

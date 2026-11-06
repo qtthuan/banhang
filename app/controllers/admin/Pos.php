@@ -1054,23 +1054,23 @@ class Pos extends MY_Controller
                 $table_id = NULL;
             }
 
+            // Xác định tên hiển thị của đơn tạm
+            $suspend_note = trim(
+                (string) $this->input->post('suspend_note')
+            );
 
-            // if ($order_type === 'TABLE' && $table_id > 0) {
-            //     // Chỉ chấp nhận bàn thực sự tồn tại
-            //     $valid_table = $this->db
-            //         ->where('id', $table_id)
-            //         ->get('tables')
-            //         ->row();
+            if ($suspend && $order_type === 'TABLE' && $table_id > 0) {
 
-            //     if (!$valid_table) {
-            //         $order_type = 'TAKEAWAY';
-            //         $table_id = NULL;
-            //     }
-            // } else {
-            //     $order_type = 'TAKEAWAY';
-            //     $table_id = NULL;
-            // }
+                $table = $this->db
+                    ->select('table_name')
+                    ->where('id', $table_id)
+                    ->get('tables')
+                    ->row();
 
+                if ($table) {
+                    $suspend_note = $table->table_name;
+                }
+            }
 
             if ($this->Owner && $warehouse_id == $mini_warehouse_id) { // Neu dang nhap bang tai khoan qtthuan(admin) va ban tiem nuoc mini
                 $biller_id = 7283;
@@ -1288,7 +1288,7 @@ class Pos extends MY_Controller
                           'payment_term'      => $payment_term,
                           'rounding'          => $rounding,
                           'suspend_note' => mb_strtoupper(
-                                                trim((string) $this->input->post('suspend_note')),
+                                                trim($suspend_note),
                                                 'UTF-8'
                                             ),
                           'pos'               => 1,
@@ -1603,7 +1603,6 @@ class Pos extends MY_Controller
             //$this->load->view($this->theme . 'pos/add', $this->data);
             if ($this->agent->is_mobile()) {
                 // Mobile view (BS5)
-                //$this->sma->print_arrays($this->data);
                 $this->data['products'] = $this->pos_model->getAllMiniProducts();
                 $this->load->view($this->theme . 'pos/pos_mobile', $this->data);
             } else {
