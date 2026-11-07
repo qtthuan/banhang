@@ -72,6 +72,7 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                 >
                     <i class="fa fa-th"></i>
                     <span class="suspend_list_title">ĐƠN TẠM</span>
+                    <span class="pos-header-count pos-header-count-suspended" id="suspended_order_count">0</span>
                 </a>
             </div>
             <div class="header-nav">
@@ -4381,6 +4382,68 @@ var orderSwipeStartY = 0;
 /* =========================================================
    MỞ DANH SÁCH ĐƠN
 ========================================================= */
+
+/* =========================================================
+   BADGE SỐ LƯỢNG ĐƠN HÀNG / ĐƠN TẠM
+========================================================= */
+
+function refreshPosHeaderCounts() {
+
+    $.ajax({
+        type: 'GET',
+
+        url: "<?=admin_url('pos/getPosHeaderCounts');?>",
+
+        data: {
+            warehouse_id: $('#poswarehouse').val() || ''
+        },
+
+        dataType: 'json',
+
+        cache: false,
+
+        success: function (data) {
+
+            if (!data || !data.status) {
+                return;
+            }
+
+            $('#suspended_order_count').text(
+                parseInt(data.suspended_orders, 10) || 0
+            );
+
+        }
+    });
+
+}
+
+
+$(document).ready(function () {
+
+    // Cập nhật ngay khi mở POS
+    refreshPosHeaderCounts();
+
+    // Cập nhật định kỳ 30 giây
+    window.posHeaderCountTimer = window.setInterval(
+        refreshPosHeaderCounts,
+        30000
+    );
+
+    // Đổi kho thì cập nhật lại
+    $(document).on(
+        'change',
+        '#poswarehouse',
+        refreshPosHeaderCounts
+    );
+
+    // Bấm Đơn tạm thì cập nhật lại
+    $(document).on(
+        'click',
+        '#opened_bills',
+        refreshPosHeaderCounts
+    );
+
+});
 
 $(document).on('click', '#btn_order_list', function (e) {
 

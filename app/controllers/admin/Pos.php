@@ -387,6 +387,91 @@ class Pos extends MY_Controller
         echo $this->datatables->generate();
     }
 
+    /**
+     * Đếm đơn hàng trong ngày và đơn tạm
+     */
+    public function getPosHeaderCounts()
+    {
+        $this->sma->checkPermissions('index');
+
+        $today = date('Y-m-d');
+
+        $user = $this->site->getUser();
+
+        $userWarehouseId = (
+            $user && isset($user->warehouse_id)
+        ) ? (int) $user->warehouse_id : 0;
+
+        $filterWarehouseId = NULL;
+
+        if ($userWarehouseId > 0) {
+
+            $filterWarehouseId = $userWarehouseId;
+
+        } else {
+
+            $selectedWarehouse = $this->input->get('warehouse_id');
+
+            if (
+                $selectedWarehouse !== NULL &&
+                $selectedWarehouse !== ''
+            ) {
+
+                $selectedWarehouse = (int) $selectedWarehouse;
+
+                $miniWarehouseId = (int)
+                    $this->config->item('mini_warehouse_id');
+
+                $baniWarehouseId = (int)
+                    $this->config->item('bani_warehouse_id');
+
+                if (in_array(
+                    $selectedWarehouse,
+                    array($miniWarehouseId, $baniWarehouseId),
+                    TRUE
+                )) {
+                    $filterWarehouseId = $selectedWarehouse;
+                }
+            }
+        }
+
+        // Đếm đơn hàng trong ngày
+        $this->db->from('sales');
+
+        $this->db->where(
+            'DATE(date) = ' . $this->db->escape($today),
+            NULL,
+            FALSE
+        );
+
+        $this->db->where('pos', 1);
+        $this->db->where('is_ingredient', 0);
+
+        if ($filterWarehouseId !== NULL) {
+            $this->db->where(
+                'warehouse_id',
+                $filterWarehouseId
+            );
+        }
+
+        $todayOrders = (int) $this->db->count_all_results();
+
+        // Đếm đơn tạm theo quyền tài khoản
+        $suspendedOrders = (int)
+            $this->pos_model->bills_count();
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode(array(
+
+                'status' => true,
+
+                'today_orders' => $todayOrders,
+
+                'suspended_orders' => $suspendedOrders
+
+            )));
+    }
     
     public function getTodayOrders()
     {
@@ -2277,10 +2362,76 @@ class Pos extends MY_Controller
         $bills = $this->pos_model->fetch_bills($config['per_page'], $per_page);
         if (!empty($bills)) {
             $html = "";
-            $html .= '<ul class="ob">';
+            $html .= '<ul class="ob pos-suspended-grid">';
+
             foreach ($bills as $bill) {
-                $html .= '<li><button type="button" class="btn btn-info sus_sale" id="' . $bill->id . '"><p>' . $bill->suspend_note . '</p><strong>' . $bill->customer . '</strong><br>'.lang('date').': ' . $bill->date . '<br>'.lang('items').': ' . $bill->count . '<br>'.lang('total').': ' . $this->sma->formatMoney($bill->total) . '</button></li>';
+
+                $note = html_escape(
+                    isset($bill->suspend_note)
+                    ? $bill->suspend_note : ''
+                );
+
+                $customer = html_escape(
+                    isset($bill->customer)
+                    ? $bill->customer : ''
+                );
+
+                $date = html_escape(
+                    isset($bill->date)
+                    ? $bill->date : ''
+                );
+
+                $itemCount = (int) (
+                    isset($bill->count)
+                    ? $bill->count : 0
+                );
+
+                $total = $this->sma->formatMoney(
+                    isset($bill->total)
+                    ? $bill->total : 0
+                );
+
+                $html .= '<li class="pos-suspended-item">';
+
+                $html .= '<button type="button"
+                    class="btn btn-info sus_sale pos-suspended-card"
+                    id="' . (int) $bill->id . '">';
+
+                $html .= '<span class="pos-suspended-card-top">';
+
+                $html .= '<span class="pos-suspended-note">'
+                    . ($note !== '' ? $note : 'ĐƠN TẠM')
+                    . '</span>';
+
+                $html .= '<span class="pos-suspended-id">'
+                    . '#' . (int) $bill->id
+                    . '</span>';
+
+                $html .= '</span>';
+
+                $html .= '<span class="pos-suspended-meta">
+                    <i class="fa fa-clock-o"></i> '
+                    . $date .
+                '</span>';
+
+                $html .= '<span class="pos-suspended-bottom">';
+
+                $html .= '<span class="pos-suspended-items">
+                    <i class="fa fa-cube"></i> '
+                    . $itemCount . ' món
+                </span>';
+
+                $html .= '<strong class="pos-suspended-total">'
+                    . $total .
+                '</strong>';
+
+                $html .= '</span>';
+
+                $html .= '</button>';
+
+                $html .= '</li>';
             }
+
             $html .= '</ul>';
         } else {
             $html = "<h3>" . lang('no_opeded_bill') . "</h3><p>&nbsp;</p>";

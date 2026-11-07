@@ -1152,3 +1152,235 @@ body:before, body:after {
     display: none !important;
 }
 
+/* =========================================================
+   BADGE SỐ LƯỢNG TRÊN HEADER POS
+========================================================= */
+
+#header .header-left .order-header-button {
+    position: relative;
+}
+
+#header .pos-header-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+    margin-left: 5px;
+
+    border: 2px solid #fff;
+    border-radius: 999px;
+
+    background: #e53935;
+    color: #fff;
+
+    font-size: 11px;
+    line-height: 1;
+    font-weight: 800;
+
+    box-shadow: 0 1px 4px rgba(0,0,0,.22);
+}
+
+#header .pos-header-count-suspended {
+    background: #d93025;
+}
+
+
+/* =========================================================
+   DANH SÁCH ĐƠN TẠM
+========================================================= */
+
+ul.ob.pos-suspended-grid {
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(auto-fill, minmax(265px, 1fr));
+
+    gap: 12px;
+
+    margin: 0 !important;
+    padding: 4px !important;
+
+    list-style: none !important;
+}
+
+ul.ob.pos-suspended-grid > li.pos-suspended-item {
+    float: none !important;
+
+    width: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    list-style: none !important;
+}
+
+
+/* CARD */
+
+.pos-suspended-card {
+    display: flex !important;
+    flex-direction: column;
+
+    width: 100% !important;
+    min-height: 145px;
+
+    padding: 14px 15px 11px !important;
+
+    border: 1px solid #456078 !important;
+    border-left: 4px solid #3988cf !important;
+
+    border-radius: 9px !important;
+
+    background: linear-gradient(
+        145deg,
+        #fff 0%,
+        #f7fbff 100%
+    ) !important;
+
+    color: #344054 !important;
+
+    text-align: left !important;
+    white-space: normal !important;
+
+    box-shadow: 0 2px 7px rgba(30,65,100,.09);
+
+    transition:
+        transform .16s ease,
+        box-shadow .16s ease,
+        border-color .16s ease;
+}
+
+.pos-suspended-card:hover,
+.pos-suspended-card:focus {
+    border-color: #3988cf !important;
+
+    background: #fff !important;
+    color: #344054 !important;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 7px 18px rgba(30,65,100,.16);
+
+    outline: none;
+}
+
+
+/* HEADER CARD */
+
+.pos-suspended-card-top,
+.pos-suspended-bottom {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 8px;
+    width: 100%;
+}
+
+.pos-suspended-note {
+    overflow: hidden;
+
+    color: #2d3748;
+
+    font-size: 15px;
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pos-suspended-id {
+    flex: 0 0 auto;
+
+    color: #3988cf;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* THÔNG TIN KHÁCH */
+
+.pos-suspended-customer {
+    display: block;
+
+    margin-top: 9px;
+
+    color: #667085;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.pos-suspended-meta {
+    display: block;
+
+    margin-top: 8px;
+
+    color: #8993a3;
+
+    font-size: 12px;
+}
+
+
+/* TỔNG TIỀN */
+
+.pos-suspended-bottom {
+    margin-top: 10px;
+
+    padding-top: 8px;
+
+    border-top: 1px solid #367ccd;
+}
+
+.pos-suspended-items {
+    color: #667085;
+
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.pos-suspended-total {
+    color: #87401f;
+
+    font-size: 22px;
+    font-weight: 800;
+
+    letter-spacing: -.3px;
+}
+
+
+/* GỢI Ý THAO TÁC */
+
+.pos-suspended-hint {
+    display: block;
+
+    margin-top: 8px;
+
+    color: #3988cf;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    text-align: right;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+
+    ul.ob.pos-suspended-grid {
+        grid-template-columns: 1fr;
+        gap: 9px;
+    }
+
+    .pos-suspended-card {
+        min-height: 160px;
+    }
+
+}
