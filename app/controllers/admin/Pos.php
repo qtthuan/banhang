@@ -2339,7 +2339,7 @@ class Pos extends MY_Controller
 
         $config['base_url'] = admin_url('pos/opened_bills');
         $config['total_rows'] = $this->pos_model->bills_count();
-        $config['per_page'] = 6;
+        $config['per_page'] = 16;
         $config['num_links'] = 3;
 
         $config['full_tag_open'] = '<ul class="pagination pagination-sm">';

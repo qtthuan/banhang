@@ -1224,13 +1224,13 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
     display: flex !important;
     flex-direction: column;
 
-    width: 100% !important;
+    width: 96% !important;
     min-height: 145px;
 
     padding: 14px 15px 11px !important;
 
-    border: 1px solid #456078 !important;
-    border-left: 4px solid #3988cf !important;
+    border: 1px solid #33495d !important;
+    border-left: 4px solid #0d7fe3 !important;
 
     border-radius: 9px !important;
 
@@ -1284,7 +1284,7 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
 .pos-suspended-note {
     overflow: hidden;
 
-    color: #2d3748;
+    color: #002aff;
 
     font-size: 15px;
     font-weight: 800;
@@ -1321,9 +1321,9 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
 
     margin-top: 8px;
 
-    color: #8993a3;
+    color: #060606;
 
-    font-size: 12px;
+    font-size: 13px;
 }
 
 
@@ -1340,7 +1340,7 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
 .pos-suspended-items {
     color: #667085;
 
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 600;
 }
 
@@ -1383,4 +1383,127 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
         min-height: 160px;
     }
 
+}
+
+/* =========================================================
+   MODAL ĐƠN TẠM - MỞ RỘNG 4 CỘT X 4 HÀNG
+========================================================= */
+
+/* Mở rộng khung modal */
+.modal-dialog:has(ul.ob.pos-suspended-grid) {
+    width: 96vw !important;
+    max-width: 1600px !important;
+    margin: 1vh auto !important;
+}
+
+/* Giới hạn chiều cao modal */
+.modal-dialog:has(ul.ob.pos-suspended-grid) .modal-content {
+    max-height: 97vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Phần danh sách có thể cuộn */
+.modal-dialog:has(ul.ob.pos-suspended-grid) .modal-body {
+    max-height: calc(97vh - 65px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 15px !important;
+}
+
+/* Cố định đúng 4 cột */
+ul.ob.pos-suspended-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+}
+
+/* Card vừa vặn trong 4 cột */
+.pos-suspended-card {
+    min-height: 120px !important;
+    width: 100% !important;
+}
+
+/* Màn hình nhỏ hơn */
+@media (max-width: 1100px) {
+
+    ul.ob.pos-suspended-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+
+}
+
+@media (max-width: 750px) {
+
+    ul.ob.pos-suspended-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    ul.ob.pos-suspended-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+}
+
+
+/* ==========================================
+   HEADER MODAL HÓA ĐƠN TẠM
+========================================== */
+
+.modal-dialog:has(.pos-suspended-grid) .modal-content {
+    border-radius: 12px !important;
+    overflow: hidden;
+}
+
+.modal-dialog:has(.pos-suspended-grid) .modal-header {
+    position: relative;
+    min-height: 54px;
+    padding: 14px 60px !important;
+    text-align: center !important;
+    border-bottom: 1px solid #eee;
+    background: #fff;
+}
+
+.modal-dialog:has(.pos-suspended-grid) .modal-title {
+    float: none !important;
+    margin: 0 !important;
+    text-align: center !important;
+    color: #d94444 !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    line-height: 26px;
+}
+
+/* Nút đóng tròn xanh */
+.modal-dialog:has(.pos-suspended-grid) .modal-header .close {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    width: 34px;
+    height: 34px;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0;
+    border-radius: 50%;
+    background: #198754 !important;
+    color: #fff !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+    font-size: 25px;
+    line-height: 34px;
+    text-align: center;
+    z-index: 2;
+}
+
+.modal-dialog:has(.pos-suspended-grid) .modal-header .close:hover {
+    background: #146c43 !important;
+}
+
+/* Giữ thao tác vuốt ngang và cuộn dọc */
+.modal-dialog:has(.pos-suspended-grid) .modal-body {
+    touch-action: pan-y;
 }
