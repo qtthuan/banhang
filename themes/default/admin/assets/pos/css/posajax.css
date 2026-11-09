@@ -1165,8 +1165,8 @@ body:before, body:after {
     align-items: center;
     justify-content: center;
 
-    min-width: 19px;
-    height: 19px;
+    min-width: 28px;
+    height: 28px;
     padding: 0 5px;
     margin-left: 5px;
 
@@ -1176,7 +1176,7 @@ body:before, body:after {
     background: #e53935;
     color: #fff;
 
-    font-size: 11px;
+    font-size: 16px;
     line-height: 1;
     font-weight: 800;
 
@@ -1229,8 +1229,8 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
 
     padding: 14px 15px 11px !important;
 
-    border: 1px solid #33495d !important;
-    border-left: 4px solid #0d7fe3 !important;
+    border: 2px solid #33495d !important;
+    border-left: 6px solid #0e5b9f  !important;
 
     border-radius: 9px !important;
 
@@ -1286,7 +1286,7 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
 
     color: #002aff;
 
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 800;
 
     text-overflow: ellipsis;
@@ -1297,8 +1297,8 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
     flex: 0 0 auto;
 
     color: #3988cf;
-
-    font-size: 12px;
+    margin-right: 32px;
+    font-size: 16px;
     font-weight: 700;
 }
 
@@ -1323,7 +1323,7 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
 
     color: #060606;
 
-    font-size: 13px;
+    font-size: 15px;
 }
 
 
@@ -1332,7 +1332,7 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
 .pos-suspended-bottom {
     margin-top: 10px;
 
-    padding-top: 8px;
+    padding-top: 15px;
 
     border-top: 1px solid #367ccd;
 }
@@ -1340,14 +1340,14 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
 .pos-suspended-items {
     color: #667085;
 
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 600;
 }
 
 .pos-suspended-total {
     color: #87401f;
 
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 800;
 
     letter-spacing: -.3px;
@@ -1420,7 +1420,7 @@ ul.ob.pos-suspended-grid {
 
 /* Card vừa vặn trong 4 cột */
 .pos-suspended-card {
-    min-height: 120px !important;
+    min-height: 145x !important;
     width: 100% !important;
 }
 
@@ -1464,8 +1464,9 @@ ul.ob.pos-suspended-grid {
     min-height: 54px;
     padding: 14px 60px !important;
     text-align: center !important;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #211d1d;
     background: #fff;
+    margin-bottom: 10px;
 }
 
 .modal-dialog:has(.pos-suspended-grid) .modal-title {
@@ -1473,9 +1474,9 @@ ul.ob.pos-suspended-grid {
     margin: 0 !important;
     text-align: center !important;
     color: #d94444 !important;
-    font-size: 18px !important;
+    font-size: 20px !important;
     font-weight: 700 !important;
-    line-height: 26px;
+    line-height: 22px;
 }
 
 /* Nút đóng tròn xanh */
@@ -1506,4 +1507,45 @@ ul.ob.pos-suspended-grid {
 /* Giữ thao tác vuốt ngang và cuộn dọc */
 .modal-dialog:has(.pos-suspended-grid) .modal-body {
     touch-action: pan-y;
+}
+
+/* NÚT XÓA ĐƠN TẠM */
+ul.ob.pos-suspended-grid > li.pos-suspended-item {
+    position: relative !important;
+    overflow: visible !important;
+}
+
+.pos-suspended-card {
+    width: 100% !important;
+}
+
+.pos-suspended-delete {
+    position: absolute !important;
+    top: 8px !important;
+    right: 8px !important;
+    bottom: auto !important;
+    left: auto !important;
+    z-index: 10 !important;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    width: 36px;
+    height: 36px;
+    padding: 0 !important;
+
+    border: 1px solid #f2b8b8 !important;
+    border-radius: 50% !important;
+
+    background: #fff0f0 !important;
+    color: #dc2626 !important;
+    font-size: 18px;
+
+    cursor: pointer;
+}
+
+.pos-suspended-delete:hover {
+    background: #dc2626 !important;
+    color: #fff !important;
 }

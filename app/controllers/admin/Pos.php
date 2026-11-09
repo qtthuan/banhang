@@ -2339,6 +2339,7 @@ class Pos extends MY_Controller
 
         $config['base_url'] = admin_url('pos/opened_bills');
         $config['total_rows'] = $this->pos_model->bills_count();
+        $data['total_bills'] = (int) $config['total_rows'];
         $config['per_page'] = 16;
         $config['num_links'] = 3;
 
@@ -2429,6 +2430,15 @@ class Pos extends MY_Controller
 
                 $html .= '</button>';
 
+                // NÚT XÓA ĐƠN TẠM
+                $html .= '<button type="button"
+                    class="pos-suspended-delete delete-suspended-bill"
+                    data-id="' . (int) $bill->id . '"
+                    title="Xóa đơn tạm #' . (int) $bill->id . '"
+                    aria-label="Xóa đơn tạm #' . (int) $bill->id . '">
+                    <i class="fa fa-trash"></i>
+                </button>';
+
                 $html .= '</li>';
             }
 
@@ -2444,6 +2454,149 @@ class Pos extends MY_Controller
         echo $this->load->view($this->theme . 'pos/opened', $data, TRUE);
 
     }
+
+    
+    /**
+     * XÓA MỘT ĐƠN TẠM
+     */
+    public function delete_suspended_bill()
+    {
+        $this->sma->checkPermissions('index');
+
+        $id = (int) $this->input->post('id');
+
+        if ($id <= 0) {
+            $this->sma->send_json(array(
+                'status' => FALSE,
+                'message' => 'Mã đơn tạm không hợp lệ.',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            ));
+            return;
+        }
+
+        // Kiểm tra đơn có tồn tại và có quyền xóa không
+        $this->db->from('suspended_bills');
+        $this->db->where('id', $id);
+
+        if (!$this->Owner && !$this->Admin) {
+            $this->db->where(
+                'created_by',
+                $this->session->userdata('user_id')
+            );
+        }
+
+        $bill = $this->db->get()->row();
+
+        if (!$bill) {
+            $this->sma->send_json(array(
+                'status' => FALSE,
+                'message' => 'Không tìm thấy đơn hoặc không có quyền xóa.',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            ));
+            return;
+        }
+
+        $this->db->trans_begin();
+
+        // Xóa chi tiết món trước
+        $this->db->delete(
+            'suspended_items',
+            array('suspend_id' => $id)
+        );
+
+        // Sau đó xóa đơn tạm
+        $this->db->delete(
+            'suspended_bills',
+            array('id' => $id)
+        );
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+
+            $this->sma->send_json(array(
+                'status' => FALSE,
+                'message' => 'Xóa đơn tạm thất bại.',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            ));
+            return;
+        }
+
+        $this->db->trans_commit();
+
+        $this->sma->send_json(array(
+            'status' => TRUE,
+            'message' => 'Đã xóa đơn tạm.',
+            'csrf_hash' => $this->security->get_csrf_hash()
+        ));
+    }
+
+
+    /**
+     * XÓA TẤT CẢ ĐƠN TẠM TRONG PHẠM VI ĐƯỢC PHÉP
+     */
+    public function delete_all_suspended_bills()
+    {
+        $this->sma->checkPermissions('index');
+
+        $this->db->select('id');
+        $this->db->from('suspended_bills');
+
+        if (!$this->Owner && !$this->Admin) {
+            $this->db->where(
+                'created_by',
+                $this->session->userdata('user_id')
+            );
+        }
+
+        $rows = $this->db->get()->result();
+
+        $ids = array();
+
+        foreach ($rows as $row) {
+            $ids[] = (int) $row->id;
+        }
+
+        if (empty($ids)) {
+            $this->sma->send_json(array(
+                'status' => TRUE,
+                'deleted' => 0,
+                'message' => 'Không có đơn tạm để xóa.',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            ));
+            return;
+        }
+
+        $this->db->trans_begin();
+
+        // Xóa toàn bộ món thuộc các đơn được chọn
+        $this->db->where_in('suspend_id', $ids);
+        $this->db->delete('suspended_items');
+
+        // Xóa các đơn tạm
+        $this->db->where_in('id', $ids);
+        $this->db->delete('suspended_bills');
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+
+            $this->sma->send_json(array(
+                'status' => FALSE,
+                'message' => 'Xóa tất cả đơn tạm thất bại.',
+                'csrf_hash' => $this->security->get_csrf_hash()
+            ));
+            return;
+        }
+
+        $this->db->trans_commit();
+
+        $this->sma->send_json(array(
+            'status' => TRUE,
+            'deleted' => count($ids),
+            'message' => 'Đã xóa ' . count($ids) . ' đơn tạm.',
+            'csrf_hash' => $this->security->get_csrf_hash()
+        ));
+    }
+
 
     public function delete($id = NULL)
     {
