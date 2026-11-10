@@ -195,7 +195,7 @@
         max-width: calc(100vw - 20px);
 
         padding: 12px;
-        border: 1px solid #d7e0ea;
+        border: 1px solid #497bb5;
         border-radius: 9px;
 
         background: #fff;
@@ -209,10 +209,10 @@
         padding-bottom: 9px;
         margin-bottom: 7px;
 
-        border-bottom: 1px solid #e5eaf0;
+        border-bottom: 1px solid #4b86cf;
 
         color: #1769aa;
-        font-size: 14px;
+        font-size: 16px;
         font-weight: 800;
     }
 
@@ -227,9 +227,9 @@
         gap: 12px;
 
         padding: 7px 2px;
-        border-bottom: 1px dashed #e5e5e5;
+        border-bottom: 1px dashed #3e3b3b;
 
-        font-size: 13px;
+        font-size: 15px;
     }
 
     .suspended-items-tooltip .tooltip-name {
@@ -247,7 +247,7 @@
     .suspended-items-tooltip .tooltip-loading,
     .suspended-items-tooltip .tooltip-empty {
         padding: 12px 3px;
-        font-size: 13px;
+        font-size: 15px;
         color: #667085;
     }
 </style>
@@ -562,6 +562,17 @@ $(document).ready(function () {
         'click.openedBills',
         function (e) {
 
+            // KHÔNG MỞ ĐƠN KHI CHẠM VÀO KHU VỰC SỐ MÓN
+            if (
+                $(e.target).closest(
+                    '.suspended-items-preview, .suspended-items-tooltip'
+                ).length
+            ) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                return false;
+            }
+
             var sid = $(this).attr("id");
 
             if (count > 1) {
@@ -698,6 +709,7 @@ $(document).ready(function () {
             $('.suspended-items-tooltip').remove();
 
             var $popup = $('<div class="suspended-items-tooltip"></div>');
+            $popup.data('suspend-id', suspendId);
 
             $popup.html(
                 '<div class="tooltip-loading">' +
@@ -935,6 +947,86 @@ $(document).ready(function () {
 
                 }
             );
+
+            /* =========================================
+       TOUCH: CHẠM SỐ MÓN ĐỂ XEM / ĐÓNG POPUP
+       KHÔNG MỞ ĐƠN TẠM
+    ========================================= */
+
+    var isTouchDevice =
+        ('ontouchstart' in window) ||
+        (navigator.maxTouchPoints > 0);
+
+    $(document)
+        .off('click.suspendedItemsTouch', '.suspended-items-preview')
+        .on(
+            'click.suspendedItemsTouch',
+            '.suspended-items-preview',
+            function (e) {
+
+                if (!isTouchDevice) {
+                    return;
+                }
+
+                // Chặn click truyền lên nút mở đơn tạm
+                e.preventDefault();
+                e.stopPropagation();
+
+                var $target = $(this);
+
+                var suspendId = parseInt(
+                    $target.attr('data-suspend-id'),
+                    10
+                );
+
+                if (!suspendId) {
+                    return false;
+                }
+
+                // Chạm lần 2 vào cùng số món thì đóng popup
+                var $currentPopup =
+                    $('.suspended-items-tooltip');
+
+                if (
+                    $currentPopup.length &&
+                    $currentPopup.data('suspend-id') == suspendId
+                ) {
+
+                    $currentPopup.remove();
+
+                    return false;
+                }
+
+                // Chạm đơn khác thì mở danh sách món của đơn đó
+                loadSuspendedItems(
+                    suspendId,
+                    $target
+                );
+
+                return false;
+            }
+        );
+
+
+    // Chạm ra ngoài thì đóng popup
+    $(document)
+        .off('click.suspendedItemsOutside')
+        .on('click.suspendedItemsOutside', function (e) {
+
+            if (!isTouchDevice) {
+                return;
+            }
+
+            if (
+                !$(e.target).closest(
+                    '.suspended-items-preview, .suspended-items-tooltip'
+                ).length
+            ) {
+
+                $('.suspended-items-tooltip').remove();
+
+            }
+        });
 
 });
 </script>
