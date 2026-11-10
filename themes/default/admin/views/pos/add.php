@@ -72,7 +72,7 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                 >
                     <i class="fa fa-th"></i>
                     <span class="suspend_list_title">ĐƠN TẠM</span>
-                    <span class="pos-header-count pos-header-count-suspended" id="suspended_order_count">0</span>
+                    <span class="pos-header-count pos-header-count-suspended" id="suspended_order_count" style="display:none;">0</span>
                 </a>
             </div>
             <div class="header-nav">
@@ -1762,6 +1762,8 @@ var lang = {
         $('#btn_ban').removeClass('active').text('BÀN');
 
         $('#order_type').val('TAKEAWAY');
+        // BỔ SUNG: Đồng bộ lại loại đơn vào localStorage
+        localStorage.setItem('order_type', 'TAKEAWAY');
         $('#table_id').val('');
         if (localStorage.getItem('posbiller')) {
             localStorage.removeItem('posbiller');
@@ -4408,9 +4410,12 @@ function refreshPosHeaderCounts() {
                 return;
             }
 
-            $('#suspended_order_count').text(
-                parseInt(data.suspended_orders, 10) || 0
-            );
+            var suspendedCount =
+                parseInt(data.suspended_orders, 10) || 0;
+
+            $('#suspended_order_count')
+                .text(suspendedCount)
+                .toggle(suspendedCount > 0);
 
         }
     });

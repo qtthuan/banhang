@@ -120,8 +120,8 @@
         padding: 11px;
         border: 1px solid #ddd;
         border-radius: 9px;
-        background: #fff;
-        box-shadow: 0 4px 16px rgba(0,0,0,.2);
+        background: #1a5932;
+        box-shadow: 0 25px 10px rgba(0,0,0,.2);
         text-align: left;
     }
 
@@ -139,7 +139,7 @@
         font-size: 13px;
         font-weight: 600;
         margin-bottom: 9px;
-        color: #333;
+        color: #ffffff;
     }
 
     .opened-bills-confirm-actions {
@@ -185,6 +185,70 @@
         text-align: center;
 
         box-shadow: 0 4px 16px rgba(0,0,0,.2);
+    }
+
+    /* POPUP DANH SÁCH MÓN ĐƠN TẠM */
+    .suspended-items-tooltip {
+        position: absolute;
+        z-index: 20000;
+        width: 270px;
+        max-width: calc(100vw - 20px);
+
+        padding: 12px;
+        border: 1px solid #d7e0ea;
+        border-radius: 9px;
+
+        background: #fff;
+        color: #344054;
+
+        box-shadow: 0 5px 22px rgba(0,0,0,.2);
+        text-align: left;
+    }
+
+    .suspended-items-tooltip .tooltip-title {
+        padding-bottom: 9px;
+        margin-bottom: 7px;
+
+        border-bottom: 1px solid #e5eaf0;
+
+        color: #1769aa;
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .suspended-items-tooltip .tooltip-list {
+        max-height: 240px;
+        overflow-y: auto;
+    }
+
+    .suspended-items-tooltip .tooltip-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+
+        padding: 7px 2px;
+        border-bottom: 1px dashed #e5e5e5;
+
+        font-size: 13px;
+    }
+
+    .suspended-items-tooltip .tooltip-name {
+        flex: 1;
+        overflow-wrap: anywhere;
+        font-weight: 600;
+    }
+
+    .suspended-items-tooltip .tooltip-qty {
+        flex: 0 0 auto;
+        color: #1769aa;
+        font-weight: 800;
+    }
+
+    .suspended-items-tooltip .tooltip-loading,
+    .suspended-items-tooltip .tooltip-empty {
+        padding: 12px 3px;
+        font-size: 13px;
+        color: #667085;
     }
 </style>
 
@@ -334,8 +398,13 @@ $(document).ready(function () {
 
                     } else {
 
-                        // XÓA MỘT ĐƠN: GIỮ NGUYÊN TẢI LẠI DANH SÁCH
+                        // XÓA MỘT ĐƠN: TẢI LẠI DANH SÁCH
                         reloadOpenedBills();
+
+                        // CẬP NHẬT SỐ ĐƠN TẠM TRÊN HEADER POS
+                        if (typeof refreshPosHeaderCounts === 'function') {
+                            refreshPosHeaderCounts();
+                        }
 
                     }
 
@@ -429,7 +498,7 @@ $(document).ready(function () {
 
                 showOpenedConfirm(
                     $container,
-                    'Bạn muốn xóa đơn tạm #' + id + '?',
+                    'Xác nhận xóa đơn #' + id + '?',
                     function () {
 
                         deleteSuspendedBill(
@@ -610,6 +679,262 @@ $(document).ready(function () {
 
             }
         );
+
+        /* =========================================
+        XEM NHANH MÓN TRONG ĐƠN TẠM
+        ========================================= */
+
+        var suspendedItemsCache = {};
+        var suspendedItemsTimer = null;
+
+
+        function escapeSuspendedHtml(value) {
+            return $('<div>').text(value || '').html();
+        }
+
+
+        function loadSuspendedItems(suspendId, $target) {
+
+            $('.suspended-items-tooltip').remove();
+
+            var $popup = $('<div class="suspended-items-tooltip"></div>');
+
+            $popup.html(
+                '<div class="tooltip-loading">' +
+                    '<i class="fa fa-spinner fa-spin"></i> Đang tải món...' +
+                '</div>'
+            );
+
+            $('body').append($popup);
+
+            positionSuspendedItemsTooltip($target, $popup);
+
+            if (suspendedItemsCache[suspendId]) {
+
+                showSuspendedItems(
+                    suspendedItemsCache[suspendId],
+                    $target,
+                    $popup
+                );
+
+                return;
+            }
+
+            $.ajax({
+
+                type: 'GET',
+
+                url: "<?= admin_url('pos/getSuspendedBillItems') ?>",
+
+                data: {
+                    suspend_id: suspendId
+                },
+
+                dataType: 'json',
+
+                success: function (response) {
+
+                    if (!response || !response.status) {
+
+                        $popup.html(
+                            '<div class="tooltip-empty">' +
+                            'Không thể tải danh sách món.' +
+                            '</div>'
+                        );
+
+                        return;
+                    }
+
+                    suspendedItemsCache[suspendId] =
+                        response.items || [];
+
+                    showSuspendedItems(
+                        response.items || [],
+                        $target,
+                        $popup
+                    );
+
+                },
+
+                error: function () {
+
+                    $popup.html(
+                        '<div class="tooltip-empty">' +
+                        'Lỗi kết nối máy chủ.' +
+                        '</div>'
+                    );
+
+                }
+
+            });
+        }
+
+
+        function showSuspendedItems(items, $target, $popup) {
+
+            var html = '';
+
+            if (!items || !items.length) {
+
+                html =
+                    '<div class="tooltip-empty">' +
+                    'Đơn tạm không có món.' +
+                    '</div>';
+
+            } else {
+
+                var totalQty = 0;
+
+                $.each(items, function (index, item) {
+                    totalQty += parseFloat(item.quantity || 0);
+                });
+
+                html +=
+                    '<div class="tooltip-title">' +
+                    '<i class="fa fa-cutlery"></i> ' +
+                    totalQty + ' MÓN' +
+                    '</div>';
+
+                html += '<div class="tooltip-list">';
+
+                $.each(items, function (index, item) {
+
+                    var name = escapeSuspendedHtml(
+                        item.product_name
+                    );
+
+                    var qty = parseFloat(item.quantity || 0);
+
+                    html +=
+                        '<div class="tooltip-row">' +
+                            '<span class="tooltip-name">' +
+                                name +
+                            '</span>' +
+                            '<span class="tooltip-qty">' +
+                                '× ' + qty +
+                            '</span>' +
+                        '</div>';
+
+                });
+
+                html += '</div>';
+            }
+
+            $popup.html(html);
+
+            positionSuspendedItemsTooltip($target, $popup);
+        }
+
+
+        function positionSuspendedItemsTooltip($target, $popup) {
+
+            var offset = $target.offset();
+
+            var targetHeight = $target.outerHeight();
+
+            var popupWidth = $popup.outerWidth();
+
+            var popupHeight = $popup.outerHeight();
+
+            var left = offset.left;
+
+            var top = offset.top - popupHeight - 8;
+
+            // Không đủ chỗ phía trên thì hiện phía dưới
+            if (top < $(window).scrollTop() + 10) {
+                top = offset.top + targetHeight + 8;
+            }
+
+            // Không tràn cạnh phải
+            left = Math.min(
+                left,
+                $(window).scrollLeft() +
+                $(window).width() - popupWidth - 10
+            );
+
+            left = Math.max(
+                left,
+                $(window).scrollLeft() + 10
+            );
+
+            $popup.css({
+                left: left,
+                top: top
+            });
+        }
+
+
+        // Rê chuột vào số món
+        $(document)
+            .off('mouseenter.suspendedItems', '.suspended-items-preview')
+            .on(
+                'mouseenter.suspendedItems',
+                '.suspended-items-preview',
+                function () {
+
+                    clearTimeout(suspendedItemsTimer);
+
+                    var $target = $(this);
+
+                    var suspendId = parseInt(
+                        $target.attr('data-suspend-id'),
+                        10
+                    );
+
+                    if (suspendId) {
+                        loadSuspendedItems(suspendId, $target);
+                    }
+                }
+            );
+
+
+        // Rê chuột ra khỏi số món
+        $(document)
+            .off('mouseleave.suspendedItems', '.suspended-items-preview')
+            .on(
+                'mouseleave.suspendedItems',
+                '.suspended-items-preview',
+                function () {
+
+                    suspendedItemsTimer = setTimeout(function () {
+
+                        if (!$('.suspended-items-tooltip:hover').length) {
+                            $('.suspended-items-tooltip').remove();
+                        }
+
+                    }, 180);
+
+                }
+            );
+
+
+        // Giữ popup khi rê chuột từ số món sang danh sách
+        $(document)
+            .off('mouseenter.suspendedTooltip', '.suspended-items-tooltip')
+            .on(
+                'mouseenter.suspendedTooltip',
+                '.suspended-items-tooltip',
+                function () {
+                    clearTimeout(suspendedItemsTimer);
+                }
+            );
+
+
+        $(document)
+            .off('mouseleave.suspendedTooltip', '.suspended-items-tooltip')
+            .on(
+                'mouseleave.suspendedTooltip',
+                '.suspended-items-tooltip',
+                function () {
+
+                    var $popup = $(this);
+
+                    suspendedItemsTimer = setTimeout(function () {
+                        $popup.remove();
+                    }, 120);
+
+                }
+            );
 
 });
 </script>

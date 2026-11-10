@@ -689,6 +689,60 @@ class Pos extends MY_Controller
         ]);
     }
 
+        /**
+     * LẤY DANH SÁCH MÓN TRONG ĐƠN TẠM
+     */
+    public function getSuspendedBillItems()
+    {
+        $this->sma->checkPermissions('index');
+
+        $suspend_id = (int) $this->input->get('suspend_id');
+
+        if (!$suspend_id) {
+            echo json_encode([
+                'status'  => false,
+                'message' => 'Thiếu mã đơn tạm.'
+            ]);
+            return;
+        }
+
+        // Kiểm tra đơn tạm có tồn tại và có quyền xem
+        $this->db
+            ->from('suspended_bills')
+            ->where('id', $suspend_id);
+
+        if (!$this->Owner && !$this->Admin) {
+            $this->db->where(
+                'created_by',
+                $this->session->userdata('user_id')
+            );
+        }
+
+        $bill = $this->db->get()->row();
+
+        if (!$bill) {
+            echo json_encode([
+                'status'  => false,
+                'message' => 'Không tìm thấy đơn tạm.'
+            ]);
+            return;
+        }
+
+        // Lấy tên món và số lượng
+        $items = $this->db
+            ->select('product_name, quantity')
+            ->from('suspended_items')
+            ->where('suspend_id', $suspend_id)
+            ->order_by('id', 'ASC')
+            ->get()
+            ->result();
+
+        echo json_encode([
+            'status' => true,
+            'items'  => $items
+        ]);
+    }
+
     public function updateOrderPayment()
     {
         $sale_id = (int) $this->input->post('sale_id');
@@ -2417,7 +2471,10 @@ class Pos extends MY_Controller
 
                 $html .= '<span class="pos-suspended-bottom">';
 
-                $html .= '<span class="pos-suspended-items">
+                $html .= '<span
+                    class="pos-suspended-items suspended-items-preview"
+                    data-suspend-id="' . (int) $bill->id . '"
+                    title="Rê chuột để xem danh sách món">
                     <i class="fa fa-cube"></i> '
                     . $itemCount . ' món
                 </span>';
