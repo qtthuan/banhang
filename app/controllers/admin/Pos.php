@@ -1814,6 +1814,7 @@ class Pos extends MY_Controller
             ->where('table_id', $table->id)
             ->where('warehouse_id', $warehouse_id)
             ->where('order_type', 'TABLE')
+            ->where('is_ingredient !=', 1)
             ->where('payment_status !=', 'paid')
             ->where('sale_status !=', 'returned')
             ->where('date >=', $sdate)
