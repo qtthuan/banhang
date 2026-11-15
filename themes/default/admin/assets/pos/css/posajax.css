@@ -1464,9 +1464,7 @@ ul.ob.pos-suspended-grid {
     min-height: 54px;
     padding: 14px 60px !important;
     text-align: center !important;
-    border-bottom: 1px solid #211d1d;
     background: #fff;
-    margin-bottom: 10px;
 }
 
 .modal-dialog:has(.pos-suspended-grid) .modal-title {
@@ -1548,4 +1546,368 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
 .pos-suspended-delete:hover {
     background: #dc2626 !important;
     color: #fff !important;
+}
+
+
+/* ===== DIEU CHINH KICH THUOC SO DO BAN ===== */
+
+/* Modal rộng hơn */
+#tableModal .modal-dialog {
+    width: 80%;
+    max-width: 900px;
+    margin: 10px auto;
+}
+
+#tableModal .modal-content {
+    border-radius: 10px;
+}
+
+#tableModal .modal-header {
+    padding: 18px 22px;
+}
+
+#tableModal .modal-title {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+#tableModal .modal-body {
+    padding: 22px;
+}
+
+/* Khu vực sơ đồ rộng và cao hơn */
+.table-floor-canvas {
+    height: 650px;
+    min-height: 650px;
+}
+
+/* Nút bàn hình vuông */
+.floor-table-btn {
+    width: 110px !important;
+    height: 110px !important;
+    border-radius: 10px !important;
+    padding: 8px !important;
+}
+
+.floor-table-name {
+    font-size: 15px;
+    white-space: normal;
+    overflow-wrap: break-word;
+    line-height: 1.3;
+    text-align: center;
+}
+
+.floor-table-status {
+    font-size: 10px;
+}
+
+/* Màn hình nhỏ */
+@media (max-width: 600px) {
+    #tableModal .modal-dialog {
+        width: 96%;
+        margin: 10px auto;
+    }
+
+    #tableModal .modal-body {
+        padding: 12px;
+    }
+
+    .table-floor-canvas {
+        height: 650px;
+        min-height: 650px;
+    }
+
+    .floor-table-btn {
+        width: 90px !important;
+        height: 90px !important;
+    }
+}
+
+
+/* ===== SƠ ĐỒ BÀN ===== */
+#tableList {
+    position: relative;
+    width: 100%;
+    height: 480px;
+    min-height: 480px;
+    overflow: auto;
+    background: #fff;
+    border: 1px solid #ddd;
+}
+
+#tableList .floor-table-btn {
+    position: absolute;
+    width: 96px;
+    height: 76px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    white-space: normal;
+    cursor: pointer;
+    transform: none;
+}
+
+#tableList .floor-table-free {
+    background: #a8cfa8;
+    border-color: #4f8c4f;
+    color: #246b32;
+}
+
+#tableList .floor-table-busy {
+    background: #f8d7da;
+    border-color: #dc777e;
+    color: #9b252d;
+    cursor: not-allowed;
+}
+
+#tableList .floor-table-name {
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 17px;
+    overflow-wrap: anywhere;
+}
+
+#tableList .floor-table-status {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+
+/* Thông báo bàn đang phục vụ */
+#tableList .floor-table-toast {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    background: rgba(40, 40, 40, 0.92);
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    pointer-events: none;
+}
+
+#tableList .floor-table-toast i {
+    margin-right: 5px;
+    color: #ffc107;
+}
+
+
+
+#tableList .floor-table-btn {
+    touch-action: none !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    cursor: grab !important;
+}
+
+#tableList .floor-table-btn:active {
+    cursor: grabbing !important;
+}
+
+#tableList .floor-table-busy {
+    cursor: not-allowed !important;
+}
+
+
+/* ===== NÚT VÀ FORM THÊM BÀN ===== */
+
+.table-floor-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 12px;
+}
+
+#btnAddFloorTable {
+    min-width: 125px;
+    min-height: 42px;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 6px;
+}
+
+.table-add-wrap {
+    position: relative;
+    z-index: 1100;
+}
+
+.add-floor-table-form {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 270px;
+    padding: 15px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.18);
+    z-index: 1200;
+}
+
+.add-floor-table-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #333;
+}
+
+.add-floor-table-form input {
+    height: 38px;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.add-floor-table-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+/* ===== THÔNG BÁO TỰ FADE ===== */
+
+.floor-table-notice.success {
+    background: #f4c11c;
+    color: #050505;
+    border: 1px solid #a8d8b0;
+}
+
+.floor-table-notice.error {
+    background: #fde8e8;
+    color: #b52b32;
+    border: 1px solid #ac5252;
+}
+
+/* =====================================
+   HEADER MODAL SƠ ĐỒ BÀN
+===================================== */
+
+.table-floor-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 65px;
+    padding: 12px 18px !important;
+}
+
+/* Ba thành phần cùng một hàng */
+.table-floor-header .table-floor-add-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    z-index: 1200;
+}
+
+/* Nút thêm bàn */
+.table-floor-header #btnAddFloorTable {
+    min-width: 125px;
+    height: 40px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 5px;
+}
+
+/* Tiêu đề luôn nằm chính giữa */
+.table-floor-header .modal-title {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0 !important;
+    color: #428bca;
+    font-size: 17px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* Nút X tròn màu xanh */
+.table-floor-header .table-floor-close {
+    position: relative;
+    float: none;
+    top: auto;
+    right: auto;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: 50%;
+    background: #439243;
+    color: #fff;
+    opacity: 1;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 30px;
+    text-align: center;
+    text-shadow: none;
+    cursor: pointer;
+}
+
+.table-floor-header .table-floor-close:hover {
+    background: #449d44;
+    color: #fff;
+    opacity: 1;
+}
+
+/* =====================================
+   FORM THÊM BÀN - NẰM DƯỚI NÚT THÊM
+===================================== */
+
+.table-floor-add-wrap .add-floor-table-form {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: auto;
+    width: 270px;
+    padding: 15px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.18);
+    z-index: 1200;
+}
+
+.table-floor-add-wrap .add-floor-table-form input {
+    height: 38px;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+/* Modal làm khung tham chiếu cho thông báo nổi */
+#tableModal .modal-content {
+    position: relative;
+}
+
+/* Thông báo nổi, không chiếm diện tích bố cục */
+#tableModal .floor-table-notice {
+    display: none;
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: max-content;
+    max-width: 89%;
+    margin: 0;
+    padding: 11px 20px;
+
+    border-radius: 7px;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+
+    z-index: 2005;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.18);
+    pointer-events: none;
 }

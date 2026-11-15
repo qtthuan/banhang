@@ -1755,6 +1755,8 @@ class Pos extends MY_Controller
     public function getTables()
     {
         $tables = $this->db
+            ->select('id, table_name, sort_order, is_active, position_x, position_y')
+            ->where('is_active', 1)
             ->order_by('sort_order', 'ASC')
             ->get('tables')
             ->result();
@@ -1762,11 +1764,13 @@ class Pos extends MY_Controller
         $data = [];
 
         foreach ($tables as $table) {
-
             $data[] = [
                 'id' => (int) $table->id,
                 'table_name' => $table->table_name,
-                'sort_order' => (int) $table->sort_order
+                'sort_order' => (int) $table->sort_order,
+                'is_active' => (int) $table->is_active,
+                'position_x' => $table->position_x,
+                'position_y' => $table->position_y
             ];
         }
 
@@ -1777,6 +1781,445 @@ class Pos extends MY_Controller
                 'tables' => $data
             ], JSON_UNESCAPED_UNICODE));
     }
+
+        /**
+     * LẤY TOÀN BỘ DANH SÁCH BÀN ĐỂ QUẢN LÝ
+     */
+    public function getTablesManage()
+    {
+        $this->sma->checkPermissions('index');
+
+        $tables = $this->db
+            ->select('id, table_name, sort_order, is_active, position_x, position_y')
+            ->order_by('sort_order', 'ASC')
+            ->order_by('id', 'ASC')
+            ->get('tables')
+            ->result();
+
+        $data = [];
+
+        
+        foreach ($tables as $table) {
+
+            
+        // Chỉ kiểm tra đơn trong ngày hiện tại
+        $sdate = date('Y-m-d 00:00:00');
+        $edate = date('Y-m-d 23:59:59');
+
+        // Kho đang đăng nhập
+        $warehouse_id = (int) $this->session->userdata('warehouse_id');
+
+        // Kiểm tra hóa đơn chưa thanh toán hôm nay
+        $busy_sale = $this->db
+            ->where('table_id', $table->id)
+            ->where('warehouse_id', $warehouse_id)
+            ->where('order_type', 'TABLE')
+            ->where('payment_status !=', 'paid')
+            ->where('sale_status !=', 'returned')
+            ->where('date >=', $sdate)
+            ->where('date <=', $edate)
+            ->count_all_results('sales');
+
+        // Kiểm tra đơn tạm hôm nay
+        $busy_suspend = $this->db
+            ->where('table_id', $table->id)
+            ->where('warehouse_id', $warehouse_id)
+            ->where('order_type', 'TABLE')
+            ->where('date >=', $sdate)
+            ->where('date <=', $edate)
+            ->count_all_results('suspended_bills');
+
+
+            $data[] = [
+                'id'          => (int) $table->id,
+                'table_name'  => $table->table_name,
+                'sort_order'  => (int) $table->sort_order,
+                'is_active'   => (int) $table->is_active,
+                'position_x'  => $table->position_x,
+                'position_y'  => $table->position_y,
+                'is_busy'     => ($busy_sale > 0 || $busy_suspend > 0) ? 1 : 0
+            ];
+        }
+
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode([
+                'success' => true,
+                'tables'  => $data
+            ], JSON_UNESCAPED_UNICODE));
+    }
+
+    /**
+     * THÊM BÀN MỚI
+     */
+    public function addTable()
+    {
+        $this->sma->checkPermissions('index');
+
+        $table_name = mb_strtoupper(
+            trim($this->input->post('table_name', TRUE)),
+            'UTF-8'
+        );
+
+        // Kiểm tra tên bàn
+        if ($table_name === '') {
+            $response = [
+                'success' => false,
+                'message' => 'Vui lòng nhập tên bàn.'
+            ];
+        } elseif (mb_strlen($table_name, 'UTF-8') > 100) {
+            $response = [
+                'success' => false,
+                'message' => 'Tên bàn không được vượt quá 100 ký tự.'
+            ];
+        } else {
+            // Kiểm tra tên bàn đã tồn tại
+            $exists = $this->db
+                ->where('table_name', $table_name)
+                ->count_all_results('tables');
+
+            if ($exists > 0) {
+                $response = [
+                    'success' => false,
+                    'message' => 'Tên bàn này đã tồn tại.'
+                ];
+            } else {
+                // Lấy thứ tự lớn nhất hiện tại
+                $this->db->select_max('sort_order');
+                $max_order = $this->db->get('tables')->row()->sort_order;
+
+                $data = [
+                    'table_name' => $table_name,
+                    'sort_order' => ((int) $max_order) + 1,
+                    'is_active'  => 1,
+                    'position_x' => NULL,
+                    'position_y' => NULL
+                ];
+
+                if ($this->db->insert('tables', $data)) {
+                    $response = [
+                        'success' => true,
+                        'message' => 'Đã thêm bàn mới.',
+                        'id' => (int) $this->db->insert_id(),
+                        'table_name' => $table_name
+                    ];
+                } else {
+                    $response = [
+                        'success' => false,
+                        'message' => 'Không thể thêm bàn. Vui lòng thử lại.'
+                    ];
+                }
+            }
+        }
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response, JSON_UNESCAPED_UNICODE));
+    }
+
+
+    /**
+     * ĐỔI TÊN BÀN
+     */
+    public function renameTable()
+    {
+        $this->sma->checkPermissions('index');
+
+        $table_id = (int) $this->input->post('id');
+        $table_name = mb_strtoupper(
+            trim($this->input->post('table_name', TRUE)),
+            'UTF-8'
+        );
+
+        // Kiểm tra mã bàn
+        if ($table_id <= 0) {
+            $response = [
+                'success' => false,
+                'message' => 'Mã bàn không hợp lệ.'
+            ];
+        } elseif ($table_name === '') {
+            $response = [
+                'success' => false,
+                'message' => 'Vui lòng nhập tên bàn.'
+            ];
+        } elseif (mb_strlen($table_name, 'UTF-8') > 100) {
+            $response = [
+                'success' => false,
+                'message' => 'Tên bàn không được vượt quá 100 ký tự.'
+            ];
+        } else {
+            // Kiểm tra bàn có tồn tại không
+            $table = $this->db
+                ->where('id', $table_id)
+                ->get('tables')
+                ->row();
+
+            if (!$table) {
+                $response = [
+                    'success' => false,
+                    'message' => 'Không tìm thấy bàn.'
+                ];
+            } else {
+                // Kiểm tra tên mới có bị trùng với bàn khác không
+                $exists = $this->db
+                    ->where('table_name', $table_name)
+                    ->where('id !=', $table_id)
+                    ->count_all_results('tables');
+
+                if ($exists > 0) {
+                    $response = [
+                        'success' => false,
+                        'message' => 'Tên bàn này đã tồn tại.'
+                    ];
+                } else {
+                    // Chỉ cập nhật tên, giữ nguyên ID và vị trí
+                    $updated = $this->db
+                        ->where('id', $table_id)
+                        ->update('tables', [
+                            'table_name' => $table_name
+                        ]);
+
+                    if ($updated) {
+                        $response = [
+                            'success' => true,
+                            'message' => 'Đã đổi tên bàn.',
+                            'id' => $table_id,
+                            'table_name' => $table_name
+                        ];
+                    } else {
+                        $response = [
+                            'success' => false,
+                            'message' => 'Không thể đổi tên bàn. Vui lòng thử lại.'
+                        ];
+                    }
+                }
+            }
+        }
+
+        $response['csrf_hash'] = $this->security->get_csrf_hash();
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response, JSON_UNESCAPED_UNICODE));
+    }
+
+
+    /**
+     * ẨN BÀN - KHÔNG XÓA DỮ LIỆU
+     */
+    public function hideTable()
+    {
+        $this->sma->checkPermissions('index');
+
+        $table_id = (int) $this->input->post('id');
+
+        $response = [];
+
+        if ($table_id <= 0) {
+            $response = [
+                'success' => false,
+                'message' => 'Mã bàn không hợp lệ.'
+            ];
+        } else {
+            // Kiểm tra bàn có tồn tại không
+            $table = $this->db
+                ->where('id', $table_id)
+                ->get('tables')
+                ->row();
+
+            if (!$table) {
+                $response = [
+                    'success' => false,
+                    'message' => 'Không tìm thấy bàn.'
+                ];
+            } else {
+                
+                // Lấy kho đang đăng nhập
+                $warehouse_id = (int) $this->session->userdata('warehouse_id');
+
+                $sdate = date('Y-m-d 00:00:00');
+                $edate = date('Y-m-d 23:59:59');
+
+                // Kiểm tra hóa đơn chưa thanh toán trong kho hiện tại
+                $busy_sale = $this->db
+                    ->where('table_id', $table_id)
+                    ->where('warehouse_id', $warehouse_id)
+                    ->where('order_type', 'TABLE')
+                    ->where('payment_status !=', 'paid')
+                    ->where('sale_status !=', 'returned')
+                    ->where('date >=', $sdate)
+                    ->where('date <=', $edate)
+                    ->count_all_results('sales');
+
+                // Kiểm tra đơn đang lưu tạm trong kho hiện tại
+                $busy_suspend = $this->db
+                    ->where('table_id', $table_id)
+                    ->where('warehouse_id', $warehouse_id)
+                    ->where('order_type', 'TABLE')
+                    ->where('date >=', $sdate)
+                    ->where('date <=', $edate)
+                    ->count_all_results('suspended_bills');
+
+
+                if ($busy_sale > 0 || $busy_suspend > 0) {
+                    $response = [
+                        'success' => false,
+                        'message' => 'Bàn đang có đơn hàng, không thể ẩn.'
+                    ];
+                } else {
+                    // Chỉ ẩn bàn, không xóa dữ liệu
+                    $updated = $this->db
+                        ->where('id', $table_id)
+                        ->update('tables', [
+                            'is_active' => 0
+                        ]);
+
+                    if ($updated) {
+                        $response = [
+                            'success' => true,
+                            'message' => 'Đã ẩn bàn.'
+                        ];
+                    } else {
+                        $response = [
+                            'success' => false,
+                            'message' => 'Không thể ẩn bàn. Vui lòng thử lại.'
+                        ];
+                    }
+                }
+            }
+        }
+
+        $response['csrf_hash'] = $this->security->get_csrf_hash();
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response, JSON_UNESCAPED_UNICODE));
+    }
+
+
+    /**
+     * LƯU VỊ TRÍ CÁC BÀN SAU KHI KÉO THẢ
+     */
+    public function saveTablePositions()
+    {
+        $this->sma->checkPermissions('index');
+
+        // Nhận danh sách vị trí dạng JSON
+        $positions_json = $this->input->post('positions');
+        $positions = json_decode($positions_json, TRUE);
+
+        $response = [];
+
+        if (!is_array($positions) || empty($positions)) {
+            $response = [
+                'success' => false,
+                'message' => 'Dữ liệu vị trí bàn không hợp lệ.'
+            ];
+        } else {
+            $valid_positions = [];
+            $invalid = false;
+
+            // Kiểm tra toàn bộ dữ liệu trước khi cập nhật
+            foreach ($positions as $position) {
+                if (
+                    !is_array($position) ||
+                    !isset($position['id']) ||
+                    !isset($position['x']) ||
+                    !isset($position['y']) ||
+                    !is_numeric($position['id']) ||
+                    !is_numeric($position['x']) ||
+                    !is_numeric($position['y'])
+                ) {
+                    $invalid = true;
+                    break;
+                }
+
+                $table_id = (int) $position['id'];
+                $x = (float) $position['x'];
+                $y = (float) $position['y'];
+
+                if (
+                    $table_id <= 0 ||
+                    $x < 0 || $x > 100 ||
+                    $y < 0 || $y > 100
+                ) {
+                    $invalid = true;
+                    break;
+                }
+
+                $valid_positions[] = [
+                    'id' => $table_id,
+                    'x'  => $x,
+                    'y'  => $y
+                ];
+            }
+
+            if ($invalid) {
+                $response = [
+                    'success' => false,
+                    'message' => 'Tọa độ bàn không hợp lệ.'
+                ];
+            } else {
+                $this->db->trans_begin();
+
+                foreach ($valid_positions as $position) {
+                    $table = $this->db
+                        ->where('id', $position['id'])
+                        ->get('tables')
+                        ->row();
+
+                    if (!$table) {
+                        $this->db->trans_rollback();
+
+                        $response = [
+                            'success' => false,
+                            'message' => 'Không tìm thấy bàn cần cập nhật.'
+                        ];
+
+                        break;
+                    }
+
+                    $this->db
+                        ->where('id', $position['id'])
+                        ->update('tables', [
+                            'position_x' => $position['x'],
+                            'position_y' => $position['y']
+                        ]);
+
+                    if ($this->db->trans_status() === FALSE) {
+                        break;
+                    }
+                }
+
+                if (
+                    !isset($response['success']) &&
+                    $this->db->trans_status() !== FALSE
+                ) {
+                    $this->db->trans_commit();
+
+                    $response = [
+                        'success' => true,
+                        'message' => 'Đã lưu vị trí các bàn.'
+                    ];
+                } elseif (!isset($response['success'])) {
+                    $this->db->trans_rollback();
+
+                    $response = [
+                        'success' => false,
+                        'message' => 'Không thể lưu vị trí bàn.'
+                    ];
+                }
+            }
+        }
+
+        $response['csrf_hash'] = $this->security->get_csrf_hash();
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response, JSON_UNESCAPED_UNICODE));
+    }
+
 
 
     public function view_bill()

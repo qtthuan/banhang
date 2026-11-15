@@ -136,7 +136,7 @@
     }
 
     .opened-bills-confirm-text {
-        font-size: 13px;
+        font-size: 15px;
         font-weight: 600;
         margin-bottom: 9px;
         color: #ffffff;
@@ -152,7 +152,7 @@
         border: 0;
         border-radius: 5px;
         padding: 6px 12px;
-        font-size: 12px;
+        font-size: 15px;
         cursor: pointer;
     }
 
@@ -227,7 +227,7 @@
         gap: 12px;
 
         padding: 7px 2px;
-        border-bottom: 1px dashed #3e3b3b;
+        border-bottom: 1px dashed #827b7b;
 
         font-size: 15px;
     }

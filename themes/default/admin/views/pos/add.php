@@ -1392,46 +1392,75 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
     <table id="bill-total-table" class="prT table" style="margin-bottom:0; font-size: 11px;" width="100%"></table>
     <span id="bill_footer"></span>
 </div>
-<!-- MODAL CHỌN BÀN -->
-<div class="modal fade" id="tableModal" tabindex="-1" role="dialog" aria-labelledby="tableModalLabel"
-     aria-hidden="true">
 
-    <div class="modal-dialog">
-
+<!-- MODAL SƠ ĐỒ BÀN -->
+<div class="modal fade" id="tableModal" tabindex="-1" role="dialog" aria-labelledby="tableModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
+            
+            <div class="modal-header table-floor-header">
 
-            <div class="modal-header">
+                <!-- BÊN TRÁI: NÚT THÊM + FORM -->
+                <div class="table-floor-add-wrap">
 
-                <button
-                    type="button"
-                    class="close"
-                    data-dismiss="modal"
-                    aria-hidden="true">
+                    <button type="button" class="btn btn-success" id="btnAddFloorTable">
+                        <i class="fa fa-plus"></i> THÊM BÀN
+                    </button>
+
+                    <div id="addFloorTableForm" class="add-floor-table-form" style="display:none;">
+                        <div class="add-floor-table-title">THÊM BÀN MỚI</div>
+
+                        <input type="text"
+                            id="newFloorTableName"
+                            class="form-control"
+                            maxlength="100"
+                            placeholder="Nhập tên bàn...">
+
+                        <div class="add-floor-table-actions">
+                            <button type="button" class="btn btn-default btn-sm" id="btnCancelAddFloorTable">
+                                Hủy
+                            </button>
+                            <button type="button" class="btn btn-success btn-sm" id="btnSaveAddFloorTable">
+                                Lưu bàn
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- CHÍNH GIỮA -->
+                <h4 class="modal-title" id="tableModalLabel">SƠ ĐỒ BÀN</h4>
+
+                <!-- BÊN PHẢI -->
+                <button type="button"
+                        class="close table-floor-close"
+                        data-dismiss="modal"
+                        aria-label="Đóng">
                     &times;
                 </button>
-
-                <h4 class="modal-title" id="tableModalLabel">
-                    CHỌN BÀN
-                </h4>
 
             </div>
 
             <div class="modal-body">
 
-                <div id="tableList" class="table-list">
-                    <div class="text-center">
-                        Đang tải danh sách bàn...
-                    </div>
+                <div id="floorTableNotice" class="floor-table-notice"></div>
+
+
+                <div id="tableList" class="table-floor-canvas">
+                    <div class="text-center">Đang tải sơ đồ bàn...</div>
                 </div>
 
+                <div class="table-floor-hint">
+                    Kéo bàn để sắp xếp vị trí. Vị trí sẽ tự lưu sau khi thả.
+                </div>
+
+                <div id="hiddenTableList" class="table-hidden-list" style="display:none;"></div>
             </div>
-
         </div>
-
     </div>
-
 </div>
-<!-- /MODAL CHỌN BÀN -->
+<!-- /MODAL SƠ ĐỒ BÀN -->
+
 <div class="modal fade in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true"></div>
 <div class="modal fade in" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2"
@@ -1507,29 +1536,24 @@ var lang = {
         $("#col_return").show();
     }
 
+    
     function loadTableList() {
 
         $('#tableList').html(
-            '<div class="text-center">Đang tải danh sách bàn...</div>'
+            '<div class="text-center">Đang tải sơ đồ bàn...</div>'
         );
 
         $.ajax({
             type: 'GET',
-
-            url: "<?=admin_url('pos/getTables');?>",
-
+            url: "<?=admin_url('pos/getTablesManage');?>",
             dataType: 'json',
 
             success: function (data) {
 
                 if (!data || !data.success) {
-
                     $('#tableList').html(
-                        '<div class="text-danger text-center">' +
-                        'Không lấy được danh sách bàn' +
-                        '</div>'
+                        '<div class="text-danger text-center">Không tải được sơ đồ bàn</div>'
                     );
-
                     return;
                 }
 
@@ -1537,38 +1561,228 @@ var lang = {
 
                 $.each(data.tables, function (index, table) {
 
+                    // Chỉ hiển thị bàn đang hoạt động
+                    if (parseInt(table.is_active, 10) !== 1) {
+                        return;
+                    }
+
+                    var busy = parseInt(table.is_busy, 10) === 1;
+                    var tableName = $('<div>').text(table.table_name).html();
+
+                    var statusText = busy
+                        ? 'ĐANG PHỤC VỤ'
+                        : 'TRỐNG';
+
+                    var statusClass = busy
+                        ? 'floor-table-busy'
+                        : 'floor-table-free';
+
+                    // Nếu chưa có tọa độ thì xếp bàn theo thứ tự
+                    var x = table.position_x !== null
+                        ? parseFloat(table.position_x)
+                        : 2 + (index % 6) * 16;
+
+                    var y = table.position_y !== null
+                        ? parseFloat(table.position_y)
+                        : 3 + Math.floor(index / 6) * 23;
+
                     html +=
                         '<button type="button" ' +
-                        'class="table-select-btn" ' +
+                        'class="table-select-btn floor-table-btn ' + statusClass + '" ' +
                         'data-id="' + table.id + '" ' +
-                        'data-name="' + $('<div>').text(table.table_name).html() + '">' +
-                        table.table_name +
+                        'data-name="' + tableName + '" ' +
+                        'data-busy="' + (busy ? 1 : 0) + '" ' +
+                        'style="left:' + x + '%;top:' + y + '%;">' +
+                        '<span class="floor-table-name">' + tableName + '</span>' +
+                        '<small class="floor-table-status">' + statusText + '</small>' +
                         '</button>';
                 });
 
                 if (html === '') {
-
-                    html =
-                        '<div class="text-center">' +
-                        'Chưa có bàn nào' +
-                        '</div>';
+                    html = '<div class="text-center">Chưa có bàn nào đang hoạt động</div>';
                 }
 
                 $('#tableList').html(html);
             },
 
             error: function () {
-
                 $('#tableList').html(
-                    '<div class="text-danger text-center">' +
-                    'Lỗi kết nối máy chủ' +
-                    '</div>'
+                    '<div class="text-danger text-center">Lỗi kết nối máy chủ</div>'
                 );
             }
         });
     }
 
+
+    
+    /* =========================================
+    FORM THÊM BÀN VÀ THÔNG BÁO FADE
+    ========================================= */
+
+    // Hiện thông báo nhẹ, tự biến mất
+    function showFloorTableNotice(message, type) {
+
+        var $notice = $('#floorTableNotice');
+
+        $notice.stop(true, true)
+            .removeClass('success error')
+            .addClass(type)
+            .text(message)
+            .fadeIn(200);
+
+        setTimeout(function () {
+            $notice.fadeOut(500);
+        }, 2200);
+    }
+
+    // Mở form thêm bàn
+    $(document).on('click', '#btnAddFloorTable', function () {
+
+        $('#addFloorTableForm').stop(true, true).fadeIn(180);
+        $('#newFloorTableName').val('').focus();
+
+    });
+
+    // Đóng form
+    $(document).on('click', '#btnCancelAddFloorTable', function () {
+
+        $('#addFloorTableForm').fadeOut(150);
+        $('#newFloorTableName').val('');
+
+    });
+
+    // Lưu bàn mới
+    $(document).on('click', '#btnSaveAddFloorTable', function () {
+
+        var tableName = $.trim($('#newFloorTableName').val());
+
+        if (tableName === '') {
+            showFloorTableNotice('Vui lòng nhập tên bàn.', 'error');
+            $('#newFloorTableName').focus();
+            return;
+        }
+
+        if (tableName.length > 100) {
+            showFloorTableNotice('Tên bàn không được vượt quá 100 ký tự.', 'error');
+            return;
+        }
+
+        var $saveButton = $(this);
+
+        $saveButton.prop('disabled', true).text('Đang lưu...');
+
+        var postData = {
+            table_name: tableName
+        };
+
+        postData[csrfName] = csrfHash;
+
+        $.ajax({
+            type: 'POST',
+            url: "<?=admin_url('pos/addTable');?>",
+            data: postData,
+            dataType: 'json',
+
+            success: function (response) {
+
+                if (response && response.csrf_hash) {
+                    csrfHash = response.csrf_hash;
+                }
+
+                if (response && response.success) {
+
+                    $('#addFloorTableForm').fadeOut(150);
+                    $('#newFloorTableName').val('');
+
+                    loadTableList();
+
+                    showFloorTableNotice(
+                        'Đã thêm bàn "' + response.table_name + '" thành công!',
+                        'success'
+                    );
+
+                } else {
+
+                    showFloorTableNotice(
+                        response && response.message
+                            ? response.message
+                            : 'Không thể thêm bàn.',
+                        'error'
+                    );
+                }
+            },
+
+            error: function (xhr) {
+
+                console.log('ADD TABLE ERROR:', xhr.responseText);
+
+                showFloorTableNotice(
+                    'Lỗi kết nối, không thể thêm bàn.',
+                    'error'
+                );
+            },
+
+            complete: function () {
+                $saveButton.prop('disabled', false).text('Lưu bàn');
+            }
+        });
+    });
+
+    // Nhấn Enter để lưu
+    $(document).on('keydown', '#newFloorTableName', function (e) {
+
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            $('#btnSaveAddFloorTable').click();
+        }
+
+    });
+
+
+
+
     $(document).on('click', '.table-select-btn', function () {
+
+        if (floorTableWasDragged) {
+            return;
+        }
+        
+        // Không cho chọn bàn đang phục vụ
+        if (parseInt($(this).attr('data-busy'), 10) === 1) {
+
+            var $table = $(this);
+            var $canvas = $('#tableList');
+
+            // Xóa thông báo cũ nếu có
+            $canvas.find('.floor-table-toast').remove();
+
+            // Vị trí bàn vừa click
+            var pos = $table.position();
+
+            // Tạo thông báo gần bàn
+            var $toast = $('<div class="floor-table-toast">' +
+                '<i class="fa fa-info-circle"></i> Bàn đang phục vụ!' +
+                '</div>');
+
+            $toast.css({
+                top: Math.max(5, pos.top - 42),
+                left: Math.max(5, pos.left)
+            });
+
+            $canvas.append($toast);
+
+            // Hiện rồi tự mờ dần
+            $toast.fadeIn(200);
+
+            setTimeout(function () {
+                $toast.fadeOut(500, function () {
+                    $(this).remove();
+                });
+            }, 1800);
+
+            return;
+        }
+
 
         var tableId = $(this).data('id');
         var tableName = $(this).data('name');
@@ -1587,11 +1801,174 @@ var lang = {
         $('#btn_ban').addClass('active');
         $('#btn_mang_di').removeClass('active');
 
+        // HIỆU ỨNG NHẬN BIẾT BÀN VỪA CHỌN
+        $('#btn_ban')
+            .removeClass('table-selected-effect');
+
+        void $('#btn_ban')[0].offsetWidth;
+
+        $('#btn_ban').addClass('table-selected-effect');
+
         localStorage.setItem('table_name', tableName);  
 
         // Đóng modal
         $('#tableModal').modal('hide');
     });
+
+
+    
+    /* =========================================
+    KÉO THẢ BÀN - JAVASCRIPT THUẦN
+    ========================================= */
+
+    var floorDrag = null;
+    var floorTableWasDragged = false;
+
+    var floorCanvas = document.getElementById('tableList');
+
+    // Bắt đầu kéo
+    floorCanvas.addEventListener('pointerdown', function (e) {
+
+        var table = e.target.closest('.floor-table-btn');
+
+        if (!table) return;
+
+        // Không kéo bàn đang phục vụ
+        if (parseInt(table.getAttribute('data-busy'), 10) === 1) {
+            return;
+        }
+
+        if (e.pointerType === 'mouse' && e.button !== 0) {
+            return;
+        }
+
+        var canvasRect = floorCanvas.getBoundingClientRect();
+        var tableRect = table.getBoundingClientRect();
+
+        floorDrag = {
+            element: table,
+            pointerId: e.pointerId,
+            startX: e.clientX,
+            startY: e.clientY,
+            offsetX: e.clientX - tableRect.left,
+            offsetY: e.clientY - tableRect.top,
+            moved: false
+        };
+
+        table.setPointerCapture(e.pointerId);
+
+        e.preventDefault();
+    });
+
+    // Di chuyển bàn
+    document.addEventListener('pointermove', function (e) {
+
+        if (!floorDrag) return;
+        if (e.pointerId !== floorDrag.pointerId) return;
+
+        var dx = e.clientX - floorDrag.startX;
+        var dy = e.clientY - floorDrag.startY;
+
+        if (!floorDrag.moved && Math.abs(dx) + Math.abs(dy) < 5) {
+            return;
+        }
+
+        floorDrag.moved = true;
+
+        var canvas = document.getElementById('tableList');
+        var table = floorDrag.element;
+        var rect = canvas.getBoundingClientRect();
+
+        var maxLeft = canvas.clientWidth - table.offsetWidth;
+        var maxTop = canvas.clientHeight - table.offsetHeight;
+
+        var left = e.clientX - rect.left - canvas.clientLeft
+            + canvas.scrollLeft - floorDrag.offsetX;
+
+        var top = e.clientY - rect.top - canvas.clientTop
+            + canvas.scrollTop - floorDrag.offsetY;
+
+        left = Math.max(0, Math.min(left, maxLeft));
+        top = Math.max(0, Math.min(top, maxTop));
+
+        table.style.left = left + 'px';
+        table.style.top = top + 'px';
+
+        e.preventDefault();
+    });
+
+    // Kết thúc kéo
+    document.addEventListener('pointerup', function (e) {
+
+        if (!floorDrag) return;
+        if (e.pointerId !== floorDrag.pointerId) return;
+
+        var drag = floorDrag;
+        floorDrag = null;
+
+        if (!drag.moved) return;
+
+        floorTableWasDragged = true;
+
+        var canvas = document.getElementById('tableList');
+        var table = drag.element;
+
+        var x = parseFloat(table.style.left) / canvas.clientWidth * 100;
+        var y = parseFloat(table.style.top) / canvas.clientHeight * 100;
+
+        var postData = {
+            positions: JSON.stringify([{
+                id: parseInt(table.getAttribute('data-id'), 10),
+                x: x,
+                y: y
+            }])
+        };
+
+        postData[csrfName] = csrfHash;
+
+        $.ajax({
+            type: 'POST',
+            url: "<?=admin_url('pos/saveTablePositions');?>",
+            data: postData,
+            dataType: 'json',
+
+            success: function (data) {
+
+                if (data && data.csrf_hash) {
+                    csrfHash = data.csrf_hash;
+                }
+
+                if (data && data.success) {
+                    console.log('Đã lưu vị trí bàn.');
+                } else {
+                    alert(data && data.message
+                        ? data.message
+                        : 'Không lưu được vị trí bàn.');
+
+                    loadTableList();
+                }
+            },
+
+            error: function () {
+                alert('Lỗi kết nối, không lưu được vị trí bàn.');
+                loadTableList();
+            }
+        });
+
+        // Ngăn click chọn bàn ngay sau khi kéo
+        setTimeout(function () {
+            floorTableWasDragged = false;
+        }, 300);
+    });
+
+    // Hủy thao tác nếu trình duyệt mất pointer
+    document.addEventListener('pointercancel', function () {
+        if (floorDrag) {
+            floorDrag = null;
+        }
+    });
+
+
 
     $(document).ready(function () {
 
@@ -3674,6 +4051,42 @@ var lang = {
         });
 
         $(document).on('click', '#submit-sale', function () {
+
+            // ==========================================
+            // NẾU CÓ CHỌN KHÁCH HOẶC NHẬP TÊN KHÁCH
+            // TỰ ĐỘNG CHUYỂN ĐƠN SANG MANG ĐI
+            // ==========================================
+
+            function resetOrderToTakeawayIfCustomerSelected() {
+
+                var customerName = $.trim(
+                    $('#customer_name').val() || ''
+                );
+
+                var customerId = String(
+                    $('#poscustomer').val() || ''
+                );
+
+                // Select khác KHÁCH LẺ (ID = 1)
+                var hasSelectedCustomer =
+                    customerId !== '' && customerId !== '1';
+
+                if (customerName !== '' || hasSelectedCustomer) {
+
+                    // Chuyển loại đơn
+                    $('#order_type').val('TAKEAWAY');
+                    $('#table_id').val('');
+
+                    // Cập nhật nút
+                    $('#btn_mang_di').addClass('active');
+                    $('#btn_ban').removeClass('active').text('BÀN');
+
+                    // Đồng bộ localStorage
+                    localStorage.setItem('order_type', 'TAKEAWAY');
+                    localStorage.removeItem('table_id');
+                    localStorage.removeItem('table_name');
+                }
+            }
             
             // Da bam menh gia Quick Cash nhung chua chon Tien mat
             if (
@@ -3734,6 +4147,7 @@ var lang = {
                         $('#staff_note').val(localStorage.getItem('staffnote'));
                         $('#delivery_method').val(localStorage.getItem('pos_delivery'));
                         $('#submit-sale').text('<?=lang('loading');?>').attr('disabled', true);
+                        resetOrderToTakeawayIfCustomerSelected();
                         saveCustomerNameHistory();
                         $('#pos-sale-form').submit();
                     }
@@ -3744,6 +4158,7 @@ var lang = {
                 $('#staff_note').val(localStorage.getItem('staffnote'));
                 $('#delivery_method').val(localStorage.getItem('pos_delivery'));
                 $(this).text('<?=lang('loading');?>').attr('disabled', true);
+                resetOrderToTakeawayIfCustomerSelected();
                 saveCustomerNameHistory();
                 $('#pos-sale-form').submit();
             }
@@ -6167,6 +6582,36 @@ $('#orderListModal').on(
     font-size: 20px;
     font-weight: bold;
     overflow-wrap: anywhere;
+}
+/* HIỆU ỨNG KHI CHỌN BÀN */
+#btn_ban.table-selected-effect {
+    animation: tableSelectedEffect 1s ease-out;
+}
+
+@keyframes tableSelectedEffect {
+    0% {
+        box-shadow: 0 0 0 0 rgba(40, 130, 220, 0);
+        filter: brightness(1);
+        transform: scale(1);
+    }
+
+    35% {
+        box-shadow: 0 0 0 5px rgba(40, 130, 220, 0.28);
+        filter: brightness(1.16);
+        transform: scale(1.035);
+    }
+
+    70% {
+        box-shadow: 0 0 0 2px rgba(40, 130, 220, 0.15);
+        filter: brightness(1.07);
+        transform: scale(1.015);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(40, 130, 220, 0);
+        filter: brightness(1);
+        transform: scale(1);
+    }
 }
 </style>
 
