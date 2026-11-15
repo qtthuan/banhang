@@ -1554,7 +1554,7 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
 /* Modal rộng hơn */
 #tableModal .modal-dialog {
     width: 90%;
-    max-width: 1150px;
+    max-width: 1250px;
     margin: 10px auto;
 }
 
@@ -1583,8 +1583,8 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
 
 /* Nút bàn hình vuông */
 .floor-table-btn {
-    width: 145px !important;
-    height: 90px !important;
+    width: 165px !important;
+    height: 75px !important;
     border-radius: 10px !important;
     padding: 8px !important;
 }
@@ -1646,7 +1646,7 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 5px;
+    gap: 3px;
     white-space: normal;
     cursor: pointer;
     transform: none;
@@ -1667,13 +1667,13 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
 
 #tableList .floor-table-name {
     font-weight: bold;
-    font-size: 19px;
+    font-size: 21px;
     line-height: 17px;
     overflow-wrap: anywhere;
 }
 
 #tableList .floor-table-status {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: bold;
 }
 
