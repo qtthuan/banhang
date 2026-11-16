@@ -74,6 +74,35 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                     <span class="suspend_list_title">ĐƠN TẠM</span>
                     <span class="pos-header-count pos-header-count-suspended" id="suspended_order_count" style="display:none;">0</span>
                 </a>
+
+                <div class="dropdown" style="display:inline-block; position:relative;">
+                    <a
+                        href="#"
+                        class="btn bgreen order-header-button dropdown-toggle"
+                        id="btn_pos_utilities"
+                        data-toggle="dropdown"
+                        aria-expanded="false"
+                        style="background:#31965a;color:#fff;"
+                    >
+                        <i class="fa fa-th-large"></i>
+                        <span>TIỆN ÍCH</span>
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+
+                    <ul
+                        class="dropdown-menu"
+                        id="posUtilitiesMenu"
+                        style="min-width:180px;z-index:10000;"
+                    >
+                        <li>
+                            <a href="#" id="btn_open_pos_purchase">
+                                <i class="fa fa-truck"></i>
+                                NHẬP HÀNG
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
             </div>
             <div class="header-nav">
                 
@@ -4779,6 +4808,243 @@ if (isset($print) && !empty($print)) {
 </div>
 
 
+<!-- =====================================================
+     MODAL SỔ NHẬP HÀNG
+===================================================== -->
+
+<div class="modal fade" id="posPurchaseModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" style="width:95%;max-width:1100px;">
+        <div class="modal-content">
+
+            <div class="modal-header" style="background:#f7f9fc;">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title text-center" style="font-weight:bold;">
+                    <i class="fa fa-truck"></i> SỔ NHẬP HÀNG
+                </h4>
+            </div>
+
+            <div class="modal-body">
+
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="active">
+                        <a href="#posPurchaseEntryTab" data-toggle="tab">
+                            <i class="fa fa-plus-circle"></i> NHẬP HÀNG
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#posPurchaseListTab" data-toggle="tab">
+                            <i class="fa fa-list"></i> DANH SÁCH NHẬP HÀNG
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content" style="padding-top:20px;">
+
+                    <!-- TAB NHẬP HÀNG -->
+                    <div class="tab-pane fade in active" id="posPurchaseEntryTab">
+
+                        <form id="posPurchaseForm" enctype="multipart/form-data">
+
+                            <div class="row">
+
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Ngày nhập</label>
+                                        <input
+                                            type="date"
+                                            class="form-control"
+                                            id="purchase_date"
+                                            name="purchase_date"
+                                            required
+                                        >
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        <label>Kho</label>
+                                        <select
+                                            class="form-control"
+                                            id="purchase_warehouse"
+                                            name="warehouse_id"
+                                            required
+                                        ></select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label>Tên hàng hóa / Nội dung nhập</label>
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            id="purchase_item_name"
+                                            name="item_name"
+                                            placeholder="Scan hoặc nhập tên hàng..."
+                                            autocomplete="off"
+                                            required
+                                        >
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Nhà cung cấp</label>
+                                        <select
+                                            class="form-control"
+                                            id="purchase_supplier"
+                                            name="supplier_id"
+                                        >
+                                            <option value="">-- Chọn nhà cung cấp --</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>File đính kèm</label>
+                                        <input
+                                            type="file"
+                                            class="form-control"
+                                            id="purchase_attachment"
+                                            name="attachment"
+                                            accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx"
+                                        >
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Số tiền</label>
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            step="1"
+                                            class="form-control"
+                                            id="purchase_amount"
+                                            name="amount"
+                                            placeholder="Nhập số tiền..."
+                                            required
+                                        >
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="text-right" style="margin-top:15px;">
+                                <button type="reset" class="btn btn-default" id="btn_reset_pos_purchase">
+                                    <i class="fa fa-refresh"></i> RESET FORM
+                                </button>
+
+                                <button type="submit" class="btn btn-success" id="btn_save_pos_purchase">
+                                    <i class="fa fa-save"></i> NHẬP HÀNG
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+
+
+                    <!-- TAB DANH SÁCH -->
+                    <div class="tab-pane fade" id="posPurchaseListTab">
+
+                        <div class="row" style="margin-bottom:15px;">
+
+                            <div class="col-sm-3">
+                                <label>Từ ngày</label>
+                                <input type="date" id="purchase_filter_from" class="form-control">
+                            </div>
+
+                            <div class="col-sm-3">
+                                <label>Đến ngày</label>
+                                <input type="date" id="purchase_filter_to" class="form-control">
+                            </div>
+
+                            <div class="col-sm-3">
+                                <label>Nhà cung cấp</label>
+                                <select id="purchase_filter_supplier" class="form-control">
+                                    <option value="">Tất cả nhà cung cấp</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <label>&nbsp;</label>
+                                <button type="button" id="btn_filter_pos_purchase" class="btn btn-primary btn-block">
+                                    <i class="fa fa-search"></i> TÌM KIẾM
+                                </button>
+                            </div>
+
+                        </div>
+
+                        <div class="row" style="margin-bottom:12px;">
+                            <div class="col-sm-12 text-right">
+                                <div class="dropdown" style="display:inline-block;">
+                                    <button
+                                        type="button"
+                                        class="btn btn-success dropdown-toggle"
+                                        data-toggle="dropdown"
+                                    >
+                                        <i class="fa fa-file-excel-o"></i> XUẤT EXCEL
+                                        <span class="caret"></span>
+                                    </button>
+
+                                    <div
+                                        class="dropdown-menu dropdown-menu-right"
+                                        style="padding:15px;width:280px;left:auto;right:0;"
+                                        id="purchaseExportBox"
+                                    >
+                                        <div class="form-group">
+                                            <label>Kho hàng</label>
+                                            <select id="purchase_export_warehouse" class="form-control">
+                                                <option value="0">Tất cả kho hàng</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Kỳ báo cáo</label>
+                                            <select id="purchase_export_quarter" class="form-control">
+                                                <option value="1">Quý 1 (1-3)</option>
+                                                <option value="2">Quý 2 (4-6)</option>
+                                                <option value="3">Quý 3 (7-9)</option>
+                                                <option value="4">Quý 4 (10-12)</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Năm</label>
+                                            <select id="purchase_export_year" class="form-control"></select>
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            id="btn_export_pos_purchase"
+                                            class="btn btn-primary btn-block"
+                                        >
+                                            <i class="fa fa-download"></i> XUẤT EXCEL
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="posPurchaseListContainer">
+                            <div class="text-center text-muted">Chưa tải danh sách.</div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
 <script type="text/javascript">
 
 /* =========================================================
@@ -6551,6 +6817,359 @@ $('#orderListModal').on(
     }
 );
 
+
+/* =========================================================
+   TIỆN ÍCH - SỔ NHẬP HÀNG
+========================================================= */
+
+function loadPosPurchaseSuppliers() {
+
+    $.ajax({
+        type: 'GET',
+        url: "<?=admin_url('pos/getPosPurchaseSuppliers');?>",
+        dataType: 'json',
+
+        success: function (data) {
+
+            if (!data || !data.status) {
+                return;
+            }
+
+            if (data.csrf_hash) {
+                csrfHash = data.csrf_hash;
+            }
+
+            var options = '<option value="">-- Chọn nhà cung cấp --</option>';
+            var filterOptions = '<option value="">Tất cả nhà cung cấp</option>';
+
+            $.each(data.suppliers, function (i, supplier) {
+
+                var name = $('<div>').text(supplier.name).html();
+
+                options += '<option value="' + supplier.id + '">' + name + '</option>';
+                filterOptions += '<option value="' + supplier.id + '">' + name + '</option>';
+
+            });
+
+            $('#purchase_supplier').html(options);
+            $('#purchase_filter_supplier').html(filterOptions);
+
+        }
+    });
+
+}
+
+
+// Lấy kho từ select kho đang có trên POS
+function loadPosPurchaseWarehouses() {
+
+    var $source = $('#poswarehouse');
+
+    var options = '';
+    var exportOptions = '<option value="0">Tất cả kho hàng</option>';
+
+    $source.find('option').each(function () {
+
+        var id = $(this).val();
+        var name = $(this).text().trim();
+
+        if (id === '' || !id) {
+            return;
+        }
+
+        var safeName = $('<div>').text(name).html();
+
+        options += '<option value="' + id + '">' + safeName + '</option>';
+        exportOptions += '<option value="' + id + '">' + safeName + '</option>';
+
+    });
+
+    $('#purchase_warehouse').html(options);
+    $('#purchase_export_warehouse').html(exportOptions);
+
+    // Mặc định chọn kho đang dùng trên POS
+    $('#purchase_warehouse').val($source.val());
+
+}
+
+
+// Mở modal
+$(document).on('click', '#btn_open_pos_purchase', function (e) {
+
+    e.preventDefault();
+
+    $('#posPurchaseModal').modal('show');
+
+    var today = new Date();
+    var yyyy = today.getFullYear();
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var dd = String(today.getDate()).padStart(2, '0');
+
+    $('#purchase_date').val(yyyy + '-' + mm + '-' + dd);
+
+    loadPosPurchaseWarehouses();
+    loadPosPurchaseSuppliers();
+
+    var yearOptions = '';
+
+    for (var y = yyyy; y >= yyyy - 5; y--) {
+        yearOptions += '<option value="' + y + '">' + y + '</option>';
+    }
+
+    $('#purchase_export_year').html(yearOptions);
+
+    $('#purchase_export_quarter').val(Math.floor(today.getMonth() / 3) + 1);
+
+});
+
+
+// Reset form
+$(document).on('click', '#btn_reset_pos_purchase', function () {
+
+    setTimeout(function () {
+
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var dd = String(today.getDate()).padStart(2, '0');
+
+        $('#purchase_date').val(yyyy + '-' + mm + '-' + dd);
+        $('#purchase_warehouse').val($('#poswarehouse').val());
+
+    }, 0);
+
+});
+
+
+// Lưu nhập hàng
+$(document).on('submit', '#posPurchaseForm', function (e) {
+
+    e.preventDefault();
+
+    var form = this;
+    var formData = new FormData(form);
+
+    formData.append(csrfName, csrfHash);
+
+    var $button = $('#btn_save_pos_purchase');
+
+    $button.prop('disabled', true)
+        .html('<i class="fa fa-spinner fa-spin"></i> ĐANG LƯU...');
+
+    $.ajax({
+
+        type: 'POST',
+
+        url: "<?=admin_url('pos/savePosPurchase');?>",
+
+        data: formData,
+
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+
+        success: function (data) {
+
+            if (data && data.csrf_hash) {
+                csrfHash = data.csrf_hash;
+            }
+
+            if (!data || !data.status) {
+
+                bootbox.alert(
+                    data && data.message
+                        ? data.message
+                        : 'Không lưu được nhập hàng.'
+                );
+
+                return;
+            }
+
+            bootbox.alert(data.message);
+
+            form.reset();
+
+            var today = new Date();
+            var yyyy = today.getFullYear();
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+            var dd = String(today.getDate()).padStart(2, '0');
+
+            $('#purchase_date').val(yyyy + '-' + mm + '-' + dd);
+            $('#purchase_warehouse').val($('#poswarehouse').val());
+
+            $('#purchase_item_name').focus();
+
+            loadPosPurchaseList();
+
+        },
+
+        error: function (xhr) {
+
+            console.log('savePosPurchase:', xhr.responseText);
+
+            bootbox.alert('Lỗi kết nối khi lưu nhập hàng.');
+
+        },
+
+        complete: function () {
+
+            $button.prop('disabled', false)
+                .html('<i class="fa fa-save"></i> NHẬP HÀNG');
+
+        }
+
+    });
+
+});
+
+
+// Tải danh sách
+function loadPosPurchaseList() {
+
+    $('#posPurchaseListContainer').html(
+        '<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Đang tải...</div>'
+    );
+
+    $.ajax({
+
+        type: 'GET',
+
+        url: "<?=admin_url('pos/getPosPurchaseList');?>",
+
+        data: {
+            warehouse_id: $('#poswarehouse').val(),
+            date_from: $('#purchase_filter_from').val(),
+            date_to: $('#purchase_filter_to').val(),
+            supplier_id: $('#purchase_filter_supplier').val()
+        },
+
+        dataType: 'json',
+
+        success: function (data) {
+
+            if (!data || !data.status) {
+                $('#posPurchaseListContainer').html(
+                    '<div class="text-danger text-center">Không tải được danh sách.</div>'
+                );
+                return;
+            }
+
+            var rows = data.rows || [];
+
+            if (!rows.length) {
+                $('#posPurchaseListContainer').html(
+                    '<div class="text-center text-muted">Không có dữ liệu nhập hàng.</div>'
+                );
+                return;
+            }
+
+            var html = '';
+
+            html += '<div class="table-responsive">';
+            html += '<table class="table table-bordered table-striped">';
+            html += '<thead><tr>';
+            html += '<th>Ngày</th>';
+            html += '<th>Kho</th>';
+            html += '<th>Tên hàng / Nội dung</th>';
+            html += '<th>Nhà cung cấp</th>';
+            html += '<th class="text-right">Số tiền</th>';
+            html += '<th>Đính kèm</th>';
+            html += '</tr></thead><tbody>';
+
+            var total = 0;
+
+            $.each(rows, function (i, row) {
+
+                var amount = parseFloat(row.amount) || 0;
+                total += amount;
+
+                var itemName = $('<div>').text(row.item_name || '').html();
+                var supplier = $('<div>').text(row.supplier_name || '').html();
+                var warehouse = $('<div>').text(row.warehouse_name || '').html();
+
+                var attachment = '-';
+
+                if (row.attachment) {
+
+                    attachment =
+                        '<a target="_blank" href="<?=base_url('assets/uploads/pos_purchases/');?>' +
+                        encodeURIComponent(row.attachment) +
+                        '"><i class="fa fa-paperclip"></i> Xem file</a>';
+
+                }
+
+                html += '<tr>';
+                html += '<td>' + row.purchase_date + '</td>';
+                html += '<td>' + warehouse + '</td>';
+                html += '<td>' + itemName + '</td>';
+                html += '<td>' + supplier + '</td>';
+                html += '<td class="text-right">' +
+                    amount.toLocaleString('vi-VN') + ' đ</td>';
+                html += '<td>' + attachment + '</td>';
+                html += '</tr>';
+
+            });
+
+            html += '</tbody>';
+
+            html += '<tfoot><tr>';
+            html += '<th colspan="4" class="text-right">TỔNG CỘNG</th>';
+            html += '<th class="text-right">' +
+                total.toLocaleString('vi-VN') + ' đ</th>';
+            html += '<th></th>';
+            html += '</tr></tfoot>';
+
+            html += '</table></div>';
+
+            $('#posPurchaseListContainer').html(html);
+
+        },
+
+        error: function (xhr) {
+
+            console.log('getPosPurchaseList:', xhr.responseText);
+
+            $('#posPurchaseListContainer').html(
+                '<div class="text-danger text-center">Lỗi tải danh sách.</div>'
+            );
+
+        }
+
+    });
+
+}
+
+
+// Khi chuyển sang tab danh sách
+$(document).on('shown.bs.tab', 'a[href="#posPurchaseListTab"]', function () {
+    loadPosPurchaseList();
+});
+
+
+// Lọc danh sách
+$(document).on('click', '#btn_filter_pos_purchase', function () {
+    loadPosPurchaseList();
+});
+
+
+// Mở form xuất Excel
+$(document).on('click', '#btn_export_pos_purchase', function () {
+
+    var warehouseId = $('#purchase_export_warehouse').val();
+    var quarter = $('#purchase_export_quarter').val();
+    var year = $('#purchase_export_year').val();
+
+    var url =
+        "<?=admin_url('pos/exportPosPurchaseExcel');?>"
+        + '?warehouse_id=' + encodeURIComponent(warehouseId)
+        + '&quarter=' + encodeURIComponent(quarter)
+        + '&year=' + encodeURIComponent(year);
+
+    window.open(url, '_blank');
+
+});
+
+
 </script>
 <style>
 #suspendSuccessToast {
@@ -6613,6 +7232,56 @@ $('#orderListModal').on(
         transform: scale(1);
     }
 }
+
+/* =====================================================
+   SỔ NHẬP HÀNG
+===================================================== */
+
+#posPurchaseModal .modal-content {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#posPurchaseModal .modal-header {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+#posPurchaseModal .nav-tabs > li > a {
+    font-weight: 600;
+}
+
+#posPurchaseModal .form-group label {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+#posPurchaseModal .form-control {
+    min-height: 40px;
+    border-radius: 5px;
+}
+
+#posPurchaseModal .table th {
+    background: #f3f6fa;
+    white-space: nowrap;
+}
+
+#posPurchaseModal .table td {
+    vertical-align: middle;
+}
+
+#posPurchaseModal .dropdown-menu {
+    z-index: 11000;
+}
+
+#posPurchaseListContainer {
+    min-height: 100px;
+}
+
+#posPurchaseListContainer .table-responsive {
+    max-height: 450px;
+    overflow: auto;
+}
+
 </style>
 
 <div id="suspendSuccessToast">

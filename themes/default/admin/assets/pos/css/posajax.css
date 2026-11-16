@@ -1632,7 +1632,7 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
     min-height: 680px;
     overflow: auto;
     background: #fff;
-    border: 1px solid #ddd;
+    border: 1px solid #5e5b5b;
 }
 
 #tableList .floor-table-btn {

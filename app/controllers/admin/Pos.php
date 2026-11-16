@@ -3509,4 +3509,367 @@ class Pos extends MY_Controller
         }
     }
 
+
+    /* =========================================================
+    TIỆN ÍCH - NHẬP HÀNG
+    ========================================================= */
+
+    public function getPosPurchaseSuppliers()
+    {
+        $suppliers = $this->pos_model->getPosPurchaseSuppliers();
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode(array(
+                'status' => true,
+                'suppliers' => $suppliers,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            ), JSON_UNESCAPED_UNICODE));
+    }
+
+
+    public function savePosPurchase()
+    {
+        $warehouse_id = (int) $this->input->post('warehouse_id');
+        $purchase_date = trim($this->input->post('purchase_date'));
+        $item_name = trim($this->input->post('item_name'));
+        $supplier_id = (int) $this->input->post('supplier_id');
+        $amount = (float) $this->input->post('amount');
+
+        if (
+            !$warehouse_id ||
+            !$purchase_date ||
+            !$item_name ||
+            $amount <= 0
+        ) {
+            return $this->posPurchaseJson(false, 'Vui lòng nhập đầy đủ thông tin.');
+        }
+
+        // Kiểm tra kho tồn tại
+        $warehouse = $this->db
+            ->where('id', $warehouse_id)
+            ->get('warehouses')
+            ->row();
+
+        if (!$warehouse) {
+            return $this->posPurchaseJson(false, 'Kho không hợp lệ.');
+        }
+
+        // Kiểm tra nhà cung cấp
+        $supplier = false;
+
+        if ($supplier_id > 0) {
+            $supplier = $this->db
+                ->where('id', $supplier_id)
+                ->where('group_name', 'supplier')
+                ->get('companies')
+                ->row();
+
+            if (!$supplier) {
+                return $this->posPurchaseJson(false, 'Nhà cung cấp không hợp lệ.');
+            }
+        }
+
+        // Kiểm tra định dạng ngày
+        $date_check = DateTime::createFromFormat('Y-m-d', $purchase_date);
+
+        if (!$date_check || $date_check->format('Y-m-d') !== $purchase_date) {
+            return $this->posPurchaseJson(false, 'Ngày nhập không hợp lệ.');
+        }
+
+        $attachment = null;
+
+        // Upload file nếu có
+        if (
+            isset($_FILES['attachment']) &&
+            $_FILES['attachment']['size'] > 0
+        ) {
+            $upload_path = FCPATH . 'assets/uploads/pos_purchases/';
+
+            if (!is_dir($upload_path)) {
+                mkdir($upload_path, 0755, true);
+            }
+
+            $config = array(
+                'upload_path'   => $upload_path,
+                'allowed_types' => 'jpg|jpeg|png|pdf|doc|docx|xls|xlsx',
+                'max_size'      => 10240,
+                'encrypt_name'  => true,
+                'overwrite'     => false
+            );
+
+            $this->load->library('upload');
+            $this->upload->initialize($config);
+
+            if (!$this->upload->do_upload('attachment')) {
+                return $this->posPurchaseJson(
+                    false,
+                    strip_tags($this->upload->display_errors())
+                );
+            }
+
+            $uploaded = $this->upload->data();
+            $attachment = $uploaded['file_name'];
+        }
+
+        $data = array(
+            'warehouse_id'  => $warehouse_id,
+            'purchase_date' => $purchase_date,
+            'item_name'     => $item_name,
+            'supplier_id'   => $supplier ? $supplier->id : null,
+            'supplier_name' => $supplier ? $supplier->name : null,
+            'amount'        => $amount,
+            'attachment'    => $attachment,
+            'created_by'    => $this->session->userdata('user_id'),
+            'created_at'    => date('Y-m-d H:i:s')
+        );
+
+        if (!$this->pos_model->addPosPurchase($data)) {
+            return $this->posPurchaseJson(false, 'Không lưu được dữ liệu nhập hàng.');
+        }
+
+        return $this->posPurchaseJson(true, 'Đã lưu nhập hàng thành công.');
+    }
+
+
+    private function posPurchaseJson($status, $message)
+    {
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode(array(
+                'status' => $status,
+                'message' => $message,
+                'csrf_hash' => $this->security->get_csrf_hash()
+            ), JSON_UNESCAPED_UNICODE));
+    }
+
+
+    public function getPosPurchaseList()
+    {
+        $filters = array(
+            'warehouse_id' => (int) $this->input->get('warehouse_id'),
+            'date_from'    => trim($this->input->get('date_from')),
+            'date_to'      => trim($this->input->get('date_to')),
+            'supplier_id'  => (int) $this->input->get('supplier_id'),
+            'keyword'      => trim($this->input->get('keyword'))
+        );
+
+        $rows = $this->pos_model->getPosPurchases($filters);
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode(array(
+                'status' => true,
+                'rows' => $rows
+            ), JSON_UNESCAPED_UNICODE));
+    }
+
+
+    /* =========================================================
+    XUẤT SỔ NHẬP HÀNG THEO QUÝ
+    ========================================================= */
+
+    public function exportPosPurchaseExcel()
+    {
+        $warehouse_id = (int) $this->input->get('warehouse_id');
+        $quarter = (int) $this->input->get('quarter');
+        $year = (int) $this->input->get('year');
+
+        if ($quarter < 1 || $quarter > 4 || $year < 2000 || $year > 2100) {
+            show_error('Kỳ xuất Excel không hợp lệ.');
+            return;
+        }
+
+        $this->load->library('excel');
+
+        $spreadsheet = $this->excel;
+
+        if (!file_exists($excel_path)) {
+            show_error('Chưa tìm thấy thư viện PHPExcel. Cần kiểm tra đường dẫn thư viện.');
+            return;
+        }
+
+        require_once $excel_path;
+
+        if (!class_exists('PHPExcel')) {
+            show_error('Không khởi tạo được PHPExcel.');
+            return;
+        }
+
+        $start_month = (($quarter - 1) * 3) + 1;
+        $end_month = $start_month + 2;
+
+        $date_from = sprintf('%04d-%02d-01', $year, $start_month);
+        $date_to = date('Y-m-t', strtotime(
+            sprintf('%04d-%02d-01', $year, $end_month)
+        ));
+
+        // Lấy kho từ sma_warehouses
+        $this->db->select('id, name');
+        $this->db->from('warehouses');
+
+        if ($warehouse_id > 0) {
+            $this->db->where('id', $warehouse_id);
+        }
+
+        $warehouses = $this->db->get()->result();
+
+        if (!$warehouses) {
+            show_error('Không tìm thấy kho.');
+            return;
+        }
+
+        $spreadsheet->removeSheetByIndex(0);
+
+        $sheet_count = 0;
+
+        foreach ($warehouses as $warehouse) {
+
+            // Ánh xạ theo NAME của sma_warehouses
+            $warehouse_name = mb_strtolower(trim($warehouse->name), 'UTF-8');
+
+            if (strpos($warehouse_name, 'ba-ni') !== false) {
+                $sheet_name = 'BA-NI';
+            } elseif (strpos($warehouse_name, 'mini') !== false) {
+                $sheet_name = 'MINI';
+            } else {
+                continue;
+            }
+
+            $sheet = $spreadsheet->createSheet();
+            $sheet->setTitle($sheet_name);
+
+            $sheet->mergeCells('A1:D1');
+            $sheet->setCellValue('A1', 'SỔ NHẬP HÀNG HÓA, DỊCH VỤ');
+
+            $sheet->mergeCells('A2:D2');
+            $sheet->setCellValue(
+                'A2',
+                'Kho: ' . $warehouse->name
+            );
+
+            $sheet->mergeCells('A3:D3');
+            $sheet->setCellValue(
+                'A3',
+                'Kỳ kê khai: Quý ' . $quarter . ' năm ' . $year
+            );
+
+            $sheet->setCellValue('A5', 'Chứng từ');
+            $sheet->setCellValue('A6', 'Số hiệu');
+            $sheet->setCellValue('B6', 'Ngày, tháng');
+            $sheet->setCellValue('C5', 'Diễn giải');
+            $sheet->setCellValue('D5', 'Số tiền');
+
+            $sheet->setCellValue('A7', 'A');
+            $sheet->setCellValue('B7', 'B');
+            $sheet->setCellValue('C7', 'C');
+            $sheet->setCellValue('D7', 1);
+
+            // Tổng tiền từng ngày trong quý
+            $daily = $this->db
+                ->select('purchase_date, SUM(amount) AS total_amount', false)
+                ->where('warehouse_id', $warehouse->id)
+                ->where('purchase_date >=', $date_from)
+                ->where('purchase_date <=', $date_to)
+                ->group_by('purchase_date')
+                ->order_by('purchase_date', 'ASC')
+                ->get('pos_purchases')
+                ->result();
+
+            $daily_map = array();
+
+            foreach ($daily as $item) {
+                $daily_map[$item->purchase_date] = (float) $item->total_amount;
+            }
+
+            $row = 8;
+            $grand_total = 0;
+
+            $period = new DatePeriod(
+                new DateTime($date_from),
+                new DateInterval('P1D'),
+                (new DateTime($date_to))->modify('+1 day')
+            );
+
+            foreach ($period as $day) {
+
+                $date = $day->format('Y-m-d');
+
+                // Chỉ ghi ngày có phát sinh nhập hàng
+                if (!isset($daily_map[$date])) {
+                    continue;
+                }
+
+                $amount = $daily_map[$date];
+                $grand_total += $amount;
+
+                $sheet->setCellValue('A' . $row, '');
+                $sheet->setCellValue(
+                    'B' . $row,
+                    PHPExcel_Shared_Date::PHPToExcel($day)
+                );
+                $sheet->setCellValue(
+                    'C' . $row,
+                    'Nhập hàng ngày ' . $day->format('d/m/Y')
+                );
+                $sheet->setCellValue('D' . $row, $amount);
+
+                $sheet->getStyle('B' . $row)
+                    ->getNumberFormat()
+                    ->setFormatCode('dd/mm/yyyy');
+
+                $row++;
+            }
+
+            $sheet->setCellValue('C' . $row, 'Tổng cộng');
+            $sheet->setCellValue('D' . $row, $grand_total);
+
+            // Định dạng
+            $sheet->mergeCells('A5:B5');
+
+            $sheet->getStyle('A1:D7')->getFont()->setBold(true);
+
+            $sheet->getStyle('A5:D7')->getAlignment()
+                ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+            $sheet->getStyle('A5:D' . $row)->getBorders()
+                ->getAllBorders()
+                ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+            $sheet->getStyle('D8:D' . $row)
+                ->getNumberFormat()
+                ->setFormatCode('#,##0');
+
+            $sheet->getStyle('C' . $row . ':D' . $row)
+                ->getFont()->setBold(true);
+
+            $sheet->getColumnDimension('A')->setWidth(12);
+            $sheet->getColumnDimension('B')->setWidth(18);
+            $sheet->getColumnDimension('C')->setWidth(35);
+            $sheet->getColumnDimension('D')->setWidth(20);
+
+            $sheet_count++;
+        }
+
+        if ($sheet_count == 0) {
+            show_error('Tên kho không khớp kho Ba-Ni hoặc Mini.');
+            return;
+        }
+
+        $spreadsheet->setActiveSheetIndex(0);
+
+        $filename = 'So_nhap_hang_Quy_' . $quarter . '_' . $year . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = PHPExcel_IOFactory::createWriter($spreadsheet, 'Excel2007');
+        $writer->save('php://output');
+
+        exit;
+    }
+
+
+
 }

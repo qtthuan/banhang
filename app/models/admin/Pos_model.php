@@ -1640,6 +1640,75 @@ class Pos_model extends CI_Model
         return false;
     }
 
+
+    /* =========================================================
+    SỔ NHẬP HÀNG POS
+    ========================================================= */
+
+    // Danh sách nhà cung cấp
+    public function getPosPurchaseSuppliers()
+    {
+        return $this->db
+            ->select('id, name, phone')
+            ->where('group_name', 'supplier')
+            ->order_by('name', 'ASC')
+            ->get('companies')
+            ->result();
+    }
+
+
+    // Lưu một lần ghi nhận nhập hàng
+    public function addPosPurchase($data)
+    {
+        return $this->db->insert('pos_purchases', $data);
+    }
+
+
+    // Danh sách nhập hàng
+    public function getPosPurchases($filters = array())
+    {
+        $this->db
+            ->select('
+                p.*,
+                c.name AS supplier_display,
+                w.name AS warehouse_name,
+                u.username AS created_by_name
+            ')
+            ->from('pos_purchases p')
+            ->join('companies c', 'c.id = p.supplier_id', 'left')
+            ->join('warehouses w', 'w.id = p.warehouse_id', 'left')
+            ->join('users u', 'u.id = p.created_by', 'left');
+
+        if (!empty($filters['warehouse_id'])) {
+            $this->db->where('p.warehouse_id', $filters['warehouse_id']);
+        }
+
+        if (!empty($filters['date_from'])) {
+            $this->db->where('p.purchase_date >=', $filters['date_from']);
+        }
+
+        if (!empty($filters['date_to'])) {
+            $this->db->where('p.purchase_date <=', $filters['date_to']);
+        }
+
+        if (!empty($filters['supplier_id'])) {
+            $this->db->where('p.supplier_id', $filters['supplier_id']);
+        }
+
+        if (!empty($filters['keyword'])) {
+            $this->db->group_start()
+                ->like('p.item_name', $filters['keyword'])
+                ->or_like('p.supplier_name', $filters['keyword'])
+                ->group_end();
+        }
+
+        $this->db->order_by('p.purchase_date', 'DESC');
+        $this->db->order_by('p.id', 'DESC');
+
+        return $this->db->get()->result();
+    }
+
+
     public function addPrinter($data = array()) {
         if($this->db->insert('printers', $data)) {
             return $this->db->insert_id();
