@@ -3514,26 +3514,11 @@ class Pos extends MY_Controller
     TIỆN ÍCH - NHẬP HÀNG
     ========================================================= */
 
-    public function getPosPurchaseSuppliers()
-    {
-        $suppliers = $this->pos_model->getPosPurchaseSuppliers();
-
-        $this->output
-            ->set_content_type('application/json')
-            ->set_output(json_encode(array(
-                'status' => true,
-                'suppliers' => $suppliers,
-                'csrf_hash' => $this->security->get_csrf_hash()
-            ), JSON_UNESCAPED_UNICODE));
-    }
-
-
     public function savePosPurchase()
     {
         $warehouse_id = (int) $this->input->post('warehouse_id');
         $purchase_date = trim($this->input->post('purchase_date'));
         $item_name = trim($this->input->post('item_name'));
-        $supplier_id = (int) $this->input->post('supplier_id');
         $amount = (float) $this->input->post('amount');
 
         if (
@@ -3555,20 +3540,6 @@ class Pos extends MY_Controller
             return $this->posPurchaseJson(false, 'Kho không hợp lệ.');
         }
 
-        // Kiểm tra nhà cung cấp
-        $supplier = false;
-
-        if ($supplier_id > 0) {
-            $supplier = $this->db
-                ->where('id', $supplier_id)
-                ->where('group_name', 'supplier')
-                ->get('companies')
-                ->row();
-
-            if (!$supplier) {
-                return $this->posPurchaseJson(false, 'Nhà cung cấp không hợp lệ.');
-            }
-        }
 
         // Kiểm tra định dạng ngày
         $date_check = DateTime::createFromFormat('Y-m-d', $purchase_date);
@@ -3615,9 +3586,7 @@ class Pos extends MY_Controller
         $data = array(
             'warehouse_id'  => $warehouse_id,
             'purchase_date' => $purchase_date,
-            'item_name'     => $item_name,
-            'supplier_id'   => $supplier ? $supplier->id : null,
-            'supplier_name' => $supplier ? $supplier->name : null,
+            'item_name'     => $item_name,            
             'amount'        => $amount,
             'attachment'    => $attachment,
             'created_by'    => $this->session->userdata('user_id'),
@@ -3650,7 +3619,6 @@ class Pos extends MY_Controller
             'warehouse_id' => (int) $this->input->get('warehouse_id'),
             'date_from'    => trim($this->input->get('date_from')),
             'date_to'      => trim($this->input->get('date_to')),
-            'supplier_id'  => (int) $this->input->get('supplier_id'),
             'keyword'      => trim($this->input->get('keyword'))
         );
 
