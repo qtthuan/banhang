@@ -693,6 +693,169 @@ class Pos extends MY_Controller
         }
     }
 
+
+    /**
+     * THANH TOÁN FULL ĐƠN VÀ MỞ LẠI BÀN
+     * Chỉ áp dụng cho kho Tiệm Nước Mini.
+     */
+    public function payAndReleaseBusyTable()
+    {
+        $this->sma->checkPermissions('index');
+
+        $sale_id = (int) $this->input->post('sale_id');
+        $table_id = (int) $this->input->post('table_id');
+        $paid_by = $this->input->post('paid_by');
+
+        $warehouse_id = (int) $this->session->userdata('warehouse_id');
+        $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id');
+
+        if (
+            !$sale_id ||
+            !$table_id ||
+            !in_array($paid_by, ['cash', 'cc']) ||
+            !$mini_warehouse_id ||
+            $warehouse_id != $mini_warehouse_id
+        ) {
+            echo json_encode([
+                'status' => false,
+                'message' => 'Thông tin thanh toán không hợp lệ.'
+            ]);
+            return;
+        }
+
+        $today = date('Y-m-d');
+
+        $this->db->trans_begin();
+
+        // Khóa dòng hóa đơn để tránh thanh toán trùng
+        $sales_table = $this->db->dbprefix('sales');
+
+        $sale_query = $this->db->query(
+            "SELECT * FROM {$sales_table}
+            WHERE id = ?
+            AND warehouse_id = ?
+            AND table_id = ?
+            AND order_type = 'TABLE'
+            AND serving_status = 1
+            AND payment_status != 'paid'
+            AND paid = 0
+            AND is_ingredient = 0
+            AND sale_status != 'returned'
+            AND DATE(date) = ?
+            LIMIT 1
+            FOR UPDATE",
+            [
+                $sale_id,
+                $warehouse_id,
+                $table_id,
+                $today
+            ]
+        );
+
+        $sale = $sale_query->row();
+
+        if (!$sale) {
+            $this->db->trans_rollback();
+
+            echo json_encode([
+                'status' => false,
+                'message' => 'Đơn hàng không hợp lệ, đã thanh toán hoặc không còn phục vụ.'
+            ]);
+            return;
+        }
+
+        // Kiểm tra đơn chưa từng ghi nhận khoản thu nào
+        $existing_payment = $this->db
+            ->where('sale_id', $sale_id)
+            ->where('type', 'received')
+            ->limit(1)
+            ->get('payments')
+            ->row();
+
+        if ($existing_payment) {
+            $this->db->trans_rollback();
+
+            echo json_encode([
+                'status' => false,
+                'message' => 'Đơn đã có giao dịch thanh toán. Vui lòng kiểm tra lại.'
+            ]);
+            return;
+        }
+
+        $amount = (float) $sale->grand_total;
+
+        if ($amount <= 0) {
+            $this->db->trans_rollback();
+
+            echo json_encode([
+                'status' => false,
+                'message' => 'Tổng tiền hóa đơn không hợp lệ.'
+            ]);
+            return;
+        }
+
+        // Ghi nhận thanh toán đủ 100%
+        $payment_data = [
+            'date' => date('Y-m-d H:i:s'),
+            'sale_id' => $sale_id,
+            'reference_no' => $sale->reference_no,
+            'amount' => $amount,
+            'paid_by' => $paid_by,
+            'pos_paid' => $amount,
+            'type' => 'received',
+            'created_by' => $this->session->userdata('user_id')
+        ];
+
+        $this->db->insert('payments', $payment_data);
+
+        if ($this->db->affected_rows() <= 0) {
+            $this->db->trans_rollback();
+
+            echo json_encode([
+                'status' => false,
+                'message' => 'Không thể ghi nhận thanh toán.'
+            ]);
+            return;
+        }
+
+        // Cập nhật hóa đơn đã thanh toán và giải phóng bàn
+        $this->db
+            ->where('id', $sale_id)
+            ->where('warehouse_id', $warehouse_id)
+            ->where('table_id', $table_id)
+            ->where('serving_status', 1)
+            ->where('payment_status !=', 'paid')
+            ->where('paid', 0)
+            ->update('sales', [
+                'payment_status' => 'paid',
+                'paid' => $amount,
+                'serving_status' => 0
+            ]);
+
+        if (
+            $this->db->affected_rows() <= 0 ||
+            $this->db->trans_status() === false
+        ) {
+            $this->db->trans_rollback();
+
+            echo json_encode([
+                'status' => false,
+                'message' => 'Không thể hoàn tất thanh toán và mở bàn.'
+            ]);
+            return;
+        }
+
+        $this->db->trans_commit();
+
+        echo json_encode([
+            'status' => true,
+            'message' => 'Thanh toán thành công. Bàn đã được mở lại.',
+            'amount' => $amount,
+            'paid_by' => $paid_by,
+            'csrf_hash' => $this->security->get_csrf_hash()
+        ]);
+    }
+
     
     public function getTodayOrders()
     {

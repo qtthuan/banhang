@@ -1537,6 +1537,28 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                         THANH TOÁN & MỞ LẠI BÀN
                     </button>
 
+                    <div id="busyPaymentMethods" style="display:none; margin-top:8px;">
+                        <button type="button"
+                                class="btn btn-primary btn-block"
+                                id="btnBusyPayCash">
+                            <i class="fa fa-money"></i>
+                            TIỀN MẶT
+                        </button>
+
+                        <button type="button"
+                                class="btn btn-info btn-block"
+                                id="btnBusyPayBank">
+                            <i class="fa fa-bank"></i>
+                            CHUYỂN KHOẢN
+                        </button>
+
+                        <button type="button"
+                                class="btn btn-default btn-block"
+                                id="btnCancelBusyPayment">
+                            HỦY
+                        </button>
+                    </div>
+
                     <button type="button" class="btn btn-warning btn-block" id="btnReleaseSale">
                         <i class="fa fa-unlock"></i>
                         MỞ LẠI BÀN
@@ -1991,6 +2013,164 @@ var lang = {
         // Đóng modal
         $('#tableModal').modal('hide');
     });
+
+    // MỞ LẠI BÀN - HÓA ĐƠN TẠM
+    $(document).on('click', '#btnReleaseSuspended', function () {
+
+        releaseBusyTable('suspended');
+    });
+
+    // MỞ LẠI BÀN - HÓA ĐƠN ĐÃ LƯU
+    $(document).on('click', '#btnReleaseSale', function () {
+
+        releaseBusyTable('sale');
+    });
+
+    function releaseBusyTable(type) {
+
+        var $modal = $('#busyTableModal');
+
+        var tableId = $modal.data('table-id');
+
+        var recordId = type === 'suspended'
+            ? $modal.data('suspended-id')
+            : $modal.data('sale-id');
+
+        if (!tableId || !recordId) {
+            alert('Không tìm thấy thông tin hóa đơn.');
+            return;
+        }
+
+        if (!confirm('Bạn có chắc muốn mở lại bàn này không?')) {
+            return;
+        }
+
+        $.ajax({
+            url: site.base_url + 'pos/releaseBusyTable',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                table_id: tableId,
+                record_id: recordId,
+                type: type,
+                [csrfName]: csrfHash
+            },
+            success: function (res) {
+
+                if (res.csrf_hash) {
+                    csrfHash = res.csrf_hash;
+                }
+
+                if (!res.status) {
+                    alert(res.message || 'Không thể mở lại bàn.');
+                    return;
+                }
+
+                alert(res.message);
+
+                $modal.modal('hide');
+
+                // Tải lại sơ đồ bàn và trạng thái phục vụ
+                loadTableList();
+            },
+            error: function () {
+                alert('Lỗi kết nối máy chủ.');
+            }
+        });
+    }
+
+    
+    // Bấm THANH TOÁN & MỞ LẠI BÀN
+    $(document).on('click', '#btnPayAndRelease', function () {
+
+        $('#btnPayAndRelease').hide();
+        $('#busyPaymentMethods').show();
+
+    });
+
+    // Hủy chọn phương thức thanh toán
+    $(document).on('click', '#btnCancelBusyPayment', function () {
+
+        $('#busyPaymentMethods').hide();
+        $('#btnPayAndRelease').show();
+
+    });
+
+    // Thanh toán tiền mặt
+    $(document).on('click', '#btnBusyPayCash', function () {
+
+        payAndReleaseBusyTable('cash');
+
+    });
+
+    // Thanh toán chuyển khoản
+    $(document).on('click', '#btnBusyPayBank', function () {
+
+        payAndReleaseBusyTable('cc');
+
+    });
+
+    function payAndReleaseBusyTable(paidBy) {
+
+        var $modal = $('#busyTableModal');
+
+        var saleId = $modal.data('sale-id');
+        var tableId = $modal.data('table-id');
+
+        if (!saleId || !tableId) {
+            alert('Không tìm thấy thông tin hóa đơn.');
+            return;
+        }
+
+        if (!confirm('Xác nhận thanh toán toàn bộ hóa đơn và mở lại bàn?')) {
+            return;
+        }
+
+        $('#btnBusyPayCash, #btnBusyPayBank').prop('disabled', true);
+
+        $.ajax({
+            url: site.base_url + 'pos/payAndReleaseBusyTable',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                sale_id: saleId,
+                table_id: tableId,
+                paid_by: paidBy,
+                [csrfName]: csrfHash
+            },
+            success: function (res) {
+
+                if (res.csrf_hash) {
+                    csrfHash = res.csrf_hash;
+                }
+
+                if (!res.status) {
+                    alert(res.message || 'Thanh toán thất bại.');
+                    return;
+                }
+
+                alert(
+                    res.message +
+                    '\nSố tiền: ' +
+                    Number(res.amount).toLocaleString('vi-VN') +
+                    'đ'
+                );
+
+                $modal.modal('hide');
+
+                $('#busyPaymentMethods').hide();
+                $('#btnPayAndRelease').show();
+
+                loadTableList();
+            },
+            error: function () {
+                alert('Lỗi kết nối máy chủ khi thanh toán.');
+            },
+            complete: function () {
+                $('#btnBusyPayCash, #btnBusyPayBank').prop('disabled', false);
+            }
+        });
+    }
 
 
     
