@@ -517,6 +517,182 @@ class Pos extends MY_Controller
             'sale' => $sale
         ]);
     }
+
+    
+    /**
+     * LẤY THÔNG TIN ĐƠN ĐANG GIỮ BÀN
+     * Chỉ áp dụng cho kho Tiệm Nước Mini.
+     */
+    public function getBusyTableInfo()
+    {
+        $this->sma->checkPermissions('index');
+
+        $table_id = (int) $this->input->post('table_id');
+        $warehouse_id = (int) $this->session->userdata('warehouse_id');
+        $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id');
+
+        if (
+            !$table_id ||
+            !$warehouse_id ||
+            $warehouse_id != $mini_warehouse_id
+        ) {
+            echo json_encode([
+                'status' => false,
+                'message' => 'Thông tin bàn hoặc kho không hợp lệ.'
+            ]);
+            return;
+        }
+
+        $today = date('Y-m-d');
+
+        // Kiểm tra bàn có tồn tại trong kho hiện tại
+        $table = $this->db
+            ->where('id', $table_id)
+            ->get('tables')
+            ->row();
+
+        if (!$table) {
+            echo json_encode([
+                'status' => false,
+                'message' => 'Không tìm thấy bàn.'
+            ]);
+            return;
+        }
+
+        // Lấy đơn tạm đang giữ bàn
+        $this->db
+            ->from('suspended_bills')
+            ->where('table_id', $table_id)
+            ->where('warehouse_id', $warehouse_id)
+            ->where('order_type', 'TABLE')
+            ->where('serving_status', 1)
+            ->where('DATE(date) =', $today);
+
+        if (!$this->Owner && !$this->Admin) {
+            $this->db->where(
+                'created_by',
+                $this->session->userdata('user_id')
+            );
+        }
+
+        $suspended_bill = $this->db
+            ->order_by('id', 'DESC')
+            ->limit(1)
+            ->get()
+            ->row();
+
+        // Lấy hóa đơn đã lưu nhưng chưa thanh toán
+        $sale = $this->db
+            ->where('table_id', $table_id)
+            ->where('warehouse_id', $warehouse_id)
+            ->where('order_type', 'TABLE')
+            ->where('serving_status', 1)
+            ->where('is_ingredient', 0)
+            ->where('sale_status !=', 'returned')
+            ->where('payment_status !=', 'paid')
+            ->where('DATE(date) =', $today)
+            ->order_by('id', 'DESC')
+            ->limit(1)
+            ->get('sales')
+            ->row();
+
+        echo json_encode([
+            'status' => true,
+            'table_id' => $table_id,
+            'table_name' => $table->table_name,
+            'suspended_bill' => $suspended_bill ? [
+                'id' => (int) $suspended_bill->id,
+                'total' => $suspended_bill->total,
+                'suspend_note' => $suspended_bill->suspend_note
+            ] : null,
+            'sale' => $sale ? [
+                'id' => (int) $sale->id,
+                'reference_no' => $sale->reference_no,
+                'grand_total' => $sale->grand_total,
+                'payment_status' => $sale->payment_status
+            ] : null
+        ]);
+    }
+
+    /**
+     * GIẢI PHÓNG BÀN ĐANG PHỤC VỤ
+     * Chỉ áp dụng cho kho Tiệm Nước Mini.
+     */
+    public function releaseBusyTable()
+    {
+        $this->sma->checkPermissions('index');
+
+        $table_id = (int) $this->input->post('table_id');
+        $record_id = (int) $this->input->post('record_id');
+        $type = $this->input->post('type');
+
+        $warehouse_id = (int) $this->session->userdata('warehouse_id');
+        $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id');
+
+        if (
+            !$table_id ||
+            !$record_id ||
+            !in_array($type, ['suspended', 'sale']) ||
+            $warehouse_id != $mini_warehouse_id
+        ) {
+            echo json_encode([
+                'status' => false,
+                'message' => 'Thông tin không hợp lệ.'
+            ]);
+            return;
+        }
+
+        $today = date('Y-m-d');
+
+        if ($type == 'suspended') {
+            $this->db
+                ->where('id', $record_id)
+                ->where('table_id', $table_id)
+                ->where('warehouse_id', $warehouse_id)
+                ->where('order_type', 'TABLE')
+                ->where('serving_status', 1)
+                ->where('DATE(date) =', $today);
+
+            if (!$this->Owner && !$this->Admin) {
+                $this->db->where(
+                    'created_by',
+                    $this->session->userdata('user_id')
+                );
+            }
+
+            $this->db->update('suspended_bills', [
+                'serving_status' => 0
+            ]);
+
+        } else {
+            $this->db
+                ->where('id', $record_id)
+                ->where('table_id', $table_id)
+                ->where('warehouse_id', $warehouse_id)
+                ->where('order_type', 'TABLE')
+                ->where('serving_status', 1)
+                ->where('payment_status !=', 'paid')
+                ->where('is_ingredient', 0)
+                ->where('sale_status !=', 'returned')
+                ->where('DATE(date) =', $today)
+                ->update('sales', [
+                    'serving_status' => 0
+                ]);
+        }
+
+        if ($this->db->affected_rows() > 0) {
+            echo json_encode([
+                'status' => true,
+                'message' => 'Đã mở lại bàn.'
+            ]);
+        } else {
+            echo json_encode([
+                'status' => false,
+                'message' => 'Không tìm thấy đơn đang giữ bàn hoặc bàn đã được mở.'
+            ]);
+        }
+    }
+
     
     public function getTodayOrders()
     {
@@ -1875,6 +2051,7 @@ class Pos extends MY_Controller
             ->where('table_id', $table->id)
             ->where('warehouse_id', $warehouse_id)
             ->where('order_type', 'TABLE')
+            ->where('serving_status', 1)
             ->where('date >=', $sdate)
             ->where('date <=', $edate)
             ->count_all_results('suspended_bills');
@@ -2107,6 +2284,7 @@ class Pos extends MY_Controller
                     ->where('table_id', $table_id)
                     ->where('warehouse_id', $warehouse_id)
                     ->where('order_type', 'TABLE')
+                    ->where('serving_status', 1)
                     ->where('date >=', $sdate)
                     ->where('date <=', $edate)
                     ->count_all_results('suspended_bills');

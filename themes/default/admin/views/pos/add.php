@@ -1511,12 +1511,37 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                     Bàn này hiện đang có đơn hàng.
                 </p>
 
-                <button type="button"
-                        class="btn btn-success btn-block"
-                        id="btnOpenBusyTableOrder">
-                    <i class="fa fa-folder-open"></i>
-                    MỞ ĐƠN ĐANG PHỤC VỤ
-                </button>
+                <div id="busySuspendedActions" style="display:none;">
+                    <div class="text-center">
+                        <strong>HÓA ĐƠN TẠM</strong>
+                    </div>
+
+                    <button type="button" class="btn btn-success btn-block" id="btnReopenSuspended">
+                        <i class="fa fa-folder-open"></i>
+                        MỞ LẠI HÓA ĐƠN
+                    </button>
+
+                    <button type="button" class="btn btn-warning btn-block" id="btnReleaseSuspended">
+                        <i class="fa fa-unlock"></i>
+                        MỞ LẠI BÀN
+                    </button>
+                </div>
+
+                <div id="busySaleActions" style="display:none;">
+                    <div class="text-center">
+                        <strong>HÓA ĐƠN ĐÃ LƯU</strong>
+                    </div>
+
+                    <button type="button" class="btn btn-success btn-block" id="btnPayAndRelease">
+                        <i class="fa fa-money"></i>
+                        THANH TOÁN & MỞ LẠI BÀN
+                    </button>
+
+                    <button type="button" class="btn btn-warning btn-block" id="btnReleaseSale">
+                        <i class="fa fa-unlock"></i>
+                        MỞ LẠI BÀN
+                    </button>
+                </div>
 
                 <button type="button"
                         class="btn btn-default btn-block"
@@ -1874,8 +1899,63 @@ var lang = {
                 transform: 'none'
             });
 
-            // Mở ngay tại vị trí đã tính
+            // Ẩn các nhóm nút cũ trước khi tải dữ liệu
+            $('#busySuspendedActions').hide();
+            $('#busySaleActions').hide();
+
+            // Mở popup
             $modal.modal('show');
+
+            // Lấy thông tin đơn đang giữ bàn
+            $.ajax({
+                url: site.base_url + 'pos/getBusyTableInfo',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    table_id: tableId,
+                    [csrfName]: csrfHash
+                },
+                success: function (res) {
+
+                    if (res.csrf_hash) {
+                        csrfHash = res.csrf_hash;
+                    }
+
+                    if (!res.status) {
+                        alert(res.message || 'Không lấy được thông tin bàn.');
+                        return;
+                    }
+
+                    // Lưu ID hóa đơn vào popup
+                    $modal.data(
+                        'suspended-id',
+                        res.suspended_bill ? res.suspended_bill.id : ''
+                    );
+
+                    $modal.data(
+                        'sale-id',
+                        res.sale ? res.sale.id : ''
+                    );
+
+                    // Hiện nhóm hóa đơn tạm
+                    if (res.suspended_bill) {
+                        $('#busySuspendedActions').show();
+                    }
+
+                    // Hiện nhóm hóa đơn đã lưu
+                    if (res.sale) {
+                        $('#busySaleActions').show();
+                    }
+
+                    if (!res.suspended_bill && !res.sale) {
+                        alert('Bàn không còn hóa đơn đang phục vụ.');
+                        $modal.modal('hide');
+                    }
+                },
+                error: function () {
+                    alert('Lỗi khi tải thông tin bàn.');
+                }
+            });
 
             return;
         }

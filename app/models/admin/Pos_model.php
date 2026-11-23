@@ -1409,6 +1409,9 @@ class Pos_model extends CI_Model
             'table_id' => !empty($data['table_id'])
                 ? (int) $data['table_id']
                 : NULL,
+            'serving_status' => isset($data['serving_status'])
+                ? (int) $data['serving_status']
+                : 0,
             'date' => $data['date'],
             'suspend_note' => $data['suspend_note'],
             'total' => $data['grand_total'],
