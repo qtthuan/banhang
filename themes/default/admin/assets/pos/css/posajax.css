@@ -1918,9 +1918,9 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
     position: fixed !important;
     z-index: 200000 !important;
     min-width: 190px;
-    padding: 6px 0;
+    padding: 2px 0;
     background: #fff;
-    border: 1px solid #dce3eb;
+    border: 1px solid #0e7925;
     border-radius: 8px;
     box-shadow: 0 8px 24px rgba(0,0,0,.20);
 }
@@ -1946,6 +1946,43 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
     background: #f0f7f2;
     color: #238348 !important;
 }
+
+/* NÚT TIỆN ÍCH - ĐỒNG BỘ HEADER POS */
+#btn_pos_utilities {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    min-height: 40px;
+    padding: 0 12px !important;
+    margin-top: 9px !important;
+
+    background: #5cb85c !important;
+    border: 1px solid #4cae4c !important;
+    border-radius: 0 !important;
+
+    color: #fff !important;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 20px;
+    text-decoration: none !important;
+    vertical-align: top;
+}
+
+#btn_pos_utilities:hover,
+#btn_pos_utilities:focus,
+#btn_pos_utilities:active {
+    background: #449d44 !important;
+    border-color: #398439 !important;
+    color: #fff !important;
+    outline: none !important;
+}
+
+#btn_pos_utilities i {
+    color: #fff !important;
+    margin-right: 6px;
+}
+
 
 /* FORM SỔ NHẬP HÀNG */
 #posPurchaseModal .modal-content {
@@ -2040,4 +2077,37 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
         width: 96%;
         margin: 10px auto;
     }
+}
+/* Popup thao tác bàn */
+#busyTableModal {
+    background: transparent !important;
+}
+
+#busyTableModal .modal-dialog {
+    position: fixed !important;
+    margin: 0 !important;
+    width: 300px;
+    max-width: calc(100vw - 20px);
+    transform: none !important;
+}
+
+#busyTableModal .modal-content {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+}
+
+#busyTableModal .modal-header {
+    background: #f5f9f5;
+}
+
+#busyTableModal .modal-title {
+    color: #398439;
+    font-weight: 700;
+}
+
+#busyTableModal #btnOpenBusyTableOrder {
+    padding: 12px;
+    font-weight: 700;
+    margin-bottom: 10px;
 }

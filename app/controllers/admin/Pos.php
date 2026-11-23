@@ -472,6 +472,51 @@ class Pos extends MY_Controller
 
             )));
     }
+
+    public function getServingTableOrder()
+    {
+        $this->sma->checkPermissions('index');
+
+        $table_id = (int) $this->input->post('table_id');
+        $warehouse_id = (int) $this->session->userdata('warehouse_id');
+
+        if (!$table_id || !$warehouse_id) {
+            echo json_encode([
+                'status'  => false,
+                'message' => 'Thiếu thông tin bàn hoặc kho.'
+            ]);
+            return;
+        }
+
+        $today = date('Y-m-d');
+
+        $sale = $this->db
+            ->where('table_id', $table_id)
+            ->where('warehouse_id', $warehouse_id)
+            ->where('order_type', 'TABLE')
+            ->where('serving_status', 1)
+            ->where('is_ingredient', 0)
+            ->where('sale_status !=', 'returned')
+            ->where('DATE(date) =', $today)
+            ->order_by('id', 'DESC')
+            ->limit(1)
+            ->get('sales')
+            ->row();
+
+        if (!$sale) {
+            echo json_encode([
+                'status'  => false,
+                'message' => 'Không tìm thấy đơn đang phục vụ của bàn này.'
+            ]);
+            return;
+        }
+
+        echo json_encode([
+            'status' => true,
+            'sale_id' => (int) $sale->id,
+            'sale' => $sale
+        ]);
+    }
     
     public function getTodayOrders()
     {
@@ -1403,6 +1448,10 @@ class Pos extends MY_Controller
                           'customer'          => $customer,
                           'order_type'        => $order_type,
                           'table_id'          => $table_id,
+                          'serving_status' => (
+                                $warehouse_id == $mini_warehouse_id &&
+                                $order_type == 'TABLE'
+                            ) ? 1 : NULL,
                           'biller_id'         => $biller_id,
                           'biller'            => $biller,
                           'warehouse_id'      => $warehouse_id,
@@ -1809,13 +1858,13 @@ class Pos extends MY_Controller
         // Kho đang đăng nhập
         $warehouse_id = (int) $this->session->userdata('warehouse_id');
 
-        // Kiểm tra hóa đơn chưa thanh toán hôm nay
+        // Kiểm tra đơn đang phục vụ hôm nay
         $busy_sale = $this->db
             ->where('table_id', $table->id)
             ->where('warehouse_id', $warehouse_id)
             ->where('order_type', 'TABLE')
             ->where('is_ingredient !=', 1)
-            ->where('payment_status !=', 'paid')
+            ->where('serving_status', 1)
             ->where('sale_status !=', 'returned')
             ->where('date >=', $sdate)
             ->where('date <=', $edate)
@@ -2047,7 +2096,7 @@ class Pos extends MY_Controller
                     ->where('table_id', $table_id)
                     ->where('warehouse_id', $warehouse_id)
                     ->where('order_type', 'TABLE')
-                    ->where('payment_status !=', 'paid')
+                    ->where('serving_status', 1)
                     ->where('sale_status !=', 'returned')
                     ->where('date >=', $sdate)
                     ->where('date <=', $edate)

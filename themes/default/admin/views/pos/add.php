@@ -80,8 +80,7 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                 <div style="display:inline-block;">
                     <a href="#"
                     class="btn bblue"
-                    id="btn_pos_utilities"
-                    style="position:relative;z-index:20;">
+                    id="btn_pos_utilities">
                         <i class="fa fa-th-large"></i>
                         TIỆN ÍCH
                         <i class="fa fa-caret-down"></i>
@@ -1484,6 +1483,53 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
 </div>
 <!-- /MODAL SƠ ĐỒ BÀN -->
 
+<!-- MODAL THAO TÁC BÀN ĐANG PHỤC VỤ -->
+<div class="modal fade" id="busyTableModal"
+     tabindex="-1" role="dialog"
+     aria-labelledby="busyTableModalLabel"
+     data-backdrop="false">
+
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    &times;
+                </button>
+
+                <h4 class="modal-title" id="busyTableModalLabel">
+                </h4>
+            </div>
+
+            <div class="modal-body text-center">
+
+                <h4 id="busyTableName"
+                    style="color:#2f80c9;font-weight:bold;margin-top:5px;">
+                </h4>
+
+                <p style="color:#777;">
+                    Bàn này hiện đang có đơn hàng.
+                </p>
+
+                <button type="button"
+                        class="btn btn-success btn-block"
+                        id="btnOpenBusyTableOrder">
+                    <i class="fa fa-folder-open"></i>
+                    MỞ ĐƠN ĐANG PHỤC VỤ
+                </button>
+
+                <button type="button"
+                        class="btn btn-default btn-block"
+                        data-dismiss="modal">
+                    ĐÓNG
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <div class="modal fade in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true"></div>
 <div class="modal fade in" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2"
@@ -1769,39 +1815,67 @@ var lang = {
         if (floorTableWasDragged) {
             return;
         }
-        
-        // Không cho chọn bàn đang phục vụ
+       
+        // Bấm bàn đang phục vụ -> mở modal thao tác
         if (parseInt($(this).attr('data-busy'), 10) === 1) {
 
-            var $table = $(this);
-            var $canvas = $('#tableList');
+            var tableId = $(this).data('id');
+            var tableName = $(this).data('name');
 
-            // Xóa thông báo cũ nếu có
-            $canvas.find('.floor-table-toast').remove();
+            var btnRect = this.getBoundingClientRect();
 
-            // Vị trí bàn vừa click
-            var pos = $table.position();
+            var $modal = $('#busyTableModal');
+            var $dialog = $modal.find('.modal-dialog');
 
-            // Tạo thông báo gần bàn
-            var $toast = $('<div class="floor-table-toast">' +
-                '<i class="fa fa-info-circle"></i> Bàn đang phục vụ!' +
-                '</div>');
+            $modal.data('table-id', tableId);
+            $modal.data('table-name', tableName);
 
-            $toast.css({
-                top: Math.max(5, pos.top - 42),
-                left: Math.max(5, pos.left)
+            $('#busyTableModalLabel').text(tableName);
+            $('#busyTableName').text('BÀN ĐANG PHỤC VỤ');
+            // Kích thước popup
+            var popupWidth = 300;
+            var popupHeight = 230;
+
+            var screenWidth = window.innerWidth;
+            var screenHeight = window.innerHeight;
+
+            // Ưu tiên xuất hiện bên phải bàn
+            var left = btnRect.right + 10;
+            var top = btnRect.top;
+
+            // Nếu không đủ chỗ bên phải thì chuyển qua trái
+            if (left + popupWidth > screenWidth - 10) {
+                left = btnRect.left - popupWidth - 10;
+            }
+
+            // Nếu không đủ chỗ bên trái thì đặt bên phải
+            if (left < 10) {
+                left = btnRect.right + 10;
+            }
+
+            // Nếu không đủ ngang thì nằm dưới nút
+            if (left + popupWidth > screenWidth - 10) {
+                left = screenWidth - popupWidth - 10;
+            }
+
+            // Nếu không đủ chiều cao thì đẩy lên
+            if (top + popupHeight > screenHeight - 10) {
+                top = screenHeight - popupHeight - 10;
+            }
+
+            if (top < 10) top = 10;
+
+            // Định vị TRƯỚC khi mở modal
+            $dialog.css({
+                position: 'fixed',
+                margin: 0,
+                left: left + 'px',
+                top: top + 'px',
+                transform: 'none'
             });
 
-            $canvas.append($toast);
-
-            // Hiện rồi tự mờ dần
-            $toast.fadeIn(200);
-
-            setTimeout(function () {
-                $toast.fadeOut(500, function () {
-                    $(this).remove();
-                });
-            }, 1800);
+            // Mở ngay tại vị trí đã tính
+            $modal.modal('show');
 
             return;
         }
