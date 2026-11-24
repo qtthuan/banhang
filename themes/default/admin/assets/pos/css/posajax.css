@@ -2111,3 +2111,40 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
     font-weight: 700;
     margin-bottom: 10px;
 }
+/* Hiệu ứng chuyển trạng thái bàn */
+#tableList .floor-table-btn {
+    transition:
+        background-color 0.4s ease,
+        border-color 0.4s ease,
+        color 0.4s ease,
+        box-shadow 0.4s ease;
+}
+
+#tableList .floor-table-status {
+    transition: opacity 0.3s ease;
+}
+
+/* Thông báo nổi riêng cho chức năng bàn bận */
+#busyTableNotice {
+    display: none;
+    position: fixed;
+    top: 75px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200000;
+    padding: 12px 22px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.16);
+    pointer-events: none;
+}
+
+#busyTableNotice.success {
+    background: rgba(40, 150, 85, 0.95);
+}
+
+#busyTableNotice.error {
+    background: rgba(190, 55, 55, 0.95);
+}

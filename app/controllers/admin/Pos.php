@@ -538,7 +538,8 @@ class Pos extends MY_Controller
         ) {
             echo json_encode([
                 'status' => false,
-                'message' => 'Thông tin bàn hoặc kho không hợp lệ.'
+                'message' => 'Thông tin bàn hoặc kho không hợp lệ.',
+                'csrf_hash' => $this->security->get_csrf_hash()
             ]);
             return;
         }
@@ -554,7 +555,8 @@ class Pos extends MY_Controller
         if (!$table) {
             echo json_encode([
                 'status' => false,
-                'message' => 'Không tìm thấy bàn.'
+                'message' => 'Không tìm thấy bàn.',
+                'csrf_hash' => $this->security->get_csrf_hash()
             ]);
             return;
         }
@@ -637,7 +639,8 @@ class Pos extends MY_Controller
         ) {
             echo json_encode([
                 'status' => false,
-                'message' => 'Thông tin không hợp lệ.'
+                'message' => 'Thông tin không hợp lệ.',
+                'csrf_hash' => $this->security->get_csrf_hash()
             ]);
             return;
         }
@@ -683,12 +686,14 @@ class Pos extends MY_Controller
         if ($this->db->affected_rows() > 0) {
             echo json_encode([
                 'status' => true,
-                'message' => 'Đã mở lại bàn.'
+                'message' => 'Đã mở lại bàn.',
+                'csrf_hash' => $this->security->get_csrf_hash()
             ]);
         } else {
             echo json_encode([
                 'status' => false,
-                'message' => 'Không tìm thấy đơn đang giữ bàn hoặc bàn đã được mở.'
+                'message' => 'Không tìm thấy đơn đang giữ bàn hoặc bàn đã được mở.',
+                'csrf_hash' => $this->security->get_csrf_hash()
             ]);
         }
     }
@@ -718,7 +723,8 @@ class Pos extends MY_Controller
         ) {
             echo json_encode([
                 'status' => false,
-                'message' => 'Thông tin thanh toán không hợp lệ.'
+                'message' => 'Thông tin thanh toán không hợp lệ.',
+                'csrf_hash' => $this->security->get_csrf_hash()
             ]);
             return;
         }
@@ -759,7 +765,8 @@ class Pos extends MY_Controller
 
             echo json_encode([
                 'status' => false,
-                'message' => 'Đơn hàng không hợp lệ, đã thanh toán hoặc không còn phục vụ.'
+                'message' => 'Đơn hàng không hợp lệ, đã thanh toán hoặc không còn phục vụ.',
+                'csrf_hash' => $this->security->get_csrf_hash()
             ]);
             return;
         }
@@ -777,7 +784,8 @@ class Pos extends MY_Controller
 
             echo json_encode([
                 'status' => false,
-                'message' => 'Đơn đã có giao dịch thanh toán. Vui lòng kiểm tra lại.'
+                'message' => 'Đơn đã có giao dịch thanh toán. Vui lòng kiểm tra lại.',
+                'csrf_hash' => $this->security->get_csrf_hash()
             ]);
             return;
         }
@@ -789,7 +797,8 @@ class Pos extends MY_Controller
 
             echo json_encode([
                 'status' => false,
-                'message' => 'Tổng tiền hóa đơn không hợp lệ.'
+                'message' => 'Tổng tiền hóa đơn không hợp lệ.',
+                'csrf_hash' => $this->security->get_csrf_hash()
             ]);
             return;
         }
@@ -813,7 +822,8 @@ class Pos extends MY_Controller
 
             echo json_encode([
                 'status' => false,
-                'message' => 'Không thể ghi nhận thanh toán.'
+                'message' => 'Không thể ghi nhận thanh toán.',
+                'csrf_hash' => $this->security->get_csrf_hash()
             ]);
             return;
         }
@@ -840,7 +850,8 @@ class Pos extends MY_Controller
 
             echo json_encode([
                 'status' => false,
-                'message' => 'Không thể hoàn tất thanh toán và mở bàn.'
+                'message' => 'Không thể hoàn tất thanh toán và mở bàn.',
+                'csrf_hash' => $this->security->get_csrf_hash()
             ]);
             return;
         }
@@ -1976,9 +1987,47 @@ class Pos extends MY_Controller
                     admin_redirect("pos");
                 }
             }
+            
             $this->data['suspend_sale'] = NULL;
             if ($sid) {
+
+                // Kiểm tra riêng khi mở hóa đơn từ popup bàn đang phục vụ
+                if ($this->input->get('busy_table') == 1) {
+
+                    $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id');
+                    $warehouse_id = (int) $this->session->userdata('warehouse_id');
+                    $table_id = (int) $this->input->get('table_id');
+                    $today = date('Y-m-d');
+
+                    if ($warehouse_id != $mini_warehouse_id || !$table_id) {
+                        $this->session->set_flashdata('error', 'Thông tin bàn hoặc kho không hợp lệ.');
+                        admin_redirect('pos');
+                    }
+
+                    $this->db
+                        ->where('id', (int) $sid)
+                        ->where('warehouse_id', $warehouse_id)
+                        ->where('table_id', $table_id)
+                        ->where('order_type', 'TABLE')
+                        ->where('serving_status', 1)
+                        ->where('DATE(date) =', $today);
+
+                    if (!$this->Owner && !$this->Admin) {
+                        $this->db->where('created_by', $this->session->userdata('user_id'));
+                    }
+
+                    $valid_busy_bill = $this->db
+                        ->get('suspended_bills')
+                        ->row();
+
+                    if (!$valid_busy_bill) {
+                        $this->session->set_flashdata('error', 'Hóa đơn tạm không còn hợp lệ hoặc không thuộc bàn này.');
+                        admin_redirect('pos');
+                    }
+                }
+
                 if ($suspended_sale = $this->pos_model->getOpenBillByID($sid)) {
+
                     $inv_items = $this->pos_model->getSuspendedSaleItems($sid);
                     
                     $this->data['sid'] = $sid;

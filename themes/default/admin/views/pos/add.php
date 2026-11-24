@@ -1577,6 +1577,8 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
     </div>
 </div>
 
+<div id="busyTableNotice"></div>
+
 <div class="modal fade in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true"></div>
 <div class="modal fade in" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2"
@@ -1747,6 +1749,23 @@ var lang = {
             .fadeIn(200);
 
         setTimeout(function () {
+            $notice.fadeOut(500);
+        }, 2200);
+    }
+
+    // Thông báo fade riêng cho thao tác bàn đang phục vụ
+    function showBusyTableNotice(message, type) {
+        var $notice = $('#busyTableNotice');
+
+        $notice.stop(true, true)
+            .removeClass('success error')
+            .addClass(type || 'success')
+            .text(message)
+            .fadeIn(200);
+
+        clearTimeout(window.busyTableNoticeTimer);
+
+        window.busyTableNoticeTimer = setTimeout(function () {
             $notice.fadeOut(500);
         }, 2200);
     }
@@ -2014,6 +2033,31 @@ var lang = {
         $('#tableModal').modal('hide');
     });
 
+
+    // MỞ LẠI HÓA ĐƠN TẠM VÀ ĐƯA VỀ POS
+    $(document).on('click', '#btnReopenSuspended', function () {
+
+        var $modal = $('#busyTableModal');
+
+        var suspendId = $modal.data('suspended-id');
+        var tableId = $modal.data('table-id');
+
+        if (!suspendId || !tableId) {
+            alert('Không tìm thấy thông tin hóa đơn tạm.');
+            return;
+        }
+
+        // Đóng popup trước khi chuyển trang
+        $modal.modal('hide');
+
+        // Mở lại hóa đơn tạm đúng bàn
+        window.location.href =
+            site.base_url +
+            'pos/index/' + encodeURIComponent(suspendId) +
+            '?busy_table=1&table_id=' + encodeURIComponent(tableId);
+    });
+
+
     // MỞ LẠI BÀN - HÓA ĐƠN TẠM
     $(document).on('click', '#btnReleaseSuspended', function () {
 
@@ -2149,11 +2193,10 @@ var lang = {
                     return;
                 }
 
-                alert(
-                    res.message +
-                    '\nSố tiền: ' +
-                    Number(res.amount).toLocaleString('vi-VN') +
-                    'đ'
+                showBusyTableNotice(
+                    res.message + ' – Số tiền: ' +
+                    Number(res.amount).toLocaleString('vi-VN') + 'đ',
+                    'success'
                 );
 
                 $modal.modal('hide');
