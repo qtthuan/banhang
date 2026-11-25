@@ -188,7 +188,7 @@ class Pos extends MY_Controller
 
     public function updatePaidBy()
     {
-        $sale_id = $this->input->post('sale_id');
+        $sale_id = (int) $this->input->post('sale_id');
         $paid_by = $this->input->post('paid_by');
 
         if (!$sale_id || !$paid_by) {
@@ -196,10 +196,55 @@ class Pos extends MY_Controller
             return;
         }
 
-        // update payment (POS thường chỉ 1 payment)
-        $this->db->where('sale_id', $sale_id)
-                ->limit(1)
-                ->update('payments', ['paid_by' => $paid_by]);
+        // Lấy thông tin hóa đơn
+        $sale = $this->db
+            ->where('id', $sale_id)
+            ->get('sales')
+            ->row();
+
+        if (!$sale) {
+            echo json_encode(['status' => false]);
+            return;
+        }
+
+        $this->db->trans_begin();
+
+        // Cập nhật phương thức thanh toán
+        $this->db
+            ->where('sale_id', $sale_id)
+            ->limit(1)
+            ->update('payments', [
+                'paid_by' => $paid_by
+            ]);
+
+        // Cập nhật trạng thái bàn theo kho
+        $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id');
+        $bani_warehouse_id = (int) $this->config->item('bani_warehouse_id');
+
+        if ((int) $sale->warehouse_id === $mini_warehouse_id) {
+
+            $this->db
+                ->where('id', $sale_id)
+                ->update('sales', [
+                    'serving_status' => 0
+                ]);
+
+        } elseif ((int) $sale->warehouse_id === $bani_warehouse_id) {
+
+            $this->db
+                ->where('id', $sale_id)
+                ->update('sales', [
+                    'serving_status' => NULL
+                ]);
+        }
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            echo json_encode(['status' => false]);
+            return;
+        }
+
+        $this->db->trans_commit();
 
         echo json_encode(['status' => true]);
     }
@@ -224,9 +269,26 @@ class Pos extends MY_Controller
             return;
         }
 
-        $this->db->where('id', $sale_id)
-                ->limit(1)
-                ->update('sales', ['payment_status' => 'paid', 'paid' => $sale->grand_total]);
+        // Cập nhật trạng thái thanh toán và trạng thái bàn
+        $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id');
+        $bani_warehouse_id = (int) $this->config->item('bani_warehouse_id');
+
+        $sale_update_data = [
+            'payment_status' => 'paid',
+            'paid'            => $sale->grand_total
+        ];
+
+        if ((int) $sale->warehouse_id === $mini_warehouse_id) {
+            $sale_update_data['serving_status'] = 0;
+
+        } elseif ((int) $sale->warehouse_id === $bani_warehouse_id) {
+            $sale_update_data['serving_status'] = NULL;
+        }
+
+        $this->db
+            ->where('id', $sale_id)
+            ->limit(1)
+            ->update('sales', $sale_update_data);
 
 
         
@@ -686,7 +748,6 @@ class Pos extends MY_Controller
         if ($this->db->affected_rows() > 0) {
             echo json_encode([
                 'status' => true,
-                'message' => 'Đã mở lại bàn.',
                 'csrf_hash' => $this->security->get_csrf_hash()
             ]);
         } else {
@@ -1185,18 +1246,27 @@ class Pos extends MY_Controller
         $this->db->trans_start();
 
 
-        /*
-        * Cập nhật trạng thái đơn
-        */
+        $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id');
+        $bani_warehouse_id = (int) $this->config->item('bani_warehouse_id');
+
+        $sale_update_data = [
+            'payment_status' => 'paid',
+            'paid'           => $sale->grand_total
+        ];
+
+        // Tiệm Nước Mini: thanh toán xong thì giải phóng bàn
+        if ((int) $sale->warehouse_id === $mini_warehouse_id) {
+            $sale_update_data['serving_status'] = 0;
+        }
+
+        // Ba-Ni: serving_status không áp dụng
+        elseif ((int) $sale->warehouse_id === $bani_warehouse_id) {
+            $sale_update_data['serving_status'] = NULL;
+        }
+
         $this->db
             ->where('id', $sale_id)
-            ->update(
-                'sales',
-                [
-                    'payment_status' => 'paid',
-                    'paid'           => $sale->grand_total
-                ]
-            );
+            ->update('sales', $sale_update_data);
 
 
         /*

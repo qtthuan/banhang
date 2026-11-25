@@ -1657,9 +1657,15 @@ var lang = {
     
     function loadTableList() {
 
-        $('#tableList').html(
-            '<div class="text-center">Đang tải sơ đồ bàn...</div>'
-        );
+        // Lưu trạng thái bàn hiện tại để so sánh sau khi tải
+        var previousBusyStates = {};
+
+        $('#tableList .floor-table-btn').each(function () {
+            var id = $(this).attr('data-id');
+
+            previousBusyStates[id] =
+                parseInt($(this).attr('data-busy'), 10);
+        });
 
         $.ajax({
             type: 'GET',
@@ -1695,6 +1701,19 @@ var lang = {
                         ? 'floor-table-busy'
                         : 'floor-table-free';
 
+                    // Chỉ fade khi trạng thái bàn thực sự thay đổi
+                    var statusChanged =
+                        previousBusyStates.hasOwnProperty(String(table.id)) &&
+                        previousBusyStates[String(table.id)] !== (busy ? 1 : 0);
+
+                    var statusFadeStyle = statusChanged
+                        ? ' style="opacity:0;"'
+                        : '';
+
+                    var statusChangedAttr = statusChanged
+                        ? ' data-status-changed="1"'
+                        : '';
+
                     // Nếu chưa có tọa độ thì xếp bàn theo thứ tự
                     var x = table.position_x !== null
                         ? parseFloat(table.position_x)
@@ -1712,7 +1731,11 @@ var lang = {
                         'data-busy="' + (busy ? 1 : 0) + '" ' +
                         'style="left:' + x + '%;top:' + y + '%;">' +
                         '<span class="floor-table-name">' + tableName + '</span>' +
-                        '<small class="floor-table-status">' + statusText + '</small>' +
+                        '<small class="floor-table-status"' +
+                            statusChangedAttr +
+                            statusFadeStyle + '>' +
+                            statusText +
+                        '</small>' +
                         '</button>';
                 });
 
@@ -1721,6 +1744,12 @@ var lang = {
                 }
 
                 $('#tableList').html(html);
+
+                // Fade nhẹ nhãn trạng thái của những bàn vừa thay đổi
+                $('#tableList .floor-table-status[data-status-changed="1"]')
+                    .each(function () {
+                        $(this).stop(true, true).fadeTo(450, 1);
+                    });
             },
 
             error: function () {
@@ -2085,43 +2114,48 @@ var lang = {
             return;
         }
 
-        if (!confirm('Bạn có chắc muốn mở lại bàn này không?')) {
-            return;
-        }
-
-        $.ajax({
-            url: site.base_url + 'pos/releaseBusyTable',
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                table_id: tableId,
-                record_id: recordId,
-                type: type,
-                [csrfName]: csrfHash
-            },
-            success: function (res) {
-
-                if (res.csrf_hash) {
-                    csrfHash = res.csrf_hash;
-                }
-
-                if (!res.status) {
-                    alert(res.message || 'Không thể mở lại bàn.');
+        bootbox.confirm(
+        'Bạn có chắc muốn mở lại bàn này không?',
+            function (confirmed) {
+                if (!confirmed) {
                     return;
                 }
 
-                alert(res.message);
+                $.ajax({
+                url: site.base_url + 'pos/releaseBusyTable',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    table_id: tableId,
+                    record_id: recordId,
+                    type: type,
+                    [csrfName]: csrfHash
+                },
+                success: function (res) {
 
-                $modal.modal('hide');
+                    if (res.csrf_hash) {
+                        csrfHash = res.csrf_hash;
+                    }
 
-                // Tải lại sơ đồ bàn và trạng thái phục vụ
-                loadTableList();
-            },
-            error: function () {
-                alert('Lỗi kết nối máy chủ.');
-            }
-        });
-    }
+                    if (!res.status) {
+                        alert(res.message || 'Không thể mở lại bàn.');
+                        return;
+                    }
+
+                    //alert(res.message);
+
+                    $modal.modal('hide');
+
+                    // Tải lại sơ đồ bàn và trạng thái phục vụ
+                    loadTableList();
+                },
+                error: function () {
+                    alert('Lỗi kết nối máy chủ.');
+                }
+            });
+        }
+    );
+}
 
     
     // Bấm THANH TOÁN & MỞ LẠI BÀN
@@ -2166,54 +2200,59 @@ var lang = {
             return;
         }
 
-        if (!confirm('Xác nhận thanh toán toàn bộ hóa đơn và mở lại bàn?')) {
-            return;
-        }
-
-        $('#btnBusyPayCash, #btnBusyPayBank').prop('disabled', true);
-
-        $.ajax({
-            url: site.base_url + 'pos/payAndReleaseBusyTable',
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                sale_id: saleId,
-                table_id: tableId,
-                paid_by: paidBy,
-                [csrfName]: csrfHash
-            },
-            success: function (res) {
-
-                if (res.csrf_hash) {
-                    csrfHash = res.csrf_hash;
-                }
-
-                if (!res.status) {
-                    alert(res.message || 'Thanh toán thất bại.');
+        bootbox.confirm(
+        'Xác nhận thanh toán toàn bộ hóa đơn và mở lại bàn?',
+            function (confirmed) {
+                if (!confirmed) {
                     return;
                 }
 
-                showBusyTableNotice(
-                    res.message + ' – Số tiền: ' +
-                    Number(res.amount).toLocaleString('vi-VN') + 'đ',
-                    'success'
-                );
+                $('#btnBusyPayCash, #btnBusyPayBank').prop('disabled', true);
 
-                $modal.modal('hide');
+                $.ajax({
+                url: site.base_url + 'pos/payAndReleaseBusyTable',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    sale_id: saleId,
+                    table_id: tableId,
+                    paid_by: paidBy,
+                    [csrfName]: csrfHash
+                },
+                success: function (res) {
 
-                $('#busyPaymentMethods').hide();
-                $('#btnPayAndRelease').show();
+                    if (res.csrf_hash) {
+                        csrfHash = res.csrf_hash;
+                    }
 
-                loadTableList();
-            },
-            error: function () {
-                alert('Lỗi kết nối máy chủ khi thanh toán.');
-            },
-            complete: function () {
-                $('#btnBusyPayCash, #btnBusyPayBank').prop('disabled', false);
-            }
-        });
-    }
+                    if (!res.status) {
+                        alert(res.message || 'Thanh toán thất bại.');
+                        return;
+                    }
+
+                    showBusyTableNotice(
+                        res.message + ' – Số tiền: ' +
+                        Number(res.amount).toLocaleString('vi-VN') + 'đ',
+                        'success'
+                    );
+
+                    $modal.modal('hide');
+
+                    $('#busyPaymentMethods').hide();
+                    $('#btnPayAndRelease').show();
+
+                    loadTableList();
+                },
+                error: function () {
+                    alert('Lỗi kết nối máy chủ khi thanh toán.');
+                },
+                complete: function () {
+                    $('#btnBusyPayCash, #btnBusyPayBank').prop('disabled', false);
+                }
+            });
+        }
+    );
+}
 
 
     
