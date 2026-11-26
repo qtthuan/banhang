@@ -2018,8 +2018,12 @@ var lang = {
                     }
 
                     if (!res.suspended_bill && !res.sale) {
-                        alert('Bàn không còn hóa đơn đang phục vụ.');
                         $modal.modal('hide');
+                        showBusyTableNotice(
+                            'Bàn không còn hóa đơn đang phục vụ.',
+                            'error'
+                        );
+                        
                     }
                 },
                 error: function () {
