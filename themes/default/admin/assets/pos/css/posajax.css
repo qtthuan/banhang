@@ -2078,73 +2078,20 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
         margin: 10px auto;
     }
 }
-/* Popup thao tác bàn */
-#busyTableModal {
-    background: transparent !important;
-}
-
-#busyTableModal .modal-dialog {
-    position: fixed !important;
-    margin: 0 !important;
-    width: 300px;
-    max-width: calc(100vw - 20px);
-    transform: none !important;
-}
-
-#busyTableModal .modal-content {
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-}
-
-#busyTableModal .modal-header {
-    background: #f5f9f5;
-}
-
-#busyTableModal .modal-title {
-    color: #398439;
+.floor-table-btn {
+    background-color: #C8DEC9 !important;
+    border: 1px solid #4A9650 !important;
+    color: #216B32 !important;
+    border-radius: 12px !important;
     font-weight: 700;
 }
 
-#busyTableModal #btnOpenBusyTableOrder {
-    padding: 12px;
+.floor-table-btn:hover {
+    background-color: #B6D4B9 !important;
+    border-color: #388443 !important;
+}
+
+.floor-table-btn .floor-table-name {
+    color: #216B32 !important;
     font-weight: 700;
-    margin-bottom: 10px;
-}
-/* Hiệu ứng chuyển trạng thái bàn */
-#tableList .floor-table-btn {
-    transition:
-        background-color 0.4s ease,
-        border-color 0.4s ease,
-        color 0.4s ease,
-        box-shadow 0.4s ease;
-}
-
-#tableList .floor-table-status {
-    transition: opacity 0.3s ease;
-}
-
-/* Thông báo nổi riêng cho chức năng bàn bận */
-#busyTableNotice {
-    display: none;
-    position: fixed;
-    top: 75px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 200000;
-    padding: 12px 22px;
-    border-radius: 8px;
-    color: #fff;
-    font-size: 14px;
-    font-weight: 600;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.16);
-    pointer-events: none;
-}
-
-#busyTableNotice.success {
-    background: rgba(40, 150, 85, 0.95);
-}
-
-#busyTableNotice.error {
-    background: rgba(190, 55, 55, 0.95);
 }

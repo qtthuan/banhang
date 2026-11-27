@@ -188,7 +188,7 @@ class Pos extends MY_Controller
 
     public function updatePaidBy()
     {
-        $sale_id = (int) $this->input->post('sale_id');
+        $sale_id = $this->input->post('sale_id');
         $paid_by = $this->input->post('paid_by');
 
         if (!$sale_id || !$paid_by) {
@@ -196,55 +196,10 @@ class Pos extends MY_Controller
             return;
         }
 
-        // Lấy thông tin hóa đơn
-        $sale = $this->db
-            ->where('id', $sale_id)
-            ->get('sales')
-            ->row();
-
-        if (!$sale) {
-            echo json_encode(['status' => false]);
-            return;
-        }
-
-        $this->db->trans_begin();
-
-        // Cập nhật phương thức thanh toán
-        $this->db
-            ->where('sale_id', $sale_id)
-            ->limit(1)
-            ->update('payments', [
-                'paid_by' => $paid_by
-            ]);
-
-        // Cập nhật trạng thái bàn theo kho
-        $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id');
-        $bani_warehouse_id = (int) $this->config->item('bani_warehouse_id');
-
-        if ((int) $sale->warehouse_id === $mini_warehouse_id) {
-
-            $this->db
-                ->where('id', $sale_id)
-                ->update('sales', [
-                    'serving_status' => 0
-                ]);
-
-        } elseif ((int) $sale->warehouse_id === $bani_warehouse_id) {
-
-            $this->db
-                ->where('id', $sale_id)
-                ->update('sales', [
-                    'serving_status' => NULL
-                ]);
-        }
-
-        if ($this->db->trans_status() === FALSE) {
-            $this->db->trans_rollback();
-            echo json_encode(['status' => false]);
-            return;
-        }
-
-        $this->db->trans_commit();
+        // update payment (POS thường chỉ 1 payment)
+        $this->db->where('sale_id', $sale_id)
+                ->limit(1)
+                ->update('payments', ['paid_by' => $paid_by]);
 
         echo json_encode(['status' => true]);
     }
@@ -269,26 +224,9 @@ class Pos extends MY_Controller
             return;
         }
 
-        // Cập nhật trạng thái thanh toán và trạng thái bàn
-        $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id');
-        $bani_warehouse_id = (int) $this->config->item('bani_warehouse_id');
-
-        $sale_update_data = [
-            'payment_status' => 'paid',
-            'paid'            => $sale->grand_total
-        ];
-
-        if ((int) $sale->warehouse_id === $mini_warehouse_id) {
-            $sale_update_data['serving_status'] = 0;
-
-        } elseif ((int) $sale->warehouse_id === $bani_warehouse_id) {
-            $sale_update_data['serving_status'] = NULL;
-        }
-
-        $this->db
-            ->where('id', $sale_id)
-            ->limit(1)
-            ->update('sales', $sale_update_data);
+        $this->db->where('id', $sale_id)
+                ->limit(1)
+                ->update('sales', ['payment_status' => 'paid', 'paid' => $sale->grand_total]);
 
 
         
@@ -533,399 +471,6 @@ class Pos extends MY_Controller
                 'suspended_orders' => $suspendedOrders
 
             )));
-    }
-
-    public function getServingTableOrder()
-    {
-        $this->sma->checkPermissions('index');
-
-        $table_id = (int) $this->input->post('table_id');
-        $warehouse_id = (int) $this->session->userdata('warehouse_id');
-
-        if (!$table_id || !$warehouse_id) {
-            echo json_encode([
-                'status'  => false,
-                'message' => 'Thiếu thông tin bàn hoặc kho.'
-            ]);
-            return;
-        }
-
-        $today = date('Y-m-d');
-
-        $sale = $this->db
-            ->where('table_id', $table_id)
-            ->where('warehouse_id', $warehouse_id)
-            ->where('order_type', 'TABLE')
-            ->where('serving_status', 1)
-            ->where('is_ingredient', 0)
-            ->where('sale_status !=', 'returned')
-            ->where('DATE(date) =', $today)
-            ->order_by('id', 'DESC')
-            ->limit(1)
-            ->get('sales')
-            ->row();
-
-        if (!$sale) {
-            echo json_encode([
-                'status'  => false,
-                'message' => 'Không tìm thấy đơn đang phục vụ của bàn này.'
-            ]);
-            return;
-        }
-
-        echo json_encode([
-            'status' => true,
-            'sale_id' => (int) $sale->id,
-            'sale' => $sale
-        ]);
-    }
-
-    
-    /**
-     * LẤY THÔNG TIN ĐƠN ĐANG GIỮ BÀN
-     * Chỉ áp dụng cho kho Tiệm Nước Mini.
-     */
-    public function getBusyTableInfo()
-    {
-        $this->sma->checkPermissions('index');
-
-        $table_id = (int) $this->input->post('table_id');
-        $warehouse_id = (int) $this->session->userdata('warehouse_id');
-        $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id');
-
-        if (
-            !$table_id ||
-            !$warehouse_id ||
-            $warehouse_id != $mini_warehouse_id
-        ) {
-            echo json_encode([
-                'status' => false,
-                'message' => 'Thông tin bàn hoặc kho không hợp lệ.',
-                'csrf_hash' => $this->security->get_csrf_hash()
-            ]);
-            return;
-        }
-
-        $today = date('Y-m-d');
-
-        // Kiểm tra bàn có tồn tại trong kho hiện tại
-        $table = $this->db
-            ->where('id', $table_id)
-            ->get('tables')
-            ->row();
-
-        if (!$table) {
-            echo json_encode([
-                'status' => false,
-                'message' => 'Không tìm thấy bàn.',
-                'csrf_hash' => $this->security->get_csrf_hash()
-            ]);
-            return;
-        }
-
-        // Lấy đơn tạm đang giữ bàn
-        $this->db
-            ->from('suspended_bills')
-            ->where('table_id', $table_id)
-            ->where('warehouse_id', $warehouse_id)
-            ->where('order_type', 'TABLE')
-            ->where('serving_status', 1)
-            ->where('DATE(date) =', $today);
-
-        if (!$this->Owner && !$this->Admin) {
-            $this->db->where(
-                'created_by',
-                $this->session->userdata('user_id')
-            );
-        }
-
-        $suspended_bill = $this->db
-            ->order_by('id', 'DESC')
-            ->limit(1)
-            ->get()
-            ->row();
-
-        // Lấy hóa đơn đã lưu nhưng chưa thanh toán
-        $sale = $this->db
-            ->where('table_id', $table_id)
-            ->where('warehouse_id', $warehouse_id)
-            ->where('order_type', 'TABLE')
-            ->where('serving_status', 1)
-            ->where('is_ingredient', 0)
-            ->where('sale_status !=', 'returned')
-            ->where('payment_status !=', 'paid')
-            ->where('DATE(date) =', $today)
-            ->order_by('id', 'DESC')
-            ->limit(1)
-            ->get('sales')
-            ->row();
-
-        echo json_encode([
-            'status' => true,
-            'table_id' => $table_id,
-            'table_name' => $table->table_name,
-            'suspended_bill' => $suspended_bill ? [
-                'id' => (int) $suspended_bill->id,
-                'total' => $suspended_bill->total,
-                'suspend_note' => $suspended_bill->suspend_note
-            ] : null,
-            'sale' => $sale ? [
-                'id' => (int) $sale->id,
-                'reference_no' => $sale->reference_no,
-                'grand_total' => $sale->grand_total,
-                'payment_status' => $sale->payment_status
-            ] : null
-        ]);
-    }
-
-    /**
-     * GIẢI PHÓNG BÀN ĐANG PHỤC VỤ
-     * Chỉ áp dụng cho kho Tiệm Nước Mini.
-     */
-    public function releaseBusyTable()
-    {
-        $this->sma->checkPermissions('index');
-
-        $table_id = (int) $this->input->post('table_id');
-        $record_id = (int) $this->input->post('record_id');
-        $type = $this->input->post('type');
-
-        $warehouse_id = (int) $this->session->userdata('warehouse_id');
-        $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id');
-
-        if (
-            !$table_id ||
-            !$record_id ||
-            !in_array($type, ['suspended', 'sale']) ||
-            $warehouse_id != $mini_warehouse_id
-        ) {
-            echo json_encode([
-                'status' => false,
-                'message' => 'Thông tin không hợp lệ.',
-                'csrf_hash' => $this->security->get_csrf_hash()
-            ]);
-            return;
-        }
-
-        $today = date('Y-m-d');
-
-        if ($type == 'suspended') {
-            $this->db
-                ->where('id', $record_id)
-                ->where('table_id', $table_id)
-                ->where('warehouse_id', $warehouse_id)
-                ->where('order_type', 'TABLE')
-                ->where('serving_status', 1)
-                ->where('DATE(date) =', $today);
-
-            if (!$this->Owner && !$this->Admin) {
-                $this->db->where(
-                    'created_by',
-                    $this->session->userdata('user_id')
-                );
-            }
-
-            $this->db->update('suspended_bills', [
-                'serving_status' => 0
-            ]);
-
-        } else {
-            $this->db
-                ->where('id', $record_id)
-                ->where('table_id', $table_id)
-                ->where('warehouse_id', $warehouse_id)
-                ->where('order_type', 'TABLE')
-                ->where('serving_status', 1)
-                ->where('payment_status !=', 'paid')
-                ->where('is_ingredient', 0)
-                ->where('sale_status !=', 'returned')
-                ->where('DATE(date) =', $today)
-                ->update('sales', [
-                    'serving_status' => 0
-                ]);
-        }
-
-        if ($this->db->affected_rows() > 0) {
-            echo json_encode([
-                'status' => true,
-                'csrf_hash' => $this->security->get_csrf_hash()
-            ]);
-        } else {
-            echo json_encode([
-                'status' => false,
-                'message' => 'Không tìm thấy đơn đang giữ bàn hoặc bàn đã được mở.',
-                'csrf_hash' => $this->security->get_csrf_hash()
-            ]);
-        }
-    }
-
-
-    /**
-     * THANH TOÁN FULL ĐƠN VÀ MỞ LẠI BÀN
-     * Chỉ áp dụng cho kho Tiệm Nước Mini.
-     */
-    public function payAndReleaseBusyTable()
-    {
-        $this->sma->checkPermissions('index');
-
-        $sale_id = (int) $this->input->post('sale_id');
-        $table_id = (int) $this->input->post('table_id');
-        $paid_by = $this->input->post('paid_by');
-
-        $warehouse_id = (int) $this->session->userdata('warehouse_id');
-        $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id');
-
-        if (
-            !$sale_id ||
-            !$table_id ||
-            !in_array($paid_by, ['cash', 'cc']) ||
-            !$mini_warehouse_id ||
-            $warehouse_id != $mini_warehouse_id
-        ) {
-            echo json_encode([
-                'status' => false,
-                'message' => 'Thông tin thanh toán không hợp lệ.',
-                'csrf_hash' => $this->security->get_csrf_hash()
-            ]);
-            return;
-        }
-
-        $today = date('Y-m-d');
-
-        $this->db->trans_begin();
-
-        // Khóa dòng hóa đơn để tránh thanh toán trùng
-        $sales_table = $this->db->dbprefix('sales');
-
-        $sale_query = $this->db->query(
-            "SELECT * FROM {$sales_table}
-            WHERE id = ?
-            AND warehouse_id = ?
-            AND table_id = ?
-            AND order_type = 'TABLE'
-            AND serving_status = 1
-            AND payment_status != 'paid'
-            AND paid = 0
-            AND is_ingredient = 0
-            AND sale_status != 'returned'
-            AND DATE(date) = ?
-            LIMIT 1
-            FOR UPDATE",
-            [
-                $sale_id,
-                $warehouse_id,
-                $table_id,
-                $today
-            ]
-        );
-
-        $sale = $sale_query->row();
-
-        if (!$sale) {
-            $this->db->trans_rollback();
-
-            echo json_encode([
-                'status' => false,
-                'message' => 'Đơn hàng không hợp lệ, đã thanh toán hoặc không còn phục vụ.',
-                'csrf_hash' => $this->security->get_csrf_hash()
-            ]);
-            return;
-        }
-
-        // Kiểm tra đơn chưa từng ghi nhận khoản thu nào
-        $existing_payment = $this->db
-            ->where('sale_id', $sale_id)
-            ->where('type', 'received')
-            ->limit(1)
-            ->get('payments')
-            ->row();
-
-        if ($existing_payment) {
-            $this->db->trans_rollback();
-
-            echo json_encode([
-                'status' => false,
-                'message' => 'Đơn đã có giao dịch thanh toán. Vui lòng kiểm tra lại.',
-                'csrf_hash' => $this->security->get_csrf_hash()
-            ]);
-            return;
-        }
-
-        $amount = (float) $sale->grand_total;
-
-        if ($amount <= 0) {
-            $this->db->trans_rollback();
-
-            echo json_encode([
-                'status' => false,
-                'message' => 'Tổng tiền hóa đơn không hợp lệ.',
-                'csrf_hash' => $this->security->get_csrf_hash()
-            ]);
-            return;
-        }
-
-        // Ghi nhận thanh toán đủ 100%
-        $payment_data = [
-            'date' => date('Y-m-d H:i:s'),
-            'sale_id' => $sale_id,
-            'reference_no' => $sale->reference_no,
-            'amount' => $amount,
-            'paid_by' => $paid_by,
-            'pos_paid' => $amount,
-            'type' => 'received',
-            'created_by' => $this->session->userdata('user_id')
-        ];
-
-        $this->db->insert('payments', $payment_data);
-
-        if ($this->db->affected_rows() <= 0) {
-            $this->db->trans_rollback();
-
-            echo json_encode([
-                'status' => false,
-                'message' => 'Không thể ghi nhận thanh toán.',
-                'csrf_hash' => $this->security->get_csrf_hash()
-            ]);
-            return;
-        }
-
-        // Cập nhật hóa đơn đã thanh toán và giải phóng bàn
-        $this->db
-            ->where('id', $sale_id)
-            ->where('warehouse_id', $warehouse_id)
-            ->where('table_id', $table_id)
-            ->where('serving_status', 1)
-            ->where('payment_status !=', 'paid')
-            ->where('paid', 0)
-            ->update('sales', [
-                'payment_status' => 'paid',
-                'paid' => $amount,
-                'serving_status' => 0
-            ]);
-
-        if (
-            $this->db->affected_rows() <= 0 ||
-            $this->db->trans_status() === false
-        ) {
-            $this->db->trans_rollback();
-
-            echo json_encode([
-                'status' => false,
-                'message' => 'Không thể hoàn tất thanh toán và mở bàn.',
-                'csrf_hash' => $this->security->get_csrf_hash()
-            ]);
-            return;
-        }
-
-        $this->db->trans_commit();
-
-        echo json_encode([
-            'status' => true,
-            'message' => 'Thanh toán thành công. Bàn đã được mở lại.',
-            'amount' => $amount,
-            'paid_by' => $paid_by,
-            'csrf_hash' => $this->security->get_csrf_hash()
-        ]);
     }
 
     
@@ -1246,27 +791,18 @@ class Pos extends MY_Controller
         $this->db->trans_start();
 
 
-        $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id');
-        $bani_warehouse_id = (int) $this->config->item('bani_warehouse_id');
-
-        $sale_update_data = [
-            'payment_status' => 'paid',
-            'paid'           => $sale->grand_total
-        ];
-
-        // Tiệm Nước Mini: thanh toán xong thì giải phóng bàn
-        if ((int) $sale->warehouse_id === $mini_warehouse_id) {
-            $sale_update_data['serving_status'] = 0;
-        }
-
-        // Ba-Ni: serving_status không áp dụng
-        elseif ((int) $sale->warehouse_id === $bani_warehouse_id) {
-            $sale_update_data['serving_status'] = NULL;
-        }
-
+        /*
+        * Cập nhật trạng thái đơn
+        */
         $this->db
             ->where('id', $sale_id)
-            ->update('sales', $sale_update_data);
+            ->update(
+                'sales',
+                [
+                    'payment_status' => 'paid',
+                    'paid'           => $sale->grand_total
+                ]
+            );
 
 
         /*
@@ -1868,10 +1404,6 @@ class Pos extends MY_Controller
                           'customer'          => $customer,
                           'order_type'        => $order_type,
                           'table_id'          => $table_id,
-                          'serving_status' => (
-                                $warehouse_id == $mini_warehouse_id &&
-                                $order_type == 'TABLE'
-                            ) ? 1 : NULL,
                           'biller_id'         => $biller_id,
                           'biller'            => $biller,
                           'warehouse_id'      => $warehouse_id,
@@ -2057,47 +1589,9 @@ class Pos extends MY_Controller
                     admin_redirect("pos");
                 }
             }
-            
             $this->data['suspend_sale'] = NULL;
             if ($sid) {
-
-                // Kiểm tra riêng khi mở hóa đơn từ popup bàn đang phục vụ
-                if ($this->input->get('busy_table') == 1) {
-
-                    $mini_warehouse_id = (int) $this->config->item('mini_warehouse_id');
-                    $warehouse_id = (int) $this->session->userdata('warehouse_id');
-                    $table_id = (int) $this->input->get('table_id');
-                    $today = date('Y-m-d');
-
-                    if ($warehouse_id != $mini_warehouse_id || !$table_id) {
-                        $this->session->set_flashdata('error', 'Thông tin bàn hoặc kho không hợp lệ.');
-                        admin_redirect('pos');
-                    }
-
-                    $this->db
-                        ->where('id', (int) $sid)
-                        ->where('warehouse_id', $warehouse_id)
-                        ->where('table_id', $table_id)
-                        ->where('order_type', 'TABLE')
-                        ->where('serving_status', 1)
-                        ->where('DATE(date) =', $today);
-
-                    if (!$this->Owner && !$this->Admin) {
-                        $this->db->where('created_by', $this->session->userdata('user_id'));
-                    }
-
-                    $valid_busy_bill = $this->db
-                        ->get('suspended_bills')
-                        ->row();
-
-                    if (!$valid_busy_bill) {
-                        $this->session->set_flashdata('error', 'Hóa đơn tạm không còn hợp lệ hoặc không thuộc bàn này.');
-                        admin_redirect('pos');
-                    }
-                }
-
                 if ($suspended_sale = $this->pos_model->getOpenBillByID($sid)) {
-
                     $inv_items = $this->pos_model->getSuspendedSaleItems($sid);
                     
                     $this->data['sid'] = $sid;
@@ -2289,7 +1783,7 @@ class Pos extends MY_Controller
             ], JSON_UNESCAPED_UNICODE));
     }
 
-        /**
+    /**
      * LẤY TOÀN BỘ DANH SÁCH BÀN ĐỂ QUẢN LÝ
      */
     public function getTablesManage()
@@ -2305,51 +1799,16 @@ class Pos extends MY_Controller
 
         $data = [];
 
-        
         foreach ($tables as $table) {
-
-            
-        // Chỉ kiểm tra đơn trong ngày hiện tại
-        $sdate = date('Y-m-d 00:00:00');
-        $edate = date('Y-m-d 23:59:59');
-
-        // Kho đang đăng nhập
-        $warehouse_id = (int) $this->session->userdata('warehouse_id');
-
-        // Kiểm tra đơn đang phục vụ hôm nay
-        $busy_sale = $this->db
-            ->where('table_id', $table->id)
-            ->where('warehouse_id', $warehouse_id)
-            ->where('order_type', 'TABLE')
-            ->where('is_ingredient !=', 1)
-            ->where('serving_status', 1)
-            ->where('sale_status !=', 'returned')
-            ->where('date >=', $sdate)
-            ->where('date <=', $edate)
-            ->count_all_results('sales');
-
-        // Kiểm tra đơn tạm hôm nay
-        $busy_suspend = $this->db
-            ->where('table_id', $table->id)
-            ->where('warehouse_id', $warehouse_id)
-            ->where('order_type', 'TABLE')
-            ->where('serving_status', 1)
-            ->where('date >=', $sdate)
-            ->where('date <=', $edate)
-            ->count_all_results('suspended_bills');
-
-
             $data[] = [
-                'id'          => (int) $table->id,
-                'table_name'  => $table->table_name,
-                'sort_order'  => (int) $table->sort_order,
-                'is_active'   => (int) $table->is_active,
-                'position_x'  => $table->position_x,
-                'position_y'  => $table->position_y,
-                'is_busy'     => ($busy_sale > 0 || $busy_suspend > 0) ? 1 : 0
+                'id'         => (int) $table->id,
+                'table_name' => $table->table_name,
+                'sort_order' => (int) $table->sort_order,
+                'is_active'  => (int) $table->is_active,
+                'position_x' => $table->position_x,
+                'position_y' => $table->position_y
             ];
         }
-
 
         $this->output
             ->set_content_type('application/json')
@@ -2555,7 +2014,6 @@ class Pos extends MY_Controller
                     ->where('table_id', $table_id)
                     ->where('warehouse_id', $warehouse_id)
                     ->where('order_type', 'TABLE')
-                    ->where('serving_status', 1)
                     ->where('sale_status !=', 'returned')
                     ->where('date >=', $sdate)
                     ->where('date <=', $edate)
@@ -2566,7 +2024,6 @@ class Pos extends MY_Controller
                     ->where('table_id', $table_id)
                     ->where('warehouse_id', $warehouse_id)
                     ->where('order_type', 'TABLE')
-                    ->where('serving_status', 1)
                     ->where('date >=', $sdate)
                     ->where('date <=', $edate)
                     ->count_all_results('suspended_bills');

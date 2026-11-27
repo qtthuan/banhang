@@ -1483,102 +1483,6 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
 </div>
 <!-- /MODAL SƠ ĐỒ BÀN -->
 
-<!-- MODAL THAO TÁC BÀN ĐANG PHỤC VỤ -->
-<div class="modal fade" id="busyTableModal"
-     tabindex="-1" role="dialog"
-     aria-labelledby="busyTableModalLabel"
-     data-backdrop="false">
-
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">
-                    &times;
-                </button>
-
-                <h4 class="modal-title" id="busyTableModalLabel">
-                </h4>
-            </div>
-
-            <div class="modal-body text-center">
-
-                <h4 id="busyTableName"
-                    style="color:#2f80c9;font-weight:bold;margin-top:5px;">
-                </h4>
-
-                <p style="color:#777;">
-                    Bàn này hiện đang có đơn hàng.
-                </p>
-
-                <div id="busySuspendedActions" style="display:none;">
-                    <div class="text-center">
-                        <strong>HÓA ĐƠN TẠM</strong>
-                    </div>
-
-                    <button type="button" class="btn btn-success btn-block" id="btnReopenSuspended">
-                        <i class="fa fa-folder-open"></i>
-                        MỞ LẠI HÓA ĐƠN
-                    </button>
-
-                    <button type="button" class="btn btn-warning btn-block" id="btnReleaseSuspended">
-                        <i class="fa fa-unlock"></i>
-                        MỞ LẠI BÀN
-                    </button>
-                </div>
-
-                <div id="busySaleActions" style="display:none;">
-                    <div class="text-center">
-                        <strong>HÓA ĐƠN ĐÃ LƯU</strong>
-                    </div>
-
-                    <button type="button" class="btn btn-success btn-block" id="btnPayAndRelease">
-                        <i class="fa fa-money"></i>
-                        THANH TOÁN & MỞ LẠI BÀN
-                    </button>
-
-                    <div id="busyPaymentMethods" style="display:none; margin-top:8px;">
-                        <button type="button"
-                                class="btn btn-primary btn-block"
-                                id="btnBusyPayCash">
-                            <i class="fa fa-money"></i>
-                            TIỀN MẶT
-                        </button>
-
-                        <button type="button"
-                                class="btn btn-info btn-block"
-                                id="btnBusyPayBank">
-                            <i class="fa fa-bank"></i>
-                            CHUYỂN KHOẢN
-                        </button>
-
-                        <button type="button"
-                                class="btn btn-default btn-block"
-                                id="btnCancelBusyPayment">
-                            HỦY
-                        </button>
-                    </div>
-
-                    <button type="button" class="btn btn-warning btn-block" id="btnReleaseSale">
-                        <i class="fa fa-unlock"></i>
-                        MỞ LẠI BÀN
-                    </button>
-                </div>
-
-                <button type="button"
-                        class="btn btn-default btn-block"
-                        data-dismiss="modal">
-                    ĐÓNG
-                </button>
-
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<div id="busyTableNotice"></div>
-
 <div class="modal fade in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true"></div>
 <div class="modal fade in" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2"
@@ -1657,15 +1561,9 @@ var lang = {
     
     function loadTableList() {
 
-        // Lưu trạng thái bàn hiện tại để so sánh sau khi tải
-        var previousBusyStates = {};
-
-        $('#tableList .floor-table-btn').each(function () {
-            var id = $(this).attr('data-id');
-
-            previousBusyStates[id] =
-                parseInt($(this).attr('data-busy'), 10);
-        });
+        $('#tableList').html(
+            '<div class="text-center">Đang tải sơ đồ bàn...</div>'
+        );
 
         $.ajax({
             type: 'GET',
@@ -1690,29 +1588,7 @@ var lang = {
                         return;
                     }
 
-                    var busy = parseInt(table.is_busy, 10) === 1;
                     var tableName = $('<div>').text(table.table_name).html();
-
-                    var statusText = busy
-                        ? 'ĐANG PHỤC VỤ'
-                        : 'TRỐNG';
-
-                    var statusClass = busy
-                        ? 'floor-table-busy'
-                        : 'floor-table-free';
-
-                    // Chỉ fade khi trạng thái bàn thực sự thay đổi
-                    var statusChanged =
-                        previousBusyStates.hasOwnProperty(String(table.id)) &&
-                        previousBusyStates[String(table.id)] !== (busy ? 1 : 0);
-
-                    var statusFadeStyle = statusChanged
-                        ? ' style="opacity:0;"'
-                        : '';
-
-                    var statusChangedAttr = statusChanged
-                        ? ' data-status-changed="1"'
-                        : '';
 
                     // Nếu chưa có tọa độ thì xếp bàn theo thứ tự
                     var x = table.position_x !== null
@@ -1725,17 +1601,11 @@ var lang = {
 
                     html +=
                         '<button type="button" ' +
-                        'class="table-select-btn floor-table-btn ' + statusClass + '" ' +
+                        'class="table-select-btn floor-table-btn" ' +
                         'data-id="' + table.id + '" ' +
                         'data-name="' + tableName + '" ' +
-                        'data-busy="' + (busy ? 1 : 0) + '" ' +
                         'style="left:' + x + '%;top:' + y + '%;">' +
                         '<span class="floor-table-name">' + tableName + '</span>' +
-                        '<small class="floor-table-status"' +
-                            statusChangedAttr +
-                            statusFadeStyle + '>' +
-                            statusText +
-                        '</small>' +
                         '</button>';
                 });
 
@@ -1744,12 +1614,6 @@ var lang = {
                 }
 
                 $('#tableList').html(html);
-
-                // Fade nhẹ nhãn trạng thái của những bàn vừa thay đổi
-                $('#tableList .floor-table-status[data-status-changed="1"]')
-                    .each(function () {
-                        $(this).stop(true, true).fadeTo(450, 1);
-                    });
             },
 
             error: function () {
@@ -1778,23 +1642,6 @@ var lang = {
             .fadeIn(200);
 
         setTimeout(function () {
-            $notice.fadeOut(500);
-        }, 2200);
-    }
-
-    // Thông báo fade riêng cho thao tác bàn đang phục vụ
-    function showBusyTableNotice(message, type) {
-        var $notice = $('#busyTableNotice');
-
-        $notice.stop(true, true)
-            .removeClass('success error')
-            .addClass(type || 'success')
-            .text(message)
-            .fadeIn(200);
-
-        clearTimeout(window.busyTableNoticeTimer);
-
-        window.busyTableNoticeTimer = setTimeout(function () {
             $notice.fadeOut(500);
         }, 2200);
     }
@@ -1910,130 +1757,6 @@ var lang = {
         if (floorTableWasDragged) {
             return;
         }
-       
-        // Bấm bàn đang phục vụ -> mở modal thao tác
-        if (parseInt($(this).attr('data-busy'), 10) === 1) {
-
-            var tableId = $(this).data('id');
-            var tableName = $(this).data('name');
-
-            var btnRect = this.getBoundingClientRect();
-
-            var $modal = $('#busyTableModal');
-            var $dialog = $modal.find('.modal-dialog');
-
-            $modal.data('table-id', tableId);
-            $modal.data('table-name', tableName);
-
-            $('#busyTableModalLabel').text(tableName);
-            $('#busyTableName').text('BÀN ĐANG PHỤC VỤ');
-            // Kích thước popup
-            var popupWidth = 300;
-            var popupHeight = 230;
-
-            var screenWidth = window.innerWidth;
-            var screenHeight = window.innerHeight;
-
-            // Ưu tiên xuất hiện bên phải bàn
-            var left = btnRect.right + 10;
-            var top = btnRect.top;
-
-            // Nếu không đủ chỗ bên phải thì chuyển qua trái
-            if (left + popupWidth > screenWidth - 10) {
-                left = btnRect.left - popupWidth - 10;
-            }
-
-            // Nếu không đủ chỗ bên trái thì đặt bên phải
-            if (left < 10) {
-                left = btnRect.right + 10;
-            }
-
-            // Nếu không đủ ngang thì nằm dưới nút
-            if (left + popupWidth > screenWidth - 10) {
-                left = screenWidth - popupWidth - 10;
-            }
-
-            // Nếu không đủ chiều cao thì đẩy lên
-            if (top + popupHeight > screenHeight - 10) {
-                top = screenHeight - popupHeight - 10;
-            }
-
-            if (top < 10) top = 10;
-
-            // Định vị TRƯỚC khi mở modal
-            $dialog.css({
-                position: 'fixed',
-                margin: 0,
-                left: left + 'px',
-                top: top + 'px',
-                transform: 'none'
-            });
-
-            // Ẩn các nhóm nút cũ trước khi tải dữ liệu
-            $('#busySuspendedActions').hide();
-            $('#busySaleActions').hide();
-
-            // Mở popup
-            $modal.modal('show');
-
-            // Lấy thông tin đơn đang giữ bàn
-            $.ajax({
-                url: site.base_url + 'pos/getBusyTableInfo',
-                type: 'POST',
-                dataType: 'json',
-                data: {
-                    table_id: tableId,
-                    [csrfName]: csrfHash
-                },
-                success: function (res) {
-
-                    if (res.csrf_hash) {
-                        csrfHash = res.csrf_hash;
-                    }
-
-                    if (!res.status) {
-                        alert(res.message || 'Không lấy được thông tin bàn.');
-                        return;
-                    }
-
-                    // Lưu ID hóa đơn vào popup
-                    $modal.data(
-                        'suspended-id',
-                        res.suspended_bill ? res.suspended_bill.id : ''
-                    );
-
-                    $modal.data(
-                        'sale-id',
-                        res.sale ? res.sale.id : ''
-                    );
-
-                    // Hiện nhóm hóa đơn tạm
-                    if (res.suspended_bill) {
-                        $('#busySuspendedActions').show();
-                    }
-
-                    // Hiện nhóm hóa đơn đã lưu
-                    if (res.sale) {
-                        $('#busySaleActions').show();
-                    }
-
-                    if (!res.suspended_bill && !res.sale) {
-                        $modal.modal('hide');
-                        showBusyTableNotice(
-                            'Bàn không còn hóa đơn đang phục vụ.',
-                            'error'
-                        );
-                        
-                    }
-                },
-                error: function () {
-                    alert('Lỗi khi tải thông tin bàn.');
-                }
-            });
-
-            return;
-        }
-
 
         var tableId = $(this).data('id');
         var tableName = $(this).data('name');
@@ -2066,199 +1789,6 @@ var lang = {
         $('#tableModal').modal('hide');
     });
 
-
-    // MỞ LẠI HÓA ĐƠN TẠM VÀ ĐƯA VỀ POS
-    $(document).on('click', '#btnReopenSuspended', function () {
-
-        var $modal = $('#busyTableModal');
-
-        var suspendId = $modal.data('suspended-id');
-        var tableId = $modal.data('table-id');
-
-        if (!suspendId || !tableId) {
-            alert('Không tìm thấy thông tin hóa đơn tạm.');
-            return;
-        }
-
-        // Đóng popup trước khi chuyển trang
-        $modal.modal('hide');
-
-        // Mở lại hóa đơn tạm đúng bàn
-        window.location.href =
-            site.base_url +
-            'pos/index/' + encodeURIComponent(suspendId) +
-            '?busy_table=1&table_id=' + encodeURIComponent(tableId);
-    });
-
-
-    // MỞ LẠI BÀN - HÓA ĐƠN TẠM
-    $(document).on('click', '#btnReleaseSuspended', function () {
-
-        releaseBusyTable('suspended');
-    });
-
-    // MỞ LẠI BÀN - HÓA ĐƠN ĐÃ LƯU
-    $(document).on('click', '#btnReleaseSale', function () {
-
-        releaseBusyTable('sale');
-    });
-
-    function releaseBusyTable(type) {
-
-        var $modal = $('#busyTableModal');
-
-        var tableId = $modal.data('table-id');
-
-        var recordId = type === 'suspended'
-            ? $modal.data('suspended-id')
-            : $modal.data('sale-id');
-
-        if (!tableId || !recordId) {
-            alert('Không tìm thấy thông tin hóa đơn.');
-            return;
-        }
-
-        bootbox.confirm(
-        'Bạn có chắc muốn mở lại bàn này không?',
-            function (confirmed) {
-                if (!confirmed) {
-                    return;
-                }
-
-                $.ajax({
-                url: site.base_url + 'pos/releaseBusyTable',
-                type: 'POST',
-                dataType: 'json',
-                data: {
-                    table_id: tableId,
-                    record_id: recordId,
-                    type: type,
-                    [csrfName]: csrfHash
-                },
-                success: function (res) {
-
-                    if (res.csrf_hash) {
-                        csrfHash = res.csrf_hash;
-                    }
-
-                    if (!res.status) {
-                        alert(res.message || 'Không thể mở lại bàn.');
-                        return;
-                    }
-
-                    //alert(res.message);
-
-                    $modal.modal('hide');
-
-                    // Tải lại sơ đồ bàn và trạng thái phục vụ
-                    loadTableList();
-                },
-                error: function () {
-                    alert('Lỗi kết nối máy chủ.');
-                }
-            });
-        }
-    );
-}
-
-    
-    // Bấm THANH TOÁN & MỞ LẠI BÀN
-    $(document).on('click', '#btnPayAndRelease', function () {
-
-        $('#btnPayAndRelease').hide();
-        $('#busyPaymentMethods').show();
-
-    });
-
-    // Hủy chọn phương thức thanh toán
-    $(document).on('click', '#btnCancelBusyPayment', function () {
-
-        $('#busyPaymentMethods').hide();
-        $('#btnPayAndRelease').show();
-
-    });
-
-    // Thanh toán tiền mặt
-    $(document).on('click', '#btnBusyPayCash', function () {
-
-        payAndReleaseBusyTable('cash');
-
-    });
-
-    // Thanh toán chuyển khoản
-    $(document).on('click', '#btnBusyPayBank', function () {
-
-        payAndReleaseBusyTable('cc');
-
-    });
-
-    function payAndReleaseBusyTable(paidBy) {
-
-        var $modal = $('#busyTableModal');
-
-        var saleId = $modal.data('sale-id');
-        var tableId = $modal.data('table-id');
-
-        if (!saleId || !tableId) {
-            alert('Không tìm thấy thông tin hóa đơn.');
-            return;
-        }
-
-        bootbox.confirm(
-        'Xác nhận thanh toán toàn bộ hóa đơn và mở lại bàn?',
-            function (confirmed) {
-                if (!confirmed) {
-                    return;
-                }
-
-                $('#btnBusyPayCash, #btnBusyPayBank').prop('disabled', true);
-
-                $.ajax({
-                url: site.base_url + 'pos/payAndReleaseBusyTable',
-                type: 'POST',
-                dataType: 'json',
-                data: {
-                    sale_id: saleId,
-                    table_id: tableId,
-                    paid_by: paidBy,
-                    [csrfName]: csrfHash
-                },
-                success: function (res) {
-
-                    if (res.csrf_hash) {
-                        csrfHash = res.csrf_hash;
-                    }
-
-                    if (!res.status) {
-                        alert(res.message || 'Thanh toán thất bại.');
-                        return;
-                    }
-
-                    showBusyTableNotice(
-                        res.message + ' – Số tiền: ' +
-                        Number(res.amount).toLocaleString('vi-VN') + 'đ',
-                        'success'
-                    );
-
-                    $modal.modal('hide');
-
-                    $('#busyPaymentMethods').hide();
-                    $('#btnPayAndRelease').show();
-
-                    loadTableList();
-                },
-                error: function () {
-                    alert('Lỗi kết nối máy chủ khi thanh toán.');
-                },
-                complete: function () {
-                    $('#btnBusyPayCash, #btnBusyPayBank').prop('disabled', false);
-                }
-            });
-        }
-    );
-}
-
-
     
     /* =========================================
     KÉO THẢ BÀN - JAVASCRIPT THUẦN
@@ -2275,11 +1805,6 @@ var lang = {
         var table = e.target.closest('.floor-table-btn');
 
         if (!table) return;
-
-        // Không kéo bàn đang phục vụ
-        if (parseInt(table.getAttribute('data-busy'), 10) === 1) {
-            return;
-        }
 
         if (e.pointerType === 'mouse' && e.button !== 0) {
             return;
