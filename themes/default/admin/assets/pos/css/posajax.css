@@ -2095,3 +2095,17 @@ ul.ob.pos-suspended-grid > li.pos-suspended-item {
     color: #216B32 !important;
     font-weight: 700;
 }
+@keyframes tableSelectedPulse {
+    0%, 100% {
+        box-shadow: 0 0 3px rgba(40, 167, 69, 0.25);
+        filter: brightness(1);
+    }
+    50% {
+        box-shadow: 0 0 14px rgba(40, 167, 69, 0.85);
+        filter: brightness(1.18);
+    }
+}
+
+.table-selected-pulse {
+    animation: tableSelectedPulse 1.5s ease-in-out infinite;
+}

@@ -87,8 +87,14 @@ var IS_CUSTOMER_SCREEN_CONTROLLER =
                     </a>
                 </div>
 
+                
+
                 <!-- Menu sẽ được JS đưa ra ngoài body để không bị select khách che -->
                 <div id="posUtilitiesMenu" class="pos-utilities-menu" style="display:none;">
+                    <a href="#" id="btn_open_pos_label_preview">
+                        <i class="fa fa-tags"></i>
+                        <span>IN TEM TẠM</span>
+                    </a>
                     <a href="#" id="btn_open_pos_purchase">
                         <i class="fa fa-truck"></i>
                         <span>NHẬP HÀNG</span>
@@ -1775,13 +1781,8 @@ var lang = {
         $('#btn_ban').addClass('active');
         $('#btn_mang_di').removeClass('active');
 
-        // HIỆU ỨNG NHẬN BIẾT BÀN VỪA CHỌN
-        $('#btn_ban')
-            .removeClass('table-selected-effect');
-
-        void $('#btn_ban')[0].offsetWidth;
-
-        $('#btn_ban').addClass('table-selected-effect');
+        // Hiệu ứng sáng liên tục khi đã chọn bàn
+        $('#btn_ban').addClass('table-selected-pulse');
 
         localStorage.setItem('table_name', tableName);  
 
@@ -1955,6 +1956,7 @@ var lang = {
         $('#btn_mang_di').off('click').on('click', function () {
             $('#btn_mang_di').addClass('active');
             $('#btn_ban').removeClass('active').text('BÀN');
+            $('#btn_ban').removeClass('table-selected-pulse');
             localStorage.removeItem('table_name');
 
             $('#order_type').val('TAKEAWAY');
@@ -2028,6 +2030,7 @@ var lang = {
             $('#btn_ban').addClass('active').text(
                 savedTableName || 'BÀN'
             );
+            $('#btn_ban').addClass('table-selected-pulse');
 
         } else {
             // Chưa có lựa chọn thì mặc định MANG ĐI
@@ -2197,6 +2200,7 @@ var lang = {
                         $('#btn_ban')
                             .addClass('active')
                             .text(tableName);
+                        $('#btn_ban').addClass('table-selected-pulse');
 
                         $('#btn_mang_di').removeClass('active');
 
@@ -5086,7 +5090,86 @@ if (isset($print) && !empty($print)) {
     </div>
 </div>
 
+<!-- MODAL IN TEM TẠM -->
+<div class="modal fade" id="posLabelPreviewModal"
+     tabindex="-1" role="dialog" aria-hidden="true">
 
+    <div class="modal-dialog modal-lg" style="width:95%; max-width:1100px;">
+
+        <div class="modal-content">
+
+            <div class="modal-header" style="background:#428bca; color:white;">
+                <button type="button" class="close" data-dismiss="modal"
+                        style="color:white; opacity:1;">
+                    <span>&times;</span>
+                </button>
+
+                <h4 class="modal-title">
+                    <i class="fa fa-tags"></i> IN TEM TẠM
+                </h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div style="margin-bottom:12px;">
+                    <button type="button" class="btn btn-success"
+                            id="btnLabelSelectAll">
+                        <i class="fa fa-check-square"></i> CHỌN TẤT CẢ
+                    </button>
+
+                    <span style="margin-left:12px; font-weight:bold;">
+                        Tổng số tem: <span id="posLabelTotal">0</span>
+                    </span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped"
+                           id="posLabelPreviewTable">
+
+                        <thead>
+                            <tr>
+                                <th style="width:5%; text-align:center;">
+                                    Chọn
+                                </th>
+                                <th>Tên món</th>
+                                <th>Ghi chú</th>
+                                <th>Tên khách dán ly</th>
+                                <th style="width:12%;">Giá</th>
+                                <th style="width:12%;">SL in</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="posLabelPreviewBody">
+                            <tr>
+                                <td colspan="6" class="text-center">
+                                    Chưa có dữ liệu món.
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                    ĐÓNG
+                </button>
+
+                <button type="button" class="btn btn-primary"
+                        id="btnPrintPosLabels">
+                    <i class="fa fa-print"></i> IN TEM ĐÃ CHỌN
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- HẾT MODAL IN TEM TẠM -->
 
 <script type="text/javascript">
 
@@ -6936,7 +7019,222 @@ $(document).on('click', '#btn_open_pos_purchase', function(e) {
     $('#posPurchaseModal').modal('show');
 });
 
+// MỞ CỬA SỔ IN TEM TẠM
+$(document).on('click', '#btn_open_pos_label_preview', function(e) {
+    e.preventDefault();
 
+    $('#posUtilitiesMenu').hide();
+
+    var $tbody = $('#posLabelPreviewBody');
+    $tbody.empty();
+
+    var totalLabels = 0;
+
+    $('#posTable tbody tr').each(function() {
+
+        var $row = $(this);
+
+        var productName = $row.find('input.rname').first().val() || '';
+        var comments = $row.find('input.rcomment');
+
+        var comment = comments.eq(0).val() || '';
+        var commentName = comments.eq(1).val() || '';
+
+        var price = parseFloat($row.find('input.rprice').val()) || 0;
+        var originalPrice = parseFloat($row.find('input.ruprice').val()) || 0;
+        var discount = parseFloat($row.find('input.rdiscount').val()) || 0;
+        var quantity = parseInt($row.find('input.rquantity').val(), 10) || 0;
+
+        var productId = $row.find('input.rid').first().val() || '';
+        var productType = $row.find('input.rtype').val() || '';
+        var option = $row.find('input.roption').val() || '';
+
+        if (!productName || quantity <= 0) {
+            return;
+        }
+
+        totalLabels += quantity;
+
+        var safeName = $('<div>').text(productName).html();
+        var safeComment = $('<div>').text(comment).html();
+        var safeCommentName = $('<div>').text(commentName).html();
+
+        var html = `
+            <tr
+                data-product-id="${productId}"
+                data-product-type="${$('<div>').text(productType).html()}"
+                data-option="${$('<div>').text(option).html()}"
+                data-price="${price}"
+                data-original-price="${originalPrice}"
+                data-discount="${discount}"
+            >
+                <td class="text-center">
+                    <input type="checkbox"
+                           class="pos-label-check"
+                           checked>
+                </td>
+
+                <td>${safeName}</td>
+                <td>${safeComment}</td>
+                <td>${safeCommentName}</td>
+
+                <td class="text-right">
+                    ${price.toLocaleString('vi-VN')}
+                </td>
+
+                <td>
+                    <input type="number"
+                           class="form-control input-sm pos-label-qty"
+                           min="0"
+                           step="1"
+                           max="${quantity}"
+                           value="${quantity}">
+                </td>
+            </tr>
+        `;
+
+        $tbody.append(html);
+    });
+
+    if (!$tbody.children().length) {
+        $tbody.html(`
+            <tr>
+                <td colspan="6" class="text-center">
+                    Chưa có món nào trên POS.
+                </td>
+            </tr>
+        `);
+    }
+
+    $('#posLabelTotal').text(totalLabels);
+
+    $('#posLabelPreviewModal').modal('show');
+});
+
+// TÍNH LẠI TỔNG SỐ TEM ĐƯỢC CHỌN
+function updatePosLabelTotal() {
+    var total = 0;
+
+    $('#posLabelPreviewBody tr').each(function() {
+        var $row = $(this);
+
+        if (!$row.find('.pos-label-check').is(':checked')) {
+            return;
+        }
+
+        var qty = parseInt($row.find('.pos-label-qty').val(), 10) || 0;
+
+        if (qty > 0) {
+            total += qty;
+        }
+    });
+
+    $('#posLabelTotal').text(total);
+}
+
+// CHỌN TẤT CẢ / BỎ CHỌN TẤT CẢ
+$(document).on('click', '#btnLabelSelectAll', function() {
+    var $checks = $('#posLabelPreviewBody .pos-label-check');
+
+    var allChecked = $checks.length > 0 &&
+        $checks.filter(':checked').length === $checks.length;
+
+    $checks.prop('checked', !allChecked);
+
+    updatePosLabelTotal();
+});
+
+// CẬP NHẬT KHI THAY ĐỔI SỐ LƯỢNG HOẶC CHECKBOX
+$(document).on(
+    'change input',
+    '#posLabelPreviewBody .pos-label-check, #posLabelPreviewBody .pos-label-qty',
+    function() {
+        updatePosLabelTotal();
+    }
+);
+
+// IN TEM ĐÃ CHỌN TỪ GIỎ HÀNG POS
+$(document).on('click', '#btnPrintPosLabels', function(e) {
+
+    e.preventDefault();
+
+    var items = [];
+
+    $('#posLabelPreviewBody tr').each(function() {
+
+        var $row = $(this);
+
+        if (!$row.find('.pos-label-check').is(':checked')) {
+            return;
+        }
+
+        var qty = parseInt(
+            $row.find('.pos-label-qty').val(),
+            10
+        ) || 0;
+
+        var maxQty = parseInt(
+            $row.find('.pos-label-qty').attr('max'),
+            10
+        ) || 0;
+
+        if (qty <= 0) {
+            return;
+        }
+
+        // Không cho in vượt số lượng đang có trên POS
+        qty = Math.min(qty, maxQty);
+
+        items.push({
+            product_id: parseInt($row.attr('data-product-id'), 10) || 0,
+            product_type: $row.attr('data-product-type') || '',
+            option: $row.attr('data-option') || '',
+
+            name: $row.find('td:eq(1)').text().trim(),
+            comment: $row.find('td:eq(2)').text().trim(),
+            comment_name: $row.find('td:eq(3)').text().trim(),
+
+            price: parseFloat($row.attr('data-price')) || 0,
+            original_price: parseFloat($row.attr('data-original-price')) || 0,
+            discount: parseFloat($row.attr('data-discount')) || 0,
+
+            qty: qty
+        });
+
+    });
+
+    if (items.length === 0) {
+        alert('Bạn chưa chọn món nào để in tem.');
+        return;
+    }
+
+    // Tạo form POST mở trang in ở tab mới
+    var $form = $('<form>', {
+        method: 'POST',
+        action: "<?= admin_url('products/print_label_pos'); ?>",
+        target: '_blank'
+    });
+
+    $form.append($('<input>', {
+        type: 'hidden',
+        name: 'items',
+        value: JSON.stringify(items)
+    }));
+
+    // CSRF của CodeIgniter
+    $form.append($('<input>', {
+        type: 'hidden',
+        name: '<?= $this->security->get_csrf_token_name(); ?>',
+        value: '<?= $this->security->get_csrf_hash(); ?>'
+    }));
+
+    $('body').append($form);
+
+    $form[0].submit();
+
+    $form.remove();
+
+});
 
 // Reset form
 $(document).on('click', '#btn_reset_pos_purchase', function () {

@@ -468,6 +468,95 @@ class Products extends MY_Controller
 
     }
     
+    /**
+     * IN TEM TẠM TỪ GIỎ HÀNG POS
+     * Không tạo hoặc cập nhật hóa đơn.
+     */
+    function print_label_pos()
+    {
+        $this->sma->checkPermissions('barcode', true);
+
+        $items_json = $this->input->post('items', false);
+        $items_raw = json_decode($items_json, true);
+
+        if (!is_array($items_raw) || empty($items_raw)) {
+            show_error('Không có dữ liệu tem để in.', 400);
+            return;
+        }
+
+        $items = array();
+
+        foreach ($items_raw as $item) {
+
+            if (!is_array($item)) {
+                continue;
+            }
+
+            $qty = isset($item['qty']) ? (int)$item['qty'] : 0;
+            $name = isset($item['name'])
+                ? trim(strip_tags($item['name']))
+                : '';
+
+            if ($qty <= 0 || $name === '') {
+                continue;
+            }
+
+            $items[] = array(
+                'product_id' => isset($item['product_id'])
+                    ? (int)$item['product_id'] : 0,
+
+                'product_type' => isset($item['product_type'])
+                    ? trim($item['product_type']) : '',
+
+                'name' => $name,
+
+                'option' => isset($item['option'])
+                    ? trim(strip_tags($item['option'])) : '',
+
+                'comment' => isset($item['comment'])
+                    ? trim(strip_tags($item['comment'])) : '',
+
+                'comment_name' => isset($item['comment_name'])
+                    ? trim(strip_tags($item['comment_name'])) : '',
+
+                'price' => isset($item['price'])
+                    ? (float)$item['price'] : 0,
+
+                'original_price' => isset($item['original_price'])
+                    ? (float)$item['original_price'] : 0,
+
+                'discount' => isset($item['discount'])
+                    ? (float)$item['discount'] : 0,
+
+                'qty' => min($qty, 100)
+            );
+        }
+
+        if (empty($items)) {
+            show_error('Không có món hợp lệ để in tem.', 400);
+            return;
+        }
+
+        $this->data['items'] = $items;
+
+        $this->data['error'] = '';
+
+        $bc = array(
+            array('link' => base_url(), 'page' => lang('home')),
+            array('link' => '#', 'page' => lang('print_labels'))
+        );
+
+        $meta = array(
+            'page_title' => lang('print_labels'),
+            'bc' => $bc
+        );
+
+        $this->page_construct(
+            'products/print_label_pos',
+            $meta,
+            $this->data
+        );
+    }
 
 
     /* ------------------------------------------------------- */
