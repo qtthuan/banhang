@@ -1,11 +1,107 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+<style>
+/* KHU VỰC TAB IN TEM */
+.label-tab-wrapper {
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    margin: 12px 0 15px;
+    background: #D5E0EC;
+    border-radius: 12px;
+    border: 1px solid #B8C8DA;
+}
+
+.label-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 13px 18px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: #64748b;
+    font-size: 20px;
+    font-weight: 700;
+    transition: all .25s ease;
+    cursor: pointer;
+}
+
+.label-tab:hover {
+    background: #e5ebf2;
+    color: #334155;
+}
+
+.label-tab.active {
+    color: #fff;
+    background: linear-gradient(135deg, #2878bd, #1763a5);
+    box-shadow: 0 3px 9px rgba(35, 105, 165, .25);
+}
+
+.label-tab .badge {
+    background: rgba(255,255,255,.22);
+    color: inherit;
+    border-radius: 20px;
+    padding: 3px 9px;
+    font-size: 16px;
+}
+
+.label-tab-content {
+    display: none;
+    opacity: 0;
+    transform: translateY(8px);
+}
+
+.label-tab-content.active {
+    display: block;
+    animation: labelTabFade .28s ease forwards;
+}
+
+@keyframes labelTabFade {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.label-bill-list {
+    text-align: center;
+    margin: 5px 0 12px;
+    min-height: 65px;
+}
+
+.label-bill-list .bills,
+.label-bill-list .suspended-bills {
+    margin: 5px 3px;
+    border-radius: 5px;
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.label-bill-list .bills:hover,
+.label-bill-list .suspended-bills:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,.15);
+}
+
+@media print {
+    .label-tab-wrapper,
+    .label-bill-list {
+        display: none !important;
+    }
+}
+</style>
 <script type="text/javascript">
     $(document).ready(function() {
         
     });
 </script>
 <div class="box">
-    <div class="box-header no-print">
+    <!-- <div class="box-header no-print">
         <h2 class="blue"><i class="fa-fw fa fa-plus"></i><?= lang('print_barcode_label'); ?></h2>
 
         <div class="box-icon">
@@ -17,7 +113,7 @@
                 </li>
             </ul>
         </div>
-    </div>
+    </div> -->
     
     <div class="box-content">
         <div class="row">
@@ -35,13 +131,36 @@
                     </button>
                     <?php                       
                         $style = '10_1';
-                        echo '<button type="button" style="height: 46px; font-size: 22px" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print').'</button>';
-                        echo '<div style="text-align: center; margin: 5px 0" class="no-print">';
+                        //echo '<button type="button" style="height: 46px; font-size: 22px" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print').'</button>';
+                        echo '
+                            <div class="label-tab-wrapper no-print">
+
+                                <button type="button"
+                                        class="label-tab active"
+                                        data-label-tab="current">
+                                    <i class="fa fa-receipt"></i>
+                                    IN TEM HIỆN TẠI
+                                    <span class="badge">'.count($sales).'</span>
+                                </button>
+
+                                <button type="button"
+                                        class="label-tab"
+                                        data-label-tab="suspended">
+                                    <i class="fa fa-clock-o"></i>
+                                    IN TEM ĐƠN TẠM
+                                    <span class="badge">'.count($suspended_bills).'</span>
+                                </button>
+
+                            </div>
+
+                            <div id="labelTabCurrent" class="label-tab-content active">
+                                <div class="label-bill-list no-print">
+                            ';
                         $i = 0;
                         $hide_price_by_sale = [];
                         foreach ($sales as $sale) {
 
-                        $hide_price_by_sale[$sale->id] =
+                        $hide_price_by_sale['sale_'.$sale->id] =
                                 ((int)$sale->customer_group_id === (int)$customer_group_id_app);
                            
                             $customer_name = trim($sale->customer); // bỏ khoảng trắng đầu/cuối
@@ -54,7 +173,7 @@
                             }
                         
 
-                            echo '<button type="button" class="btn btn-danger bills" id="'.$sale->id.'" style="height:58px; width: 210px; font-size: 17px; line-height: 16px; margin-top: 10px">';
+                            echo '<button type="button" class="btn btn-danger bills bill-selector" id="sale_'.$sale->id.'" data-bill-id="'.$sale->id.'" data-bill-type="sale" style="height:58px; width: 210px; font-size: 17px; line-height: 16px; margin-top: 10px">';
                             echo '<span id="reference_'.$sale->id.'">#' . substr($sale->reference_no, -3) . '<span>';
 
                             echo '<br /><span style="font-size: 13px">'. $customer_name.'</span>';
@@ -66,15 +185,53 @@
                             echo '<input type="hidden" class="hidd_reference_no" value="#'.substr($sale->reference_no, -3).'">';
                             echo '</button>&nbsp;&nbsp;';
                         }
-                        echo '</div>';
+                        echo '
+                            </div>
+                        </div>
+
+                        <div id="labelTabSuspended" class="label-tab-content">
+                            <div class="label-bill-list no-print">
+                        ';
+
+                        foreach ($suspended_bills as $bill) {
+
+                            $hide_price_by_sale['suspend_'.$bill->id] =
+                                ((int)$bill->customer_group_id === (int)$customer_group_id_app);
+                            $customer_name = trim($bill->suspend_note ?: $bill->customer);
+
+                            if ($customer_name == $default_customer_name) {
+                                $customer_name = $default_customer_name_replace;
+                            }
+
+                            echo '<button type="button"
+                                class="btn btn-danger suspended-bills bill-selector"
+                                id="suspend_'.$bill->id.'"
+                                data-bill-id="'.$bill->id.'"
+                                data-bill-type="suspend"
+                                data-customer-name="'.htmlspecialchars($customer_name, ENT_QUOTES, 'UTF-8').'"
+                                style="height:58px; width:210px; font-size:17px; line-height:16px; margin-top:10px">';
+
+                            echo '<strong>#'.$bill->id.'</strong>';
+                            echo '<br><span style="font-size:13px">'
+                                .htmlspecialchars($customer_name, ENT_QUOTES, 'UTF-8')
+                                .'</span>';
+
+                            echo '<br><span style="font-size:13px">'
+                                .$this->sma->formatMoney($bill->total)
+                                .'</span>';
+
+                            echo '</button>&nbsp;&nbsp;';
+                        }
+
+                        echo '
+                            </div>
+                        </div>
+                        ';
                         $j = 0;
                         $total_items = 1;
                         foreach($items as $key => $values) {
                             //$total_items++;
-                            $display_btn = '';
-                            if ($j > 0) {
-                                $display_btn = ' style="display: none;"';
-                            }
+                            $display_btn = ' style="display: none;"';
                             //$this->sma->print_arrays($values);
                             $hide_price = !empty($hide_price_by_sale[$key]);
                             echo '<div class="barcode_mini div'.$key.'"'.$display_btn.' data-hide-price="' . ($hide_price ? '1' : '0') . '">';
@@ -86,7 +243,8 @@
                                 && $item->product_id != 20357 && $item->product_id != 20358 && $item->product_id != 22133
                                 && $item->product_id != 22153 && $item->product_id != 22154 && $item->product_id != 22178
                                 && $item->product_id != 22179 && $item->product_id != 22180 && $item->product_id != 22997
-                                && $item->product_id != 22181 && $item->product_id != 22185 && $item->product_id != 22288) {
+                                && $item->product_id != 22181 && $item->product_id != 22185 && $item->product_id != 22288
+                                && $item->product_id != 23170) {
                                 $total_items++;
                                     $item_qty = $item->quantity;
                                     
@@ -220,7 +378,7 @@
                             
                         }
                         
-                        echo '<button type="button"style="height: 46px; font-size: 22px;" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print') . '</button>';
+                        //echo '<button type="button"style="height: 46px; font-size: 22px;" onclick="window.print();return false;" class="btn btn-primary btn-block tip no-print" title="'.lang('print').'"><i class="icon fa fa-print"></i> '.lang('print') . '</button>';
                     ?>
                     <div id="copyToast" 
                         style="
@@ -310,87 +468,141 @@
             $("#total_items").html("<span style='font-size: 40px;'><strong>1-" + Math.round(total) + "<strong></span>")
         }
         
-        // Enable first button
-        $('.bills:first').removeClass('btn-danger').addClass('btn-success');
-        //$('.reference_no').text($('.hidd_reference_no:first').val());
-        $('.reference_no').text($('.hidd_customer_name:first').val());
-        if($(".bills:first .hidd_sale_language").val() == 1) {
-            $('.barcode:first .label_product_name_en').removeAttr('style');
-            $('.barcode:first .style10_1' ).each(function( index ) {
-                if($(this).find('.comment').text() != '') {
-                    $(this).find('.barcode_name').removeClass('increase_size_1');
-                    $(this).find('.barcode_name').addClass('increase_size_2');
-                    $(this).find('.label_product_name_en').addClass('increase_size_3');
-                } else {
-                    $(this).find('.barcode_name').removeClass('increase_size');
-                    $(this).find('.barcode_name').addClass('increase_size_1');
-                }
-            });
-            
-        }
-        applyPriceVisibility($('.bills:first').attr('id'));
-        fillTotalItems($('.barcode_mini:first>div').length);
+    
+        // CHUYỂN TAB IN TEM
+        $(document).on('click', '.label-tab', function() {
 
+            var tab = $(this).data('label-tab');
 
-        $('.bills').on('click',function() {
-            div_id = $(this).attr('id');
-            customer_id = $('#' + div_id).find('.hidd_customer_id').val();
-            sale_language = $('#' + div_id).find('.hidd_sale_language').val();
-            $('.bills' ).each(function( index ) {
-                all_div_ids = $(this).attr('id');
-                $(this).addClass('btn-danger');
-                $(this).removeClass('btn-success');
-                $('.div' + all_div_ids).hide();
-            });
-            if(!$(this).hasClass('btn-success')) {
-                var DEFAULT_CUSTOMER = "<?= $default_customer_name ?>";
-                var DEFAULT_CUSTOMER_REPLACE = "<?= $default_customer_name_replace ?>";
-                //reference_no = $('.div' + id).find('.hidd_reference_no').val();
-                $(this).removeClass('btn-danger');
-                $('.div' + div_id).show();
-                applyPriceVisibility(div_id);
-                $(this).addClass('btn-success');
-                //$('.reference_no').text($('#' + div_id).find('.hidd_reference_no').val());
-                $('.reference_no').text($('#' + div_id).find('.hidd_customer_name').val());
-                if ($('#' + div_id).find('.hidd_customer_name').val() == DEFAULT_CUSTOMER) {
-                    $('.reference_no').text(DEFAULT_CUSTOMER_REPLACE);
-                }
-                //console.log('vvv' + sale_language);
-                if(sale_language == 1) {
-                    //console.log('vvv');
-                    $('.div' + div_id + ' .label_product_name_en').removeAttr('style');
+            if ($(this).hasClass('active')) {
+                return;
+            }
 
-                    $('.div' + div_id + ' .style10_1' ).each(function( index ) {
-                        //console.log('fd' + $(this).find('.comment').text());
-                        if($(this).find('.comment').text() != '') {
-                            $(this).find('.barcode_name').removeClass('increase_size_1');
-                            $(this).find('.barcode_name').addClass('increase_size_2');
-                            $(this).find('.label_product_name_en').addClass('increase_size_3');
-                        } else {
-                            $(this).find('.barcode_name').removeClass('increase_size');
-                            $(this).find('.barcode_name').addClass('increase_size_1');
-                        }
-                    });
+            $('.label-tab').removeClass('active');
+            $(this).addClass('active');
 
-                    // if($('.div' + div_id + ' .comment').text() != '') {
-                    //     $('.div' + div_id + ' .barcode_name').removeClass('increase_size_1');
-                    //     $('.div' + div_id + ' .barcode_name').addClass('increase_size_2');
-                    //     $('.div' + div_id + ' .label_product_name_en').addClass('increase_size_3');
-                    // }
-                }
+            var $content = tab === 'current'
+                ? $('#labelTabCurrent')
+                : $('#labelTabSuspended');
 
-                // if (customer_id == 6533) {
-                //     $('.text_price').hide();
-                // } else {
-                //     $('.text_price').show();
-                // }
-                
-                //console.log($('.div' + div_id +'>div').length);
-                fillTotalItems($('.div' + div_id +'>div').length);
-                
-                //console.log(div_id);
-            } 
+            $('.label-tab-content').removeClass('active');
+
+            $content.addClass('active');
+
+            // Chọn đơn đầu tiên trong tab vừa mở
+            var $firstBill = $content.find('.bill-selector').first();
+
+            if ($firstBill.length) {
+                $firstBill.trigger('click');
+            } else {
+                $('.bill-selector')
+                    .removeClass('btn-success')
+                    .addClass('btn-danger');
+
+                $('.barcode_mini').hide();
+
+                fillTotalItems(0);
+            }
         });
+
+
+        // CHỌN ĐƠN VÀ HIỂN THỊ TEM
+        $(document).on('click', '.bill-selector', function() {
+
+            var $button = $(this);
+
+            var billId = $button.attr('id');
+            var billType = $button.data('bill-type');
+
+            var customerName = '';
+            var saleLanguage = 0;
+
+            if (billType === 'sale') {
+                customerName = $button.find('.hidd_customer_name').val() || '';
+                saleLanguage = $button.find('.hidd_sale_language').val() || 0;
+            } else {
+                customerName = $button.attr('data-customer-name') || '';
+            }
+
+            // Bỏ trạng thái chọn của tất cả đơn
+            $('.bill-selector')
+                .removeClass('btn-success')
+                .addClass('btn-danger');
+
+            // Ẩn tất cả vùng tem
+            $('.barcode_mini').hide();
+
+            // Đánh dấu đơn đang chọn
+            $button.removeClass('btn-danger').addClass('btn-success');
+
+            // Hiện vùng tem tương ứng
+            var $label = $('.div' + billId);
+
+            $label.stop(true, true).fadeIn(180);
+
+            // Áp dụng trạng thái ẩn/hiện giá
+            applyPriceVisibility(billId);
+
+            // Hiển thị tên khách ở cuối tem
+            $label.find('.reference_no').text(customerName);
+
+            if (customerName === "<?= addslashes($default_customer_name) ?>") {
+                $label.find('.reference_no').text(
+                    "<?= addslashes($default_customer_name_replace) ?>"
+                );
+            }
+
+            // Xử lý tên tiếng Anh nếu hóa đơn có ngôn ngữ tiếng Anh
+            if (saleLanguage == 1) {
+
+                $label.find('.label_product_name_en').show();
+
+                $label.find('.style10_1').each(function() {
+
+                    if ($(this).find('.comment').text() !== '') {
+
+                        $(this).find('.barcode_name')
+                            .removeClass('increase_size_1')
+                            .addClass('increase_size_2');
+
+                        $(this).find('.label_product_name_en')
+                            .addClass('increase_size_3');
+
+                    } else {
+
+                        $(this).find('.barcode_name')
+                            .removeClass('increase_size')
+                            .addClass('increase_size_1');
+                    }
+                });
+            }
+
+            // Cập nhật tổng tem
+            fillTotalItems($label.find('.item_1').length);
+
+        });
+
+
+        // CHỌN ĐƠN ĐẦU TIÊN MẶC ĐỊNH
+        var $firstBill = $('#labelTabCurrent .bill-selector').first();
+
+        if (!$firstBill.length) {
+            $firstBill = $('#labelTabSuspended .bill-selector').first();
+
+            if ($firstBill.length) {
+                $('.label-tab').removeClass('active');
+                $('.label-tab[data-label-tab="suspended"]').addClass('active');
+
+                $('.label-tab-content').removeClass('active');
+                $('#labelTabSuspended').addClass('active');
+            }
+        }
+
+        if ($firstBill.length) {
+            $firstBill.trigger('click');
+        } else {
+            fillTotalItems(0);
+        }
     });
 
     

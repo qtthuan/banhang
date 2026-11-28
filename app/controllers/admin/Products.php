@@ -441,31 +441,78 @@ class Products extends MY_Controller
 
     function print_label_mini()
     {
-       
         $this->sma->checkPermissions('barcode', true);
 
-        //$this->form_validation->set_rules('style', lang("style"), 'required');
-
+        // HÓA ĐƠN ĐÃ THANH TOÁN
         $lastest_bills = $this->sales_model->getLastestMiniInvoice();
-        $this->data['sales'] = $lastest_bills;
-        $this->data['customer_group_id_app'] = $this->config->item('customer_group_id_app');
-        for ($i=0; $i < count($lastest_bills); $i++) {
-            $items = $this->sales_model->getAllInvoiceItems($lastest_bills[$i]->id);
 
-            $this->data['items'][$lastest_bills[$i]->id] = $items;
+        if (!is_array($lastest_bills)) {
+            $lastest_bills = array();
         }
 
-        $this->data['default_customer_name'] = $this->config->item('default_customer_name');
-        $this->data['default_customer_name_replace'] = $this->config->item('default_customer_name_replace');
-        
-        //$this->sma->print_arrays($this->data['items']);
-        //$this->sma->print_arrays($this->data['sales']);
-        
-        $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
-        $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('products'), 'page' => lang('products')), array('link' => '#', 'page' => lang('print_labels')));
-        $meta = array('page_title' => lang('print_labels'), 'bc' => $bc);
-        $this->page_construct('products/print_label_mini', $meta, $this->data);
+        $this->data['sales'] = $lastest_bills;
 
+        // ĐƠN TẠM
+        $suspended_bills = $this->sales_model->getLatestMiniSuspendedBills();
+
+        if (!is_array($suspended_bills)) {
+            $suspended_bills = array();
+        }
+
+        $this->data['suspended_bills'] = $suspended_bills;
+
+        // DÙNG CHUNG CẤU TRÚC OBJECT CHO HAI LOẠI ĐƠN
+        $this->data['items'] = array();
+
+        // LẤY MÓN HÓA ĐƠN ĐÃ THANH TOÁN
+        foreach ($lastest_bills as $sale) {
+
+            $items = $this->sales_model->getAllInvoiceItems($sale->id);
+
+            $this->data['items']['sale_' . $sale->id] =
+                $items ? $items : array();
+        }
+
+        // LẤY MÓN ĐƠN TẠM
+        foreach ($suspended_bills as $bill) {
+
+            $items = $this->sales_model->getAllSuspendedItems($bill->id);
+
+            $this->data['items']['suspend_' . $bill->id] =
+                $items ? $items : array();
+        }
+
+        $this->data['customer_group_id_app'] =
+            $this->config->item('customer_group_id_app');
+
+        $this->data['default_customer_name'] =
+            $this->config->item('default_customer_name');
+
+        $this->data['default_customer_name_replace'] =
+            $this->config->item('default_customer_name_replace');
+
+        $this->data['error'] = (
+            validation_errors()
+            ? validation_errors()
+            : $this->session->flashdata('error')
+        );
+
+        $bc = array(
+            array('link' => base_url(), 'page' => lang('home')),
+            array('link' => admin_url('products'), 'page' => lang('products')),
+            array('link' => '#', 'page' => lang('print_labels'))
+        );
+
+        $meta = array(
+            'page_title' => lang('print_labels'),
+            'bc' => $bc
+        );
+
+        $this->page_construct(
+            'products/print_label_mini',
+            $meta,
+            $this->data
+        );
     }
     
     /**

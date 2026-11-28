@@ -196,6 +196,70 @@ class Sales_model extends CI_Model
         return FALSE;
     }
 
+    public function getLatestMiniSuspendedBills()
+    {
+        $query = "
+            SELECT
+                suspended_bills.*,
+                companies.customer_group_id,
+                suspended_bills.id AS reference_no,
+                suspended_bills.total AS grand_total,
+                0 AS sale_language
+            FROM " . $this->db->dbprefix('suspended_bills') . " AS suspended_bills
+            LEFT JOIN " . $this->db->dbprefix('companies') . " AS companies
+                ON companies.id = suspended_bills.customer_id
+            WHERE suspended_bills.warehouse_id = 3
+            ORDER BY suspended_bills.id DESC
+            LIMIT 24
+        ";
+
+        $q = $this->db->query($query);
+
+        if ($q->num_rows() > 0) {
+            return $q->result();
+        }
+
+        return array();
+    }
+
+    public function getAllSuspendedItems($suspend_id)
+    {
+        $this->db->select("
+            suspended_items.*,
+            suspended_items.product_name AS product_name,
+            '' AS product_name_en,
+            product_variants.name AS variant,
+            products.image,
+            products.details AS details,
+            products.price
+        ");
+
+        $this->db->from('suspended_items');
+
+        $this->db->join(
+            'product_variants',
+            'product_variants.id = suspended_items.option_id',
+            'left'
+        );
+
+        $this->db->join(
+            'products',
+            'products.id = suspended_items.product_id',
+            'left'
+        );
+
+        $this->db->where('suspended_items.suspend_id', $suspend_id);
+        $this->db->order_by('suspended_items.id', 'asc');
+
+        $q = $this->db->get();
+
+        if ($q->num_rows() > 0) {
+            return $q->result();
+        }
+
+        return array();
+    }
+
     public function getAllInvoiceItemsWithDetails($sale_id)
     {
         $this->db->select('sale_items.*, products.details, product_variants.name as variant');
